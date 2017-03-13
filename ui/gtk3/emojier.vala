@@ -75,7 +75,10 @@ class IBusEmojier : Gtk.Window {
                 row_homogeneous : false,
                 vexpand : true,
                 halign : Gtk.Align.FILL,
-                valign : Gtk.Align.FILL
+                valign : Gtk.Align.FILL,
+                row_spacing : 5,
+                column_spacing : 5,
+                border_width : 2
             );
         }
     }
@@ -190,7 +193,6 @@ class IBusEmojier : Gtk.Window {
     private CategoryType m_current_category_type = CategoryType.EMOJI;
     private bool m_is_running = false;
     private string m_input_context_path = "";
-    private GLib.StringBuilder m_buffer_string;
     private GLib.MainLoop? m_loop;
     private string? m_result;
     private GLib.SList<string> m_lang_list;
@@ -288,11 +290,9 @@ class IBusEmojier : Gtk.Window {
         m_entry.set_placeholder_text(_("Type annotation or choose emoji"));
         m_vbox.add(m_entry);
         m_entry.changed.connect(() => {
-            m_buffer_string.assign(m_entry.get_text());
-            update_cadidate_window();
+            update_candidate_window();
         });
         m_entry.icon_release.connect((icon_pos, event) => {
-            m_buffer_string.erase();
             hide_candidate_panel();
         });
 
@@ -303,7 +303,6 @@ class IBusEmojier : Gtk.Window {
         Atk.Object obj = m_entry.get_accessible();
         obj.set_role (Atk.Role.STATUSBAR);
 
-        m_buffer_string = new StringBuilder();
         grab_focus();
 
         // The constructor of IBus.LookupTable does not support more than
@@ -680,11 +679,16 @@ class IBusEmojier : Gtk.Window {
         buttons_hbox.show_all();
     }
 
-    private bool check_unicode_point(bool check_xdigit_only) {
-        m_unicode_point = null;
+    private bool check_unicode_point(string? annotation=null) {
+        bool check_xdigit_only = true;
+        if (annotation == null) {
+            annotation = m_entry.get_text();
+            m_unicode_point = null;
+            check_xdigit_only = false;
+        }
         GLib.StringBuilder buff = new GLib.StringBuilder();
-        for (int i = 0; i < m_buffer_string.str.char_count(); i++) {
-            unichar ch = m_buffer_string.str.get_char(i);
+        for (int i = 0; i < annotation.char_count(); i++) {
+            unichar ch = annotation.get_char(i);
             if (ch == 0)
                 return false;
             if (!ch.isxdigit())
@@ -704,7 +708,7 @@ class IBusEmojier : Gtk.Window {
         return true;
     }
 
-    public void update_cadidate_window() {
+    public void update_candidate_window() {
         string annotation = m_entry.get_text();
         if (annotation.length == 0) {
             hide_candidate_panel();
@@ -716,7 +720,7 @@ class IBusEmojier : Gtk.Window {
             return;
         }
         // Call check_unicode_point() to get m_unicode_point
-        check_unicode_point(false);
+        check_unicode_point();
         unowned GLib.SList<string>? emojis =
             m_annotation_to_emojis_dict.lookup(annotation);
         if (emojis == null && m_unicode_point == null) {
@@ -725,7 +729,7 @@ class IBusEmojier : Gtk.Window {
         }
         m_lookup_table.clear();
         // Call check_unicode_point() to update m_lookup_table
-        check_unicode_point(false);
+        check_unicode_point();
         foreach (unowned string emoji in emojis) {
             IBus.Text text = new IBus.Text.from_string(emoji);
             m_lookup_table.append_candidate(text);
@@ -760,9 +764,6 @@ class IBusEmojier : Gtk.Window {
             });
         }
         EGrid grid = new EGrid();
-        grid.set_row_spacing(5);
-        grid.set_column_spacing(5);
-        grid.set_border_width(2);
         int n = 0;
         for (uint i = page_start_pos; i < page_end_pos; i++) {
             IBus.Text candidate = m_lookup_table.get_candidate(i);
@@ -878,14 +879,11 @@ class IBusEmojier : Gtk.Window {
     private bool if_in_range_of_lookup(uint keyval) {
         if (!m_candidate_panel_is_visible)
             return false;
-        string backup_annotation = m_buffer_string.str.dup();
+        StringBuilder buffer_string = new StringBuilder(m_entry.get_text());
         unichar ch = IBus.keyval_to_unicode (keyval);
-        m_buffer_string.append_unichar(ch);
-        if (check_unicode_point(true)) {
-            m_buffer_string.assign(backup_annotation);
+        buffer_string.append_unichar(ch);
+        if (check_unicode_point(buffer_string.str))
             return false;
-        }
-        m_buffer_string.assign(backup_annotation);
         if (keyval < Gdk.Key.@0 || keyval > Gdk.Key.@9)
             return false;
         if (keyval == Gdk.Key.@0)
@@ -958,6 +956,18 @@ class IBusEmojier : Gtk.Window {
         show_category_list();
     }
 
+    private void entry_enter_keyval(uint keyval) {
+        unichar ch = IBus.keyval_to_unicode(keyval);
+        if (!ch.isgraph())
+            return;
+        string str = ch.to_string();
+
+        // what gtk_entry_commit_cb() do
+        int pos = m_entry.get_position();
+        m_entry.insert_text(str, -1, ref pos);
+        m_entry.set_position(pos);
+    }
+
     public string run(Gdk.Event event,
                       string    input_context_path) {
         assert (m_loop == null);
@@ -972,7 +982,7 @@ class IBusEmojier : Gtk.Window {
         resize(1, 1);
 
         m_entry.set_text("");
-        m_buffer_string.erase();
+        m_entry.grab_focus();
 
         Gdk.Device device = event.get_device();
         if (device == null) {
@@ -1070,12 +1080,12 @@ class IBusEmojier : Gtk.Window {
                 m_current_category_type = CategoryType.EMOJI;
                 show_candidate_panel();
                 return true;
-            } else if (m_buffer_string.str.length == 0) {
+            } else if (m_entry.get_text().length == 0) {
                 m_loop.quit();
                 hide_candidate_panel();
                 return true;
             }
-            m_buffer_string.erase();
+            m_entry.delete_text(0, -1);
             break;
         case Gdk.Key.Return:
             if (m_candidate_panel_is_visible) {
@@ -1094,14 +1104,14 @@ class IBusEmojier : Gtk.Window {
             }
             return true;
         case Gdk.Key.BackSpace:
-            if (m_buffer_string.len > 0)
-                m_buffer_string.erase(m_buffer_string.len - 1);
+            if (m_entry.get_text().len() > 0) {
+                GLib.Signal.emit_by_name(m_entry, "backspace");
+            }
             break;
         case Gdk.Key.space:
         case Gdk.Key.KP_Space:
             if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
-                unichar ch = IBus.keyval_to_unicode (keyval);
-                m_buffer_string.append_unichar(ch);
+                entry_enter_keyval(keyval);
                 break;
             }
             if (m_candidate_panel_is_visible) {
@@ -1120,12 +1130,24 @@ class IBusEmojier : Gtk.Window {
                 show_candidate_panel();
                 return true;
             }
+            if (m_entry.get_text().len() > 0) {
+                GLib.Signal.emit_by_name(m_entry, "move-cursor",
+                                         Gtk.MovementStep.VISUAL_POSITIONS,
+                                         1, false);
+                return true;
+            }
             break;
         case Gdk.Key.Left:
             if (m_candidate_panel_is_visible) {
                 m_enter_notify_enable = false;
                 m_lookup_table.cursor_up();
                 show_candidate_panel();
+                return true;
+            }
+            if (m_entry.get_text().len() > 0) {
+                GLib.Signal.emit_by_name(m_entry, "move-cursor",
+                                         Gtk.MovementStep.VISUAL_POSITIONS,
+                                         -1, false);
                 return true;
             }
             break;
@@ -1157,16 +1179,26 @@ class IBusEmojier : Gtk.Window {
                 return true;
             }
             break;
-        default:
-            unichar ch = IBus.keyval_to_unicode(keyval);
-            if (!ch.isgraph())
+        case Gdk.Key.Home:
+            if (m_entry.get_text().len() > 0) {
+                GLib.Signal.emit_by_name(m_entry, "move-cursor",
+                                         Gtk.MovementStep.DISPLAY_LINE_ENDS,
+                                         -1, false);
                 return true;
-            m_buffer_string.append_unichar(ch);
+            }
+            break;
+        case Gdk.Key.End:
+            if (m_entry.get_text().len() > 0) {
+                GLib.Signal.emit_by_name(m_entry, "move-cursor",
+                                         Gtk.MovementStep.DISPLAY_LINE_ENDS,
+                                         1, false);
+                return true;
+            }
+            break;
+        default:
+            entry_enter_keyval(keyval);
             break;
         }
-
-        string annotation = m_buffer_string.str;
-        m_entry.set_text(annotation);
 
         return true;
     }
