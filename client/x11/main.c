@@ -2,6 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus
  * Copyright (C) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2007-2015 Red Hat, Inc.
  *
  * main.c:
@@ -1131,6 +1132,20 @@ _xerror_handler (Display *dpy, XErrorEvent *e)
     return 1;
 }
 
+/* When log into GNOME3 desktop immediately after the system is booted,
+ * ibus-daemon is sometimes alive but ibus-x11 is dead after log out
+ * the session. Because gdk_x_io_error() is called as the callback of
+ * XSetIOErrorHandler() in gtk/gdk/x11/gdkmain-x11.c in ibus-x11.
+ * Now I assume the callback is called in logout.
+ */
+static int
+_xerror_io_handler (Display *dpy)
+{
+    if (_kill_daemon)
+        _atexit_cb ();
+    return 0;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1146,6 +1161,7 @@ main (int argc, char **argv)
 
     gtk_init (&argc, &argv);
     XSetErrorHandler (_xerror_handler);
+    XSetIOErrorHandler (_xerror_io_handler);
 
     while (1) {
         static struct option long_options [] = {
