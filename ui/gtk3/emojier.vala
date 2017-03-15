@@ -214,6 +214,7 @@ class IBusEmojier : Gtk.Window {
     private string[] m_favorites = {};
     private bool m_enter_notify_enable = true;
     private uint m_entry_notify_show_id;
+    private uint m_entry_notify_disable_id;
 
     public signal void candidate_clicked(uint index, uint button, uint state);
     public signal void loaded_emoji_dict();
@@ -525,6 +526,18 @@ class IBusEmojier : Gtk.Window {
         show_category_list();
     }
 
+    private string get_title_string(string orig) {
+        StringBuilder buff = new StringBuilder();
+        for (int i = 0; i < orig.char_count(); i++) {
+            unichar ch = orig.get_char(i);
+            if (i == 0)
+                buff.append_unichar(ch.toupper());
+            else
+                buff.append_unichar(ch);
+        }
+        return buff.str;
+    }
+
     private void show_category_list() {
         remove_all_children();
         m_scrolled_window = new EScrolledWindow();
@@ -586,19 +599,14 @@ class IBusEmojier : Gtk.Window {
             }
             GLib.List<unowned string> categories =
                     m_category_to_emojis_dict.get_keys();
+            categories.sort((a, b) => {
+                return GLib.strcmp(_(a), _(b));
+            });
             foreach (unowned string category in categories) {
                 EBoxRow row = new EBoxRow(category);
                 string locale_category = _(category);
-                StringBuilder capital_category = new StringBuilder();
-                for (int i = 0; i < locale_category.char_count(); i++) {
-                    unichar ch = locale_category.get_char(i);
-                    if (i == 0)
-                        capital_category.append_unichar(ch.toupper());
-                    else
-                        capital_category.append_unichar(ch);
-                }
                 EPaddedLabel widget =
-                        new EPaddedLabel(capital_category.str,
+                        new EPaddedLabel(get_title_string(locale_category),
                                          Gtk.Align.CENTER);
                 row.add(widget);
                 m_list_box.add(row);
@@ -650,7 +658,7 @@ class IBusEmojier : Gtk.Window {
                 IBus.Text text = new IBus.Text.from_string(emoji);
                 m_lookup_table.append_candidate(text);
             }
-            m_backward = row.text;
+            m_backward = get_title_string(row.text);
         }
         show_candidate_panel();
     }
@@ -759,9 +767,7 @@ class IBusEmojier : Gtk.Window {
         uint page_end_pos = uint.min(page_start_pos + page_size, ncandidates);
         if (m_backward != null) {
             string backward_desc =
-                    "%s (%u / %u)".printf(m_backward,
-                                          cursor / page_size + 1,
-                                          ncandidates / page_size + 1);
+                    "%s (%u / %u)".printf(m_backward, cursor, ncandidates - 1);
             EPaddedLabel label = new EPaddedLabel(backward_desc,
                                                   Gtk.Align.CENTER,
                                                   TravelDirection.BACKWARD);
@@ -805,23 +811,23 @@ class IBusEmojier : Gtk.Window {
                 candidate_clicked(index, e.button, e.state);
                 return true;
             });
-            // m_enter_notify_enable is added because
-            // enter_notify_event conflicts with keyboard operations.
-            if (m_enter_notify_enable) {
-                candidate_ebox.enter_notify_event.connect((e) => {
-                    m_lookup_table.set_cursor_pos(index);
-                    if (m_entry_notify_show_id > 0) {
+            candidate_ebox.enter_notify_event.connect((e) => {
+                // m_enter_notify_enable is added because
+                // enter_notify_event conflicts with keyboard operations.
+                if (!m_enter_notify_enable)
+                    return true;
+                m_lookup_table.set_cursor_pos(index);
+                if (m_entry_notify_show_id > 0) {
                         GLib.Source.remove(m_entry_notify_show_id);
-                    }
-                    // If timeout is not added, memory leak happens and
-                    // button_press_event signal does not work above.
-                    m_entry_notify_show_id = GLib.Timeout.add(100, () => {
+                }
+                // If timeout is not added, memory leak happens and
+                // button_press_event signal does not work above.
+                m_entry_notify_show_id = GLib.Timeout.add(100, () => {
                         show_candidate_panel();
                         return false;
-                    });
-                    return true;
                 });
-            }
+                return true;
+            });
             grid.attach(candidate_ebox,
                         n % (int)EMOJI_GRID_PAGE, n / (int)EMOJI_GRID_PAGE,
                         1, 1);
@@ -844,16 +850,23 @@ class IBusEmojier : Gtk.Window {
                 widget.show_all();
                 return;
             }
-            unowned IBus.EmojiData data =
+            unowned IBus.EmojiData? data =
                     m_emoji_to_data_dict.lookup(candidate.text);
-            unowned string description = data.get_description();
-            if (description != "") {
+            if (data == null) {
+                // TODO: Provide a description for the favorite emojis.
                 EPaddedLabel widget = new EPaddedLabel(
-                        _("Description: %s").printf(description),
+                        _("Description: %s").printf(_("None")),
                         Gtk.Align.START);
                 m_vbox.add(widget);
                 widget.show_all();
+                return;
             }
+            unowned string description = data.get_description();
+            EPaddedLabel desc_widget = new EPaddedLabel(
+                    _("Description: %s").printf(description),
+                    Gtk.Align.START);
+            m_vbox.add(desc_widget);
+            desc_widget.show_all();
             unowned GLib.SList<unowned string>? annotations =
                     data.get_annotations();
             GLib.StringBuilder buff = new GLib.StringBuilder();
@@ -922,8 +935,21 @@ class IBusEmojier : Gtk.Window {
         m_result = text.text;
     }
 
-    private void candidate_panel_cursor_down() {
+    private void enter_notify_disable_with_timer() {
+        // Enable keyboard operation and disable mouse operation.
         m_enter_notify_enable = false;
+        if (m_entry_notify_disable_id > 0) {
+            GLib.Source.remove(m_entry_notify_disable_id);
+        }
+        // Bring back the mouse operation after a timeout.
+        m_entry_notify_show_id = GLib.Timeout.add(100, () => {
+            m_enter_notify_enable = true;
+            return false;
+        });
+    }
+
+    private void candidate_panel_cursor_down() {
+        enter_notify_disable_with_timer();
         uint ncandidates = m_lookup_table.get_number_of_candidates();
         uint cursor = m_lookup_table.get_cursor_pos();
         if ((cursor + EMOJI_GRID_PAGE) < ncandidates) {
@@ -937,11 +963,11 @@ class IBusEmojier : Gtk.Window {
     }
 
     private void candidate_panel_cursor_up() {
-        m_enter_notify_enable = false;
+        enter_notify_disable_with_timer();
         int ncandidates = (int)m_lookup_table.get_number_of_candidates();
         int cursor = (int)m_lookup_table.get_cursor_pos();
         int highest_pos =
-            (ncandidates / (int)EMOJI_GRID_PAGE * (int)EMOJI_GRID_PAGE)
+            ((ncandidates - 1)/ (int)EMOJI_GRID_PAGE * (int)EMOJI_GRID_PAGE)
             + (cursor % (int)EMOJI_GRID_PAGE);
         if ((cursor - (int)EMOJI_GRID_PAGE) >= 0) {
             m_lookup_table.set_cursor_pos(cursor - (int)EMOJI_GRID_PAGE);
@@ -967,13 +993,119 @@ class IBusEmojier : Gtk.Window {
         show_category_list();
     }
 
+    private bool key_press_cursor_horizontal(uint keyval,
+                                             uint modifiers) {
+        assert (keyval == Gdk.Key.Left || keyval == Gdk.Key.Right);
+
+        if (m_candidate_panel_is_visible) {
+            enter_notify_disable_with_timer();
+            if (keyval == Gdk.Key.Left)
+                m_lookup_table.cursor_up();
+            else if (keyval == Gdk.Key.Right)
+                m_lookup_table.cursor_down();
+            show_candidate_panel();
+        } else if (m_entry.get_text().len() > 0) {
+            int step = 0;
+            if (keyval == Gdk.Key.Left)
+                step = -1;
+            else if (keyval == Gdk.Key.Right)
+                step = 1;
+            GLib.Signal.emit_by_name(
+                    m_entry, "move-cursor",
+                    Gtk.MovementStep.VISUAL_POSITIONS,
+                    step,
+                    (modifiers & Gdk.ModifierType.SHIFT_MASK) != 0
+                            ? true : false);
+        } else {
+            // For Gdk.Key.f and Gdk.Key.b
+            if (keyval == Gdk.Key.Left)
+                keyval = Gdk.Key.Up;
+            else if (keyval == Gdk.Key.Right)
+                keyval = Gdk.Key.Down;
+            category_list_cursor_move(keyval);
+        }
+        return true;
+    }
+
+    private bool key_press_cursor_vertical(uint keyval) {
+        assert (keyval == Gdk.Key.Down || keyval == Gdk.Key.Up);
+
+        if (m_candidate_panel_is_visible) {
+            if (keyval == Gdk.Key.Down)
+                candidate_panel_cursor_down();
+            else if (keyval == Gdk.Key.Up)
+                candidate_panel_cursor_up();
+        } else {
+            category_list_cursor_move(keyval);
+        }
+        return true;
+    }
+
+    private bool key_press_cursor_home_end(uint keyval,
+                                           uint modifiers) {
+        assert (keyval == Gdk.Key.Home || keyval == Gdk.Key.End);
+
+        if (m_candidate_panel_is_visible) {
+            enter_notify_disable_with_timer();
+            if (keyval == Gdk.Key.Home) {
+                m_lookup_table.set_cursor_pos(0);
+            } else if (keyval == Gdk.Key.End) {
+                uint ncandidates = m_lookup_table.get_number_of_candidates();
+                m_lookup_table.set_cursor_pos(ncandidates - 1);
+            }
+            show_candidate_panel();
+            return true;
+        }
+        if (m_entry.get_text().len() > 0) {
+            int step = 0;
+            if (keyval == Gdk.Key.Home)
+                step = -1;
+            else if (keyval == Gdk.Key.End)
+                step = 1;
+            GLib.Signal.emit_by_name(
+                    m_entry, "move-cursor",
+                    Gtk.MovementStep.DISPLAY_LINE_ENDS,
+                    step,
+                    (modifiers & Gdk.ModifierType.SHIFT_MASK) != 0
+                            ? true : false);
+            return true;
+        }
+        return false;
+    }
+
+    private bool key_press_cursor_escape() {
+        if (m_candidate_panel_is_visible) {
+            hide_candidate_panel();
+            return true;
+        } else if (m_current_category_type == CategoryType.LANG) {
+            m_current_category_type = CategoryType.EMOJI;
+            show_candidate_panel();
+            return true;
+        } else if (m_entry.get_text().length == 0) {
+            m_loop.quit();
+            hide_candidate_panel();
+            return true;
+        }
+        m_entry.delete_text(0, -1);
+        return true;
+    }
+
     private void entry_enter_keyval(uint keyval) {
         unichar ch = IBus.keyval_to_unicode(keyval);
-        if (!ch.isgraph())
+        if (ch.iscntrl())
             return;
         string str = ch.to_string();
 
         // what gtk_entry_commit_cb() do
+        if (m_entry.get_selection_bounds(null, null)) {
+            m_entry.delete_selection();
+        } else {
+            if (m_entry.get_overwrite_mode()) {
+               uint text_length = m_entry.get_buffer().get_length();
+               if (m_entry.cursor_position < text_length)
+                   m_entry.delete_from_cursor(Gtk.DeleteType.CHARS, 1);
+            }
+        }
         int pos = m_entry.get_position();
         m_entry.insert_text(str, -1, ref pos);
         m_entry.set_position(pos);
@@ -1084,19 +1216,8 @@ class IBusEmojier : Gtk.Window {
         }
         switch (keyval) {
         case Gdk.Key.Escape:
-            if (m_candidate_panel_is_visible) {
-                hide_candidate_panel();
+            if (key_press_cursor_escape())
                 return true;
-            } else if (m_current_category_type == CategoryType.LANG) {
-                m_current_category_type = CategoryType.EMOJI;
-                show_candidate_panel();
-                return true;
-            } else if (m_entry.get_text().length == 0) {
-                m_loop.quit();
-                hide_candidate_panel();
-                return true;
-            }
-            m_entry.delete_text(0, -1);
             break;
         case Gdk.Key.Return:
             if (m_candidate_panel_is_visible) {
@@ -1126,7 +1247,7 @@ class IBusEmojier : Gtk.Window {
                 break;
             }
             if (m_candidate_panel_is_visible) {
-                m_enter_notify_enable = false;
+                enter_notify_disable_with_timer();
                 m_lookup_table.cursor_down();
                 show_candidate_panel();
             }
@@ -1135,48 +1256,20 @@ class IBusEmojier : Gtk.Window {
             }
             return true;
         case Gdk.Key.Right:
-            if (m_candidate_panel_is_visible) {
-                m_enter_notify_enable = false;
-                m_lookup_table.cursor_down();
-                show_candidate_panel();
-                return true;
-            }
-            if (m_entry.get_text().len() > 0) {
-                GLib.Signal.emit_by_name(m_entry, "move-cursor",
-                                         Gtk.MovementStep.VISUAL_POSITIONS,
-                                         1, false);
-                return true;
-            }
-            break;
+            key_press_cursor_horizontal(keyval, modifiers);
+            return true;
         case Gdk.Key.Left:
-            if (m_candidate_panel_is_visible) {
-                m_enter_notify_enable = false;
-                m_lookup_table.cursor_up();
-                show_candidate_panel();
-                return true;
-            }
-            if (m_entry.get_text().len() > 0) {
-                GLib.Signal.emit_by_name(m_entry, "move-cursor",
-                                         Gtk.MovementStep.VISUAL_POSITIONS,
-                                         -1, false);
-                return true;
-            }
-            break;
+            key_press_cursor_horizontal(keyval, modifiers);
+            return true;
         case Gdk.Key.Down:
-            if (m_candidate_panel_is_visible)
-                candidate_panel_cursor_down();
-            else
-                category_list_cursor_move(Gdk.Key.Down);
+            key_press_cursor_vertical(keyval);
             return true;
         case Gdk.Key.Up:
-            if (m_candidate_panel_is_visible)
-                candidate_panel_cursor_up();
-            else
-                category_list_cursor_move(Gdk.Key.Up);
+            key_press_cursor_vertical(keyval);
             return true;
         case Gdk.Key.Page_Down:
             if (m_candidate_panel_is_visible) {
-                m_enter_notify_enable = false;
+                enter_notify_disable_with_timer();
                 m_lookup_table.page_down();
                 show_candidate_panel();
                 return true;
@@ -1184,33 +1277,59 @@ class IBusEmojier : Gtk.Window {
             break;
         case Gdk.Key.Page_Up:
             if (m_candidate_panel_is_visible) {
-                m_enter_notify_enable = false;
+                enter_notify_disable_with_timer();
                 m_lookup_table.page_up();
                 show_candidate_panel();
                 return true;
             }
             break;
         case Gdk.Key.Home:
-            if (m_entry.get_text().len() > 0) {
-                GLib.Signal.emit_by_name(m_entry, "move-cursor",
-                                         Gtk.MovementStep.DISPLAY_LINE_ENDS,
-                                         -1, false);
+            if (key_press_cursor_home_end(keyval, modifiers))
                 return true;
-            }
             break;
         case Gdk.Key.End:
-            if (m_entry.get_text().len() > 0) {
-                GLib.Signal.emit_by_name(m_entry, "move-cursor",
-                                         Gtk.MovementStep.DISPLAY_LINE_ENDS,
-                                         1, false);
+            if (key_press_cursor_home_end(keyval, modifiers))
                 return true;
-            }
-            break;
-        default:
-            entry_enter_keyval(keyval);
             break;
         }
 
+        if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
+            switch (keyval) {
+            case Gdk.Key.f:
+                key_press_cursor_horizontal(Gdk.Key.Right, modifiers);
+                return true;
+            case Gdk.Key.b:
+                key_press_cursor_horizontal(Gdk.Key.Left, modifiers);
+                return true;
+            case Gdk.Key.n:
+                key_press_cursor_vertical(Gdk.Key.Down);
+                return true;
+            case Gdk.Key.p:
+                key_press_cursor_vertical(Gdk.Key.Up);
+                return true;
+            case Gdk.Key.h:
+                if (key_press_cursor_home_end(Gdk.Key.Home, modifiers))
+                    return true;
+                break;
+            case Gdk.Key.e:
+                if (key_press_cursor_home_end(Gdk.Key.End, modifiers))
+                    return true;
+                break;
+            case Gdk.Key.u:
+                if (key_press_cursor_escape())
+                    return true;
+                break;
+            case Gdk.Key.a:
+                if (m_entry.get_text().len() > 0) {
+                    m_entry.select_region(0, -1);
+                    return true;
+                }
+                break;
+            }
+            return false;
+        }
+
+        entry_enter_keyval(keyval);
         return true;
     }
 
