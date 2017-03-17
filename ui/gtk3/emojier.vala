@@ -432,10 +432,45 @@ class IBusEmojier : Gtk.Window {
         }
     }
 
+    private string utf8_down(string str) {
+        GLib.StringBuilder buff = new GLib.StringBuilder();
+        int length = str.char_count();
+        for (int i = 0; i < length; i++) {
+            buff.append_unichar(str.get_char(0).tolower());
+            str = str.next_char();
+        }
+        return buff.str;
+    }
+
+    private string utf8_title(string str) {
+        StringBuilder buff = new StringBuilder();
+        int length = str.char_count();
+        for (int i = 0; i < length; i++) {
+            unichar ch = str.get_char(0);
+            if (i == 0)
+                buff.append_unichar(ch.toupper());
+            else
+                buff.append_unichar(ch);
+            str = str.next_char();
+        }
+        return buff.str;
+    }
+
     private void update_emoji_to_data_dict(IBus.EmojiData data,
                                            string         lang) {
         string emoji = data.get_emoji();
         if (lang == "en") {
+            string description = utf8_down(data.get_description());
+            unowned GLib.SList<string> annotations = data.get_annotations();
+            var words = description.split(" ");
+            // If the description has less than 3 words, add it to annotations
+            if (words.length < 3 &&
+                annotations.find_custom(
+                        description,
+                        (GLib.CompareFunc<string>)GLib.strcmp) == null) {
+                annotations.append(description);
+                data.set_annotations(annotations.copy_deep(GLib.strdup));
+            }
             m_emoji_to_data_dict.replace(emoji, data);
         } else {
             unowned IBus.EmojiData? en_data =
@@ -446,16 +481,24 @@ class IBusEmojier : Gtk.Window {
             }
             string trans_description = data.get_description();
             en_data.set_description(trans_description);
+            trans_description = utf8_down(trans_description);
             unowned GLib.SList<string> annotations = data.get_annotations();
             var words = trans_description.split(" ");
             // If the description has less than 3 words, add it to annotations
-            if (words.length < 3)
+            if (words.length < 3 &&
+                annotations.find_custom(
+                        trans_description,
+                        (GLib.CompareFunc<string>)GLib.strcmp) == null) {
                 annotations.append(trans_description);
+            }
             unowned GLib.SList<string> en_annotations
                 = en_data.get_annotations();
             foreach (string annotation in en_annotations) {
-                if (annotations.find_custom(annotation, GLib.strcmp) == null)
+                if (annotations.find_custom(
+                            annotation,
+                            (GLib.CompareFunc<string>)GLib.strcmp) == null) {
                     annotations.append(annotation.dup());
+                }
             }
             en_data.set_annotations(annotations.copy_deep(GLib.strdup));
         }
@@ -526,18 +569,6 @@ class IBusEmojier : Gtk.Window {
         show_category_list();
     }
 
-    private string get_title_string(string orig) {
-        StringBuilder buff = new StringBuilder();
-        for (int i = 0; i < orig.char_count(); i++) {
-            unichar ch = orig.get_char(i);
-            if (i == 0)
-                buff.append_unichar(ch.toupper());
-            else
-                buff.append_unichar(ch);
-        }
-        return buff.str;
-    }
-
     private void show_category_list() {
         remove_all_children();
         m_scrolled_window = new EScrolledWindow();
@@ -606,7 +637,7 @@ class IBusEmojier : Gtk.Window {
                 EBoxRow row = new EBoxRow(category);
                 string locale_category = _(category);
                 EPaddedLabel widget =
-                        new EPaddedLabel(get_title_string(locale_category),
+                        new EPaddedLabel(utf8_title(locale_category),
                                          Gtk.Align.CENTER);
                 row.add(widget);
                 m_list_box.add(row);
@@ -658,7 +689,7 @@ class IBusEmojier : Gtk.Window {
                 IBus.Text text = new IBus.Text.from_string(emoji);
                 m_lookup_table.append_candidate(text);
             }
-            m_backward = get_title_string(row.text);
+            m_backward = utf8_title(row.text);
         }
         show_candidate_panel();
     }
@@ -734,6 +765,7 @@ class IBusEmojier : Gtk.Window {
             m_backward = null;
             return;
         }
+        annotation = utf8_down(annotation);
         if (annotation.length > m_emoji_max_seq_len) {
             hide_candidate_panel();
             return;
@@ -841,6 +873,8 @@ class IBusEmojier : Gtk.Window {
             m_vbox.add(grid);
             grid.show_all();
             IBus.Text candidate = m_lookup_table.get_candidate(cursor);
+            unowned IBus.EmojiData? data =
+                    m_emoji_to_data_dict.lookup(candidate.text);
             if (cursor == 0 && candidate.text == m_unicode_point) {
                 EPaddedLabel widget = new EPaddedLabel(
                         _("Description: Unicode point U+%04X").printf(
@@ -848,25 +882,25 @@ class IBusEmojier : Gtk.Window {
                         Gtk.Align.START);
                 m_vbox.add(widget);
                 widget.show_all();
-                return;
-            }
-            unowned IBus.EmojiData? data =
-                    m_emoji_to_data_dict.lookup(candidate.text);
-            if (data == null) {
-                // TODO: Provide a description for the favorite emojis.
+                if (data == null)
+                    return;
+            } else if (data == null) {
+                // TODO: Provide a custom description and annotation for
+                // the favorite emojis.
                 EPaddedLabel widget = new EPaddedLabel(
                         _("Description: %s").printf(_("None")),
                         Gtk.Align.START);
                 m_vbox.add(widget);
                 widget.show_all();
                 return;
+            } else {
+                unowned string description = data.get_description();
+                EPaddedLabel widget = new EPaddedLabel(
+                        _("Description: %s").printf(description),
+                        Gtk.Align.START);
+                m_vbox.add(widget);
+                widget.show_all();
             }
-            unowned string description = data.get_description();
-            EPaddedLabel desc_widget = new EPaddedLabel(
-                    _("Description: %s").printf(description),
-                    Gtk.Align.START);
-            m_vbox.add(desc_widget);
-            desc_widget.show_all();
             unowned GLib.SList<unowned string>? annotations =
                     data.get_annotations();
             GLib.StringBuilder buff = new GLib.StringBuilder();
@@ -1243,10 +1277,9 @@ class IBusEmojier : Gtk.Window {
         case Gdk.Key.space:
         case Gdk.Key.KP_Space:
             if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
-                entry_enter_keyval(keyval);
-                break;
-            }
-            if (m_candidate_panel_is_visible) {
+                if (m_entry.get_text().len() > 0)
+                    entry_enter_keyval(keyval);
+            } else if (m_candidate_panel_is_visible) {
                 enter_notify_disable_with_timer();
                 m_lookup_table.cursor_down();
                 show_candidate_panel();
