@@ -611,17 +611,11 @@ AC_ARG_ENABLE(emoji-dict,
     [enable_emoji_dict=yes]
 )
 AM_CONDITIONAL([ENABLE_EMOJI_DICT], [test x"$enable_emoji_dict" = x"yes"])
-if test x"$enable_emoji_dict" = x"yes"; then
-    PKG_CHECK_MODULES(JSON_GLIB1, [
-        json-glib-1.0
-    ])
-    enable_emoji_dict="yes (enabled, use --disable-emoji-dict to disable)"
-fi
 
 AC_ARG_WITH(emoji-json-file,
     AS_HELP_STRING([--with-emoji-json-file[=DIR/emoji.json]],
         [Set emoji.json. (default: "/usr/lib/node_modules/emojione/emoji.json")
-         You can get emoji.json with "npm install -g emojione".]),
+        ]),
     EMOJI_JSON_FILE=$with_emoji_json_file,
     EMOJI_JSON_FILE="/usr/lib/node_modules/emojione/emoji.json"
 )
@@ -630,12 +624,26 @@ AC_SUBST(EMOJI_JSON_FILE)
 AC_ARG_WITH(emoji-annotation-dir,
     AS_HELP_STRING([--with-emoji-annotation-dir[=DIR]],
         [Set the directory of CLDR annotation files.
-         (default: "/usr/share/unicode/cldr/common/annotations")
-         You can get https://github.com/fujiwarat/cldr-emoji-annotation]),
+         (default: "/usr/share/unicode/cldr/common/annotations")]),
     EMOJI_ANNOTATION_DIR=$with_emoji_annotation_dir,
     EMOJI_ANNOTATION_DIR="/usr/share/unicode/cldr/common/annotations"
 )
 AC_SUBST(EMOJI_ANNOTATION_DIR)
+
+if test x"$enable_emoji_dict" = x"yes"; then
+    if test ! -f $EMOJI_JSON_FILE ; then
+        AC_MSG_ERROR(Not found $EMOJI_JSON_FILE. You can get emoji.json \
+with "npm install -g emojione".)
+    fi
+    if test ! -f $EMOJI_ANNOTATION_DIR/en.xml ; then
+        AC_MSG_ERROR(Not found $EMOJI_ANNOTATION_DIR/en.xml. You can get \
+https://github.com/fujiwarat/cldr-emoji-annotation)
+    fi
+    PKG_CHECK_MODULES(JSON_GLIB1, [
+        json-glib-1.0
+    ])
+    enable_emoji_dict="yes (enabled, use --disable-emoji-dict to disable)"
+fi
 
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [

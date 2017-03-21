@@ -20,7 +20,7 @@
  * USA
  */
 
-/* Convert /usr/share/unicode/cldr/common/annotations/*.xml and
+/* Convert /usr/share/unicode/cldr/common/annotations/\*.xml and
  * /usr/lib/node_modules/emojione/emoji.json
  * to the dictionary file which look up the Emoji from the annotation.
  * Get *.xml from https://github.com/fujiwarat/cldr-emoji-annotation

@@ -243,7 +243,10 @@ LANG_FILES = $(basename $(notdir $(wildcard $(EMOJI_ANNOTATION_DIR)/*.xml)))
 noinst_PROGRAMS = emoji-parser
 
 dicts/emoji-en.dict: emoji-parser
-	$(AM_V_at)for f in $(LANG_FILES) ; do \
+	$(AM_V_at)if test x"$(LANG_FILES)" = x ; then \
+	    echo "WARNING: Not found $(EMOJI_ANNOTATION_DIR)/en.xml" 1>&2; \
+	fi; \
+	for f in $(LANG_FILES) ; do \
 	    if test x"$$f" = xen ; then \
 	        $(builddir)/emoji-parser \
 	            --xml $(EMOJI_ANNOTATION_DIR)/$$f.xml \
