@@ -3,7 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2014 Red Hat, Inc.
+# Copyright (c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,19 +22,20 @@
 # USA
 
 ibussetup_PYTHON = \
-	main.py \
-	i18n.py \
-	icon.py \
-	enginecombobox.py \
-	enginedialog.py \
-	enginetreeview.py \
-	engineabout.py \
-	keyboardshortcut.py \
-	$(NULL)
+    emojilang.py \
+    enginecombobox.py \
+    enginedialog.py \
+    enginetreeview.py \
+    engineabout.py \
+    i18n.py \
+    icon.py \
+    keyboardshortcut.py \
+    main.py \
+    $(NULL)
 
 ibussetup_DATA = \
-	setup.ui \
-	$(NULL)
+    setup.ui \
+    $(NULL)
 
 bin_SCRIPTS = ibus-setup
 ibussetupdir = $(pkgdatadir)/setup

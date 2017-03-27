@@ -106,18 +106,6 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/desktop/ibus/general/hotkey/emoji</key>
-      <applyto>/desktop/ibus/general/hotkey/emoji</applyto>
-      <owner>ibus</owner>
-      <type>list</type>
-      <list_type>string</list_type>
-      <default>[&lt;Control&gt;&lt;Shift&gt;e]</default>
-      <locale name="C">
-        <short>Emoji shortcut keys for gtk_accelerator_parse</short>
-          <long>The shortcut keys for turning emoji typing on or off</long>
-      </locale>
-    </schema>
-    <schema>
       <key>/schemas/desktop/ibus/general/hotkey/enable_unconditional</key>
       <applyto>/desktop/ibus/general/hotkey/enable_unconditional</applyto>
       <owner>ibus</owner>
@@ -366,8 +354,20 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/desktop/ibus/panel/emoji_font</key>
-      <applyto>/desktop/ibus/panel/emoji_font</applyto>
+      <key>/schemas/desktop/ibus/panel/emoji/hotkey</key>
+      <applyto>/desktop/ibus/panel/emoji/hotkey</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[&lt;Control&gt;&lt;Shift&gt;e]</default>
+      <locale name="C">
+        <short>Emoji shortcut keys for gtk_accelerator_parse</short>
+          <long>The shortcut keys for turning emoji typing on or off</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/font</key>
+      <applyto>/desktop/ibus/panel/emoji/font</applyto>
       <owner>ibus</owner>
       <type>string</type>
       <default>Monospace 16</default>
@@ -377,8 +377,22 @@
       </locale>
     </schema>
     <schema>
-      <key>/schemas/desktop/ibus/panel/emoji_favorites</key>
-      <applyto>/desktop/ibus/panel/emoji_favorites</applyto>
+      <key>/schemas/desktop/ibus/panel/emoji/lang</key>
+      <applyto>/desktop/ibus/panel/emoji/lang</applyto>
+      <owner>ibus</owner>
+      <type>string</type>
+      <default>en</default>
+      <locale name="C">
+        <short>Default language for emoji dictionary</short>
+	    <long>Choose a default language of emoji dictionaries on
+	          the emoji dialog. The value $lang is applied to
+                  /usr/share/unicode/cldr/common/annotations/$lang.xml
+            </long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/favorites</key>
+      <applyto>/desktop/ibus/panel/emoji/favorites</applyto>
       <owner>ibus</owner>
       <type>list</type>
       <default>[]</default>

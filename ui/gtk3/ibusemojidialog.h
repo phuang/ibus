@@ -149,5 +149,16 @@ void          ibus_emojier_set_favorites          (IBusEmojier* self,
  */
 gboolean      ibus_emojier_has_loaded_emoji_dict  (IBusEmojier* self);
 
+/**
+ * ibus_emojier_set_annotation_lang:
+ * @self: An #IBusEmojier
+ * @lang: A langauge id for emoji annotations.
+ *
+ * Set a language id for emoji annotations. #IBusEmojier will load
+ * $PKGDATADIR/dicts/emoji-@lang.dict. The default is "en".
+ */
+void          ibus_emojier_set_annotation_lang    (IBusEmojier* self,
+                                                   const gchar* lang);
+
 G_END_DECLS
 #endif

@@ -51,6 +51,7 @@ from os import path
 import i18n
 import keyboardshortcut
 import locale
+from emojilang import EmojiLangButton
 from enginecombobox import EngineComboBox
 from enginedialog import EngineDialog
 from enginetreeview import EngineTreeView
@@ -92,6 +93,8 @@ class Setup(object):
                 schema = "org.freedesktop.ibus.general.hotkey");
         self.__settings_panel = Gio.Settings(
                 schema = "org.freedesktop.ibus.panel");
+        self.__settings_emoji = Gio.Settings(
+                schema = "org.freedesktop.ibus.panel.emoji");
 
         # IBus.Bus() calls ibus_bus_new().
         # Gtk.Builder().add_from_file() also calls ibus_bus_new_async()
@@ -122,7 +125,10 @@ class Setup(object):
         self.__init_hotkey(name, label)
 
     def __init_hotkey(self, name, label, comment=None):
-        shortcuts = self.__settings_hotkey.get_strv(name)
+        if name == 'emoji':
+            shortcuts = self.__settings_emoji.get_strv('hotkey')
+        else:
+            shortcuts = self.__settings_hotkey.get_strv(name)
         button = self.__builder.get_object("button_%s" % label)
         entry = self.__builder.get_object("entry_%s" % label)
         entry.set_text("; ".join(shortcuts))
@@ -130,8 +136,12 @@ class Setup(object):
         if comment != None:
             tooltip += "\n" + comment
         entry.set_tooltip_text(tooltip)
-        button.connect("clicked", self.__shortcut_button_clicked_cb,
-                name, "general/hotkey", label, entry)
+        if name == 'emoji':
+            button.connect("clicked", self.__shortcut_button_clicked_cb,
+                    'hotkey', 'panel/' + name, label, entry)
+        else:
+            button.connect("clicked", self.__shortcut_button_clicked_cb,
+                    name, "general/hotkey", label, entry)
 
     def __init_panel(self):
         # lookup table orientation
@@ -169,21 +179,27 @@ class Setup(object):
 
         self.__fontbutton_custom_font = self.__builder.get_object(
                 "fontbutton_custom_font")
-        self.__fontbutton_emoji_font = self.__builder.get_object(
-                "fontbutton_emoji_font")
-        self.__fontbutton_emoji_font.set_preview_text("🙂🍎🚃💓📧⚽🐳");
         self.__settings_panel.bind('custom-font',
                                     self.__fontbutton_custom_font,
-                                   'font-name',
-                                   Gio.SettingsBindFlags.DEFAULT)
-        self.__settings_panel.bind('emoji-font',
-                                    self.__fontbutton_emoji_font,
                                    'font-name',
                                    Gio.SettingsBindFlags.DEFAULT)
         self.__settings_panel.bind('use-custom-font',
                                     self.__fontbutton_custom_font,
                                    'sensitive',
                                    Gio.SettingsBindFlags.GET)
+        self.__fontbutton_emoji_font = self.__builder.get_object(
+                'fontbutton_emoji_font')
+        self.__fontbutton_emoji_font.set_preview_text('🙂🍎🚃💓📧⚽🐳');
+        self.__settings_emoji.bind('font',
+                                    self.__fontbutton_emoji_font,
+                                   'font-name',
+                                   Gio.SettingsBindFlags.DEFAULT)
+        self.__button_emoji_lang = self.__builder.get_object(
+                'button_emoji_lang')
+        self.__settings_emoji.bind('lang',
+                                    self.__button_emoji_lang,
+                                   'lang',
+                                   Gio.SettingsBindFlags.DEFAULT)
 
         # show icon on system tray
         self.__checkbutton_show_icon_on_systray = self.__builder.get_object(
@@ -458,7 +474,10 @@ class Setup(object):
         dialog.destroy()
         if id != Gtk.ResponseType.OK:
             return
-        self.__settings_hotkey.set_strv(name, shortcuts)
+        if section == 'panel/emoji':
+            self.__settings_emoji.set_strv(name, shortcuts)
+        else:
+            self.__settings_hotkey.set_strv(name, shortcuts)
         text = "; ".join(shortcuts)
         entry.set_text(text)
         tooltip = "\n".join(shortcuts)

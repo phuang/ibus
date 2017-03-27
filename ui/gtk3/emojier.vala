@@ -42,14 +42,11 @@ class IBusEmojier : Gtk.Window {
         }
     }
     private class EBoxRow : Gtk.ListBoxRow {
-        public EBoxRow(string text,
-                       string id="") {
+        public EBoxRow(string text) {
             this.text = text;
-            this.id = id;
         }
 
         public string text { get; set; }
-        public string id { get; set; }
     }
     private class EScrolledWindow : Gtk.ScrolledWindow {
         public EScrolledWindow(Gtk.Adjustment? hadjustment=null,
@@ -132,6 +129,7 @@ class IBusEmojier : Gtk.Window {
         }
     }
     private class ETitleLabel : Gtk.Box {
+        private Gtk.Label m_label;
         private Gtk.Button m_close_button;
         private ulong m_close_handler;
 
@@ -142,14 +140,14 @@ class IBusEmojier : Gtk.Window {
                 orientation : Gtk.Orientation.HORIZONTAL,
                 spacing : 0
             );
-            Gtk.Label label = new Gtk.Label(text);
-            label.set_halign(align);
-            label.set_valign(align);
-            label.set_margin_start(20);
-            label.set_margin_end(20);
-            label.set_margin_top(6);
-            label.set_margin_bottom(6);
-            pack_start(label, true, true, 0);
+            m_label = new Gtk.Label(text);
+            m_label.set_halign(align);
+            m_label.set_valign(align);
+            m_label.set_margin_start(20);
+            m_label.set_margin_end(20);
+            m_label.set_margin_top(6);
+            m_label.set_margin_bottom(6);
+            pack_start(m_label, true, true, 0);
             IconWidget icon = new IconWidget("window-close", Gtk.IconSize.MENU);
             m_close_button = new Gtk.Button();
             m_close_button.add(icon);
@@ -170,16 +168,14 @@ class IBusEmojier : Gtk.Window {
                 m_close_handler = 0;
             }
         }
+        public void set_label(string str) {
+            m_label.set_label(str);
+        }
     }
 
     private enum TravelDirection {
         NONE,
         BACKWARD,
-    }
-
-    private enum CategoryType {
-        EMOJI,
-        LANG,
     }
 
     private const uint EMOJI_GRID_PAGE = 10;
@@ -190,14 +186,11 @@ class IBusEmojier : Gtk.Window {
     private string? m_backward;
     private EScrolledWindow? m_scrolled_window = null;
     private EListBox m_list_box;
-    private CategoryType m_current_category_type = CategoryType.EMOJI;
     private bool m_is_running = false;
     private string m_input_context_path = "";
     private GLib.MainLoop? m_loop;
     private string? m_result;
-    private GLib.SList<string> m_lang_list;
     private string m_current_lang_id = "en";
-    private string m_current_language = "English";
     private string? m_unicode_point = null;
     private bool m_candidate_panel_is_visible;
     private GLib.HashTable<string, GLib.SList>?
@@ -215,6 +208,7 @@ class IBusEmojier : Gtk.Window {
     private bool m_enter_notify_enable = true;
     private uint m_entry_notify_show_id;
     private uint m_entry_notify_disable_id;
+    private uint m_reload_emoji_dict_id;
 
     public signal void candidate_clicked(uint index, uint button, uint state);
     public signal void loaded_emoji_dict();
@@ -323,50 +317,13 @@ class IBusEmojier : Gtk.Window {
             hide_candidate_panel();
         });
 
-        GLib.Idle.add(() => {
-            m_lang_list = read_lang_list();
+        m_reload_emoji_dict_id = GLib.Idle.add(() => {
             reload_emoji_dict();
+            m_reload_emoji_dict_id = 0;
             return false;
         });
     }
 
-    private GLib.SList<string> read_lang_list() {
-        GLib.SList<string> lang_list = new GLib.SList<string>();
-        const string dict_path = Config.PKGDATADIR + "/dicts";
-        GLib.Dir dir = null;
-        try {
-            dir = GLib.Dir.open(dict_path);
-        } catch (GLib.FileError e) {
-            warning("Error loading %s: %s", dict_path, e.message);
-            return lang_list;
-        }
-        string name;
-        while ((name = dir.read_name()) != null) {
-            const string dict_suffix = ".dict";
-            const string dict_prefix = "emoji-";
-            if (name.has_suffix(dict_suffix)) {
-                name = name[0:name.length - dict_suffix.length];
-                if (name.has_prefix(dict_prefix)) {
-                    name = name[dict_prefix.length:name.length];
-                    lang_list.append(name);
-                } else {
-                    warning("Need %s prefix in the filename: %s/%s%s",
-                            dict_prefix, dict_path, name, dict_suffix);
-                }
-            } else {
-                warning("Need %s extention in the filename: %s/%s",
-                        dict_suffix, dict_path, name);
-            }
-        }
-        lang_list.sort((a, b) => {
-            string a_lang = IBus.get_language_name(a);
-            string b_lang = IBus.get_language_name(b);
-            a_lang = "%s (%s)".printf(a_lang, a);
-            b_lang = "%s (%s)".printf(b_lang, b);
-            return GLib.strcmp(a_lang, b_lang);
-        });
-        return lang_list;
-    }
 
     private void reload_emoji_dict() {
         init_emoji_dict();
@@ -382,6 +339,7 @@ class IBusEmojier : Gtk.Window {
         loaded_emoji_dict();
     }
 
+
     private void init_emoji_dict() {
         m_annotation_to_emojis_dict =
                 new GLib.HashTable<string, GLib.SList>(GLib.str_hash,
@@ -393,6 +351,7 @@ class IBusEmojier : Gtk.Window {
                 new GLib.HashTable<string, GLib.SList>(GLib.str_hash,
                                                        GLib.str_equal);
     }
+
 
     private void make_emoji_dict(string lang) {
         GLib.SList<IBus.EmojiData> emoji_list = IBus.EmojiData.load(
@@ -411,6 +370,7 @@ class IBusEmojier : Gtk.Window {
                 m_emoji_max_seq_len = annotation.length;
         }
     }
+
 
     private void update_annotation_to_emojis_dict(IBus.EmojiData data) {
         string emoji = data.get_emoji();
@@ -432,6 +392,7 @@ class IBusEmojier : Gtk.Window {
         }
     }
 
+
     private string utf8_down(string str) {
         GLib.StringBuilder buff = new GLib.StringBuilder();
         int length = str.char_count();
@@ -441,6 +402,7 @@ class IBusEmojier : Gtk.Window {
         }
         return buff.str;
     }
+
 
     private string utf8_title(string str) {
         StringBuilder buff = new StringBuilder();
@@ -456,6 +418,7 @@ class IBusEmojier : Gtk.Window {
         return buff.str;
     }
 
+
     private void update_emoji_to_data_dict(IBus.EmojiData data,
                                            string         lang) {
         string emoji = data.get_emoji();
@@ -464,10 +427,11 @@ class IBusEmojier : Gtk.Window {
             unowned GLib.SList<string> annotations = data.get_annotations();
             var words = description.split(" ");
             // If the description has less than 3 words, add it to annotations
+            // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
             if (words.length < 3 &&
                 annotations.find_custom(
                         description,
-                        (GLib.CompareFunc<string>)GLib.strcmp) == null) {
+                        GLib.strcmp) == null) {
                 annotations.append(description);
                 data.set_annotations(annotations.copy_deep(GLib.strdup));
             }
@@ -485,24 +449,27 @@ class IBusEmojier : Gtk.Window {
             unowned GLib.SList<string> annotations = data.get_annotations();
             var words = trans_description.split(" ");
             // If the description has less than 3 words, add it to annotations
+            // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
             if (words.length < 3 &&
                 annotations.find_custom(
                         trans_description,
-                        (GLib.CompareFunc<string>)GLib.strcmp) == null) {
+                        GLib.strcmp) == null) {
                 annotations.append(trans_description);
             }
             unowned GLib.SList<string> en_annotations
                 = en_data.get_annotations();
             foreach (string annotation in en_annotations) {
+                // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
                 if (annotations.find_custom(
                             annotation,
-                            (GLib.CompareFunc<string>)GLib.strcmp) == null) {
+                            GLib.strcmp) == null) {
                     annotations.append(annotation.dup());
                 }
             }
             en_data.set_annotations(annotations.copy_deep(GLib.strdup));
         }
     }
+
 
     private void update_category_to_emojis_dict(IBus.EmojiData data,
                                                 string         lang) {
@@ -525,28 +492,11 @@ class IBusEmojier : Gtk.Window {
         }
     }
 
+
     private void set_fixed_size() {
-        if (!m_candidate_panel_is_visible &&
-            m_current_category_type == CategoryType.LANG) {
-            Gtk.PolicyType vpolicy;
-            m_scrolled_window.get_policy(null, out vpolicy);
-            if (vpolicy == Gtk.PolicyType.AUTOMATIC)
-                return;
-            int width, height;
-            get_size(out width, out height);
-            set_size_request(width, height);
-            if (m_scrolled_window != null) {
-                m_scrolled_window.set_policy(Gtk.PolicyType.NEVER,
-                                             Gtk.PolicyType.AUTOMATIC);
-            }
-        } else {
-            resize(20, 1);
-            if (m_scrolled_window != null) {
-                m_scrolled_window.set_policy(Gtk.PolicyType.NEVER,
-                                             Gtk.PolicyType.NEVER);
-            }
-        }
+        resize(20, 1);
     }
+
 
     private void remove_all_children() {
         foreach (Gtk.Widget w in m_vbox.get_children()) {
@@ -558,51 +508,16 @@ class IBusEmojier : Gtk.Window {
         }
     }
 
-    private void activated_language(EBoxRow row) {
-        m_category_active_index = 0;
-        if (m_current_lang_id != row.id) {
-            m_current_lang_id = row.id;
-            m_current_language = row.text;
-            reload_emoji_dict();
-        }
-        m_current_category_type = CategoryType.EMOJI;
-        show_category_list();
-    }
 
     private void show_category_list() {
         remove_all_children();
         m_scrolled_window = new EScrolledWindow();
         set_fixed_size();
-        EPaddedLabel label;
-        if (m_current_category_type == CategoryType.EMOJI) {
-            label = new EPaddedLabel(m_current_language, Gtk.Align.CENTER);
-        } else if (m_current_category_type == CategoryType.LANG) {
-            label = new EPaddedLabel(m_current_language,
-                                     Gtk.Align.CENTER,
-                                     TravelDirection.BACKWARD);
-        } else {
-            label = new EPaddedLabel("", Gtk.Align.CENTER);
-        }
-        Gtk.Button button = new Gtk.Button();
-        button.add(label);
-        m_vbox.add(button);
-        button.show_all();
-        if (m_current_category_type == CategoryType.EMOJI) {
-            button.button_press_event.connect((e) => {
-                m_category_active_index = 0;
-                m_current_category_type = CategoryType.LANG;
-                show_category_list();
-                return true;
-            });
-        } else if (m_current_category_type == CategoryType.LANG) {
-            button.button_press_event.connect((e) => {
-                m_category_active_index = 0;
-                m_current_category_type = CategoryType.EMOJI;
-                show_category_list();
-                return true;
-            });
-        }
 
+        string language = "%s (%s)".printf(
+            _("Emoji Dialog"),
+            IBus.get_language_name(m_current_lang_id));
+        m_title.set_label(language);
         m_vbox.add(m_scrolled_window);
         Gtk.Viewport viewport = new Gtk.Viewport(null, null);
         m_scrolled_window.add(viewport);
@@ -611,59 +526,38 @@ class IBusEmojier : Gtk.Window {
         viewport.add(m_list_box);
         Gtk.Adjustment adjustment = m_scrolled_window.get_vadjustment();
         m_list_box.set_adjustment(adjustment);
-        if (m_current_category_type == CategoryType.EMOJI) {
-            m_list_box.row_activated.connect((box, gtkrow) => {
-                m_category_active_index = 0;
-                EBoxRow row = gtkrow as EBoxRow;
-                show_emoji_for_category(row);
-            });
+        m_list_box.row_activated.connect((box, gtkrow) => {
+            m_category_active_index = 0;
+            EBoxRow row = gtkrow as EBoxRow;
+            show_emoji_for_category(row);
+        });
 
-            uint n = 1;
-            if (m_favorites.length > 0) {
-                EBoxRow row = new EBoxRow("@favorites");
-                EPaddedLabel widget =
-                        new EPaddedLabel(_("Favorites"), Gtk.Align.CENTER);
-                row.add(widget);
-                m_list_box.add(row);
-                if (n++ == m_category_active_index)
-                    m_list_box.select_row(row);
-            }
-            GLib.List<unowned string> categories =
-                    m_category_to_emojis_dict.get_keys();
-            categories.sort((a, b) => {
-                return GLib.strcmp(_(a), _(b));
-            });
-            foreach (unowned string category in categories) {
-                EBoxRow row = new EBoxRow(category);
-                string locale_category = _(category);
-                EPaddedLabel widget =
-                        new EPaddedLabel(utf8_title(locale_category),
-                                         Gtk.Align.CENTER);
-                row.add(widget);
-                m_list_box.add(row);
-                if (n++ == m_category_active_index)
-                    m_list_box.select_row(row);
-            }
-        } else if (m_current_category_type == CategoryType.LANG) {
-            m_list_box.row_activated.connect((box, gtkrow) => {
-                activated_language(gtkrow as EBoxRow);
-            });
-            uint n = 1;
-            string prev_language = null;
-            foreach (unowned string id in m_lang_list) {
-                string language = IBus.get_language_name(id);
-                if (prev_language == language)
-                    language = "%s (%s)".printf(language, id);
-                else
-                    prev_language = language;
-                EBoxRow row = new EBoxRow(language, id);
-                EPaddedLabel widget =
-                        new EPaddedLabel(language, Gtk.Align.CENTER);
-                row.add(widget);
-                m_list_box.add(row);
-                if (n++ == m_category_active_index)
-                    m_list_box.select_row(row);
-            }
+        uint n = 1;
+        if (m_favorites.length > 0) {
+            EBoxRow row = new EBoxRow("@favorites");
+            EPaddedLabel widget =
+                    new EPaddedLabel(_("Favorites"), Gtk.Align.CENTER);
+            row.add(widget);
+            m_list_box.add(row);
+            if (n++ == m_category_active_index)
+                m_list_box.select_row(row);
+        }
+        GLib.List<unowned string> categories =
+                m_category_to_emojis_dict.get_keys();
+        // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
+        categories.sort((a, b) => {
+            return GLib.strcmp(_(a), _(b));
+        });
+        foreach (unowned string category in categories) {
+            EBoxRow row = new EBoxRow(category);
+            string locale_category = _(category);
+            EPaddedLabel widget =
+                    new EPaddedLabel(utf8_title(locale_category),
+                                     Gtk.Align.CENTER);
+            row.add(widget);
+            m_list_box.add(row);
+            if (n++ == m_category_active_index)
+                m_list_box.select_row(row);
         }
 
         m_scrolled_window.show_all();
@@ -672,6 +566,7 @@ class IBusEmojier : Gtk.Window {
         m_list_box.invalidate_filter();
         m_list_box.set_selection_mode(Gtk.SelectionMode.SINGLE);
     }
+
 
     private void show_emoji_for_category(EBoxRow row) {
         if (row.text == "@favorites") {
@@ -693,6 +588,7 @@ class IBusEmojier : Gtk.Window {
         }
         show_candidate_panel();
     }
+
 
     private void show_arrow_buttons() {
         Gtk.Button next_button = new Gtk.Button();
@@ -729,6 +625,7 @@ class IBusEmojier : Gtk.Window {
         buttons_hbox.show_all();
     }
 
+
     private bool check_unicode_point(string? annotation=null) {
         bool check_xdigit_only = true;
         if (annotation == null) {
@@ -757,6 +654,7 @@ class IBusEmojier : Gtk.Window {
         m_lookup_table.append_candidate(text);
         return true;
     }
+
 
     public void update_candidate_window() {
         string annotation = m_entry.get_text();
@@ -787,6 +685,7 @@ class IBusEmojier : Gtk.Window {
         }
         show_candidate_panel();
     }
+
 
     private void show_candidate_panel() {
         remove_all_children();
@@ -847,6 +746,8 @@ class IBusEmojier : Gtk.Window {
                 // m_enter_notify_enable is added because
                 // enter_notify_event conflicts with keyboard operations.
                 if (!m_enter_notify_enable)
+                    return true;
+                if (m_lookup_table.get_cursor_pos() == index)
                     return true;
                 m_lookup_table.set_cursor_pos(index);
                 if (m_entry_notify_show_id > 0) {
@@ -927,12 +828,14 @@ class IBusEmojier : Gtk.Window {
         }
     }
 
+
     private void hide_candidate_panel() {
         m_enter_notify_enable = true;
         m_candidate_panel_is_visible = false;
         if (m_loop.is_running())
             show_category_list();
     }
+
 
     private bool if_in_range_of_lookup(uint keyval) {
         if (!m_candidate_panel_is_visible)
@@ -957,6 +860,7 @@ class IBusEmojier : Gtk.Window {
         return true;
     }
 
+
     private void set_number_on_lookup(uint keyval) {
         if (keyval == Gdk.Key.@0)
             keyval = Gdk.Key.@9 + 1;
@@ -968,6 +872,7 @@ class IBusEmojier : Gtk.Window {
         IBus.Text text = m_lookup_table.get_candidate(real_index);
         m_result = text.text;
     }
+
 
     private void enter_notify_disable_with_timer() {
         // Enable keyboard operation and disable mouse operation.
@@ -982,6 +887,7 @@ class IBusEmojier : Gtk.Window {
         });
     }
 
+
     private void candidate_panel_cursor_down() {
         enter_notify_disable_with_timer();
         uint ncandidates = m_lookup_table.get_number_of_candidates();
@@ -995,6 +901,7 @@ class IBusEmojier : Gtk.Window {
         }
         show_candidate_panel();
     }
+
 
     private void candidate_panel_cursor_up() {
         enter_notify_disable_with_timer();
@@ -1013,6 +920,7 @@ class IBusEmojier : Gtk.Window {
         show_candidate_panel();
     }
 
+
     private void category_list_cursor_move(uint keyval) {
         GLib.List<weak Gtk.Widget> list = m_list_box.get_children();
         if (keyval == Gdk.Key.Down) {
@@ -1026,6 +934,7 @@ class IBusEmojier : Gtk.Window {
         m_scrolled_window.set_vadjustment(adjustment);
         show_category_list();
     }
+
 
     private bool key_press_cursor_horizontal(uint keyval,
                                              uint modifiers) {
@@ -1061,6 +970,7 @@ class IBusEmojier : Gtk.Window {
         return true;
     }
 
+
     private bool key_press_cursor_vertical(uint keyval) {
         assert (keyval == Gdk.Key.Down || keyval == Gdk.Key.Up);
 
@@ -1074,6 +984,7 @@ class IBusEmojier : Gtk.Window {
         }
         return true;
     }
+
 
     private bool key_press_cursor_home_end(uint keyval,
                                            uint modifiers) {
@@ -1107,13 +1018,10 @@ class IBusEmojier : Gtk.Window {
         return false;
     }
 
+
     private bool key_press_cursor_escape() {
         if (m_candidate_panel_is_visible) {
             hide_candidate_panel();
-            return true;
-        } else if (m_current_category_type == CategoryType.LANG) {
-            m_current_category_type = CategoryType.EMOJI;
-            show_candidate_panel();
             return true;
         } else if (m_entry.get_text().length == 0) {
             m_loop.quit();
@@ -1123,6 +1031,7 @@ class IBusEmojier : Gtk.Window {
         m_entry.delete_text(0, -1);
         return true;
     }
+
 
     private void entry_enter_keyval(uint keyval) {
         unichar ch = IBus.keyval_to_unicode(keyval);
@@ -1144,6 +1053,7 @@ class IBusEmojier : Gtk.Window {
         m_entry.insert_text(str, -1, ref pos);
         m_entry.set_position(pos);
     }
+
 
     public string run(Gdk.Event event,
                       string    input_context_path) {
@@ -1178,7 +1088,6 @@ class IBusEmojier : Gtk.Window {
             keyboard = device.get_associated_device();
         }
 
-        m_current_category_type = CategoryType.EMOJI;
         show_category_list();
         m_entry.set_activates_default(true);
         show_all();
@@ -1229,11 +1138,13 @@ class IBusEmojier : Gtk.Window {
         return m_result;
     }
 
+
     /* override virtual functions */
     public override void show() {
         base.show();
         set_focus_visible(true);
     }
+
 
     public override bool key_press_event(Gdk.EventKey event) {
         uint keyval = event.keyval;
@@ -1263,10 +1174,7 @@ class IBusEmojier : Gtk.Window {
             } else if (m_category_active_index > 0) {
                 Gtk.ListBoxRow gtkrow = m_list_box.get_selected_row();
                 EBoxRow row = gtkrow as EBoxRow;
-                if (m_current_category_type == CategoryType.EMOJI)
-                    show_emoji_for_category(row);
-                else if (m_current_category_type == CategoryType.LANG)
-                    activated_language(row);
+                show_emoji_for_category(row);
             }
             return true;
         case Gdk.Key.BackSpace:
@@ -1366,26 +1274,32 @@ class IBusEmojier : Gtk.Window {
         return true;
     }
 
+
     public bool is_running() {
         return m_is_running;
     }
+
 
     public string get_input_context_path() {
         return m_input_context_path;
     }
 
+
     public string get_selected_string() {
         return m_result;
     }
+
 
     public void reset() {
         m_input_context_path = "";
         m_result = null;
     }
 
+
     public void set_emoji_font(string emoji_font) {
         m_emoji_font = emoji_font;
     }
+
 
     public void set_favorites(string[]? unowned_favorites) {
         m_favorites = {};
@@ -1394,6 +1308,7 @@ class IBusEmojier : Gtk.Window {
         }
     }
 
+
     public bool has_loaded_emoji_dict() {
         if (m_emoji_to_data_dict == null)
             return false;
@@ -1401,5 +1316,21 @@ class IBusEmojier : Gtk.Window {
         if (keys.length() == 0)
             return false;
         return true;
+    }
+
+
+    public void set_annotation_lang(string lang) {
+        if (m_current_lang_id == lang)
+            return;
+        if (m_reload_emoji_dict_id > 0) {
+            GLib.Source.remove(m_reload_emoji_dict_id);
+            m_reload_emoji_dict_id = 0;
+        }
+        m_current_lang_id = lang;
+        m_reload_emoji_dict_id = GLib.Idle.add(() => {
+            reload_emoji_dict();
+            m_reload_emoji_dict_id = 0;
+            return false;
+        });
     }
 }

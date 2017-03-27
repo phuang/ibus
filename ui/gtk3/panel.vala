@@ -54,6 +54,7 @@ class Panel : IBus.PanelService {
     private GLib.Settings m_settings_general = null;
     private GLib.Settings m_settings_hotkey = null;
     private GLib.Settings m_settings_panel = null;
+    private GLib.Settings m_settings_emoji = null;
     private IconType m_icon_type = IconType.STATUS_ICON;
     private Indicator m_indicator;
 #if INDICATOR
@@ -161,6 +162,7 @@ class Panel : IBus.PanelService {
         m_settings_hotkey =
                 new GLib.Settings("org.freedesktop.ibus.general.hotkey");
         m_settings_panel = new GLib.Settings("org.freedesktop.ibus.panel");
+        m_settings_emoji = new GLib.Settings("org.freedesktop.ibus.panel.emoji");
 
         m_settings_general.changed["preload-engines"].connect((key) => {
                 update_engines(m_settings_general.get_strv(key),
@@ -193,16 +195,7 @@ class Panel : IBus.PanelService {
                 bind_switch_shortcut();
         });
 
-        m_settings_hotkey.changed["emoji"].connect((key) => {
-                unbind_switch_shortcut(KeyEventFuncType.EMOJI_TYPING);
-                bind_emoji_shortcut();
-        });
-
         m_settings_panel.changed["custom-font"].connect((key) => {
-                set_custom_font();
-        });
-
-        m_settings_panel.changed["emoji-font"].connect((key) => {
                 set_custom_font();
         });
 
@@ -239,8 +232,21 @@ class Panel : IBus.PanelService {
                 set_property_icon_delay_time();
         });
 
-        m_settings_panel.changed["emoji-favorites"].connect((key) => {
+        m_settings_emoji.changed["hotkey"].connect((key) => {
+                unbind_switch_shortcut(KeyEventFuncType.EMOJI_TYPING);
+                bind_emoji_shortcut();
+        });
+
+        m_settings_emoji.changed["font"].connect((key) => {
+                set_custom_font();
+        });
+
+        m_settings_emoji.changed["favorites"].connect((key) => {
                 set_emoji_favorites();
+        });
+
+        m_settings_emoji.changed["lang"].connect((key) => {
+                set_emoji_lang();
         });
     }
 
@@ -398,7 +404,7 @@ class Panel : IBus.PanelService {
 
     private void bind_emoji_shortcut() {
 #if EMOJI_DICT
-        string[] accelerators = m_settings_hotkey.get_strv("emoji");
+        string[] accelerators = m_settings_emoji.get_strv("hotkey");
 
         var keybinding_manager = KeybindingManager.get_instance();
 
@@ -584,9 +590,9 @@ class Panel : IBus.PanelService {
             return;
         }
 
-        string emoji_font = m_settings_panel.get_string("emoji-font");
+        string emoji_font = m_settings_emoji.get_string("font");
         if (emoji_font == null) {
-            warning("No config panel:emoji-font.");
+            warning("No config emoji:font.");
             return;
         }
         m_emojier.set_emoji_font(emoji_font);
@@ -760,7 +766,11 @@ class Panel : IBus.PanelService {
     }
 
     private void set_emoji_favorites() {
-        m_emojier.set_favorites(m_settings_panel.get_strv("emoji-favorites"));
+        m_emojier.set_favorites(m_settings_emoji.get_strv("favorites"));
+    }
+
+    private void set_emoji_lang() {
+        m_emojier.set_annotation_lang(m_settings_emoji.get_string("lang"));
     }
 
     private int compare_versions(string version1, string version2) {
@@ -877,6 +887,7 @@ class Panel : IBus.PanelService {
         set_xkb_icon_rgba();
         set_property_icon_delay_time();
         set_emoji_favorites();
+        set_emoji_lang();
     }
 
     private void engine_contexts_insert(IBus.EngineDesc engine) {

@@ -31,6 +31,8 @@ bool name_only = false;
 /* system() exists as a public API. */
 bool is_system = false;
 string cache_file = null;
+string emoji_font = null;
+string annotation_lang = null;
 
 class EngineList {
     public IBus.EngineDesc[] data = {};
@@ -342,12 +344,40 @@ private void run_dialog(IBus.Emojier emojier) {
 }
 
 int emoji_dialog(string[] argv) {
+    const OptionEntry[] options = {
+        { "font", 0, 0, OptionArg.STRING, out emoji_font,
+          N_("FONT for emoji chracters on emoji dialog."), "FONT" },
+        { "lang", 0, 0, OptionArg.STRING, out annotation_lang,
+          N_("LANG for annotations on emoji dialog. E.g. \"en\""), "LANG" },
+        { null }
+    };
+
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
+
+    try {
+        option.parse(ref argv);
+    } catch (OptionError e) {
+        stderr.printf("%s\n", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+
     Gtk.init(ref argv);
-    GLib.Settings settings_panel =
-            new GLib.Settings("org.freedesktop.ibus.panel");
-    string emoji_font = settings_panel.get_string("emoji-font");
+    if (emoji_font == null) {
+        GLib.Settings settings_emoji =
+                new GLib.Settings("org.freedesktop.ibus.panel.emoji");
+        emoji_font = settings_emoji.get_string("font");
+    }
+    if (annotation_lang == null) {
+        GLib.Settings settings_emoji =
+                new GLib.Settings("org.freedesktop.ibus.panel.emoji");
+        annotation_lang = settings_emoji.get_string("lang");
+    }
     IBus.Emojier emojier = new IBus.Emojier();
-    emojier.set_emoji_font(emoji_font);
+    if (emoji_font != null && emoji_font != "")
+        emojier.set_emoji_font(emoji_font);
+    if (annotation_lang != null && annotation_lang != "")
+        emojier.set_annotation_lang(annotation_lang);
     if (emojier.has_loaded_emoji_dict()) {
         run_dialog(emojier);
     } else {
