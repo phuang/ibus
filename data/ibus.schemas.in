@@ -386,7 +386,7 @@
         <short>Default language for emoji dictionary</short>
 	    <long>Choose a default language of emoji dictionaries on
 	          the emoji dialog. The value $lang is applied to
-                  /usr/share/unicode/cldr/common/annotations/$lang.xml
+                  /usr/share/ibus/dicts/emoji-$lang.dict
             </long>
       </locale>
     </schema>
