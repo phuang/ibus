@@ -205,7 +205,7 @@ IBusEmojiDialog_1_0_gir_SCANNERFLAGS = \
     $(NULL)
 IBusEmojiDialog-1.0.gir: $(libibus_emoji_dialog) Makefile
 IBusEmojiDialog_1_0_gir_INCLUDES = Gtk-3.0 GLib-2.0 GObject-2.0 Gio-2.0
-IBusEmojiDialog_1_0_gir_LIBS = $(libibus) $(libibus_emoji_dialog)
+IBusEmojiDialog_1_0_gir_LIBS = $(libibus_emoji_dialog) $(libibus)
 IBusEmojiDialog_1_0_gir_FILES =                      \
     $(addprefix $(srcdir)/,$(introspection_sources)) \
     $(NULL)
