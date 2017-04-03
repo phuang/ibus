@@ -156,6 +156,20 @@ const gchar *   ibus_emoji_data_get_category    (IBusEmojiData *emoji);
 
 
 /**
+ * ibus_emoji_data_get_emoji_alternates:
+ * @emoji : An #IBusEmojiData
+ *
+ * Gets the emoji alternate characters in #IBusEmojiData. It should not be
+ * freed. The alternates are defined in "unicode_alt" in EmojiOne json.
+ *
+ * Returns: emoji alternates property in #IBusEmojiData
+ *
+ */
+const gchar *   ibus_emoji_data_get_emoji_alternates
+                                                (IBusEmojiData *emoji);
+
+
+/**
  * ibus_emoji_dict_save:
  * @path: A path of the saved dictionary file.
  * @dict: (element-type utf8 gpointer) (transfer none): An Emoji dictionary

@@ -40,6 +40,7 @@
 typedef struct _EmojiData EmojiData;
 struct _EmojiData {
     gchar      *emoji;
+    gchar      *emoji_alternates;
     GSList     *annotations;
     gboolean    is_annotation;
     gchar      *description;
@@ -54,6 +55,7 @@ reset_emoji_element (EmojiData *data)
     g_assert (data != NULL);
 
     g_clear_pointer (&data->emoji, g_free);
+    g_clear_pointer (&data->emoji_alternates, g_free);
     g_slist_free_full (data->annotations, g_free);
     data->annotations = NULL;
     g_clear_pointer (&data->description, g_free);
@@ -111,6 +113,10 @@ update_emoji_list (EmojiData *data)
                                              : g_strdup (""),
                                      "category",
                                      data->category ? data->category
+                                             : g_strdup (""),
+                                     "emoji-alternates",
+                                     data->emoji_alternates
+                                             ? data->emoji_alternates
                                              : g_strdup (""),
                                      NULL);
         data->list = g_slist_append (data->list, emoji);
@@ -271,7 +277,8 @@ failed_to_parse_unicode_annotations:
 
 static gboolean
 parse_emojione_unicode (JsonNode  *node,
-                        EmojiData *data)
+                        EmojiData *data,
+                        gboolean   is_alternates)
 {
     const gchar *str, *unicode;
     gchar *endptr = NULL;
@@ -305,7 +312,10 @@ parse_emojione_unicode (JsonNode  *node,
         endptr = NULL;
     }
 
-    data->emoji = g_string_free (emoji, FALSE);
+    if (is_alternates)
+        data->emoji_alternates = g_string_free (emoji, FALSE);
+    else
+        data->emoji = g_string_free (emoji, FALSE);
 
     return TRUE;
 }
@@ -480,7 +490,11 @@ parse_emojione_emoji_data (JsonNode    *node,
                            EmojiData   *data)
 {
     if (g_strcmp0 (member, "unicode") == 0)
-        return parse_emojione_unicode (node, data);
+        return parse_emojione_unicode (node, data, FALSE);
+    else if (g_strcmp0 (member, "unicode_alt") == 0)
+        return parse_emojione_unicode (node, data, TRUE);
+    else if (g_strcmp0 (member, "unicode_alternates") == 0)
+        return parse_emojione_unicode (node, data, TRUE);
     else if (g_strcmp0 (member, "shortname") == 0)
         return parse_emojione_shortname (node, data);
     else if (g_strcmp0 (member, "name") == 0)

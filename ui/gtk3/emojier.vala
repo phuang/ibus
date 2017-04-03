@@ -381,7 +381,8 @@ class IBusEmojier : Gtk.Window {
 
 
     private void update_annotation_to_emojis_dict(IBus.EmojiData data) {
-        string emoji = data.get_emoji();
+        string emoji = (data.get_emoji_alternates() != "") ?
+                data.get_emoji_alternates() : data.get_emoji();
         unowned GLib.SList<string> annotations = data.get_annotations();
         foreach (string annotation in annotations) {
             bool has_emoji = false;
@@ -444,7 +445,8 @@ class IBusEmojier : Gtk.Window {
 
     private void update_emoji_to_data_dict(IBus.EmojiData data,
                                            string         lang) {
-        string emoji = data.get_emoji();
+        string emoji = (data.get_emoji_alternates() != "") ?
+                data.get_emoji_alternates() : data.get_emoji();
         if (lang == "en") {
             string description = utf8_down(data.get_description());
             unowned GLib.SList<string> annotations = data.get_annotations();
@@ -496,7 +498,8 @@ class IBusEmojier : Gtk.Window {
 
     private void update_category_to_emojis_dict(IBus.EmojiData data,
                                                 string         lang) {
-        string emoji = data.get_emoji();
+        string emoji = (data.get_emoji_alternates() != "") ?
+                data.get_emoji_alternates() : data.get_emoji();
         string category = data.get_category();
         if (lang == "en" && category != "") {
             bool has_emoji = false;

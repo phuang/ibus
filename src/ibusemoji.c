@@ -29,14 +29,15 @@
 #include "ibusinternal.h"
 
 #define IBUS_EMOJI_DATA_MAGIC "IBusEmojiData"
-#define IBUS_EMOJI_DATA_VERSION (2)
+#define IBUS_EMOJI_DATA_VERSION (3)
 
 enum {
     PROP_0 = 0,
     PROP_EMOJI,
     PROP_ANNOTATIONS,
     PROP_DESCRIPTION,
-    PROP_CATEGORY
+    PROP_CATEGORY,
+    PROP_EMOJI_ALTERNATES
 };
 
 struct _IBusEmojiDataPrivate {
@@ -44,6 +45,7 @@ struct _IBusEmojiDataPrivate {
     GSList     *annotations;
     gchar      *description;
     gchar      *category;
+    gchar      *emoji_alternates;
 };
 
 #define IBUS_EMOJI_DATA_GET_PRIVATE(o)  \
@@ -142,6 +144,19 @@ ibus_emoji_data_class_init (IBusEmojiDataClass *class)
                         "The emoji category",
                         "",
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEmojiData:emoji_alternates:
+     *
+     * The emoji alternate characters
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_EMOJI_ALTERNATES,
+                    g_param_spec_string ("emoji-alternates",
+                        "emoji alternate charasters",
+                        "The emoji alternate characters UTF-8",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -180,18 +195,23 @@ ibus_emoji_data_set_property (IBusEmojiData *emoji,
         emoji->priv->emoji = g_value_dup_string (value);
         break;
     case PROP_ANNOTATIONS:
-        g_assert (emoji->priv->annotations == NULL);
+        if (emoji->priv->annotations)
+            g_slist_free_full (emoji->priv->annotations, g_free);
         emoji->priv->annotations =
                 g_slist_copy_deep (g_value_get_pointer (value),
                                    (GCopyFunc) g_strdup, NULL);
         break;
     case PROP_DESCRIPTION:
-        g_assert (emoji->priv->description == NULL);
+        g_free (emoji->priv->description);
         emoji->priv->description = g_value_dup_string (value);
         break;
     case PROP_CATEGORY:
         g_assert (emoji->priv->category == NULL);
         emoji->priv->category = g_value_dup_string (value);
+        break;
+    case PROP_EMOJI_ALTERNATES:
+        g_assert (emoji->priv->emoji_alternates == NULL);
+        emoji->priv->emoji_alternates = g_value_dup_string (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (emoji, prop_id, pspec);
@@ -220,6 +240,9 @@ ibus_emoji_data_get_property (IBusEmojiData *emoji,
     case PROP_CATEGORY:
         g_value_set_string (value, ibus_emoji_data_get_category (emoji));
         break;
+    case PROP_EMOJI_ALTERNATES:
+        g_value_set_string (value, ibus_emoji_data_get_emoji_alternates(emoji));
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (emoji, prop_id, pspec);
     }
@@ -247,6 +270,9 @@ ibus_emoji_data_serialize (IBusEmojiData   *emoji,
     }
     g_variant_builder_add (builder, "s", NOTNULL (emoji->priv->description));
     g_variant_builder_add (builder, "s", NOTNULL (emoji->priv->category));
+    g_variant_builder_add (builder, "s",
+                           NOTNULL (emoji->priv->emoji_alternates));
+#undef NOTNULL
     return TRUE;
 }
 
@@ -277,6 +303,10 @@ ibus_emoji_data_deserialize (IBusEmojiData *emoji,
                                      &emoji->priv->description);
     ibus_g_variant_get_child_string (variant, retval++,
                                      &emoji->priv->category);
+    if (g_variant_n_children (variant) < retval + 1)
+        return retval;
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &emoji->priv->emoji_alternates);
     return retval;
 }
 
@@ -295,6 +325,7 @@ ibus_emoji_data_copy (IBusEmojiData       *dest,
                                                       NULL);
     dest->priv->description      = g_strdup (src->priv->description);
     dest->priv->category         = g_strdup (src->priv->category);
+    dest->priv->emoji_alternates = g_strdup (src->priv->emoji_alternates);
     return TRUE;
 }
 
@@ -314,6 +345,7 @@ ibus_emoji_data_new (const gchar *first_property_name, ...)
     g_assert (emoji->priv->emoji != NULL);
     g_assert (emoji->priv->description != NULL);
     g_assert (emoji->priv->category != NULL);
+    g_assert (emoji->priv->emoji_alternates != NULL);
     return emoji;
 }
 
@@ -368,6 +400,14 @@ ibus_emoji_data_get_category (IBusEmojiData *emoji)
     g_return_val_if_fail (IBUS_IS_EMOJI_DATA (emoji), NULL);
 
     return emoji->priv->category;
+}
+
+const gchar *
+ibus_emoji_data_get_emoji_alternates (IBusEmojiData *emoji)
+{
+    g_return_val_if_fail (IBUS_IS_EMOJI_DATA (emoji), NULL);
+
+    return emoji->priv->emoji_alternates;
 }
 
 
