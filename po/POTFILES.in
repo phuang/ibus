@@ -65,3 +65,4 @@ ui/gtk3/property.vala
 ui/gtk3/propertypanel.vala
 ui/gtk3/separator.vala
 ui/gtk3/switcher.vala
+ui/gtk3/emojierapp.vala

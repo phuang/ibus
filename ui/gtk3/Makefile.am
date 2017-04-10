@@ -108,6 +108,10 @@ endif
 
 libexec_PROGRAMS = ibus-ui-gtk3
 
+if ENABLE_EMOJI_DICT
+libexec_PROGRAMS += ibus-ui-emojier
+endif
+
 ibus_ui_gtk3_SOURCES = \
 	application.vala \
 	candidatearea.vala \
@@ -131,6 +135,26 @@ ibus_ui_gtk3_SOURCES = \
 ibus_ui_gtk3_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
+
+if ENABLE_EMOJI_DICT
+AM_VALAFLAGS += \
+        --define=EMOJI_DICT \
+        --vapidir=$(top_builddir)/ui/gtk3 \
+        --vapidir=$(top_srcdir)/ui/gtk3 \
+        --pkg=ibus-emoji-dialog-1.0 \
+        --pkg=gtk+-3.0 \
+        $(NULL)
+
+
+ibus_ui_emojier_SOURCES = \
+	emojierapp.vala \
+	$(NULL)
+
+ibus_ui_emojier_LDADD = \
+	$(AM_LDADD) \
+	$(libibus_emoji_dialog) \
+	$(NULL)
+endif
 
 gen-%.xml.c: %.xml
 	echo "Building $@ from $<"
