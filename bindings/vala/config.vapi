@@ -7,6 +7,7 @@ namespace Config
     public const string BINDIR;
     public const string DATADIR;
     public const string PKGDATADIR;
+    public const string LIBEXECDIR;
     public const string GETTEXT_PACKAGE;
     public const string GLIB_LOCALE_DIR;
 }

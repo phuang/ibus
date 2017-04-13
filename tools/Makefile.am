@@ -39,6 +39,7 @@ AM_CFLAGS = \
 	@GIO2_CFLAGS@ \
 	@GTHREAD2_CFLAGS@ \
 	-DG_LOG_DOMAIN=\"IBUS\" \
+	-DLIBEXECDIR=\"$(libexecdir)\" \
 	-DIBUS_DISABLE_DEPRECATED \
 	-Wno-unused-variable \
 	-Wno-unused-but-set-variable \

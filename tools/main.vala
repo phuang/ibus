@@ -324,73 +324,27 @@ int reset_config(string[] argv) {
 }
 
 #if EMOJI_DICT
-private void run_dialog(IBus.Emojier emojier) {
-    Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
-    var display = Gdk.Display.get_default();
-    var device_manager = display.get_device_manager();
-    var device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
-    event.set_device(device);
-    string emoji = emojier.run(event, "");
-    if (emoji == null) {
-        emojier.reset();
-        print("%s\n", _("Canceled to choose an emoji."));
-        return;
-    }
-    Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
-    clipboard.set_text(emoji, -1);
-    clipboard.store();
-    emojier.reset();
-    print("%s\n", _("Copied an emoji to your clipboard."));
-}
-
 int emoji_dialog(string[] argv) {
-    const OptionEntry[] options = {
-        { "font", 0, 0, OptionArg.STRING, out emoji_font,
-          N_("FONT for emoji chracters on emoji dialog."), "FONT" },
-        { "lang", 0, 0, OptionArg.STRING, out annotation_lang,
-          N_("LANG for annotations on emoji dialog. E.g. \"en\""), "LANG" },
-        { null }
-    };
+    string cmd = Config.LIBEXECDIR + "/ibus-ui-emojier";
 
-    var option = new OptionContext();
-    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
+    var file = File.new_for_path(cmd);
+    if (!file.query_exists())
+        cmd = "../ui/gtk3/ibus-ui-emojier";
+
+    argv[0] = cmd;
+
+    string[] env = Environ.get();
 
     try {
-        option.parse(ref argv);
-    } catch (OptionError e) {
+        // Non-blocking
+        Process.spawn_async(null, argv, env,
+                            SpawnFlags.SEARCH_PATH,
+                            null, null);
+    } catch (SpawnError e) {
         stderr.printf("%s\n", e.message);
         return Posix.EXIT_FAILURE;
     }
 
-    Gtk.init(ref argv);
-    if (emoji_font == null) {
-        GLib.Settings settings_emoji =
-                new GLib.Settings("org.freedesktop.ibus.panel.emoji");
-        emoji_font = settings_emoji.get_string("font");
-    }
-    if (annotation_lang == null) {
-        GLib.Settings settings_emoji =
-                new GLib.Settings("org.freedesktop.ibus.panel.emoji");
-        annotation_lang = settings_emoji.get_string("lang");
-    }
-    IBus.Emojier emojier = new IBus.Emojier();
-    if (emoji_font != null && emoji_font != "")
-        emojier.set_emoji_font(emoji_font);
-    if (annotation_lang != null && annotation_lang != "")
-        emojier.set_annotation_lang(annotation_lang);
-    if (emojier.has_loaded_emoji_dict()) {
-        run_dialog(emojier);
-    } else {
-        GLib.MainLoop loop = new GLib.MainLoop();
-        emojier.loaded_emoji_dict.connect(() => {
-            // The signal is called when the language is changed.
-            if (emojier.is_running())
-                return;
-            run_dialog(emojier);
-            loop.quit();
-        });
-        loop.run();
-    }
     return Posix.EXIT_SUCCESS;
 }
 #endif
