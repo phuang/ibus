@@ -24,13 +24,14 @@ string emoji_font = null;
 string annotation_lang = null;
 
 public class EmojiApplication : Application {
-    private IBus.Emojier emojier = new IBus.Emojier();
+    private IBusEmojier m_emojier = new IBusEmojier();
 
     private EmojiApplication() {
         Object(application_id: "org.freedesktop.ibus.panel.emojier",
-                flags: ApplicationFlags.HANDLES_COMMAND_LINE);
+               flags: ApplicationFlags.HANDLES_COMMAND_LINE);
         set_inactivity_timeout(100000);
     }
+
 
     private void show_dialog(ApplicationCommandLine command_line) {
         Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
@@ -38,37 +39,39 @@ public class EmojiApplication : Application {
         var device_manager = display.get_device_manager();
         var device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
         event.set_device(device);
-        string emoji = emojier.run(event, "");
+        string emoji = m_emojier.run(event, "");
         if (emoji == null) {
-            emojier.reset();
+            m_emojier.reset();
             command_line.print("%s\n", _("Canceled to choose an emoji."));
             return;
         }
         Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
         clipboard.set_text(emoji, -1);
         clipboard.store();
-        emojier.reset();
+        m_emojier.reset();
         command_line.print("%s\n", _("Copied an emoji to your clipboard."));
     }
+
 
     public void activate_dialog(ApplicationCommandLine command_line) {
         this.hold ();
 
         // show dialog
-        if (emojier.has_loaded_emoji_dict()) {
+        if (m_emojier.has_loaded_emoji_dict()) {
             show_dialog(command_line);
         } else {
-            emojier.loaded_emoji_dict.connect(() => {
-                    // The signal is called when the language is changed.
-                    if (emojier.is_running())
+            m_emojier.loaded_emoji_dict.connect(() => {
+                // The signal is called when the language is changed.
+                if (m_emojier.is_running())
                     return;
 
-                    show_dialog(command_line);
-                    });
+                show_dialog(command_line);
+            });
         }
 
         this.release ();
     }
+
 
     private int _command_line (ApplicationCommandLine command_line) {
         const OptionEntry[] options = {
@@ -114,14 +117,15 @@ public class EmojiApplication : Application {
         }
 
         if (emoji_font != null && emoji_font != "")
-            emojier.set_emoji_font(emoji_font);
+            m_emojier.set_emoji_font(emoji_font);
         if (annotation_lang != null && annotation_lang != "")
-            emojier.set_annotation_lang(annotation_lang);
+            m_emojier.set_annotation_lang(annotation_lang);
 
         activate_dialog(command_line);
 
         return Posix.EXIT_SUCCESS;
     }
+
 
     public override int command_line (ApplicationCommandLine command_line) {
         // keep the application running until we are done with this commandline
@@ -131,9 +135,10 @@ public class EmojiApplication : Application {
         return result;
     }
 
+
     public static int main (string[] args) {
         GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE,
-                Config.GLIB_LOCALE_DIR);
+                                 Config.GLIB_LOCALE_DIR);
         GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
         GLib.Intl.textdomain(Config.GETTEXT_PACKAGE);
 

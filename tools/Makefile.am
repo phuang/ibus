@@ -101,24 +101,9 @@ CLEANFILES = \
 
 if ENABLE_EMOJI_DICT
 if ENABLE_UI
-AM_CPPFLAGS += \
-	-I$(top_srcdir)/ui/gtk3 \
-	-I$(top_builddir)/ui/gtk3 \
-	$(NULL)
-AM_CFLAGS += \
-	@GTK3_CFLAGS@ \
-	$(NULL)
-AM_LDADD += \
-	@GTK3_LIBS@ \
-	$(libibus_emoji_dialog) \
-	$(NULL)
 AM_VALAFLAGS += \
-	--define=EMOJI_DICT \
-	--vapidir=$(top_builddir)/ui/gtk3 \
-	--vapidir=$(top_srcdir)/ui/gtk3 \
-	--pkg=ibus-emoji-dialog-1.0 \
-	--pkg=gtk+-3.0 \
-	$(NULL)
+    --define=EMOJI_DICT \
+    $(NULL)
 endif
 endif
 

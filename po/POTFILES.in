@@ -31,6 +31,7 @@ ibus/object.py
 ibus/panel.py
 ibus/property.py
 ibus/utility.py
+setup/emojilang.py
 setup/engineabout.py
 setup/enginecombobox.py
 setup/enginedialog.py
