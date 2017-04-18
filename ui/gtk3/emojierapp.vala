@@ -76,11 +76,17 @@ public class EmojiApplication : Application {
     private int _command_line (ApplicationCommandLine command_line) {
         const OptionEntry[] options = {
             { "font", 0, 0, OptionArg.STRING, out emoji_font,
-                N_("FONT for emoji chracters on emoji dialog."),
-                "FONT" },
+                /* TRANSLATORS: "FONT" should be capital and translatable.
+                 * It's used for an argument command --font=FONT
+                 */
+                N_("\"FONT\" for emoji chracters on emoji dialog"),
+                N_("FONT") },
             { "lang", 0, 0, OptionArg.STRING, out annotation_lang,
-                N_("LANG for annotations on emoji dialog. E.g. \"en\""),
-                "LANG" },
+                /* TRANSLATORS: "LANG" should be capital and translatable.
+                 * It's used for an argument command --lang=LANG
+                 */
+                N_("\"LANG\" for annotations on emoji dialog. E.g. \"en\""),
+                N_("LANG") },
             { null }
         };
 
