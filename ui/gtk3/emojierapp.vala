@@ -24,7 +24,10 @@ string emoji_font = null;
 string annotation_lang = null;
 
 public class EmojiApplication : Application {
-    private IBusEmojier m_emojier = new IBusEmojier();
+    private IBusEmojier? m_emojier;
+    GLib.Settings m_settings_emoji =
+            new GLib.Settings("org.freedesktop.ibus.panel.emoji");
+
 
     private EmojiApplication() {
         Object(application_id: "org.freedesktop.ibus.panel.emojier",
@@ -34,41 +37,24 @@ public class EmojiApplication : Application {
 
 
     private void show_dialog(ApplicationCommandLine command_line) {
-        Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
-        var display = Gdk.Display.get_default();
-        var device_manager = display.get_device_manager();
-        var device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
-        event.set_device(device);
-        string emoji = m_emojier.run(event, "");
+        m_emojier = new IBusEmojier();
+        string emoji = m_emojier.run("");
         if (emoji == null) {
-            m_emojier.reset();
+            m_emojier = null;
             command_line.print("%s\n", _("Canceled to choose an emoji."));
             return;
         }
         Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
         clipboard.set_text(emoji, -1);
         clipboard.store();
-        m_emojier.reset();
+        m_emojier = null;
         command_line.print("%s\n", _("Copied an emoji to your clipboard."));
     }
 
 
     public void activate_dialog(ApplicationCommandLine command_line) {
         this.hold ();
-
-        // show dialog
-        if (m_emojier.has_loaded_emoji_dict()) {
-            show_dialog(command_line);
-        } else {
-            m_emojier.loaded_emoji_dict.connect(() => {
-                // The signal is called when the language is changed.
-                if (m_emojier.is_running())
-                    return;
-
-                show_dialog(command_line);
-            });
-        }
-
+        show_dialog(command_line);
         this.release ();
     }
 
@@ -110,22 +96,18 @@ public class EmojiApplication : Application {
             return Posix.EXIT_FAILURE;
         }
 
-        if (emoji_font == null) {
-            GLib.Settings settings_emoji =
-                new GLib.Settings("org.freedesktop.ibus.panel.emoji");
-            emoji_font = settings_emoji.get_string("font");
+        if (m_emojier != null && m_emojier.is_running()) {
+            m_emojier.present_centralize();
+            return Posix.EXIT_SUCCESS;
         }
 
-        if (annotation_lang == null) {
-            GLib.Settings settings_emoji =
-                new GLib.Settings("org.freedesktop.ibus.panel.emoji");
-            annotation_lang = settings_emoji.get_string("lang");
-        }
+        if (emoji_font == null)
+            emoji_font = m_settings_emoji.get_string("font");
+        if (annotation_lang == null)
+            annotation_lang = m_settings_emoji.get_string("lang");
 
-        if (emoji_font != null && emoji_font != "")
-            m_emojier.set_emoji_font(emoji_font);
-        if (annotation_lang != null && annotation_lang != "")
-            m_emojier.set_annotation_lang(annotation_lang);
+        IBusEmojier.set_annotation_lang(annotation_lang);
+        IBusEmojier.set_emoji_font(emoji_font);
 
         activate_dialog(command_line);
 
@@ -156,5 +138,4 @@ public class EmojiApplication : Application {
         int status = app.run(args);
         return status;
     }
-
 }

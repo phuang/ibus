@@ -69,7 +69,6 @@ IBusEmojier * ibus_emojier_new                    (void);
 /**
  * ibus_emojier_run:
  * @self: An #IBusEmojier
- * @event: An #GdkEvent
  * @input_context_path: An input context path of #IBusInputContext
  *                      of the focused application.
  *
@@ -78,7 +77,6 @@ IBusEmojier * ibus_emojier_new                    (void);
  * Returns: A selected emoji character.
  */
 gchar *       ibus_emojier_run                    (IBusEmojier* self,
-                                                   GdkEvent*    event,
                                                    const gchar*
                                                            input_context_path);
 
@@ -116,49 +114,49 @@ gchar *       ibus_emojier_get_selected_string    (IBusEmojier* self);
 void          ibus_emojier_reset                  (IBusEmojier* self);
 
 /**
- * ibus_emojier_set_emoji_font:
+ * ibus_emojier_present_centralize:
  * @self: An #IBusEmojier
- * @emoji_font: font name for emoji characters
  *
- * Set emoji font on the emoji dialog
+ * Move the window to the toplevel on the screen and centralize it.
  */
-void          ibus_emojier_set_emoji_font         (IBusEmojier* self,
-                                                   const gchar* emoji_font);
-
-#if 0
-/* TODO: set customized annotations */
-/**
- * ibus_emojier_set_favorites:
- * @self: An #IBusEmojier
- * @favorites: (array length=favorites_length): A custom emoji list.
- * @favorites_length: A length of @favorites
- *
- * Set emoji font on the emoji dialog
- */
-void          ibus_emojier_set_favorites          (IBusEmojier* self,
-                                                   gchar**      favorites,
-                                                   int
-                                                             favorites_length);
-#endif
+void          ibus_emojier_present_centralize     (IBusEmojier* self);
 
 /**
  * ibus_emojier_has_loaded_emoji_dict:
- * @self: An #IBusEmojier
  *
  * Returns: %TRUE if the emoji dict is loaded, otherwise %FALSE.
  */
-gboolean      ibus_emojier_has_loaded_emoji_dict  (IBusEmojier* self);
+gboolean      ibus_emojier_has_loaded_emoji_dict  (void);
 
 /**
  * ibus_emojier_set_annotation_lang:
- * @self: An #IBusEmojier
  * @lang: A langauge id for emoji annotations.
  *
  * Set a language id for emoji annotations. #IBusEmojier will load
  * $PKGDATADIR/dicts/emoji-@lang.dict. The default is "en".
  */
-void          ibus_emojier_set_annotation_lang    (IBusEmojier* self,
-                                                   const gchar* lang);
+void          ibus_emojier_set_annotation_lang    (const gchar* lang);
 
+/**
+ * ibus_emojier_set_emoji_font:
+ * @emoji_font: font name for emoji characters
+ *
+ * Set emoji font on the emoji dialog
+ */
+void          ibus_emojier_set_emoji_font         (const gchar* emoji_font);
+
+#if 0
+/* TODO: set customized annotations */
+/**
+ * ibus_emojier_set_favorites:
+ * @favorites: (array length=favorites_length): A custom emoji list.
+ * @favorites_length: A length of @favorites
+ *
+ * Set emoji font on the emoji dialog
+ */
+void          ibus_emojier_set_favorites          (gchar**      favorites,
+                                                   int
+                                                             favorites_length);
+#endif
 G_END_DECLS
 #endif

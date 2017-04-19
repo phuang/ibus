@@ -137,47 +137,27 @@ class IBusEmojier : Gtk.Window {
             pack_start(label, true, true, 0);
         }
     }
-    private class ETitleLabelBox : Gtk.Box {
-        EPaddedLabel m_lang_label;
-        private Gtk.Button m_close_button;
-        private ulong m_close_handler;
+    private class ETitleLabelBox : Gtk.HeaderBar {
+        private Gtk.Label m_lang_label;
 
-        public ETitleLabelBox(string    text,
-                              Gtk.Align align) {
+        public ETitleLabelBox(string title) {
             GLib.Object(
                 name : "IBusEmojierTitleLabelBox",
-                orientation : Gtk.Orientation.HORIZONTAL,
-                spacing : 0
+                show_close_button: true,
+                decoration_layout: ":close",
+                title: title
             );
-            EPaddedLabel label = new EPaddedLabel(text, align);
-            pack_start(label, true, true, 0);
-            Gtk.Separator separator =
-                    new Gtk.Separator (Gtk.Orientation.VERTICAL);
-            pack_start(separator, false, true, 0);
-            m_lang_label = new EPaddedLabel("", align);
-            pack_start(m_lang_label, false, true, 0);
-            IconWidget icon = new IconWidget("window-close", Gtk.IconSize.MENU);
-            m_close_button = new Gtk.Button();
-            m_close_button.add(icon);
-            pack_end(m_close_button, false, true, 0);
-        }
-        public void set_loop(GLib.MainLoop? loop) {
-            if (m_close_handler > 0)
-                GLib.SignalHandler.disconnect(m_close_button, m_close_handler);
-            m_close_handler = m_close_button.button_press_event.connect((e) => {
-                if (loop != null && loop.is_running())
-                    loop.quit();
-                return true;
-            });
-        }
-        public void unset_loop() {
-            if (m_close_handler > 0) {
-                GLib.SignalHandler.disconnect(m_close_button, m_close_handler);
-                m_close_handler = 0;
-            }
+            var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+            set_custom_title(vbox);
+            var label = new Gtk.Label(title);
+            label.get_style_context().add_class("title");
+            vbox.pack_start(label, true, false, 0);
+            m_lang_label = new Gtk.Label(null);
+            m_lang_label.get_style_context().add_class("subtitle");
+            vbox.pack_start(m_lang_label, true, false, 0);
         }
         public void set_lang_label(string str) {
-            m_lang_label.set_label(str);
+            m_lang_label.set_text(str);
         }
     }
 
@@ -186,7 +166,22 @@ class IBusEmojier : Gtk.Window {
         BACKWARD,
     }
 
-    private const uint EMOJI_GRID_PAGE = 10;
+    private static const uint EMOJI_GRID_PAGE = 10;
+
+    // Set the actual default values in the constructor
+    // because these fields are used for class_init() and static functions,
+    // e.g. set_emoji_font(), can be called before class_init() is called.
+    private static string m_current_lang_id;
+    private static string m_emoji_font;
+    private static string[] m_favorites;
+    private static int m_emoji_max_seq_len;
+    private static GLib.HashTable<string, GLib.SList>?
+            m_annotation_to_emojis_dict;
+    private static GLib.HashTable<string, IBus.EmojiData>?
+            m_emoji_to_data_dict;
+    private static GLib.HashTable<string, GLib.SList>?
+            m_category_to_emojis_dict;
+
     private ThemedRGBA m_rgba;
     private Gtk.Box m_vbox;
     private ETitleLabelBox m_title;
@@ -198,42 +193,37 @@ class IBusEmojier : Gtk.Window {
     private string m_input_context_path = "";
     private GLib.MainLoop? m_loop;
     private string? m_result;
-    private string m_current_lang_id = "en";
     private string? m_unicode_point = null;
     private bool m_candidate_panel_is_visible;
-    private GLib.HashTable<string, GLib.SList>?
-            m_annotation_to_emojis_dict = null;
-    private GLib.HashTable<string, IBus.EmojiData>?
-            m_emoji_to_data_dict = null;
-    private GLib.HashTable<string, GLib.SList>?
-            m_category_to_emojis_dict = null;
     int m_category_active_index;
-    private int m_emoji_max_seq_len = 0;
     private IBus.LookupTable m_lookup_table;
     private Gtk.Label[] m_candidates;
-    private string m_emoji_font = "Monospace 16";
-    private string[] m_favorites = {};
     private bool m_enter_notify_enable = true;
     private uint m_entry_notify_show_id;
     private uint m_entry_notify_disable_id;
-    private uint m_reload_emoji_dict_id;
 
     public signal void candidate_clicked(uint index, uint button, uint state);
-    public signal void loaded_emoji_dict();
 
     public IBusEmojier() {
         GLib.Object(
-            type : Gtk.WindowType.POPUP,
+            type : Gtk.WindowType.TOPLEVEL,
             events : Gdk.EventMask.KEY_PRESS_MASK |
                      Gdk.EventMask.KEY_RELEASE_MASK |
-                     Gdk.EventMask.BUTTON_PRESS_MASK,
+                     Gdk.EventMask.BUTTON_PRESS_MASK |
+                     Gdk.EventMask.BUTTON_RELEASE_MASK,
             window_position : Gtk.WindowPosition.CENTER,
+            icon_name: "ibus-setup",
             accept_focus : true,
-            decorated : false,
-            modal : true,
             resizable : true,
             focus_visible : true
         );
+
+        if (m_current_lang_id == null)
+            m_current_lang_id = "en";
+        if (m_emoji_font == null)
+            m_emoji_font = "Monospace 16";
+        if (m_favorites == null)
+            m_favorites = {};
 
         Gdk.Display display = Gdk.Display.get_default();
         Gdk.Screen screen = (display != null) ?
@@ -283,12 +273,11 @@ class IBusEmojier : Gtk.Window {
                 css_provider,
                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
+        m_title = new ETitleLabelBox(_("Emoji Chooser"));
+        set_titlebar(m_title);
         m_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(m_vbox);
 
-        m_title = new ETitleLabelBox(_("Emoji Dialog"),
-                                     Gtk.Align.CENTER);
-        m_vbox.add(m_title);
         m_entry = new EEntry();
         m_entry.set_placeholder_text(_("Type annotation or choose emoji"));
         m_vbox.add(m_entry);
@@ -305,8 +294,6 @@ class IBusEmojier : Gtk.Window {
          */
         Atk.Object obj = m_entry.get_accessible();
         obj.set_role (Atk.Role.STATUSBAR);
-
-        grab_focus();
 
         // The constructor of IBus.LookupTable does not support more than
         // 16 pages.
@@ -325,15 +312,13 @@ class IBusEmojier : Gtk.Window {
             hide_candidate_panel();
         });
 
-        m_reload_emoji_dict_id = GLib.Idle.add(() => {
+        if (m_annotation_to_emojis_dict == null) {
             reload_emoji_dict();
-            m_reload_emoji_dict_id = 0;
-            return false;
-        });
+        }
     }
 
 
-    private void reload_emoji_dict() {
+    private static void reload_emoji_dict() {
         init_emoji_dict();
         make_emoji_dict("en");
         if (m_current_lang_id != "en") {
@@ -344,11 +329,10 @@ class IBusEmojier : Gtk.Window {
             }
             make_emoji_dict(m_current_lang_id);
         }
-        loaded_emoji_dict();
     }
 
 
-    private void init_emoji_dict() {
+    private static void init_emoji_dict() {
         m_annotation_to_emojis_dict =
                 new GLib.HashTable<string, GLib.SList>(GLib.str_hash,
                                                        GLib.str_equal);
@@ -361,7 +345,7 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private void make_emoji_dict(string lang) {
+    private static void make_emoji_dict(string lang) {
         GLib.SList<IBus.EmojiData> emoji_list = IBus.EmojiData.load(
                     Config.PKGDATADIR + "/dicts/emoji-" + lang + ".dict");
         if (emoji_list == null)
@@ -380,7 +364,7 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private void update_annotation_to_emojis_dict(IBus.EmojiData data) {
+    private static void update_annotation_to_emojis_dict(IBus.EmojiData data) {
         string emoji = (data.get_emoji_alternates() != "") ?
                 data.get_emoji_alternates() : data.get_emoji();
         unowned GLib.SList<string> annotations = data.get_annotations();
@@ -402,7 +386,7 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private string utf8_down(string str) {
+    private static string utf8_down(string str) {
         GLib.StringBuilder buff = new GLib.StringBuilder();
         int length = str.char_count();
         for (int i = 0; i < length; i++) {
@@ -413,7 +397,7 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private string utf8_title(string str) {
+    private static string utf8_title(string str) {
         StringBuilder buff = new StringBuilder();
         int length = str.char_count();
         for (int i = 0; i < length; i++) {
@@ -428,7 +412,7 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private string utf8_code_point(string str) {
+    private static string utf8_code_point(string str) {
         StringBuilder buff = new StringBuilder();
         int length = str.char_count();
         for (int i = 0; i < length; i++) {
@@ -443,8 +427,8 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private void update_emoji_to_data_dict(IBus.EmojiData data,
-                                           string         lang) {
+    private static void update_emoji_to_data_dict(IBus.EmojiData data,
+                                                  string         lang) {
         string emoji = (data.get_emoji_alternates() != "") ?
                 data.get_emoji_alternates() : data.get_emoji();
         if (lang == "en") {
@@ -496,8 +480,8 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private void update_category_to_emojis_dict(IBus.EmojiData data,
-                                                string         lang) {
+    private static void update_category_to_emojis_dict(IBus.EmojiData data,
+                                                       string         lang) {
         string emoji = (data.get_emoji_alternates() != "") ?
                 data.get_emoji_alternates() : data.get_emoji();
         string category = data.get_category();
@@ -937,7 +921,8 @@ class IBusEmojier : Gtk.Window {
                                              uint modifiers) {
         assert (keyval == Gdk.Key.Left || keyval == Gdk.Key.Right);
 
-        if (m_candidate_panel_is_visible) {
+        uint ncandidates = m_lookup_table.get_number_of_candidates();
+        if (m_candidate_panel_is_visible && ncandidates > 1) {
             enter_notify_disable_with_timer();
             if (keyval == Gdk.Key.Left)
                 m_lookup_table.cursor_up();
@@ -971,7 +956,8 @@ class IBusEmojier : Gtk.Window {
     private bool key_press_cursor_vertical(uint keyval) {
         assert (keyval == Gdk.Key.Down || keyval == Gdk.Key.Up);
 
-        if (m_candidate_panel_is_visible) {
+        uint ncandidates = m_lookup_table.get_number_of_candidates();
+        if (m_candidate_panel_is_visible && ncandidates > 1) {
             if (keyval == Gdk.Key.Down)
                 candidate_panel_cursor_down();
             else if (keyval == Gdk.Key.Up)
@@ -987,12 +973,12 @@ class IBusEmojier : Gtk.Window {
                                            uint modifiers) {
         assert (keyval == Gdk.Key.Home || keyval == Gdk.Key.End);
 
-        if (m_candidate_panel_is_visible) {
+        uint ncandidates = m_lookup_table.get_number_of_candidates();
+        if (m_candidate_panel_is_visible && ncandidates > 1) {
             enter_notify_disable_with_timer();
             if (keyval == Gdk.Key.Home) {
                 m_lookup_table.set_cursor_pos(0);
             } else if (keyval == Gdk.Key.End) {
-                uint ncandidates = m_lookup_table.get_number_of_candidates();
                 m_lookup_table.set_cursor_pos(ncandidates - 1);
             }
             show_candidate_panel();
@@ -1052,8 +1038,7 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    public string run(Gdk.Event event,
-                      string    input_context_path) {
+    public string run(string input_context_path) {
         assert (m_loop == null);
 
         m_is_running = true;
@@ -1066,65 +1051,22 @@ class IBusEmojier : Gtk.Window {
         resize(1, 1);
 
         m_entry.set_text("");
-        m_entry.grab_focus();
-
-        Gdk.Device device = event.get_device();
-        if (device == null) {
-            var display = get_display();
-            var device_manager = display.get_device_manager();
-            device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
-        }
-
-        Gdk.Device keyboard;
-        Gdk.Device pointer;
-        if (device.get_source() == Gdk.InputSource.KEYBOARD) {
-            keyboard = device;
-            pointer = device.get_associated_device();
-        } else {
-            pointer = device;
-            keyboard = device.get_associated_device();
-        }
+        //m_entry.grab_focus();
 
         show_category_list();
         m_entry.set_activates_default(true);
         show_all();
 
-        Gdk.GrabStatus status;
-        // Grab all keyboard events
-        status = keyboard.grab(get_window(),
-                               Gdk.GrabOwnership.NONE,
-                               true,
-                               Gdk.EventMask.KEY_PRESS_MASK |
-                               Gdk.EventMask.KEY_RELEASE_MASK,
-                               null,
-                               Gdk.CURRENT_TIME);
-        if (status != Gdk.GrabStatus.SUCCESS)
-            warning("Grab keyboard failed! status = %d", status);
-        // Grab all pointer events
-        status = pointer.grab(get_window(),
-                              Gdk.GrabOwnership.NONE,
-                              true,
-                              Gdk.EventMask.BUTTON_PRESS_MASK |
-                              Gdk.EventMask.BUTTON_RELEASE_MASK,
-                              null,
-                              Gdk.CURRENT_TIME);
-        if (status != Gdk.GrabStatus.SUCCESS)
-            warning("Grab pointer failed! status = %d", status);
-
         m_loop = new GLib.MainLoop();
-        m_title.set_loop(m_loop);
         m_loop.run();
-        m_title.unset_loop();
         m_loop = null;
-
-        keyboard.ungrab(Gdk.CURRENT_TIME);
-        pointer.ungrab(Gdk.CURRENT_TIME);
 
         // Need focus-out on Gtk.Entry to send the emoji to applications.
         Gdk.Event fevent = new Gdk.Event(Gdk.EventType.FOCUS_CHANGE);
         fevent.focus_change.in = 0;
         fevent.focus_change.window  = get_window();
         m_entry.send_focus_change(fevent);
+        fevent.focus_change.window  = null;
 
         hide();
         // Make sure the switcher is hidden before returning from this function.
@@ -1288,20 +1230,23 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    public void set_emoji_font(string emoji_font) {
-        m_emoji_font = emoji_font;
+    public void present_centralize() {
+        present();
+        m_entry.set_activates_default(true);
+        Gtk.Allocation allocation;
+        get_allocation(out allocation);
+        Gdk.Screen screen = Gdk.Screen.get_default();
+        int monitor_num = screen.get_monitor_at_window(get_window());
+        Gdk.Rectangle monitor_area;
+        screen.get_monitor_geometry(monitor_num, out monitor_area);
+        int x = (monitor_area.x + monitor_area.width - allocation.width)/2;
+        int y = (monitor_area.y + monitor_area.height
+                 - allocation.height)/2;
+        move(x, y);
     }
 
 
-    public void set_favorites(string[]? unowned_favorites) {
-        m_favorites = {};
-        foreach (string favorite in unowned_favorites) {
-            m_favorites += favorite;
-        }
-    }
-
-
-    public bool has_loaded_emoji_dict() {
+    public static bool has_loaded_emoji_dict() {
         if (m_emoji_to_data_dict == null)
             return false;
         GLib.List keys = m_emoji_to_data_dict.get_keys();
@@ -1311,18 +1256,26 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    public void set_annotation_lang(string lang) {
+    public static void set_annotation_lang(string? lang) {
+        if (lang == null || lang == "")
+            lang = "en";
         if (m_current_lang_id == lang)
             return;
-        if (m_reload_emoji_dict_id > 0) {
-            GLib.Source.remove(m_reload_emoji_dict_id);
-            m_reload_emoji_dict_id = 0;
-        }
         m_current_lang_id = lang;
-        m_reload_emoji_dict_id = GLib.Idle.add(() => {
-            reload_emoji_dict();
-            m_reload_emoji_dict_id = 0;
-            return false;
-        });
+        reload_emoji_dict();
+    }
+
+
+    public static void set_emoji_font(string? emoji_font) {
+        return_if_fail(emoji_font != null && emoji_font != "");
+        m_emoji_font = emoji_font;
+    }
+
+
+    public static void set_favorites(string[]? unowned_favorites) {
+        m_favorites = {};
+        foreach (string favorite in unowned_favorites) {
+            m_favorites += favorite;
+        }
     }
 }

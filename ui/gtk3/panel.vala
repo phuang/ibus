@@ -73,7 +73,8 @@ class Panel : IBus.PanelService {
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private uint m_switcher_focus_set_engine_id;
-    private IBusEmojier m_emojier;
+    private IBusEmojier? m_emojier;
+    private uint m_emojier_set_emoji_lang_id;
     private uint m_emojier_focus_commit_text_id;
     private PropertyManager m_property_manager;
     private PropertyPanel m_property_panel;
@@ -137,7 +138,6 @@ class Panel : IBus.PanelService {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
         }
 
-        m_emojier = new IBusEmojier();
         bind_emoji_shortcut();
 
         m_property_manager = new PropertyManager();
@@ -595,7 +595,7 @@ class Panel : IBus.PanelService {
             warning("No config emoji:font.");
             return;
         }
-        m_emojier.set_emoji_font(emoji_font);
+        IBusEmojier.set_emoji_font(emoji_font);
 
         bool use_custom_font = m_settings_panel.get_boolean("use-custom-font");
 
@@ -766,11 +766,20 @@ class Panel : IBus.PanelService {
     }
 
     private void set_emoji_favorites() {
-        m_emojier.set_favorites(m_settings_emoji.get_strv("favorites"));
+        IBusEmojier.set_favorites(m_settings_emoji.get_strv("favorites"));
     }
 
     private void set_emoji_lang() {
-        m_emojier.set_annotation_lang(m_settings_emoji.get_string("lang"));
+        if (m_emojier_set_emoji_lang_id > 0) {
+            GLib.Source.remove(m_emojier_set_emoji_lang_id);
+            m_emojier_set_emoji_lang_id = 0;
+        }
+        m_emojier_set_emoji_lang_id = GLib.Idle.add(() => {
+            IBusEmojier.set_annotation_lang(
+                    m_settings_emoji.get_string("lang"));
+            m_emojier_set_emoji_lang_id = 0;
+            return false;
+        });
     }
 
     private int compare_versions(string version1, string version2) {
@@ -984,13 +993,22 @@ class Panel : IBus.PanelService {
         }
     }
 
-    private void handle_emoji_typing(Gdk.Event event) {
-        if (m_emojier.is_running())
+    private void show_emojier() {
+        m_emojier = new IBusEmojier();
+        string emoji = m_emojier.run(m_real_current_context_path);
+        if (emoji == null) {
+            m_emojier = null;
             return;
-        string emoji = m_emojier.run(event, m_real_current_context_path);
-        if (emoji == null)
-            return;
+        }
         this.emojier_focus_commit();
+    }
+
+    private void handle_emoji_typing(Gdk.Event event) {
+        if (m_emojier != null && m_emojier.is_running()) {
+            m_emojier.present_centralize();
+            return;
+        }
+        show_emojier();
     }
 
     private void run_preload_engines(IBus.EngineDesc[] engines, int index) {
@@ -1361,29 +1379,34 @@ class Panel : IBus.PanelService {
         if (selected_engine == null &&
             prev_context_path != "" &&
             m_switcher.is_running()) {
-            if (m_switcher_focus_set_engine_id > 0) {
+            var context = GLib.MainContext.default();
+            if (m_switcher_focus_set_engine_id > 0 &&
+                context.find_source_by_id(m_switcher_focus_set_engine_id)
+                        != null) {
                 GLib.Source.remove(m_switcher_focus_set_engine_id);
             }
             m_switcher_focus_set_engine_id = GLib.Timeout.add(100, () => {
                 // focus_in is comming before switcher returns
                 switcher_focus_set_engine_real();
-                if (m_switcher_focus_set_engine_id > 0) {
-                    GLib.Source.remove(m_switcher_focus_set_engine_id);
-                    m_switcher_focus_set_engine_id = -1;
-                }
+                m_switcher_focus_set_engine_id = -1;
                 return false;
             });
         } else {
             if (switcher_focus_set_engine_real()) {
-                if (m_switcher_focus_set_engine_id > 0) {
+                var context = GLib.MainContext.default();
+                if (m_switcher_focus_set_engine_id > 0 &&
+                    context.find_source_by_id(m_switcher_focus_set_engine_id)
+                            != null) {
                     GLib.Source.remove(m_switcher_focus_set_engine_id);
-                    m_switcher_focus_set_engine_id = -1;
                 }
+                m_switcher_focus_set_engine_id = -1;
             }
         }
     }
 
     private bool emojier_focus_commit_real() {
+        if (m_emojier == null)
+            return true;
         string selected_string = m_emojier.get_selected_string();
         string prev_context_path = m_emojier.get_input_context_path();
         if (selected_string != null &&
@@ -1391,7 +1414,7 @@ class Panel : IBus.PanelService {
             prev_context_path == m_current_context_path) {
             IBus.Text text = new IBus.Text.from_string(selected_string);
             commit_text(text);
-            m_emojier.reset();
+            m_emojier = null;
             return true;
         }
 
@@ -1399,12 +1422,17 @@ class Panel : IBus.PanelService {
     }
 
     private void emojier_focus_commit() {
+        if (m_emojier == null)
+            return;
         string selected_string = m_emojier.get_selected_string();
         string prev_context_path = m_emojier.get_input_context_path();
         if (selected_string == null &&
             prev_context_path != "" &&
             m_emojier.is_running()) {
-            if (m_emojier_focus_commit_text_id > 0) {
+            var context = GLib.MainContext.default();
+            if (m_emojier_focus_commit_text_id > 0 &&
+                context.find_source_by_id(m_emojier_focus_commit_text_id)
+                        != null) {
                 GLib.Source.remove(m_emojier_focus_commit_text_id);
             }
             m_emojier_focus_commit_text_id = GLib.Timeout.add(100, () => {
@@ -1415,10 +1443,13 @@ class Panel : IBus.PanelService {
             });
         } else {
             if (emojier_focus_commit_real()) {
-                if (m_emojier_focus_commit_text_id > 0) {
+                var context = GLib.MainContext.default();
+                if (m_emojier_focus_commit_text_id > 0 &&
+                    context.find_source_by_id(m_emojier_focus_commit_text_id)
+                            != null) {
                     GLib.Source.remove(m_emojier_focus_commit_text_id);
-                    m_emojier_focus_commit_text_id = -1;
                 }
+                m_emojier_focus_commit_text_id = -1;
             }
         }
     }
