@@ -163,13 +163,7 @@ EXTRA_DIST =                            \
     $(NULL)
 
 if ENABLE_EMOJI_DICT
-AM_VALAFLAGS += \
-    --define=EMOJI_DICT \
-    --vapidir=$(top_builddir)/ui/gtk3 \
-    --vapidir=$(top_srcdir)/ui/gtk3 \
-    --pkg=ibus-emoji-dialog-1.0 \
-    --pkg=gtk+-3.0 \
-    $(NULL)
+AM_VALAFLAGS += --define=EMOJI_DICT
 
 libibus_emoji_dialog = libibus-emoji-dialog-1.0.la
 
