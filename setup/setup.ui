@@ -137,7 +137,7 @@
                             <property name="can_focus">False</property>
                             <property name="tooltip_text" translatable="yes">The shortcut keys for showing emoji dialog</property>
                             <property name="halign">start</property>
-                            <property name="label" translatable="yes">Emoji dialog:</property>
+                            <property name="label" translatable="yes">Emoji choice:</property>
                           </object>
                           <packing>
                             <property name="top_attach">5</property>

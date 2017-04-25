@@ -1239,7 +1239,7 @@ class Panel : IBus.PanelService {
             m_sys_menu.append(item);
 
 #if EMOJI_DICT
-            item = new Gtk.MenuItem.with_label(_("Emoji Dialog"));
+            item = new Gtk.MenuItem.with_label(_("Emoji Choice"));
             item.activate.connect((i) => {
                 Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
                 handle_emoji_typing(event);

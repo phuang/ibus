@@ -60,6 +60,9 @@ public class EmojiApplication : Application {
 
 
     private int _command_line (ApplicationCommandLine command_line) {
+        // Set default font size
+        IBusEmojier.set_emoji_font(m_settings_emoji.get_string("font"));
+
         const OptionEntry[] options = {
             { "font", 0, 0, OptionArg.STRING, out emoji_font,
                 /* TRANSLATORS: "FONT" should be capital and translatable.
@@ -88,6 +91,10 @@ public class EmojiApplication : Application {
             _args[i] = args[i];
         }
 
+        // Need to initialize for the second instance.
+        emoji_font = null;
+        annotation_lang = null;
+
         try {
             unowned string[] tmp = _args;
             option.parse(ref tmp);
@@ -101,13 +108,12 @@ public class EmojiApplication : Application {
             return Posix.EXIT_SUCCESS;
         }
 
-        if (emoji_font == null)
-            emoji_font = m_settings_emoji.get_string("font");
         if (annotation_lang == null)
             annotation_lang = m_settings_emoji.get_string("lang");
-
         IBusEmojier.set_annotation_lang(annotation_lang);
-        IBusEmojier.set_emoji_font(emoji_font);
+
+        if (emoji_font != null)
+            IBusEmojier.set_emoji_font(emoji_font);
 
         activate_dialog(command_line);
 

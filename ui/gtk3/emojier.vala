@@ -166,13 +166,14 @@ class IBusEmojier : Gtk.Window {
         BACKWARD,
     }
 
-    private static const uint EMOJI_GRID_PAGE = 10;
+    private const uint EMOJI_GRID_PAGE = 10;
 
     // Set the actual default values in the constructor
     // because these fields are used for class_init() and static functions,
     // e.g. set_emoji_font(), can be called before class_init() is called.
     private static string m_current_lang_id;
-    private static string m_emoji_font;
+    private static string m_emoji_font_family;
+    private static int m_emoji_font_size;
     private static string[] m_favorites;
     private static int m_emoji_max_seq_len;
     private static GLib.HashTable<string, GLib.SList>?
@@ -220,8 +221,10 @@ class IBusEmojier : Gtk.Window {
 
         if (m_current_lang_id == null)
             m_current_lang_id = "en";
-        if (m_emoji_font == null)
-            m_emoji_font = "Monospace 16";
+        if (m_emoji_font_family == null)
+            m_emoji_font_family = "Monospace";
+        if (m_emoji_font_size == 0)
+            m_emoji_font_size = 16;
         if (m_favorites == null)
             m_favorites = {};
 
@@ -242,6 +245,8 @@ class IBusEmojier : Gtk.Window {
                 "#IBusEmojierWhiteLabel { background-color: " +
                         "rgba(%u, %u, %u, %lf); ".printf(
                         bg_red, bg_green, bg_blue, bg_alpha) +
+                "font-family: %s; font-size: %dpt; ".printf(
+                        m_emoji_font_family, m_emoji_font_size) +
                 "border-width: 4px; border-radius: 3px; } ";
 
         uint fg_red = (uint)(m_rgba.selected_fg.red * 255);
@@ -255,6 +260,8 @@ class IBusEmojier : Gtk.Window {
         data += "#IBusEmojierSelectedLabel { color: " +
                         "rgba(%u, %u, %u, %lf); ".printf(
                         fg_red, fg_green, fg_blue, fg_alpha) +
+                "font-family: %s; font-size: %dpt; ".printf(
+                        m_emoji_font_family, m_emoji_font_size) +
                 "background-color: " +
                         "rgba(%u, %u, %u, %lf); ".printf(
                         bg_red, bg_green, bg_blue, bg_alpha) +
@@ -273,7 +280,7 @@ class IBusEmojier : Gtk.Window {
                 css_provider,
                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-        m_title = new ETitleLabelBox(_("Emoji Chooser"));
+        m_title = new ETitleLabelBox(_("Emoji Choice"));
         set_titlebar(m_title);
         m_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(m_vbox);
@@ -734,17 +741,14 @@ class IBusEmojier : Gtk.Window {
                 label = new ESelectedLabel(candidate.text) as Gtk.Label;
             else
                 label = new EWhiteLabel(candidate.text) as Gtk.Label;
-            string emoji_font = m_emoji_font;
             if (candidate.text.char_count() > 2) {
-                Pango.FontDescription font_desc =
-                        Pango.FontDescription.from_string(emoji_font);
-                string font_family = font_desc.get_family();
-                int font_size = font_desc.get_size() / Pango.SCALE;
-                emoji_font = "%s %d".printf(font_family, font_size -2);
+                string font_family = m_emoji_font_family;
+                int font_size = m_emoji_font_size - 2;
+                string emoji_font = "%s %d".printf(font_family, font_size);
+                string markup = "<span font=\"%s\">%s</span>".
+                        printf(emoji_font, candidate.get_text());
+                label.set_markup(markup);
             }
-            string markup = "<span font=\"%s\">%s</span>".
-                    printf(emoji_font, candidate.get_text());
-            label.set_markup(markup);
             label.set_halign(Gtk.Align.FILL);
             label.set_valign(Gtk.Align.FILL);
             Gtk.EventBox candidate_ebox = new Gtk.EventBox();
@@ -1268,7 +1272,14 @@ class IBusEmojier : Gtk.Window {
 
     public static void set_emoji_font(string? emoji_font) {
         return_if_fail(emoji_font != null && emoji_font != "");
-        m_emoji_font = emoji_font;
+        Pango.FontDescription font_desc =
+                Pango.FontDescription.from_string(emoji_font);
+        string font_family = font_desc.get_family();
+        if (font_family != null)
+            m_emoji_font_family = font_family;
+        int font_size = font_desc.get_size() / Pango.SCALE;
+        if (font_size != 0)
+            m_emoji_font_size = font_size;
     }
 
 
