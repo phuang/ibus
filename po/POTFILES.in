@@ -41,6 +41,7 @@ setup/keyboardshortcut.py
 setup/main.py
 src/ibusbus.c
 src/ibusconfig.c
+src/ibusemojigen.h
 src/ibusengine.c
 src/ibusfactory.c
 src/ibushotkey.c
@@ -57,6 +58,7 @@ ui/gtk3/application.vala
 ui/gtk3/candidatearea.vala
 ui/gtk3/candidatepanel.vala
 ui/gtk3/emojier.vala
+ui/gtk3/emojierapp.vala
 ui/gtk3/handle.vala
 ui/gtk3/iconwidget.vala
 ui/gtk3/keybindingmanager.vala
@@ -66,4 +68,3 @@ ui/gtk3/property.vala
 ui/gtk3/propertypanel.vala
 ui/gtk3/separator.vala
 ui/gtk3/switcher.vala
-ui/gtk3/emojierapp.vala

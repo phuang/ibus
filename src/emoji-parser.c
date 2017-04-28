@@ -21,33 +21,51 @@
  */
 
 /* Convert /usr/share/unicode/cldr/common/annotations/\*.xml and
- * /usr/lib/node_modules/emojione/emoji.json
+ * /usr/share/unicode/emoji/emoji-test.txt
  * to the dictionary file which look up the Emoji from the annotation.
  * Get *.xml from https://github.com/fujiwarat/cldr-emoji-annotation
  * or http://www.unicode.org/repos/cldr/trunk/common/annotations .
- * Get emoji.json with 'npm install -g emojione'.
- * en.xml is used for the Unicode annotations and emoji.json is used
- * for the aliases_ascii, e.g. ":)", and category, e.g. "people".
+ * Get emoji-test.txt from http://unicode.org/Public/emoji/4.0/ .
+ * en.xml is used for the Unicode annotations and emoji-test.txt is used
+ * for the category, e.g. "Smileys & People".
+ * ASCII emoji annotations are saved in ../data/annotations/en_ascii.xml
  */
 
 #include <glib.h>
+
+#ifdef HAVE_JSON_GLIB1
 #include <json-glib/json-glib.h>
+#endif
 
 #include <string.h>
 
 #include "ibusemoji.h"
 
+/* This file has 21 lines about the license at the top of the file. */
+#define LICENSE_LINES 21
+
+typedef enum {
+  EMOJI_STRICT,
+  EMOJI_VARIANT,
+  EMOJI_NOVARIANT
+} EmojiDataSearchType;
+
 typedef struct _EmojiData EmojiData;
 struct _EmojiData {
-    gchar      *emoji;
-    gchar      *emoji_alternates;
-    GSList     *annotations;
-    gboolean    is_annotation;
-    gchar      *description;
-    gboolean    is_tts;
-    gchar      *category;
-    GSList     *list;
+    gchar              *emoji;
+    gchar              *emoji_alternates;
+    GSList             *annotations;
+    gboolean            is_annotation;
+    gchar              *description;
+    gboolean            is_tts;
+    gchar              *category;
+    gchar              *subcategory;
+    gboolean            is_derived;
+    GSList             *list;
+    EmojiDataSearchType search_type;
 };
+
+static gchar *unicode_emoji_version;
 
 static void
 reset_emoji_element (EmojiData *data)
@@ -59,68 +77,175 @@ reset_emoji_element (EmojiData *data)
     g_slist_free_full (data->annotations, g_free);
     data->annotations = NULL;
     g_clear_pointer (&data->description, g_free);
-    g_clear_pointer (&data->category, g_free);
+}
+
+gint
+strcmp_novariant (const gchar *a,
+                  const gchar *b,
+                  gunichar     a_variant,
+                  gunichar     b_variant)
+{
+    gint retval;
+    gchar *p = NULL;
+    GString *buff = NULL;;
+    gchar *substr = NULL;
+
+    if (a_variant > 0) {
+        if ((p = g_utf8_strchr (a, -1, a_variant)) != NULL) {
+            buff = g_string_new (NULL);
+            if (a != p) {
+                substr = g_strndup (a, p - a);
+                g_string_append (buff, substr);
+                g_free (substr);
+            }
+            p = g_utf8_next_char (p);
+            if (*p != '\0')
+                g_string_append (buff, p);
+            retval = g_strcmp0 (buff->str, b);
+            g_string_free (buff, TRUE);
+            return retval;
+        } else {
+            return -1;
+        }
+    } else if (b_variant > 0) {
+        if ((p = g_utf8_strchr (b, -1, b_variant)) != NULL) {
+            buff = g_string_new (NULL);
+            if (b != p) {
+                substr = g_strndup (b, p - b);
+                g_string_append (buff, substr);
+                g_free (substr);
+            }
+            p = g_utf8_next_char (p);
+            if (*p != '\0')
+                g_string_append (buff, p);
+            retval = g_strcmp0 (a, buff->str);
+            g_string_free (buff, TRUE);
+            return retval;
+        } else {
+            return -1;
+        }
+    }
+    return g_strcmp0 (a, b);
 }
 
 gint
 find_emoji_data_list (IBusEmojiData *a,
-                      const gchar   *b)
+                      EmojiData     *b)
 {
-   g_return_val_if_fail (IBUS_IS_EMOJI_DATA (a), 0);
-   return g_strcmp0 (ibus_emoji_data_get_emoji (a), b);
+    const gchar *a_str;
+
+    g_return_val_if_fail (IBUS_IS_EMOJI_DATA (a), 0);
+
+    a_str = ibus_emoji_data_get_emoji (a);
+    switch (b->search_type) {
+    case EMOJI_VARIANT:
+        if (strcmp_novariant (a_str, b->emoji, 0xfe0e, 0) == 0)
+            return 0;
+        else if (strcmp_novariant (a_str, b->emoji, 0xfe0f, 0) == 0)
+            return 0;
+        else
+            return g_strcmp0 (a_str, b->emoji);
+        break;
+    case EMOJI_NOVARIANT:
+        if (strcmp_novariant (a_str, b->emoji, 0, 0xfe0e) == 0)
+            return 0;
+        else if (strcmp_novariant (a_str, b->emoji, 0, 0xfe0f) == 0)
+            return 0;
+        else
+            return g_strcmp0 (a_str, b->emoji);
+        break;
+    default:;
+    }
+    return g_strcmp0 (a_str, b->emoji);
 }
 
 static void
-update_emoji_list (EmojiData *data)
+emoji_data_update_object (EmojiData     *data,
+                          IBusEmojiData *emoji)
 {
-    GSList *list = g_slist_find_custom (
-            data->list,
-            data->emoji,
-            (GCompareFunc) find_emoji_data_list);
-    if (list) {
-        IBusEmojiData *emoji = list->data;
-        GSList *src_annotations = data->annotations;
-        GSList *dest_annotations = ibus_emoji_data_get_annotations (emoji);
-        GSList *l;
-        gboolean updated_annotations = FALSE;
-        for (l = src_annotations; l; l = l->next) {
-            GSList *duplicated = g_slist_find_custom (dest_annotations,
-                                                      l->data,
-                                                      (GCompareFunc) g_strcmp0);
-            if (duplicated == NULL) {
-                dest_annotations = g_slist_append (dest_annotations,
-                                                   g_strdup (l->data));
-                updated_annotations = TRUE;
-            }
+    GSList *src_annotations = data->annotations;
+    GSList *dest_annotations = ibus_emoji_data_get_annotations (emoji);
+    GSList *l;
+    gboolean updated_annotations = FALSE;
+    for (l = src_annotations; l; l = l->next) {
+        GSList *duplicated = g_slist_find_custom (dest_annotations,
+                                                  l->data,
+                                                  (GCompareFunc) g_strcmp0);
+        if (duplicated == NULL) {
+            dest_annotations = g_slist_append (dest_annotations,
+                                               g_strdup (l->data));
+            updated_annotations = TRUE;
         }
-        if (updated_annotations) {
-            ibus_emoji_data_set_annotations (
+    }
+    if (updated_annotations) {
+        ibus_emoji_data_set_annotations (
                     emoji,
                     g_slist_copy_deep (dest_annotations,
                                        (GCopyFunc) g_strdup,
                                        NULL));
-        }
-        if (data->description)
-            ibus_emoji_data_set_description (emoji, data->description);
-    } else {
-        IBusEmojiData *emoji =
-                ibus_emoji_data_new ("emoji",
-                                     data->emoji,
-                                     "annotations",
-                                     data->annotations,
-                                     "description",
-                                     data->description ? data->description
-                                             : g_strdup (""),
-                                     "category",
-                                     data->category ? data->category
-                                             : g_strdup (""),
-                                     "emoji-alternates",
-                                     data->emoji_alternates
-                                             ? data->emoji_alternates
-                                             : g_strdup (""),
-                                     NULL);
-        data->list = g_slist_append (data->list, emoji);
     }
+    if (data->description)
+        ibus_emoji_data_set_description (emoji, data->description);
+}
+
+static void
+emoji_data_new_object (EmojiData *data)
+{
+    IBusEmojiData *emoji =
+            ibus_emoji_data_new ("emoji",
+                                 data->emoji,
+                                 "annotations",
+                                 data->annotations,
+                                 "description",
+                                 data->description ? data->description
+                                         : g_strdup (""),
+                                 "category",
+                                 data->category ? data->category
+                                         : g_strdup (""),
+                                 NULL);
+    data->list = g_slist_append (data->list, emoji);
+}
+
+static void
+update_emoji_list (EmojiData *data,
+                   gboolean   base_update)
+{
+    GSList *list;
+    data->search_type = EMOJI_STRICT;
+    list = g_slist_find_custom (
+            data->list,
+            data,
+            (GCompareFunc) find_emoji_data_list);
+    if (list) {
+        emoji_data_update_object (data, list->data);
+        return;
+    } else if (base_update) {
+        emoji_data_new_object (data);
+        return;
+    }
+    if (g_utf8_strchr (data->emoji, -1, 0xfe0e) == NULL &&
+        g_utf8_strchr (data->emoji, -1, 0xfe0f) == NULL) {
+        data->search_type = EMOJI_VARIANT;
+        list = g_slist_find_custom (
+                data->list,
+                data,
+                (GCompareFunc) find_emoji_data_list);
+        if (list) {
+            emoji_data_update_object (data, list->data);
+            return;
+        }
+    } else {
+        data->search_type = EMOJI_NOVARIANT;
+        list = g_slist_find_custom (
+                data->list,
+                data,
+                (GCompareFunc) find_emoji_data_list);
+        if (list) {
+            emoji_data_update_object (data, list->data);
+            return;
+        }
+    }
+    emoji_data_new_object (data);
 }
 
 static void
@@ -183,7 +308,7 @@ unicode_annotations_end_element_cb (GMarkupParseContext *context,
     if (!data->is_annotation)
         return;
 
-    update_emoji_list (data);
+    update_emoji_list (data, FALSE);
     data->is_annotation = FALSE;
     data->is_tts = FALSE;
 }
@@ -227,7 +352,8 @@ unicode_annotations_text_cb (GMarkupParseContext *context,
 
 static gboolean
 unicode_annotations_parse_xml_file (const gchar  *filename,
-                                    GSList      **list)
+                                    GSList      **list,
+                                    gboolean      is_derived)
 {
     gchar *content = NULL;
     gsize length = 0;
@@ -251,6 +377,7 @@ unicode_annotations_parse_xml_file (const gchar  *filename,
     }
 
     data.list = *list;
+    data.is_derived = is_derived;
 
     context = g_markup_parse_context_new (&parser, 0, &data, NULL);
     if (!g_markup_parse_context_parse (context, content, length, &error)) {
@@ -275,6 +402,233 @@ failed_to_parse_unicode_annotations:
     return FALSE;
 }
 
+static gboolean
+unicode_emoji_test_parse_unicode (const gchar *line,
+                                  EmojiData   *data)
+{
+    GString *emoji = NULL;
+    gchar *endptr = NULL;
+    guint32 uch;
+    static gchar outbuf[8] = { 0, };
+
+    g_return_val_if_fail (line != NULL, FALSE);
+
+    emoji = g_string_new (NULL);
+    while (line && *line) {
+        uch = g_ascii_strtoull (line, &endptr, 16);
+        outbuf[g_unichar_to_utf8 (uch, outbuf)] = '\0';
+        g_string_append (emoji, outbuf);
+        if (*endptr == '\0') {
+            break;
+        }
+        line = endptr + 1;
+        while (*line == ' ')
+            line++;
+        endptr = NULL;
+    }
+
+    data->emoji = g_string_free (emoji, FALSE);
+    return TRUE;
+}
+
+static gboolean
+unicode_emoji_test_parse_description (const gchar *line,
+                                      EmojiData   *data)
+{
+    g_return_val_if_fail (line != NULL, FALSE);
+
+    /* skip spaces */
+    while (*line == ' ')
+        line++;
+    /* skip emoji */
+    while (*line != ' ')
+        line++;
+    /* skip spaces */
+    while (*line == ' ')
+        line++;
+    if (*line == '\0')
+        return FALSE;
+    data->description = g_strdup (line);
+    return TRUE;
+}
+
+#define EMOJI_VERSION_TAG "# Version: "
+#define EMOJI_GROUP_TAG "# group: "
+#define EMOJI_SUBGROUP_TAG "# subgroup: "
+#define EMOJI_NON_FULLY_QUALIFIED_TAG "non-fully-qualified"
+
+static gboolean
+unicode_emoji_test_parse_line (const gchar *line,
+                               EmojiData   *data)
+{
+    int tag_length;
+    gchar **segments = NULL;
+
+    g_return_val_if_fail (line != NULL, FALSE);
+
+    tag_length = strlen (EMOJI_VERSION_TAG);
+    if (strlen (line) > tag_length &&
+        g_ascii_strncasecmp (line, EMOJI_VERSION_TAG, tag_length) == 0) {
+        unicode_emoji_version = g_strdup (line + tag_length);
+        return TRUE;
+    }
+    tag_length = strlen (EMOJI_GROUP_TAG);
+    if (strlen (line) > tag_length &&
+        g_ascii_strncasecmp (line, EMOJI_GROUP_TAG, tag_length) == 0) {
+        g_free (data->category);
+        g_clear_pointer (&data->subcategory, g_free);
+        data->category = g_strdup (line + tag_length);
+        return TRUE;
+    }
+    tag_length = strlen (EMOJI_SUBGROUP_TAG);
+    if (strlen (line) > tag_length &&
+        g_ascii_strncasecmp (line, EMOJI_SUBGROUP_TAG, tag_length) == 0) {
+        g_free (data->subcategory);
+        data->subcategory = g_strdup (line + tag_length);
+        return TRUE;
+    }
+    if (*line == '#')
+        return TRUE;
+    segments = g_strsplit (line, "; ", 2);
+    if (segments[1] == NULL) {
+        g_warning ("No qualified line\n");
+        goto failed_to_parse_unicode_emoji_test_line;
+        return FALSE;
+    }
+    tag_length = strlen (EMOJI_NON_FULLY_QUALIFIED_TAG);
+    /* Ignore the non-fully-qualified emoji */
+    if (g_ascii_strncasecmp (segments[1], EMOJI_NON_FULLY_QUALIFIED_TAG,
+                             tag_length) == 0) {
+        g_strfreev (segments);
+        return TRUE;
+    }
+    unicode_emoji_test_parse_unicode (segments[0], data);
+    g_strfreev (segments);
+    segments = g_strsplit (line, "# ", 2);
+    if (segments[1] == NULL) {
+        g_warning ("No description line\n");
+        goto failed_to_parse_unicode_emoji_test_line;
+        return FALSE;
+    }
+    unicode_emoji_test_parse_description (segments[1], data);
+    g_strfreev (segments);
+    if (data->annotations == NULL) {
+        if (data->subcategory) {
+            int i;
+            gchar *amp;
+            segments = g_strsplit(data->subcategory, "-", -1);
+            for (i = 0; segments[i]; i++) {
+                if ((amp = strchr (segments[i], '&')) != NULL) {
+                    if (amp - segments[i] <= 1) {
+                        g_warning ("Wrong ampersand");
+                        goto failed_to_parse_unicode_emoji_test_line;
+                    }
+                    data->annotations = g_slist_append (
+                            data->annotations,
+                            g_strndup (segments[i], amp - segments[i] - 1));
+                    data->annotations = g_slist_append (
+                            data->annotations,
+                            g_strdup (amp + 1));
+                    continue;
+                }
+                data->annotations = g_slist_append (data->annotations,
+                                                    g_strdup (segments[i]));
+            }
+            g_strfreev (segments);
+        } else {
+            g_warning ("No subcategory line\n");
+            goto failed_to_parse_unicode_emoji_test_line;
+        }
+    }
+    update_emoji_list (data, TRUE);
+    reset_emoji_element (data);
+    return TRUE;
+
+failed_to_parse_unicode_emoji_test_line:
+    if (segments)
+        g_strfreev (segments);
+    reset_emoji_element (data);
+    return FALSE;
+}
+
+#undef EMOJI_VERSION_TAG
+#undef EMOJI_GROUP_TAG
+#undef EMOJI_SUBGROUP_TAG
+#undef EMOJI_NON_FULLY_QUALIFIED_TAG
+
+static gboolean
+unicode_emoji_test_parse_file (const gchar *filename,
+                               GSList      **list)
+{
+    gchar *content = NULL;
+    gsize length = 0;
+    GError *error = NULL;
+    gchar *head, *end, *line;
+    int n = 1;
+    EmojiData data = { 0, };
+
+    g_return_val_if_fail (filename != NULL, FALSE);
+    g_return_val_if_fail (list != NULL, FALSE);
+
+    if (!g_file_get_contents (filename, &content, &length, &error)) {
+        g_warning ("Failed to load %s: %s", filename, error->message);
+        goto failed_to_parse_unicode_emoji_test;
+    }
+    head = end = content;
+    while (*end == '\n' && end - content < length) {
+        end++;
+        n++;
+    }
+    head = end;
+    data.list = *list;
+    while (end - content < length) {
+        while (*end != '\n' && end - content < length)
+            end++;
+        if (end - content >= length)
+            break;
+        line = g_strndup (head, end - head);
+        if (!unicode_emoji_test_parse_line (line, &data))
+            g_warning ("parse error #%d in %s version %s: %s",
+                       n, filename,
+                       unicode_emoji_version ? unicode_emoji_version : "(null)",
+                       line);
+        while (*end == '\n' && end - content < length) {
+            end++;
+            n++;
+        }
+        g_free (line);
+        head = end;
+    }
+    g_free (content);
+    g_free (unicode_emoji_version);
+    *list = data.list;
+    return TRUE;
+
+failed_to_parse_unicode_emoji_test:
+    if (error)
+        g_error_free (error);
+    g_clear_pointer (&content, g_free);
+    return FALSE;
+}
+
+static gboolean 
+unicode_emoji_parse_dir (const gchar *dirname,
+                         GSList      **list)
+{
+    gchar *filename = NULL;
+    g_return_val_if_fail (dirname != NULL, FALSE);
+    g_return_val_if_fail (list != NULL, FALSE);
+
+    filename = g_build_path ("/", dirname, "emoji-test.txt", NULL);
+    if (!unicode_emoji_test_parse_file (filename, list)) {
+        g_free (filename);
+        return FALSE;
+    }
+    g_free (filename);
+    return TRUE;
+}
+
+#ifdef HAVE_JSON_GLIB1
 static gboolean
 parse_emojione_unicode (JsonNode  *node,
                         EmojiData *data,
@@ -426,6 +780,31 @@ parse_emojione_category (JsonNode  *node,
     return TRUE;
 }
 
+#ifdef EMOJIONE_ALIASES_ASCII_PRINT
+static gchar *
+text_to_entity (const gchar *text)
+{
+    gchar *p;
+    GString *buff = g_string_new (NULL);
+    for (p = text; *p; p++) {
+        switch (*p) {
+        case '<':
+            g_string_append (buff, "&lt;");
+            break;
+        case '>':
+            g_string_append (buff, "&gt;");
+            break;
+        case '&':
+            g_string_append (buff, "&amp;");
+            break;
+        default:
+            g_string_append_c (buff, *p);
+        }
+    }
+    g_string_free (buff, FALSE);
+}
+#endif
+
 static gboolean
 parse_emojione_aliases_ascii (JsonNode  *node,
                               EmojiData *data)
@@ -441,11 +820,23 @@ parse_emojione_aliases_ascii (JsonNode  *node,
     aliases_ascii = json_node_get_array (node);
     length = json_array_get_length (aliases_ascii);
     for (i = 0; i < length; i++) {
+#ifdef EMOJIONE_ALIASES_ASCII_PRINT
+        if (i == 0)
+            printf ("        <annotation cp=\"%s\">", data->emoji);
+#endif
         const gchar *alias = json_array_get_string_element (aliases_ascii, i);
         GSList *duplicated = g_slist_find_custom (data->annotations,
                                                   alias,
                                                   (GCompareFunc) g_strcmp0);
         if (duplicated == NULL) {
+#ifdef EMOJIONE_ALIASES_ASCII_PRINT
+            gchar *entity = text_to_entity (alias);
+            if (i != length - 1)
+                printf ("%s | ", entity);
+            else
+                printf ("%s</annotation>\n", entity);
+            g_free (entity);
+#endif
             data->annotations = g_slist_prepend (data->annotations,
                                                  g_strdup (alias));
         }
@@ -535,7 +926,7 @@ parse_emojione_element (JsonNode  *node,
     }
     g_list_free (members);
 
-    update_emoji_list (data);
+    update_emoji_list (data, TRUE);
 
     return TRUE;
 }
@@ -591,25 +982,134 @@ fail_to_json_file:
     g_object_unref (parser);
     return FALSE;
 }
+#endif /* HAVE_JSON_GLIB1 */
+
+static void
+emoji_data_list_unify_categories (IBusEmojiData  *data,
+                                  GSList        **list)
+{
+    g_return_if_fail (IBUS_IS_EMOJI_DATA (data));
+    g_return_if_fail (list != NULL);
+
+    const gchar *category = ibus_emoji_data_get_category (data);
+    if (*category == '\0')
+        return;
+    if (g_slist_find_custom (*list, category, (GCompareFunc)g_strcmp0) == NULL)
+        *list = g_slist_append (*list, g_strdup (category));
+}
+
+static void
+category_list_dump (const gchar *category,
+                    GString     *buff)
+{
+    g_return_if_fail (buff != NULL);
+
+    const gchar *line = g_strdup_printf ("    N_(\"%s\"),\n", category);
+    g_string_append (buff, line);
+}
+
+static void
+category_file_save (const gchar *filename,
+                    GSList      *list)
+{
+    gchar *content = NULL;
+    gsize length = 0;
+    GError *error = NULL;
+    gchar *p;
+    GString *buff = NULL;
+    int i;
+    GSList *list_categories = NULL;
+
+    g_return_if_fail (filename != NULL);
+    g_return_if_fail (list != NULL);
+
+    g_slist_foreach (list, (GFunc)emoji_data_list_unify_categories, &list_categories);
+    if (list_categories == NULL) {
+        g_warning ("Not found categories in IBusEmojiData list");
+        return;
+    }
+
+    if (!g_file_get_contents (__FILE__, &content, &length, &error)) {
+        g_warning ("Failed to load %s: %s", __FILE__, error->message);
+        g_clear_pointer (&error, g_error_free);
+    }
+    buff = g_string_new (NULL);
+    p = content;
+    for (i = 0; i < LICENSE_LINES; i++, p++) {
+        if ((p = strchr (p, '\n')) == NULL)
+            break;
+    }
+    if (p != NULL) {
+        g_string_append (buff, g_strndup (content, p - content));
+        g_string_append_c (buff, '\n');
+    }
+    g_clear_pointer (&content, g_free);
+
+    g_string_append (buff, g_strdup ("\n"));
+    g_string_append (buff, g_strdup_printf ("/* This file is generated by %s. */", __FILE__));
+    g_string_append (buff, g_strdup ("\n"));
+    g_string_append (buff, g_strdup ("include <glib/gi18n.h>\n"));
+    g_string_append (buff, g_strdup ("\n"));
+    g_string_append (buff, g_strdup ("#ifndef __IBUS_EMOJI_GEN_H_\n"));
+    g_string_append (buff, g_strdup ("#define __IBUS_EMOJI_GEN_H_\n"));
+    g_string_append (buff, g_strdup ("const static char *unicode_emoji_categories[] = {\n"));
+    list_categories = g_slist_sort (list_categories, (GCompareFunc)g_strcmp0);
+    g_slist_foreach (list_categories, (GFunc)category_list_dump, buff);
+    g_slist_free (list_categories);
+    g_string_append (buff, g_strdup ("};\n"));
+    g_string_append (buff, g_strdup ("#endif\n"));
+
+    if (!g_file_set_contents (filename, buff->str, -1, &error)) {
+        g_warning ("Failed to save emoji category file %s: %s", filename, error->message);
+        g_error_free (error);
+    }
+
+    g_string_free (buff, TRUE);
+}
 
 int
 main (int argc, char *argv[])
 {
     gchar *prgname;
+#ifdef HAVE_JSON_GLIB1
     gchar *json_file = NULL;
+#endif
+    gchar *emoji_dir = NULL;
     gchar *xml_file = NULL;
+    gchar *xml_derived_file = NULL;
+    gchar *xml_ascii_file = NULL;
     gchar *output = NULL;
+    gchar *output_category = NULL;
     GOptionEntry     entries[] = {
+#ifdef HAVE_JSON_GLIB1
         { "json", 'j', 0, G_OPTION_ARG_STRING, &json_file,
           "Parse Emoji One JSON file",
           "JSON"
+        },
+#endif
+        { "unicode-emoji-dir", 'd', 0, G_OPTION_ARG_STRING, &emoji_dir,
+          "Parse Emoji files in DIRECTORY which includes emoji-test.txt " \
+          "emoji-sequences.txt emoji-zwj-sequences.txt in unicode.org",
+          "DIRECTORY"
         },
         { "out", 'o', 0, G_OPTION_ARG_STRING, &output,
           "Save the emoji data as FILE",
           "FILE"
         },
+        { "out-category", 'C', 0, G_OPTION_ARG_STRING, &output_category,
+          "Save the translatable categories as FILE",
+          "FILE"
+        },
         { "xml", 'x', 0, G_OPTION_ARG_STRING, &xml_file,
           "Parse Unocode.org ANNOTATIONS file",
+          "ANNOTATIONS"
+        },
+        { "xml-derived", 'X', 0, G_OPTION_ARG_STRING, &xml_derived_file,
+          "Parse Unocode.org derived ANNOTATIONS file",
+          "ANNOTATIONS"
+        },
+        { "xml-ascii", 'A', 0, G_OPTION_ARG_STRING, &xml_ascii_file,
+          "Parse ASCII ANNOTATIONS file",
           "ANNOTATIONS"
         },
         { NULL }
@@ -638,12 +1138,22 @@ main (int argc, char *argv[])
     }
     g_option_context_free (context);
 
+#ifdef HAVE_JSON_GLIB1
     if (json_file)
         emojione_parse_json_file (json_file, &list);
+#endif
+    if (emoji_dir)
+        unicode_emoji_parse_dir (emoji_dir, &list);
     if (xml_file)
-        unicode_annotations_parse_xml_file (xml_file, &list);
+        unicode_annotations_parse_xml_file (xml_file, &list, FALSE);
+    if (xml_derived_file)
+        unicode_annotations_parse_xml_file (xml_derived_file, &list, TRUE);
+    if (xml_ascii_file)
+        unicode_annotations_parse_xml_file (xml_ascii_file, &list, FALSE);
     if (list != NULL && output)
         ibus_emoji_data_save (output, list);
+    if (list != NULL && output_category)
+        category_file_save (output_category, list);
     if (list)
         g_slist_free (list);
 

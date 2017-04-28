@@ -43,8 +43,7 @@ vapidir = $(datadir)/vala/vapi
 vapi_DATA = $(VAPIGEN_VAPIS) $(VAPIGEN_VAPIS:.vapi=.deps)
 
 MAINTAINERCLEANFILES = $(VAPIGEN_VAPIS)
-# for make distclean
-CONFIG_CLEAN_FILES = $(VAPIGEN_VAPIS)
+DISTCLEANFILES = $(VAPIGEN_VAPIS)
 
 EXTRA_DIST = \
 	$(VAPIGEN_VAPIS) \

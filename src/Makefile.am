@@ -166,6 +166,7 @@ ibusinclude_HEADERS =       \
 ibus_private_headers =          \
     gtkimcontextsimpleseqs.h    \
     ibuscomposetable.h          \
+    ibusemojigen.h              \
     ibusenginesimpleprivate.h   \
     ibusinternal.h              \
     keyname-table.h             \
@@ -247,17 +248,26 @@ dicts/emoji-en.dict: emoji-parser
 	    echo "WARNING: Not found $(EMOJI_ANNOTATION_DIR)/en.xml" 1>&2; \
 	fi; \
 	for f in $(LANG_FILES) ; do \
+	    if test -f \
+	    "$(EMOJI_ANNOTATION_DIR)/../annotationsDerived/$$f.xml" ; then \
+	        xml_derived_option="--xml-derived $(EMOJI_ANNOTATION_DIR)/../annotationsDerived/$$f.xml"; \
+	        plus_comment="derived"; \
+	    fi; \
 	    if test x"$$f" = xen ; then \
 	        $(builddir)/emoji-parser \
+	            --unicode-emoji-dir $(UNICODE_EMOJI_DIR) \
 	            --xml $(EMOJI_ANNOTATION_DIR)/$$f.xml \
-	            --json $(EMOJI_JSON_FILE) \
+	            $$xml_derived_option \
+	            --xml-ascii $(top_srcdir)/data/annotations/en_ascii.xml \
+	            --out-category ibusemojigen.h \
 	            --out $@; \
 	    else \
 	        $(builddir)/emoji-parser \
 	            --xml $(EMOJI_ANNOTATION_DIR)/$$f.xml \
+	            $$xml_derived_option \
 	            --out dicts/emoji-$$f.dict; \
 	    fi; \
-	    echo "Generated dicts/emoji-$$f.dict"; \
+	    echo "Generated $$plus_comment dicts/emoji-$$f.dict"; \
 	done
 
 install-data-hook: $(dict_DATA)
@@ -301,11 +311,9 @@ emoji_parser_SOURCES =          \
     $(NULL)
 emoji_parser_CFLAGS =           \
     $(GLIB2_CFLAGS)             \
-    $(JSON_GLIB1_CFLAGS)        \
     $(NULL)
 emoji_parser_LDADD =            \
     $(GLIB2_LIBS)               \
-    $(JSON_GLIB1_LIBS)          \
     $(libibus)                  \
     $(NULL)
 
@@ -329,6 +337,7 @@ CLEANFILES +=                   \
     $(NULL)
 
 DISTCLEANFILES =                \
+    ibusemojigen.h              \
     ibusversion.h               \
     $(NULL)
 

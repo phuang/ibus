@@ -12,6 +12,7 @@ ui/gtk3/application.c
 ui/gtk3/candidatearea.c
 ui/gtk3/candidatepanel.c
 ui/gtk3/emojier.c
+ui/gtk3/emojierapp.c
 ui/gtk3/handle.c
 ui/gtk3/iconwidget.c
 ui/gtk3/keybindingmanager.c
@@ -21,4 +22,3 @@ ui/gtk3/property.c
 ui/gtk3/propertypanel.c
 ui/gtk3/separator.c
 ui/gtk3/switcher.c
-ui/gtk3/emojierapp.c

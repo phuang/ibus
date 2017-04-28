@@ -612,14 +612,14 @@ AC_ARG_ENABLE(emoji-dict,
 )
 AM_CONDITIONAL([ENABLE_EMOJI_DICT], [test x"$enable_emoji_dict" = x"yes"])
 
-AC_ARG_WITH(emoji-json-file,
-    AS_HELP_STRING([--with-emoji-json-file[=DIR/emoji.json]],
-        [Set emoji.json. (default: "/usr/lib/node_modules/emojione/emoji.json")
-        ]),
-    EMOJI_JSON_FILE=$with_emoji_json_file,
-    EMOJI_JSON_FILE="/usr/lib/node_modules/emojione/emoji.json"
+AC_ARG_WITH(unicode-emoji-dir,
+    AS_HELP_STRING([--with-unicode-emoji-dir[=DIR]],
+        [Set the directory of Unicode Emoji.
+         (default: "/usr/share/unicode/emoji")]),
+    UNICODE_EMOJI_DIR=$with_unicode_emoji_dir,
+    UNICODE_EMOJI_DIR="/usr/share/unicode/emoji"
 )
-AC_SUBST(EMOJI_JSON_FILE)
+AC_SUBST(UNICODE_EMOJI_DIR)
 
 AC_ARG_WITH(emoji-annotation-dir,
     AS_HELP_STRING([--with-emoji-annotation-dir[=DIR]],
@@ -631,17 +631,14 @@ AC_ARG_WITH(emoji-annotation-dir,
 AC_SUBST(EMOJI_ANNOTATION_DIR)
 
 if test x"$enable_emoji_dict" = x"yes"; then
-    if test ! -f $EMOJI_JSON_FILE ; then
-        AC_MSG_ERROR(Not found $EMOJI_JSON_FILE. You can get emoji.json \
-with "npm install -g emojione".)
+    if test ! -f $UNICODE_EMOJI_DIR/emoji-test.txt ; then
+        AC_MSG_ERROR(Not found $UNICODE_EMOJI_DIR/emoji-test.txt. You can get \
+the emoji files from http://www.unicode.org/Public/emoji/4.0/)
     fi
     if test ! -f $EMOJI_ANNOTATION_DIR/en.xml ; then
         AC_MSG_ERROR(Not found $EMOJI_ANNOTATION_DIR/en.xml. You can get \
 https://github.com/fujiwarat/cldr-emoji-annotation)
     fi
-    PKG_CHECK_MODULES(JSON_GLIB1, [
-        json-glib-1.0
-    ])
     enable_emoji_dict="yes (enabled, use --disable-emoji-dict to disable)"
 fi
 
@@ -730,8 +727,8 @@ Build options:
   Enable surrounding-text       $enable_surrounding_text
   Enable libnotify              $enable_libnotify
   Enable Emoji dict             $enable_emoji_dict
-  emoji.json path               $EMOJI_JSON_FILE
-  CLDR annotation dir           $EMOJI_ANNOTATION_DIR
+  Uicode Emoji directory        $UNICODE_EMOJI_DIR
+  CLDR annotation directory     $EMOJI_ANNOTATION_DIR
   Run test cases                $enable_tests
 ])
 

@@ -167,6 +167,7 @@ class IBusEmojier : Gtk.Window {
     }
 
     private const uint EMOJI_GRID_PAGE = 10;
+    private const string EMOJI_CATEGORY_OTHERS = N_("Others");
 
     // Set the actual default values in the constructor
     // because these fields are used for class_init() and static functions,
@@ -372,8 +373,7 @@ class IBusEmojier : Gtk.Window {
 
 
     private static void update_annotation_to_emojis_dict(IBus.EmojiData data) {
-        string emoji = (data.get_emoji_alternates() != "") ?
-                data.get_emoji_alternates() : data.get_emoji();
+        string emoji = data.get_emoji();
         unowned GLib.SList<string> annotations = data.get_annotations();
         foreach (string annotation in annotations) {
             bool has_emoji = false;
@@ -434,23 +434,70 @@ class IBusEmojier : Gtk.Window {
     }
 
 
+    private static string utf8_entity(string str) {
+        GLib.StringBuilder buff = new GLib.StringBuilder();
+        int length = str.char_count();
+        for (int i = 0; i < length; i++) {
+            unichar ch = str.get_char(0);
+            switch(ch) {
+            case '<':
+                buff.append("&lt;");
+                break;
+            case '>':
+                buff.append("&gt;");
+                break;
+            case '&':
+                buff.append("&amp;");
+                break;
+            default:
+                buff.append_unichar(ch);
+                break;
+            }
+            str = str.next_char();
+        }
+        return buff.str;
+    }
+
+
+    private static void
+    update_annotations_with_description (IBus.EmojiData data,
+                                         string         description) {
+        unowned GLib.SList<string> annotations = data.get_annotations();
+        bool update_annotations = false;
+        string former = null;
+        string later = null;
+        int index = description.index_of(": ");
+        if (index > 0) {
+            former = description.substring(0, index);
+            if (annotations.find_custom(former, GLib.strcmp) == null) {
+                annotations.append(former);
+                update_annotations = true;
+            }
+            later = description.substring(index + 2);
+        } else {
+            later = description.dup();
+        }
+        var words = later.split(" ");
+        // If the description has less than 3 words, add it to annotations
+        // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
+        if (words.length < 3 &&
+            annotations.find_custom(
+                    later,
+                    GLib.strcmp) == null) {
+            annotations.append(later);
+            update_annotations = true;
+        }
+        if (update_annotations)
+            data.set_annotations(annotations.copy_deep(GLib.strdup));
+    }
+
+
     private static void update_emoji_to_data_dict(IBus.EmojiData data,
                                                   string         lang) {
-        string emoji = (data.get_emoji_alternates() != "") ?
-                data.get_emoji_alternates() : data.get_emoji();
+        string emoji = data.get_emoji();
         if (lang == "en") {
             string description = utf8_down(data.get_description());
-            unowned GLib.SList<string> annotations = data.get_annotations();
-            var words = description.split(" ");
-            // If the description has less than 3 words, add it to annotations
-            // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
-            if (words.length < 3 &&
-                annotations.find_custom(
-                        description,
-                        GLib.strcmp) == null) {
-                annotations.append(description);
-                data.set_annotations(annotations.copy_deep(GLib.strdup));
-            }
+            update_annotations_with_description (data, description);
             m_emoji_to_data_dict.replace(emoji, data);
         } else {
             unowned IBus.EmojiData? en_data =
@@ -462,16 +509,8 @@ class IBusEmojier : Gtk.Window {
             string trans_description = data.get_description();
             en_data.set_description(trans_description);
             trans_description = utf8_down(trans_description);
+            update_annotations_with_description (data, trans_description);
             unowned GLib.SList<string> annotations = data.get_annotations();
-            var words = trans_description.split(" ");
-            // If the description has less than 3 words, add it to annotations
-            // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
-            if (words.length < 3 &&
-                annotations.find_custom(
-                        trans_description,
-                        GLib.strcmp) == null) {
-                annotations.append(trans_description);
-            }
             unowned GLib.SList<string> en_annotations
                 = en_data.get_annotations();
             foreach (string annotation in en_annotations) {
@@ -489,10 +528,11 @@ class IBusEmojier : Gtk.Window {
 
     private static void update_category_to_emojis_dict(IBus.EmojiData data,
                                                        string         lang) {
-        string emoji = (data.get_emoji_alternates() != "") ?
-                data.get_emoji_alternates() : data.get_emoji();
+        string emoji = data.get_emoji();
         string category = data.get_category();
-        if (lang == "en" && category != "") {
+        if (category == "")
+            category = EMOJI_CATEGORY_OTHERS;
+        if (lang == "en") {
             bool has_emoji = false;
             unowned GLib.SList<string> hits =
                     m_category_to_emojis_dict.lookup(category);
@@ -562,9 +602,17 @@ class IBusEmojier : Gtk.Window {
                 m_category_to_emojis_dict.get_keys();
         // FIXME: How to cast GLib.CompareFunc<string> to strcmp?
         categories.sort((a, b) => {
+            if (a == EMOJI_CATEGORY_OTHERS && b != EMOJI_CATEGORY_OTHERS)
+                return 1;
+            else if (a != EMOJI_CATEGORY_OTHERS && b == EMOJI_CATEGORY_OTHERS)
+                return -1;
             return GLib.strcmp(_(a), _(b));
         });
         foreach (unowned string category in categories) {
+            // "Others" category includes next unicode chars and fonts do not support
+            // the base and varints yet.
+            if (category == EMOJI_CATEGORY_OTHERS)
+               continue;
             EBoxRow row = new EBoxRow(category);
             string locale_category = _(category);
             EPaddedLabelBox widget =
@@ -718,7 +766,7 @@ class IBusEmojier : Gtk.Window {
         uint page_end_pos = uint.min(page_start_pos + page_size, ncandidates);
         if (m_backward != null) {
             string backward_desc =
-                    "%s (%u / %u)".printf(m_backward, cursor, ncandidates - 1);
+                    "%s (%u / %u)".printf(_(m_backward), cursor, ncandidates - 1);
             EPaddedLabelBox label =
                     new EPaddedLabelBox(backward_desc,
                                         Gtk.Align.CENTER,
@@ -746,7 +794,7 @@ class IBusEmojier : Gtk.Window {
                 int font_size = m_emoji_font_size - 2;
                 string emoji_font = "%s %d".printf(font_family, font_size);
                 string markup = "<span font=\"%s\">%s</span>".
-                        printf(emoji_font, candidate.get_text());
+                        printf(emoji_font, utf8_entity(candidate.get_text()));
                 label.set_markup(markup);
             }
             label.set_halign(Gtk.Align.FILL);

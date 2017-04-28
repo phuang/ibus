@@ -2,7 +2,7 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2016-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -22,6 +22,7 @@
 
 EXTRA_DIST = \
 	en.xml \
+	en_ascii.xml \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
