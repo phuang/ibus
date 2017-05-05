@@ -22,6 +22,9 @@
 
 string emoji_font = null;
 string annotation_lang = null;
+bool partial_match = false;
+int partial_match_length = -1;
+int partial_match_condition = -1;
 
 public class EmojiApplication : Application {
     private IBusEmojier? m_emojier;
@@ -65,17 +68,28 @@ public class EmojiApplication : Application {
 
         const OptionEntry[] options = {
             { "font", 0, 0, OptionArg.STRING, out emoji_font,
-                /* TRANSLATORS: "FONT" should be capital and translatable.
-                 * It's used for an argument command --font=FONT
-                 */
-                N_("\"FONT\" for emoji chracters on emoji dialog"),
-                N_("FONT") },
+              /* TRANSLATORS: "FONT" should be capital and translatable.
+               * It's used for an argument command --font=FONT
+               */
+              N_("\"FONT\" for emoji chracters on emoji dialog"),
+              N_("FONT") },
             { "lang", 0, 0, OptionArg.STRING, out annotation_lang,
-                /* TRANSLATORS: "LANG" should be capital and translatable.
-                 * It's used for an argument command --lang=LANG
-                 */
-                N_("\"LANG\" for annotations on emoji dialog. E.g. \"en\""),
-                N_("LANG") },
+              /* TRANSLATORS: "LANG" should be capital and translatable.
+               * It's used for an argument command --lang=LANG
+               */
+              N_("\"LANG\" for annotations on emoji dialog. E.g. \"en\""),
+              N_("LANG") },
+            { "partial-match", 0, 0, OptionArg.NONE, out partial_match,
+              N_("Emoji annotaions can be match partially"),
+              null },
+            { "partial-match-length", 0, 0, OptionArg.INT,
+              out partial_match_length,
+              N_("Match with the length of the specified integer"),
+              null },
+            { "partial-match-condition", 0, 0, OptionArg.INT,
+              out partial_match_condition,
+              N_("Match with the condition of the specified integer"),
+              null },
             { null }
         };
 
@@ -111,6 +125,24 @@ public class EmojiApplication : Application {
         if (annotation_lang == null)
             annotation_lang = m_settings_emoji.get_string("lang");
         IBusEmojier.set_annotation_lang(annotation_lang);
+        IBusEmojier.set_partial_match(partial_match);
+        if (partial_match_length > 0) {
+            IBusEmojier.set_partial_match_length(partial_match_length);
+        } else {
+            IBusEmojier.set_partial_match_length(
+                    m_settings_emoji.get_int("partial-match-length"));
+        }
+        if (partial_match_condition > 2) {
+            warning("Need condition between 0 and 2.");
+            IBusEmojier.set_partial_match_condition(
+                    m_settings_emoji.get_int("partial-match-condition"));
+        }
+        else if (partial_match_condition >= 0) {
+            IBusEmojier.set_partial_match_condition(partial_match_condition);
+        } else {
+            IBusEmojier.set_partial_match_condition(
+                    m_settings_emoji.get_int("partial-match-condition"));
+        }
 
         if (emoji_font != null)
             IBusEmojier.set_emoji_font(emoji_font);

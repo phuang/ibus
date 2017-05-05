@@ -187,19 +187,6 @@ class Setup(object):
                                     self.__fontbutton_custom_font,
                                    'sensitive',
                                    Gio.SettingsBindFlags.GET)
-        self.__fontbutton_emoji_font = self.__builder.get_object(
-                'fontbutton_emoji_font')
-        self.__fontbutton_emoji_font.set_preview_text('🙂🍎🚃💓📧⚽🐳');
-        self.__settings_emoji.bind('font',
-                                    self.__fontbutton_emoji_font,
-                                   'font-name',
-                                   Gio.SettingsBindFlags.DEFAULT)
-        self.__button_emoji_lang = self.__builder.get_object(
-                'button_emoji_lang')
-        self.__settings_emoji.bind('lang',
-                                    self.__button_emoji_lang,
-                                   'lang',
-                                   Gio.SettingsBindFlags.DEFAULT)
 
         # show icon on system tray
         self.__checkbutton_show_icon_on_systray = self.__builder.get_object(
@@ -287,6 +274,113 @@ class Setup(object):
         self.__treeview.connect("notify::active-engine", self.__treeview_notify_cb)
         self.__treeview.connect("notify::engines", self.__treeview_notify_cb)
 
+    def __init_emoji(self):
+        self.__fontbutton_emoji_font = self.__builder.get_object(
+                'fontbutton_emoji_font')
+        self.__fontbutton_emoji_font.set_preview_text('🙂🍎🚃💓📧⚽🐳');
+        self.__settings_emoji.bind('font',
+                                    self.__fontbutton_emoji_font,
+                                   'font-name',
+                                   Gio.SettingsBindFlags.DEFAULT)
+        self.__button_emoji_lang = self.__builder.get_object(
+                'button_emoji_lang')
+        self.__settings_emoji.bind('lang',
+                                    self.__button_emoji_lang,
+                                   'lang',
+                                   Gio.SettingsBindFlags.DEFAULT)
+        self.__checkbutton_emoji_partial_match = self.__builder.get_object(
+                'checkbutton_emoji_partial_match')
+        checkbutton_label = self.__checkbutton_emoji_partial_match.get_child()
+        if type(checkbutton_label) == Gtk.Label:
+            checkbutton_label.set_property('wrap', True)
+            checkbutton_label.set_property('max-width-chars', 74)
+        self.__spinbutton_emoji_partial_match = self.__builder.get_object(
+                'spinbutton_emoji_partial_match')
+        self.__settings_emoji.bind('has-partial-match',
+                                   self.__checkbutton_emoji_partial_match,
+                                   'active',
+                                   Gio.SettingsBindFlags.DEFAULT)
+        self.__settings_emoji.bind('has-partial-match',
+                                   self.__spinbutton_emoji_partial_match,
+                                   'sensitive',
+                                   Gio.SettingsBindFlags.GET)
+
+        def adjustment_value_changed_cb(obj):
+            key = 'partial-match-length'
+            value = int(adjustment.get_value())
+            if value == self.__settings_emoji.get_int(key):
+                return
+            self.__settings_emoji.set_int(key, value)
+        def settings_emoji_partial_match_length_cb(settings, key):
+            value = self.__settings_emoji.get_int(key)
+            old_value = int(self.__spinbutton_emoji_partial_match.get_value())
+            if value == old_value:
+                return
+            self.__spinbutton_emoji_partial_match.set_value(value)
+        settings_emoji_partial_match_length_cb(None, 'partial-match-length')
+        adjustment = self.__spinbutton_emoji_partial_match.get_adjustment()
+        adjustment.connect('value-changed', adjustment_value_changed_cb)
+        self.__settings_emoji.connect('changed::partial-match-length',
+                                      settings_emoji_partial_match_length_cb)
+
+        self.__hbox_emoji_partial_match = self.__builder.get_object(
+                'hbox_emoji_partial_match')
+        self.__settings_emoji.bind('has-partial-match',
+                                   self.__hbox_emoji_partial_match,
+                                   'sensitive',
+                                   Gio.SettingsBindFlags.GET)
+        self.__radiobutton_emoji_prefix_match = self.__builder.get_object(
+                'radiobutton_emoji_prefix_match')
+        self.__radiobutton_emoji_suffix_match = self.__builder.get_object(
+                'radiobutton_emoji_suffix_match')
+        self.__radiobutton_emoji_contain_match = self.__builder.get_object(
+                'radiobutton_emoji_contain_match')
+
+        def radiobuton_emoji_partial_match_cb(obj):
+            key = 'partial-match-condition'
+            condition = 0
+            if not obj.get_active():
+                return
+            if obj == self.__radiobutton_emoji_prefix_match:
+                condition = 0
+            elif obj == self.__radiobutton_emoji_suffix_match:
+                condition = 1
+            elif obj == self.__radiobutton_emoji_contain_match:
+                condition = 2
+            else:
+                print('Wrong emoji partial match object')
+                return
+            self.__settings_emoji.set_int(key, condition)
+        def settings_emoji_partial_match_condition_cb(settings, key):
+            value = self.__settings_emoji.get_int(key)
+            obj = None
+            if value == 0:
+                obj = self.__radiobutton_emoji_prefix_match
+            elif value == 1:
+                obj = self.__radiobutton_emoji_suffix_match
+            elif value == 2:
+                obj = self.__radiobutton_emoji_contain_match
+            else:
+                print('Wrong emoji partial match condition')
+                return
+            if obj.get_active():
+                return
+            obj.set_active(True)
+
+        settings_emoji_partial_match_condition_cb(None,
+                                                  'partial-match-condition')
+        self.__radiobutton_emoji_prefix_match.connect(
+                'toggled',
+                radiobuton_emoji_partial_match_cb)
+        self.__radiobutton_emoji_suffix_match.connect(
+                'toggled',
+                radiobuton_emoji_partial_match_cb)
+        self.__radiobutton_emoji_contain_match.connect(
+                'toggled',
+                radiobuton_emoji_partial_match_cb)
+        self.__settings_emoji.connect('changed::partial-match-condition',
+                                      settings_emoji_partial_match_condition_cb)
+
     def __init_ui(self):
         # add icon search path
         self.__window = self.__builder.get_object("window_preferences")
@@ -306,6 +400,7 @@ class Setup(object):
         self.__init_hotkeys()
         self.__init_panel()
         self.__init_general()
+        self.__init_emoji()
 
     def __gdk_window_set_cb(self, object, pspec):
         window = object.get_window()

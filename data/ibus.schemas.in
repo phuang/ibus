@@ -404,6 +404,45 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/has-partial-match</key>
+      <applyto>/desktop/ibus/panel/emoji/has-partial-match</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Whether emoji annotaions can be match partially or not</short>
+	    <long>Whether emoji annotations can be matched with a partial
+                  string instead of the exact match or not.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/partial-match-length</key>
+      <applyto>/desktop/ibus/panel/emoji/partial-match-length</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>3</default>
+      <locale name="C">
+        <short>Match emoji annotaions with the specified length</short>
+	    <long>Match emoji annotations partially with more than
+                  the specified number of characters instead of
+                  the exact match.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/partial-match-condition</key>
+      <applyto>/desktop/ibus/panel/emoji/partial-match-condition</applyto>
+      <owner>ibus</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+        <short>Choose a condition to match emoji annotations partially</short>
+	    <long>Choose one of the following conditions to match emoji
+	          annotations partially:
+                  0 == Prefix match, 1 == Suffix match, 2 == Containing match
+                  </long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/embed_preedit_text</key>
       <applyto>/desktop/ibus/general/embed_preedit_text</applyto>
       <owner>ibus</owner>

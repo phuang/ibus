@@ -248,6 +248,18 @@ class Panel : IBus.PanelService {
         m_settings_emoji.changed["lang"].connect((key) => {
                 set_emoji_lang();
         });
+
+        m_settings_emoji.changed["has-partial-match"].connect((key) => {
+                set_emoji_partial_match();
+        });
+
+        m_settings_emoji.changed["partial-match-length"].connect((key) => {
+                set_emoji_partial_match();
+        });
+
+        m_settings_emoji.changed["partial-match-condition"].connect((key) => {
+                set_emoji_partial_match();
+        });
     }
 
 #if INDICATOR
@@ -782,6 +794,15 @@ class Panel : IBus.PanelService {
         });
     }
 
+    private void set_emoji_partial_match() {
+        IBusEmojier.set_partial_match(
+                m_settings_emoji.get_boolean("has-partial-match"));
+        IBusEmojier.set_partial_match_length(
+                m_settings_emoji.get_int("partial-match-length"));
+        IBusEmojier.set_partial_match_condition(
+                m_settings_emoji.get_int("partial-match-condition"));
+    }
+
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
         string[] version2_list = version2.split(".");
@@ -897,6 +918,7 @@ class Panel : IBus.PanelService {
         set_property_icon_delay_time();
         set_emoji_favorites();
         set_emoji_lang();
+        set_emoji_partial_match();
     }
 
     private void engine_contexts_insert(IBus.EngineDesc engine) {

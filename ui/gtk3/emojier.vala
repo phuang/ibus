@@ -177,6 +177,9 @@ class IBusEmojier : Gtk.Window {
     private static int m_emoji_font_size;
     private static string[] m_favorites;
     private static int m_emoji_max_seq_len;
+    private static bool m_has_partial_match;
+    private static uint m_partial_match_length;
+    private static uint m_partial_match_condition;
     private static GLib.HashTable<string, GLib.SList>?
             m_annotation_to_emojis_dict;
     private static GLib.HashTable<string, IBus.EmojiData>?
@@ -738,16 +741,53 @@ class IBusEmojier : Gtk.Window {
         }
         // Call check_unicode_point() to get m_unicode_point
         check_unicode_point();
-        unowned GLib.SList<string>? emojis =
-            m_annotation_to_emojis_dict.lookup(annotation);
-        if (emojis == null && m_unicode_point == null) {
+        GLib.SList<string>? total_emojis = null;
+        unowned GLib.SList<string>? sub_emojis = null;
+        int length = annotation.length;
+        if (m_has_partial_match && length >= m_partial_match_length) {
+            foreach (unowned string key in
+                     m_annotation_to_emojis_dict.get_keys()) {
+                if (key.length < length)
+                    continue;
+                bool matched = false;
+                switch(m_partial_match_condition) {
+                case 0:
+                    if (key.has_prefix(annotation))
+                        matched = true;
+                    break;
+                case 1:
+                    if (key.has_suffix(annotation))
+                        matched = true;
+                    break;
+                case 2:
+                    if (key.str(annotation) != null)
+                        matched = true;
+                    break;
+                default:
+                    break;
+                }
+                if (!matched)
+                    continue;
+                sub_emojis = m_annotation_to_emojis_dict.lookup(key);
+                foreach (unowned string emoji in sub_emojis) {
+                    if (total_emojis.find_custom(emoji, GLib.strcmp) == null) {
+                        total_emojis.append(emoji);
+                    }
+                }
+            }
+        } else {
+            sub_emojis = m_annotation_to_emojis_dict.lookup(annotation);
+            foreach (unowned string emoji in sub_emojis)
+                total_emojis.append(emoji);
+        }
+        if (total_emojis == null && m_unicode_point == null) {
             hide_candidate_panel();
             return;
         }
         m_lookup_table.clear();
         // Call check_unicode_point() to update m_lookup_table
         check_unicode_point();
-        foreach (unowned string emoji in emojis) {
+        foreach (unowned string emoji in total_emojis) {
             IBus.Text text = new IBus.Text.from_string(emoji);
             m_lookup_table.append_candidate(text);
         }
@@ -1330,6 +1370,22 @@ class IBusEmojier : Gtk.Window {
             m_emoji_font_size = font_size;
     }
 
+
+    public static void set_partial_match(bool has_partial_match) {
+        m_has_partial_match = has_partial_match;
+    }
+
+    public static void set_partial_match_length(int length) {
+        if (length < 1)
+            return;
+        m_partial_match_length = length;
+    }
+
+    public static void set_partial_match_condition(int condition) {
+        if (condition < 0)
+            return;
+        m_partial_match_condition = condition;
+    }
 
     public static void set_favorites(string[]? unowned_favorites) {
         m_favorites = {};
