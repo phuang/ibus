@@ -20,7 +20,7 @@
  * USA
  */
 
-class IBusEmojier : Gtk.Window {
+class IBusEmojier : Gtk.ApplicationWindow {
     private class EEntry : Gtk.SearchEntry {
         public EEntry() {
             GLib.Object(
@@ -97,6 +97,15 @@ class IBusEmojier : Gtk.Window {
                 set_label(text);
         }
     }
+    private class EGoldLabel : Gtk.Label {
+        public EGoldLabel(string text) {
+            GLib.Object(
+                name : "IBusEmojierGoldLabel"
+            );
+            if (text != "")
+                set_label(text);
+        }
+    }
     private class EPaddedLabel : Gtk.Label {
         public EPaddedLabel(string          text,
                             Gtk.Align       align) {
@@ -150,11 +159,21 @@ class IBusEmojier : Gtk.Window {
             var vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
             set_custom_title(vbox);
             var label = new Gtk.Label(title);
-            label.get_style_context().add_class("title");
+            label.get_style_context().add_class(Gtk.STYLE_CLASS_TITLE);
             vbox.pack_start(label, true, false, 0);
             m_lang_label = new Gtk.Label(null);
-            m_lang_label.get_style_context().add_class("subtitle");
+            m_lang_label.get_style_context().add_class(
+                    Gtk.STYLE_CLASS_SUBTITLE);
             vbox.pack_start(m_lang_label, true, false, 0);
+
+            var menu = new GLib.Menu();
+            menu.append(_("Show emoji variants"), "win.variant");
+            var menu_button = new Gtk.MenuButton();
+            menu_button.set_direction(Gtk.ArrowType.NONE);
+            menu_button.set_valign(Gtk.Align.CENTER);
+            menu_button.set_menu_model(menu);
+            menu_button.set_tooltip_text(_("Menu"));
+            pack_end(menu_button);
         }
         public void set_lang_label(string str) {
             m_lang_label.set_text(str);
@@ -167,7 +186,13 @@ class IBusEmojier : Gtk.Window {
     }
 
     private const uint EMOJI_GRID_PAGE = 10;
+    private const string EMOJI_CATEGORY_FAVORITES = N_("Favorites");
     private const string EMOJI_CATEGORY_OTHERS = N_("Others");
+    private const unichar[] EMOJI_VARIANT_LIST = {
+            0x1f3fb, 0x1f3fc, 0x1f3fd, 0x1f3fe, 0x1f3ff, 0x200d };
+    private const GLib.ActionEntry[] m_action_entries = {
+        { "variant", check_action_variant_cb, null, "false", null }
+    };
 
     // Set the actual default values in the constructor
     // because these fields are used for class_init() and static functions,
@@ -180,18 +205,22 @@ class IBusEmojier : Gtk.Window {
     private static bool m_has_partial_match;
     private static uint m_partial_match_length;
     private static uint m_partial_match_condition;
-    private static GLib.HashTable<string, GLib.SList>?
+    private static bool m_show_emoji_variant = false;
+    private static GLib.HashTable<string, GLib.SList<string>>?
             m_annotation_to_emojis_dict;
     private static GLib.HashTable<string, IBus.EmojiData>?
             m_emoji_to_data_dict;
-    private static GLib.HashTable<string, GLib.SList>?
+    private static GLib.HashTable<string, GLib.SList<string>>?
             m_category_to_emojis_dict;
+    private static GLib.HashTable<string, GLib.SList<string>>?
+            m_emoji_to_emoji_variants_dict;
 
     private ThemedRGBA m_rgba;
     private Gtk.Box m_vbox;
     private ETitleLabelBox m_title;
     private EEntry m_entry;
     private string? m_backward;
+    private int m_backward_index = -1;
     private EScrolledWindow? m_scrolled_window = null;
     private EListBox m_list_box;
     private bool m_is_running = false;
@@ -200,7 +229,7 @@ class IBusEmojier : Gtk.Window {
     private string? m_result;
     private string? m_unicode_point = null;
     private bool m_candidate_panel_is_visible;
-    int m_category_active_index;
+    private int m_category_active_index;
     private IBus.LookupTable m_lookup_table;
     private Gtk.Label[] m_candidates;
     private bool m_enter_notify_enable = true;
@@ -223,6 +252,7 @@ class IBusEmojier : Gtk.Window {
             focus_visible : true
         );
 
+        add_action_entries(m_action_entries, this);
         if (m_current_lang_id == null)
             m_current_lang_id = "en";
         if (m_emoji_font_family == null)
@@ -269,6 +299,13 @@ class IBusEmojier : Gtk.Window {
                 "background-color: " +
                         "rgba(%u, %u, %u, %lf); ".printf(
                         bg_red, bg_green, bg_blue, bg_alpha) +
+                "border-width: 4px; border-radius: 3px; }";
+        data += "#IBusEmojierGoldLabel { color: " +
+                        "rgba(%u, %u, %u, %lf); ".printf(
+                        fg_red, fg_green, fg_blue, fg_alpha) +
+                "font-family: %s; font-size: %dpt; ".printf(
+                        m_emoji_font_family, m_emoji_font_size) +
+                "background-color: #b09c5f; " +
                 "border-width: 4px; border-radius: 3px; }";
 
         Gtk.CssProvider css_provider = new Gtk.CssProvider();
@@ -317,10 +354,7 @@ class IBusEmojier : Gtk.Window {
         });
 
         candidate_clicked.connect((i, b, s) => {
-            IBus.Text candidate = m_lookup_table.get_candidate(i);
-            m_result = candidate.text;
-            m_loop.quit();
-            hide_candidate_panel();
+            candidate_panel_select_index(i);
         });
 
         if (m_annotation_to_emojis_dict == null) {
@@ -345,14 +379,17 @@ class IBusEmojier : Gtk.Window {
 
     private static void init_emoji_dict() {
         m_annotation_to_emojis_dict =
-                new GLib.HashTable<string, GLib.SList>(GLib.str_hash,
-                                                       GLib.str_equal);
+                new GLib.HashTable<string, GLib.SList<string>>(GLib.str_hash,
+                                                               GLib.str_equal);
         m_emoji_to_data_dict =
                 new GLib.HashTable<string, IBus.EmojiData>(GLib.str_hash,
                                                            GLib.str_equal);
         m_category_to_emojis_dict =
-                new GLib.HashTable<string, GLib.SList>(GLib.str_hash,
-                                                       GLib.str_equal);
+                new GLib.HashTable<string, GLib.SList<string>>(GLib.str_hash,
+                                                               GLib.str_equal);
+        m_emoji_to_emoji_variants_dict =
+                new GLib.HashTable<string, GLib.SList<string>>(GLib.str_hash,
+                                                               GLib.str_equal);
     }
 
 
@@ -390,14 +427,16 @@ class IBusEmojier : Gtk.Window {
             }
             if (!has_emoji) {
                 hits.append(emoji);
-                m_annotation_to_emojis_dict.replace(annotation, hits.copy());
+                m_annotation_to_emojis_dict.replace(
+                        annotation,
+                        hits.copy_deep(GLib.strdup));
             }
         }
     }
 
 
     private static string utf8_down(string str) {
-        GLib.StringBuilder buff = new GLib.StringBuilder();
+        var buff = new GLib.StringBuilder();
         int length = str.char_count();
         for (int i = 0; i < length; i++) {
             buff.append_unichar(str.get_char(0).tolower());
@@ -407,23 +446,8 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private static string utf8_title(string str) {
-        StringBuilder buff = new StringBuilder();
-        int length = str.char_count();
-        for (int i = 0; i < length; i++) {
-            unichar ch = str.get_char(0);
-            if (i == 0)
-                buff.append_unichar(ch.toupper());
-            else
-                buff.append_unichar(ch);
-            str = str.next_char();
-        }
-        return buff.str;
-    }
-
-
     private static string utf8_code_point(string str) {
-        StringBuilder buff = new StringBuilder();
+        var buff = new GLib.StringBuilder();
         int length = str.char_count();
         for (int i = 0; i < length; i++) {
             unichar ch = str.get_char(0);
@@ -438,7 +462,7 @@ class IBusEmojier : Gtk.Window {
 
 
     private static string utf8_entity(string str) {
-        GLib.StringBuilder buff = new GLib.StringBuilder();
+        var buff = new GLib.StringBuilder();
         int length = str.char_count();
         for (int i = 0; i < length; i++) {
             unichar ch = str.get_char(0);
@@ -503,8 +527,19 @@ class IBusEmojier : Gtk.Window {
             update_annotations_with_description (data, description);
             m_emoji_to_data_dict.replace(emoji, data);
         } else {
-            unowned IBus.EmojiData? en_data =
-                    m_emoji_to_data_dict.lookup(emoji);
+            unowned IBus.EmojiData? en_data = null;
+            // If emoji presentation (+= 0xfe0f) is already saved in dict,
+            // update it instead of no presentation.
+            // emoji-test.txt has all emoji presentations but $lang.xml has
+            // some no emoji presentations.
+            if (emoji.chr(-1, 0xfe0f) == null) {
+                var buff = new GLib.StringBuilder();
+                buff.append(emoji);
+                buff.append_unichar(0xfe0f);
+                en_data = m_emoji_to_data_dict.lookup(buff.str);
+            }
+            if (en_data == null)
+                en_data = m_emoji_to_data_dict.lookup(emoji);
             if (en_data == null) {
                 m_emoji_to_data_dict.insert(emoji, data);
                 return;
@@ -536,6 +571,36 @@ class IBusEmojier : Gtk.Window {
         if (category == "")
             category = EMOJI_CATEGORY_OTHERS;
         if (lang == "en") {
+            bool has_variant = false;
+            foreach (unichar ch in EMOJI_VARIANT_LIST) {
+                if (emoji.chr(-1, ch) != null) {
+                    has_variant = true;
+                    break;
+                }
+            }
+            // If emoji includes variants (skin colors and items),
+            // it's escaped in m_emoji_to_emoji_variants_dict and
+            // not shown by default.
+            if (has_variant) {
+                unichar base_ch = emoji.get_char();
+                string base_emoji  = base_ch.to_string();
+                var buff = new GLib.StringBuilder();
+                buff.append_unichar(base_ch);
+                buff.append_unichar(0xfe0f);
+                if (m_emoji_to_data_dict.lookup(buff.str) != null)
+                    base_emoji = buff.str;
+                unowned GLib.SList<string>? variants =
+                    m_emoji_to_emoji_variants_dict.lookup(base_emoji);
+                if (variants.find_custom(emoji, GLib.strcmp) == null) {
+                    if (variants == null)
+                        variants.append(base_emoji);
+                    variants.append(emoji);
+                    m_emoji_to_emoji_variants_dict.replace(
+                            base_emoji,
+                            variants.copy_deep(GLib.strdup));
+                }
+                return;
+            }
             bool has_emoji = false;
             unowned GLib.SList<string> hits =
                     m_category_to_emojis_dict.lookup(category);
@@ -547,7 +612,8 @@ class IBusEmojier : Gtk.Window {
             }
             if (!has_emoji) {
                 hits.append(emoji);
-                m_category_to_emojis_dict.replace(category, hits.copy());
+                m_category_to_emojis_dict.replace(category,
+                                                  hits.copy_deep(GLib.strdup));
             }
         }
     }
@@ -588,14 +654,15 @@ class IBusEmojier : Gtk.Window {
         m_list_box.row_activated.connect((box, gtkrow) => {
             m_category_active_index = 0;
             EBoxRow row = gtkrow as EBoxRow;
-            show_emoji_for_category(row);
+            show_emoji_for_category(row.text);
         });
 
         uint n = 1;
         if (m_favorites.length > 0) {
-            EBoxRow row = new EBoxRow("@favorites");
+            EBoxRow row = new EBoxRow(EMOJI_CATEGORY_FAVORITES);
             EPaddedLabelBox widget =
-                    new EPaddedLabelBox(_("Favorites"), Gtk.Align.CENTER);
+                    new EPaddedLabelBox(_(EMOJI_CATEGORY_FAVORITES),
+                                        Gtk.Align.CENTER);
             row.add(widget);
             m_list_box.add(row);
             if (n++ == m_category_active_index)
@@ -617,10 +684,8 @@ class IBusEmojier : Gtk.Window {
             if (category == EMOJI_CATEGORY_OTHERS)
                continue;
             EBoxRow row = new EBoxRow(category);
-            string locale_category = _(category);
             EPaddedLabelBox widget =
-                    new EPaddedLabelBox(utf8_title(locale_category),
-                                        Gtk.Align.CENTER);
+                    new EPaddedLabelBox(_(category), Gtk.Align.CENTER);
             row.add(widget);
             m_list_box.add(row);
             if (n++ == m_category_active_index)
@@ -635,23 +700,40 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private void show_emoji_for_category(EBoxRow row) {
-        if (row.text == "@favorites") {
+    private void show_emoji_for_category(string category) {
+        if (category == EMOJI_CATEGORY_FAVORITES) {
             m_lookup_table.clear();
             foreach (unowned string favorate in m_favorites) {
                 IBus.Text text = new IBus.Text.from_string(favorate);
                 m_lookup_table.append_candidate(text);
             }
-            m_backward = _("Favorites");
+            m_backward = category;
         } else {
             unowned GLib.SList<unowned string> emojis =
-                    m_category_to_emojis_dict.lookup(row.text);
+                    m_category_to_emojis_dict.lookup(category);
             m_lookup_table.clear();
             foreach (unowned string emoji in emojis) {
                 IBus.Text text = new IBus.Text.from_string(emoji);
                 m_lookup_table.append_candidate(text);
             }
-            m_backward = utf8_title(row.text);
+            m_backward = category;
+        }
+        // Restore the cursor position before the special table of
+        // emoji variants is shown.
+        if (m_backward_index >= 0) {
+            m_lookup_table.set_cursor_pos((uint)m_backward_index);
+            m_backward_index = -1;
+        }
+        show_candidate_panel();
+    }
+
+
+    private void show_emoji_variants(GLib.SList<string>? emojis) {
+        m_backward_index = (int)m_lookup_table.get_cursor_pos();
+        m_lookup_table.clear();
+        foreach (unowned string emoji in emojis) {
+            IBus.Text text = new IBus.Text.from_string(emoji);
+            m_lookup_table.append_candidate(text);
         }
         show_candidate_panel();
     }
@@ -696,8 +778,8 @@ class IBusEmojier : Gtk.Window {
     private bool check_unicode_point() {
         string annotation = m_entry.get_text();
         m_unicode_point = null;
-        GLib.StringBuilder buff = new GLib.StringBuilder();
-        GLib.StringBuilder retval = new GLib.StringBuilder();
+        var buff = new GLib.StringBuilder();
+        var retval = new GLib.StringBuilder();
         for (int i = 0; i < annotation.char_count(); i++) {
             unichar ch = annotation.get_char(i);
             if (ch == 0)
@@ -727,7 +809,7 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    public void update_candidate_window() {
+    private void update_candidate_window() {
         string annotation = m_entry.get_text();
         if (annotation.length == 0) {
             hide_candidate_panel();
@@ -795,6 +877,22 @@ class IBusEmojier : Gtk.Window {
     }
 
 
+    private void show_code_point_description(string text) {
+        EPaddedLabelBox widget_code = new EPaddedLabelBox(
+                    _("Code point: %s").printf(utf8_code_point(text)),
+                    Gtk.Align.START);
+        m_vbox.add(widget_code);
+        widget_code.show_all();
+        if (m_emoji_to_emoji_variants_dict.lookup(text) != null) {
+            EPaddedLabelBox widget_has_variant = new EPaddedLabelBox(
+                    _("Has emoji variants"),
+                    Gtk.Align.START);
+            m_vbox.add(widget_has_variant);
+            widget_has_variant.show_all();
+        }
+    }
+
+
     private void show_candidate_panel() {
         remove_all_children();
         set_fixed_size();
@@ -823,18 +921,27 @@ class IBusEmojier : Gtk.Window {
         EGrid grid = new EGrid();
         int n = 0;
         for (uint i = page_start_pos; i < page_end_pos; i++) {
-            IBus.Text candidate = m_lookup_table.get_candidate(i);
+            string text = m_lookup_table.get_candidate(i).text;
+            bool has_variant =
+                    (m_emoji_to_emoji_variants_dict.lookup(text) != null);
             Gtk.Label label;
-            if (i == cursor)
-                label = new ESelectedLabel(candidate.text) as Gtk.Label;
-            else
-                label = new EWhiteLabel(candidate.text) as Gtk.Label;
-            if (candidate.text.char_count() > 2) {
+            // If 'i' is the cursor position, use the selected color.
+            // If the emoji has emoji variants, use the gold color.
+            // Otherwise the white color.
+            if (i == cursor) {
+                label = new ESelectedLabel(text) as Gtk.Label;
+            } else if (m_show_emoji_variant && has_variant &&
+                       m_backward_index < 0) {
+                label = new EGoldLabel(text) as Gtk.Label;
+            } else {
+                label = new EWhiteLabel(text) as Gtk.Label;
+            }
+            if (text.char_count() > 2) {
                 string font_family = m_emoji_font_family;
                 int font_size = m_emoji_font_size - 2;
                 string emoji_font = "%s %d".printf(font_family, font_size);
                 string markup = "<span font=\"%s\">%s</span>".
-                        printf(emoji_font, utf8_entity(candidate.get_text()));
+                        printf(emoji_font, utf8_entity(text));
                 label.set_markup(markup);
             }
             label.set_halign(Gtk.Align.FILL);
@@ -879,9 +986,8 @@ class IBusEmojier : Gtk.Window {
             show_arrow_buttons();
             m_vbox.add(grid);
             grid.show_all();
-            IBus.Text candidate = m_lookup_table.get_candidate(cursor);
-            unowned IBus.EmojiData? data =
-                    m_emoji_to_data_dict.lookup(candidate.text);
+            string text = m_lookup_table.get_candidate(cursor).text;
+            unowned IBus.EmojiData? data = m_emoji_to_data_dict.lookup(text);
             if (data == null) {
                 // TODO: Provide a custom description and annotation for
                 // the favorite emojis.
@@ -890,12 +996,7 @@ class IBusEmojier : Gtk.Window {
                         Gtk.Align.START);
                 m_vbox.add(widget);
                 widget.show_all();
-                EPaddedLabelBox widget_code = new EPaddedLabelBox(
-                        _("Code point: %s").printf(
-                                utf8_code_point(candidate.text)),
-                        Gtk.Align.START);
-                m_vbox.add(widget_code);
-                widget_code.show_all();
+                show_code_point_description(text);
                 return;
             } else {
                 unowned string description = data.get_description();
@@ -907,7 +1008,7 @@ class IBusEmojier : Gtk.Window {
             }
             unowned GLib.SList<unowned string>? annotations =
                     data.get_annotations();
-            GLib.StringBuilder buff = new GLib.StringBuilder();
+            var buff = new GLib.StringBuilder();
             int i = 0;
             foreach (unowned string annotation in annotations) {
                 if (i++ == 0)
@@ -929,12 +1030,7 @@ class IBusEmojier : Gtk.Window {
                 m_vbox.add(widget);
                 widget.show_all();
             }
-            EPaddedLabelBox widget_code = new EPaddedLabelBox(
-                    _("Code point: %s").printf(
-                            utf8_code_point(candidate.text)),
-                    Gtk.Align.START);
-            m_vbox.add(widget_code);
-            widget_code.show_all();
+            show_code_point_description(text);
         }
     }
 
@@ -960,6 +1056,20 @@ class IBusEmojier : Gtk.Window {
         });
     }
 
+
+    private void candidate_panel_select_index(uint index) {
+        string text = m_lookup_table.get_candidate(index).text;
+        unowned GLib.SList<string>? emojis =
+                m_emoji_to_emoji_variants_dict.lookup(text);
+        if (m_show_emoji_variant && emojis != null &&
+            m_backward_index < 0) {
+            show_emoji_variants(emojis);
+        } else {
+            m_result = text;
+            m_loop.quit();
+            hide_candidate_panel();
+        }
+    }
 
     private void candidate_panel_cursor_down() {
         enter_notify_disable_with_timer();
@@ -1094,8 +1204,11 @@ class IBusEmojier : Gtk.Window {
     }
 
 
-    private bool key_press_cursor_escape() {
-        if (m_candidate_panel_is_visible) {
+    private bool key_press_escape() {
+        if (m_backward_index >= 0 && m_backward != null) {
+            show_emoji_for_category(m_backward);
+            return true;
+        } else if (m_candidate_panel_is_visible) {
             hide_candidate_panel();
             return true;
         } else if (m_entry.get_text().length == 0) {
@@ -1104,6 +1217,19 @@ class IBusEmojier : Gtk.Window {
             return true;
         }
         m_entry.delete_text(0, -1);
+        return true;
+    }
+
+
+    private bool key_press_enter() {
+        if (m_candidate_panel_is_visible) {
+            uint index = m_lookup_table.get_cursor_pos();
+            candidate_panel_select_index(index);
+        } else if (m_category_active_index > 0) {
+            Gtk.ListBoxRow gtkrow = m_list_box.get_selected_row();
+            EBoxRow row = gtkrow as EBoxRow;
+            show_emoji_for_category(row.text);
+        }
         return true;
     }
 
@@ -1127,6 +1253,13 @@ class IBusEmojier : Gtk.Window {
         int pos = m_entry.get_position();
         m_entry.insert_text(str, -1, ref pos);
         m_entry.set_position(pos);
+    }
+
+
+    private void check_action_variant_cb(GLib.SimpleAction action,
+                                         GLib.Variant?     parameter) {
+        m_show_emoji_variant = !action.get_state().get_boolean();
+        action.set_state(new GLib.Variant.boolean(m_show_emoji_variant));
     }
 
 
@@ -1187,21 +1320,11 @@ class IBusEmojier : Gtk.Window {
          */
         switch (keyval) {
         case Gdk.Key.Escape:
-            if (key_press_cursor_escape())
+            if (key_press_escape())
                 return true;
             break;
         case Gdk.Key.Return:
-            if (m_candidate_panel_is_visible) {
-                uint index = m_lookup_table.get_cursor_pos();
-                IBus.Text text = m_lookup_table.get_candidate(index);
-                m_result = text.text;
-                m_loop.quit();
-                hide_candidate_panel();
-            } else if (m_category_active_index > 0) {
-                Gtk.ListBoxRow gtkrow = m_list_box.get_selected_row();
-                EBoxRow row = gtkrow as EBoxRow;
-                show_emoji_for_category(row);
-            }
+            key_press_enter();
             return true;
         case Gdk.Key.BackSpace:
             if (m_entry.get_text().len() > 0) {
@@ -1283,7 +1406,7 @@ class IBusEmojier : Gtk.Window {
                     return true;
                 break;
             case Gdk.Key.u:
-                if (key_press_cursor_escape())
+                if (key_press_escape())
                     return true;
                 break;
             case Gdk.Key.a:
