@@ -50,6 +50,20 @@ public class EmojiApplication : Application {
         Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
         clipboard.set_text(emoji, -1);
         clipboard.store();
+
+        var emojier_favorites = m_settings_emoji.get_strv("favorites");
+        bool has_favorite = false;
+        foreach (unowned string favorite in emojier_favorites) {
+            if (favorite == emoji) {
+                has_favorite = true;
+                break;
+            }
+        }
+        if (!has_favorite) {
+            emojier_favorites += emoji;
+            m_settings_emoji.set_strv("favorites", emojier_favorites);
+        }
+
         m_emojier = null;
         command_line.print("%s\n", _("Copied an emoji to your clipboard."));
     }
@@ -146,6 +160,10 @@ public class EmojiApplication : Application {
 
         if (emoji_font != null)
             IBusEmojier.set_emoji_font(emoji_font);
+
+        IBusEmojier.set_favorites(
+                m_settings_emoji.get_strv("favorites"),
+                m_settings_emoji.get_strv("favorite-annotations"));
 
         activate_dialog(command_line);
 

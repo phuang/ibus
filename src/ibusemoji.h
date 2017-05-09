@@ -188,7 +188,7 @@ GHashTable *    ibus_emoji_dict_load            (const gchar    *path);
  * @dict: (element-type utf8 IBusEmojiData) (transfer full): An Emoji dictionary
  * @emoji: an emoji character
  *
- * Returns: An #IBusEmojiData of @emoji.
+ * Returns: (transfer none): An #IBusEmojiData of @emoji.
  * This API was prepared for the old dict foramat with Gir and Vala
  * but no longer needed.
  * Use ibus_emoji_data_load() instead.

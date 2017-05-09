@@ -201,6 +201,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
     private static string m_emoji_font_family;
     private static int m_emoji_font_size;
     private static string[] m_favorites;
+    private static string[] m_favorite_annotations;
     private static int m_emoji_max_seq_len;
     private static bool m_has_partial_match;
     private static uint m_partial_match_length;
@@ -261,6 +262,8 @@ class IBusEmojier : Gtk.ApplicationWindow {
             m_emoji_font_size = 16;
         if (m_favorites == null)
             m_favorites = {};
+        if (m_favorite_annotations == null)
+            m_favorite_annotations = {};
 
         Gdk.Display display = Gdk.Display.get_default();
         Gdk.Screen screen = (display != null) ?
@@ -374,6 +377,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             }
             make_emoji_dict(m_current_lang_id);
         }
+        update_favorite_emoji_dict();
     }
 
 
@@ -1263,6 +1267,49 @@ class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
+    public static void update_favorite_emoji_dict() {
+        if (m_emoji_to_data_dict == null ||
+            m_annotation_to_emojis_dict == null)
+            return;
+
+        for(int i = 0; i < m_favorites.length; i++) {
+            var favorite = m_favorites[i];
+
+            string? annotation = "";
+            if (i < m_favorite_annotations.length) {
+                annotation = m_favorite_annotations[i];
+            }
+            if (annotation == "")
+                continue;
+            unowned IBus.EmojiData? data =
+                    m_emoji_to_data_dict.lookup(favorite);
+            if (data == null) {
+                GLib.SList<string> new_annotations = new GLib.SList<string>();
+                new_annotations.append(annotation);
+                IBus.EmojiData new_data = GLib.Object.new(
+                            typeof(IBus.EmojiData),
+                            "emoji", favorite.dup(),
+                            "annotations", new_annotations,
+                            "description", annotation.dup()
+                    ) as IBus.EmojiData;
+                m_emoji_to_data_dict.insert(favorite, new_data);
+            } else {
+                unowned GLib.SList<string> annotations = data.get_annotations();
+                if (annotations.find_custom(annotation, GLib.strcmp) == null) {
+                    annotations.append(annotation);
+                    data.set_annotations(annotations.copy());
+                }
+            }
+            unowned GLib.SList<string> emojis =
+                    m_annotation_to_emojis_dict.lookup(annotation);
+            if (emojis.find_custom(favorite, GLib.strcmp) == null) {
+                emojis.append(favorite);
+                m_annotation_to_emojis_dict.replace(annotation, emojis.copy());
+            }
+        }
+    }
+
+
     public string run(string input_context_path) {
         assert (m_loop == null);
 
@@ -1510,10 +1557,22 @@ class IBusEmojier : Gtk.ApplicationWindow {
         m_partial_match_condition = condition;
     }
 
-    public static void set_favorites(string[]? unowned_favorites) {
+    public static void set_favorites(string[]? unowned_favorites,
+                                     string[]? unowned_favorite_annotations) {
         m_favorites = {};
-        foreach (string favorite in unowned_favorites) {
+        m_favorite_annotations = {};
+        for(int i = 0; i < unowned_favorites.length; i++) {
+            string? favorite = unowned_favorites[i];
+            // Avoid gsetting value error by manual setting
+            GLib.return_if_fail(favorite != null);
+            GLib.return_if_fail(favorite != "");
             m_favorites += favorite;
         }
+        for(int i = 0; i < unowned_favorite_annotations.length; i++) {
+            string? favorite_annotation = unowned_favorite_annotations[i];
+            GLib.return_if_fail(favorite_annotation != null);
+            m_favorite_annotations += favorite_annotation;
+        }
+        update_favorite_emoji_dict();
     }
 }

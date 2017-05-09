@@ -76,6 +76,7 @@ class Panel : IBus.PanelService {
     private IBusEmojier? m_emojier;
     private uint m_emojier_set_emoji_lang_id;
     private uint m_emojier_focus_commit_text_id;
+    private string[] m_emojier_favorites = {};
     private PropertyManager m_property_manager;
     private PropertyPanel m_property_panel;
     private GLib.Pid m_setup_pid = 0;
@@ -242,6 +243,10 @@ class Panel : IBus.PanelService {
         });
 
         m_settings_emoji.changed["favorites"].connect((key) => {
+                set_emoji_favorites();
+        });
+
+        m_settings_emoji.changed["favorite-annotations"].connect((key) => {
                 set_emoji_favorites();
         });
 
@@ -778,7 +783,10 @@ class Panel : IBus.PanelService {
     }
 
     private void set_emoji_favorites() {
-        IBusEmojier.set_favorites(m_settings_emoji.get_strv("favorites"));
+        m_emojier_favorites = m_settings_emoji.get_strv("favorites");
+        IBusEmojier.set_favorites(
+                m_emojier_favorites,
+                m_settings_emoji.get_strv("favorite-annotations"));
     }
 
     private void set_emoji_lang() {
@@ -1437,6 +1445,17 @@ class Panel : IBus.PanelService {
             IBus.Text text = new IBus.Text.from_string(selected_string);
             commit_text(text);
             m_emojier = null;
+            bool has_favorite = false;
+            foreach (unowned string favorite in m_emojier_favorites) {
+                if (favorite == selected_string) {
+                    has_favorite = true;
+                    break;
+                }
+            }
+            if (!has_favorite) {
+                m_emojier_favorites += selected_string;
+                m_settings_emoji.set_strv("favorites", m_emojier_favorites);
+            }
             return true;
         }
 

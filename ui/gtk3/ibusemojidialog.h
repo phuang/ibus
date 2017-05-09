@@ -145,18 +145,26 @@ void          ibus_emojier_set_annotation_lang    (const gchar* lang);
  */
 void          ibus_emojier_set_emoji_font         (const gchar* emoji_font);
 
-#if 0
-/* TODO: set customized annotations */
 /**
  * ibus_emojier_set_favorites:
  * @favorites: (array length=favorites_length): A custom emoji list.
  * @favorites_length: A length of @favorites
+ * @favorite_annotations: (array length=favorite_annotations_length):
+ *                        (nullable):
+ *                        A custom annotation listfor @favorites.
+ * @favorite_annotations_length: A length of @favorite_annotations
  *
- * Set emoji font on the emoji dialog
+ * Set custom emojis on the emoji dialog. @favorite_annotations
+ * can be null. If you don't assign an annotation for a specific emoji,
+ * you can pass the annotation as "", e.g.
+ * favorite_annotations = { "", "", "my annotation" };
  */
 void          ibus_emojier_set_favorites          (gchar**      favorites,
                                                    int
-                                                             favorites_length);
-#endif
+                                                   favorites_length,
+                                                   gchar**
+                                                   favorite_annotations,
+                                                   int
+                                                   favorite_annotations_length);
 G_END_DECLS
 #endif

@@ -404,6 +404,19 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/favorite-annotations</key>
+      <applyto>/desktop/ibus/panel/emoji/favorite-annotations</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <default>[]</default>
+      <list_type>string</list_type>
+      <locale name="C">
+        <short>favorite emoji annotation list on emoji dialog</short>
+	    <long>You can assign an annotation for a favorite emoji
+                  in this list.</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/panel/emoji/has-partial-match</key>
       <applyto>/desktop/ibus/panel/emoji/has-partial-match</applyto>
       <owner>ibus</owner>
