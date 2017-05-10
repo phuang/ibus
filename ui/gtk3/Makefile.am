@@ -148,7 +148,7 @@ emoji_headers =         \
     ibusemojidialog.h   \
     $(NULL)
 
-man_one_in_files = ibus-emoji.1.in
+man_seven_in_files = ibus-emoji.7.in
 
 # References:
 # libappindicator/src/notification-item.xml
@@ -157,7 +157,7 @@ man_one_in_files = ibus-emoji.1.in
 # kdelibs/kdeui/knotifications/src/org.kde.StatusNotifierWatcher.xml
 EXTRA_DIST =                            \
     $(emoji_headers)                    \
-    $(man_one_in_files)                 \
+    $(man_seven_in_files)               \
     IBusEmojiDialog-1.0.metadata        \
     gtkpanel.xml.in                     \
     ibus-emoji-dialog-1.0.deps          \
@@ -261,19 +261,19 @@ endif
 # end of HAVE_INTROSPECTION
 endif
 
-man_one_files = $(man_one_in_files:.1.in=.1)
-man_one_DATA =$(man_one_files:.1=.1.gz)
-man_onedir = $(mandir)/man1
-%.1: %.1.in
+man_seven_files = $(man_seven_in_files:.7.in=.7)
+man_seven_DATA =$(man_seven_files:.7=.7.gz)
+man_sevendir = $(mandir)/man7
+%.7: %.7.in
 	$(AM_V_GEN) sed \
 	    -e 's|@VERSION[@]|$(VERSION)|g' $< > $@.tmp && \
 	    mv $@.tmp $@
-%.1.gz: %.1
+%.7.gz: %.7
 	$(AM_V_GEN) gzip -c $< > $@.tmp && mv $@.tmp $@
 
 CLEANFILES += \
-    $(man_one_DATA) \
-    $(man_one_files) \
+    $(man_seven_DATA) \
+    $(man_seven_files) \
     $(NULL)
 
 # end of ENABLE_EMOJI_DICT
