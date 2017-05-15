@@ -439,17 +439,6 @@ class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    private static string utf8_down(string str) {
-        var buff = new GLib.StringBuilder();
-        int length = str.char_count();
-        for (int i = 0; i < length; i++) {
-            buff.append_unichar(str.get_char(0).tolower());
-            str = str.next_char();
-        }
-        return buff.str;
-    }
-
-
     private static string utf8_code_point(string str) {
         var buff = new GLib.StringBuilder();
         int length = str.char_count();
@@ -527,7 +516,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
                                                   string         lang) {
         string emoji = data.get_emoji();
         if (lang == "en") {
-            string description = utf8_down(data.get_description());
+            string description = data.get_description().down();
             update_annotations_with_description (data, description);
             m_emoji_to_data_dict.replace(emoji, data);
         } else {
@@ -550,7 +539,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             }
             string trans_description = data.get_description();
             en_data.set_description(trans_description);
-            trans_description = utf8_down(trans_description);
+            trans_description = trans_description.down();
             update_annotations_with_description (data, trans_description);
             unowned GLib.SList<string> annotations = data.get_annotations();
             unowned GLib.SList<string> en_annotations
@@ -813,20 +802,8 @@ class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    private void update_candidate_window() {
-        string annotation = m_entry.get_text();
-        if (annotation.length == 0) {
-            hide_candidate_panel();
-            m_backward = null;
-            return;
-        }
-        annotation = utf8_down(annotation);
-        if (annotation.length > m_emoji_max_seq_len) {
-            hide_candidate_panel();
-            return;
-        }
-        // Call check_unicode_point() to get m_unicode_point
-        check_unicode_point();
+    private GLib.SList<string>?
+    lookup_emojis_from_annotation(string annotation) {
         GLib.SList<string>? total_emojis = null;
         unowned GLib.SList<string>? sub_emojis = null;
         int length = annotation.length;
@@ -865,6 +842,34 @@ class IBusEmojier : Gtk.ApplicationWindow {
             sub_emojis = m_annotation_to_emojis_dict.lookup(annotation);
             foreach (unowned string emoji in sub_emojis)
                 total_emojis.append(emoji);
+        }
+        return total_emojis;
+    }
+
+    private void update_candidate_window() {
+        string annotation = m_entry.get_text();
+        if (annotation.length == 0) {
+            hide_candidate_panel();
+            m_backward = null;
+            return;
+        }
+        if (annotation.length > m_emoji_max_seq_len) {
+            hide_candidate_panel();
+            return;
+        }
+        // Call check_unicode_point() to get m_unicode_point
+        check_unicode_point();
+        GLib.SList<string>? total_emojis =
+            lookup_emojis_from_annotation(annotation);
+        if (total_emojis == null) {
+            /* Users can type title strings against lower case.
+             * E.g. "Smile" against "smile"
+             * But the dictionary has the case sensitive annotations.
+             * E.g. ":D" and ":q"
+             * So need to call lookup_emojis_from_annotation() twice.
+             */
+            annotation = annotation.down();
+            total_emojis = lookup_emojis_from_annotation(annotation);
         }
         if (total_emojis == null && m_unicode_point == null) {
             hide_candidate_panel();
@@ -1310,7 +1315,8 @@ class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    public string run(string input_context_path) {
+    public string run(string    input_context_path,
+                      Gdk.Event event) {
         assert (m_loop == null);
 
         m_is_running = true;
@@ -1323,11 +1329,22 @@ class IBusEmojier : Gtk.ApplicationWindow {
         resize(1, 1);
 
         m_entry.set_text("");
-        //m_entry.grab_focus();
 
         show_category_list();
         m_entry.set_activates_default(true);
         show_all();
+
+        /* Some window managers, e.g. MATE, GNOME, Plasma desktops,
+         * does not give the keyboard focus when Emojier is lauched
+         * twice with Ctrl-Shift-e via XIEvent, if present_with_time()
+         * is not applied.
+         * But XFCE4 desktop does not effect this bug.
+         * Seems this is caused by the window manager's focus stealing
+         * prevention logic:
+         * https://mail.gnome.org/archives/gtk-devel-list/2017-May/msg00026.html
+         */
+        uint32 timestamp = event.get_time();
+        present_with_time(timestamp);
 
         m_loop = new GLib.MainLoop();
         m_loop.run();
@@ -1492,9 +1509,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    public void present_centralize() {
-        present();
-        m_entry.set_activates_default(true);
+    public void present_centralize(Gdk.Event event) {
         Gtk.Allocation allocation;
         get_allocation(out allocation);
         Gdk.Screen screen = Gdk.Screen.get_default();
@@ -1505,6 +1520,10 @@ class IBusEmojier : Gtk.ApplicationWindow {
         int y = (monitor_area.y + monitor_area.height
                  - allocation.height)/2;
         move(x, y);
+
+        uint32 timestamp = event.get_time();
+        present_with_time(timestamp);
+        m_entry.set_activates_default(true);
     }
 
 

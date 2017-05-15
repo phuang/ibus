@@ -71,6 +71,7 @@ IBusEmojier * ibus_emojier_new                    (void);
  * @self: An #IBusEmojier
  * @input_context_path: An input context path of #IBusInputContext
  *                      of the focused application.
+ * @event: A #GdkEventKey for timestamp
  *
  * Runs emoji dialog to select emoji.
  *
@@ -78,7 +79,8 @@ IBusEmojier * ibus_emojier_new                    (void);
  */
 gchar *       ibus_emojier_run                    (IBusEmojier* self,
                                                    const gchar*
-                                                           input_context_path);
+                                                           input_context_path,
+                                                   GdkEvent*    event);
 
 /**
  * ibus_emojier_is_running:
@@ -116,10 +118,12 @@ void          ibus_emojier_reset                  (IBusEmojier* self);
 /**
  * ibus_emojier_present_centralize:
  * @self: An #IBusEmojier
+ * @event: A #GdkEventKey for timestamp
  *
  * Move the window to the toplevel on the screen and centralize it.
  */
-void          ibus_emojier_present_centralize     (IBusEmojier* self);
+void          ibus_emojier_present_centralize     (IBusEmojier* self,
+                                                   GdkEvent*    event);
 
 /**
  * ibus_emojier_has_loaded_emoji_dict:

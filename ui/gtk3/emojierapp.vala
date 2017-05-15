@@ -41,7 +41,9 @@ public class EmojiApplication : Application {
 
     private void show_dialog(ApplicationCommandLine command_line) {
         m_emojier = new IBusEmojier();
-        string emoji = m_emojier.run("");
+        Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
+        event.key.time = Gdk.CURRENT_TIME;
+        string emoji = m_emojier.run("", event);
         if (emoji == null) {
             m_emojier = null;
             command_line.print("%s\n", _("Canceled to choose an emoji."));
@@ -132,7 +134,9 @@ public class EmojiApplication : Application {
         }
 
         if (m_emojier != null && m_emojier.is_running()) {
-            m_emojier.present_centralize();
+            Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
+            event.key.time = Gdk.CURRENT_TIME;
+            m_emojier.present_centralize(event);
             return Posix.EXIT_SUCCESS;
         }
 

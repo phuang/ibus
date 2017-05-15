@@ -55,27 +55,34 @@ E.g. "Noto Color Emoji", "Android Emoji" font.
 Launch IBus Emojier. The shortcut key can be customized by
 .B ibus\-setup (1).
 .TP
-\fBLeft or right arrow\fR
-Move the selected category or emoji if an annotation is not typed.
-Otherwise move the cursor in typed annotation.
+\fBLeft, Right arrow, Control-b or Control-f\fR
+Select the next left or right category or emoji on the list
+if an annotation is not typed.
+Otherwise move the cursor to the immdediate left or right in the typed
+annotation.
 .TP
-\fBDown or up arrow\fR
-Move the selected category or emoji.
+\fBDown, Up arrow, Control-n or Control-p\fR
+Select the next top or down category or emoji on the list
 .TP
 \fBEnter\fR
 Commit the selected emoji.
 .TP
 \fBEscape\fR
-Go back to the category list from emoji list, erase a typed annotation,
+Go back to the category list from emoji list, erase the typed annotation,
 and close IBus Emojier.
 .TP
 \fBSpace\fR
-Move the selected category or emoji. If Shift\-Space is typed,
+Select the next left category or emoji on the list.
+If Shift\-Space is typed,
 a space chararacter can be inserted between words in an annotation or
 Unicode points. E.g. 1f466 Shift\-Space 1f3fb
 .TP
 \fBPageDown or PageUp\fR
-Move to the next or previous page in emoji list.
+Move to the next or previous page in the emoji list.
+.TP
+\fBHead, End, Control-h or Control-e\fR
+Select the first or last emoji on the list if an annotation is not typed.
+Otherwise move the cursor to the head or end in the typed annotation.
 
 .SH BUGS
 If you find a bug, please report it at https://github.com/ibus/ibus/issues

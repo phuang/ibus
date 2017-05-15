@@ -1023,9 +1023,9 @@ class Panel : IBus.PanelService {
         }
     }
 
-    private void show_emojier() {
+    private void show_emojier(Gdk.Event event) {
         m_emojier = new IBusEmojier();
-        string emoji = m_emojier.run(m_real_current_context_path);
+        string emoji = m_emojier.run(m_real_current_context_path, event);
         if (emoji == null) {
             m_emojier = null;
             return;
@@ -1035,10 +1035,10 @@ class Panel : IBus.PanelService {
 
     private void handle_emoji_typing(Gdk.Event event) {
         if (m_emojier != null && m_emojier.is_running()) {
-            m_emojier.present_centralize();
+            m_emojier.present_centralize(event);
             return;
         }
-        show_emojier();
+        show_emojier(event);
     }
 
     private void run_preload_engines(IBus.EngineDesc[] engines, int index) {
