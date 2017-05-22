@@ -634,10 +634,21 @@ if test x"$enable_emoji_dict" = x"yes"; then
     if test ! -f $UNICODE_EMOJI_DIR/emoji-test.txt ; then
         AC_MSG_ERROR(Not found $UNICODE_EMOJI_DIR/emoji-test.txt. You can get \
 the emoji files from http://www.unicode.org/Public/emoji/4.0/)
+    else
+        # POSIX SHELL has no ${FOO:0:1}
+        head=`echo "$UNICODE_EMOJI_DIR" | cut -c1`;
+        if test $head != "/" ; then
+            UNICODE_EMOJI_DIR=`realpath "$UNICODE_EMOJI_DIR"`
+        fi
     fi
     if test ! -f $EMOJI_ANNOTATION_DIR/en.xml ; then
         AC_MSG_ERROR(Not found $EMOJI_ANNOTATION_DIR/en.xml. You can get \
 https://github.com/fujiwarat/cldr-emoji-annotation)
+    else
+        head=`echo "$EMOJI_ANNOTATION_DIR" | cut -c1`;
+        if test $head != "/" ; then
+            EMOJI_ANNOTATION_DIR=`realpath "$EMOJI_ANNOTATION_DIR"`
+        fi
     fi
     enable_emoji_dict="yes (enabled, use --disable-emoji-dict to disable)"
 fi
