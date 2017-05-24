@@ -706,5 +706,27 @@
                         <icon>ibus-keyboard</icon>
 			<rank>1</rank>
 		</engine>
+                <engine>
+                        <name>xkb:my::msa</name>
+                        <language>ms</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>my</layout>
+                        <longname>Malay (Jawi)</longname>
+                        <description>Malay (Jawi)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>1</rank>
+                </engine>
+                <engine>
+                        <name>xkb:mn::mon</name>
+                        <language>mn</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>mn</layout>
+                        <longname>Mongolian</longname>
+                        <description>Mongolian</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>1</rank>
+                </engine>
 	</engines>
 </component>
