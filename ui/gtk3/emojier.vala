@@ -190,9 +190,6 @@ class IBusEmojier : Gtk.ApplicationWindow {
     private const string EMOJI_CATEGORY_OTHERS = N_("Others");
     private const unichar[] EMOJI_VARIANT_LIST = {
             0x1f3fb, 0x1f3fc, 0x1f3fd, 0x1f3fe, 0x1f3ff, 0x200d };
-    private const GLib.ActionEntry[] m_action_entries = {
-        { "variant", check_action_variant_cb, null, "false", null }
-    };
 
     // Set the actual default values in the constructor
     // because these fields are used for class_init() and static functions,
@@ -253,7 +250,13 @@ class IBusEmojier : Gtk.ApplicationWindow {
             focus_visible : true
         );
 
-        add_action_entries(m_action_entries, this);
+        // GLib.ActionEntry accepts const variables only.
+        var action = new GLib.SimpleAction.stateful(
+                "variant",
+                null,
+                new GLib.Variant.boolean(m_show_emoji_variant));
+        action.activate.connect(check_action_variant_cb);
+        add_action(action);
         if (m_current_lang_id == null)
             m_current_lang_id = "en";
         if (m_emoji_font_family == null)
@@ -521,18 +524,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             m_emoji_to_data_dict.replace(emoji, data);
         } else {
             unowned IBus.EmojiData? en_data = null;
-            // If emoji presentation (+= 0xfe0f) is already saved in dict,
-            // update it instead of no presentation.
-            // emoji-test.txt has all emoji presentations but $lang.xml has
-            // some no emoji presentations.
-            if (emoji.chr(-1, 0xfe0f) == null) {
-                var buff = new GLib.StringBuilder();
-                buff.append(emoji);
-                buff.append_unichar(0xfe0f);
-                en_data = m_emoji_to_data_dict.lookup(buff.str);
-            }
-            if (en_data == null)
-                en_data = m_emoji_to_data_dict.lookup(emoji);
+            en_data = m_emoji_to_data_dict.lookup(emoji);
             if (en_data == null) {
                 m_emoji_to_data_dict.insert(emoji, data);
                 return;
@@ -923,7 +915,12 @@ class IBusEmojier : Gtk.ApplicationWindow {
             m_vbox.add(button);
             button.show_all();
             button.button_press_event.connect((w, e) => {
-                hide_candidate_panel();
+                // Bring back to emoji candidate panel in case
+                // m_show_emoji_variant is enabled and shows variants.
+                if (m_backward_index >= 0 && m_backward != null)
+                    show_emoji_for_category(m_backward);
+                else
+                    hide_candidate_panel();
                 return true;
             });
         }
@@ -1269,6 +1266,9 @@ class IBusEmojier : Gtk.ApplicationWindow {
                                          GLib.Variant?     parameter) {
         m_show_emoji_variant = !action.get_state().get_boolean();
         action.set_state(new GLib.Variant.boolean(m_show_emoji_variant));
+        // Redraw emoji candidate panel for m_show_emoji_variant
+        if (m_candidate_panel_is_visible)
+            show_candidate_panel();
     }
 
 

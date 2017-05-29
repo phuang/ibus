@@ -31,10 +31,18 @@
  * ASCII emoji annotations are saved in ../data/annotations/en_ascii.xml
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <glib.h>
 
 #ifdef HAVE_JSON_GLIB1
 #include <json-glib/json-glib.h>
+#endif
+
+#ifdef HAVE_LOCALE_H
+#include <locale.h>
 #endif
 
 #include <string.h>
@@ -65,7 +73,72 @@ struct _EmojiData {
     EmojiDataSearchType search_type;
 };
 
+typedef struct _NoTransData NoTransData;
+struct _NoTransData {
+    const gchar *xml_file;
+    const gchar *xml_derived_file;
+    GSList      *emoji_list;
+};
+
 static gchar *unicode_emoji_version;
+
+
+static void
+init_annotations (IBusEmojiData *emoji,
+                  gpointer       user_data)
+{
+    g_return_if_fail (IBUS_IS_EMOJI_DATA (emoji));
+    ibus_emoji_data_set_annotations (emoji, NULL);
+    ibus_emoji_data_set_description (emoji, "");
+}
+
+static void
+check_no_trans (IBusEmojiData *emoji,
+                NoTransData   *no_trans_data)
+{
+    const gchar *str = NULL;
+    g_return_if_fail (IBUS_IS_EMOJI_DATA (emoji));
+    if (ibus_emoji_data_get_annotations (emoji) != NULL)
+        return;
+    str = ibus_emoji_data_get_emoji (emoji);
+    if (g_getenv ("IBUS_EMOJI_PARSER_DEBUG") != NULL) {
+        gchar *basename = NULL;
+        if (no_trans_data->xml_file)
+            basename = g_path_get_basename (no_trans_data->xml_file);
+        else if (no_trans_data->xml_derived_file)
+            basename = g_path_get_basename (no_trans_data->xml_derived_file);
+        else
+            basename = g_strdup ("WRONG FILE");
+        g_warning ("Not found emoji %s in the file %s", str, basename);
+        g_free (basename);
+    }
+    no_trans_data->emoji_list =
+            g_slist_append (no_trans_data->emoji_list, g_strdup (str));
+}
+
+int
+strcmp_ibus_emoji_data_str (IBusEmojiData *emoji,
+                            const gchar   *str)
+{
+    g_return_val_if_fail (IBUS_IS_EMOJI_DATA (emoji), -1);
+    return g_strcmp0 (ibus_emoji_data_get_emoji (emoji), str);
+}
+
+static void
+delete_emoji_from_list (const gchar  *str,
+                        GSList      **list)
+{
+    IBusEmojiData *emoji;
+
+    g_return_if_fail (list != NULL);
+    GSList *p = g_slist_find_custom (*list,
+                                     str,
+                                     (GCompareFunc)strcmp_ibus_emoji_data_str);
+    g_return_if_fail (p != NULL);
+    emoji = p->data;
+    *list = g_slist_remove (*list, emoji);
+    g_object_unref (emoji);
+}
 
 static void
 reset_emoji_element (EmojiData *data)
@@ -79,6 +152,13 @@ reset_emoji_element (EmojiData *data)
     g_clear_pointer (&data->description, g_free);
 }
 
+/**
+ * strcmp_novariant:
+ *
+ * Return 0 between non-fully-qualified and fully-qualified emojis.
+ * E.g. U+1F3CC-200D-2642 and U+1F3CC-FE0F-200D-2642-FE0F
+ * in case @a_variant or @b_variant == U+FE0F
+ */
 gint
 strcmp_novariant (const gchar *a,
                   const gchar *b,
@@ -86,40 +166,54 @@ strcmp_novariant (const gchar *a,
                   gunichar     b_variant)
 {
     gint retval;
-    gchar *p = NULL;
     GString *buff = NULL;;
+    gchar *head = NULL;
+    gchar *p;
+    gchar *variant = NULL;
     gchar *substr = NULL;
 
     if (a_variant > 0) {
-        if ((p = g_utf8_strchr (a, -1, a_variant)) != NULL) {
+        if (g_utf8_strchr (a, -1, a_variant) != NULL) {
             buff = g_string_new (NULL);
-            if (a != p) {
-                substr = g_strndup (a, p - a);
-                g_string_append (buff, substr);
-                g_free (substr);
+            p = head = g_strdup (a);
+            while (*p != '\0') {
+                if ((variant = g_utf8_strchr (p, -1, a_variant)) == NULL) {
+                    g_string_append (buff, p);
+                    break;
+                }
+                if (p != variant) {
+                    substr = g_strndup (p, variant - p);
+                    g_string_append (buff, substr);
+                    g_free (substr);
+                }
+                p = g_utf8_next_char (variant);
             }
-            p = g_utf8_next_char (p);
-            if (*p != '\0')
-                g_string_append (buff, p);
             retval = g_strcmp0 (buff->str, b);
             g_string_free (buff, TRUE);
+            g_free (head);
             return retval;
         } else {
             return -1;
         }
     } else if (b_variant > 0) {
-        if ((p = g_utf8_strchr (b, -1, b_variant)) != NULL) {
+        if (g_utf8_strchr (b, -1, b_variant) != NULL) {
             buff = g_string_new (NULL);
-            if (b != p) {
-                substr = g_strndup (b, p - b);
-                g_string_append (buff, substr);
-                g_free (substr);
+            p = head = g_strdup (b);
+            while (*p != '\0') {
+                if ((variant = g_utf8_strchr (p, -1, b_variant)) == NULL) {
+                    g_string_append (buff, p);
+                    break;
+                }
+                if (p != variant) {
+                    substr = g_strndup (p, variant - p);
+                    g_string_append (buff, substr);
+                    g_free (substr);
+                }
+                p = g_utf8_next_char (variant);
             }
-            p = g_utf8_next_char (p);
-            if (*p != '\0')
-                g_string_append (buff, p);
             retval = g_strcmp0 (a, buff->str);
             g_string_free (buff, TRUE);
+            g_free (head);
             return retval;
         } else {
             return -1;
@@ -1117,6 +1211,12 @@ main (int argc, char *argv[])
     GOptionContext *context;
     GError *error = NULL;
     GSList *list = NULL;
+    gboolean is_en = TRUE;
+
+#ifdef HAVE_LOCALE_H
+    /* To output emoji warnings. */
+    setlocale (LC_ALL, "");
+#endif
 
     prgname = g_path_get_basename (argv[0]);
     g_set_prgname (prgname);
@@ -1144,12 +1244,45 @@ main (int argc, char *argv[])
 #endif
     if (emoji_dir)
         unicode_emoji_parse_dir (emoji_dir, &list);
+    if (list) {
+#define CHECK_IS_EN(file) if ((file)) {                                     \
+    gchar *basename = g_path_get_basename ((file));                         \
+    is_en = (g_ascii_strncasecmp (basename, "en.", 3) == 0) ?               \
+            TRUE : FALSE;                                                   \
+    g_free (basename);                                                      \
+}
+
+        CHECK_IS_EN(xml_derived_file);
+        CHECK_IS_EN(xml_file);
+#undef CHECK_IS_EN
+
+        /* Use English emoji-test.txt to get fully-qualified. */
+        if (!is_en)
+            g_slist_foreach (list, (GFunc)init_annotations, NULL);
+    }
     if (xml_file)
         unicode_annotations_parse_xml_file (xml_file, &list, FALSE);
     if (xml_derived_file)
         unicode_annotations_parse_xml_file (xml_derived_file, &list, TRUE);
     if (xml_ascii_file)
         unicode_annotations_parse_xml_file (xml_ascii_file, &list, FALSE);
+    if (list != NULL && !is_en) {
+        /* If emoji-test.txt has an emoji but $lang.xml does not, clear it
+         * since the language dicts do not want English annotations.
+         */
+        NoTransData no_trans_data = {
+            xml_file,
+            xml_derived_file,
+            NULL
+        };
+        g_slist_foreach (list, (GFunc)check_no_trans, &no_trans_data);
+        if (no_trans_data.emoji_list) {
+            g_slist_foreach (no_trans_data.emoji_list,
+                             (GFunc)delete_emoji_from_list,
+                             &list);
+            g_slist_free_full (no_trans_data.emoji_list, g_free);
+        }
+    }
     if (list != NULL && output)
         ibus_emoji_data_save (output, list);
     if (list != NULL && output_category)

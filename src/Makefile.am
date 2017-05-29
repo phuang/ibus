@@ -263,6 +263,7 @@ dicts/emoji-en.dict: emoji-parser
 	            --out $@; \
 	    else \
 	        $(builddir)/emoji-parser \
+	            --unicode-emoji-dir $(UNICODE_EMOJI_DIR) \
 	            --xml $(EMOJI_ANNOTATION_DIR)/$$f.xml \
 	            $$xml_derived_option \
 	            --out dicts/emoji-$$f.dict; \

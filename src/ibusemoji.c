@@ -29,7 +29,7 @@
 #include "ibusinternal.h"
 
 #define IBUS_EMOJI_DATA_MAGIC "IBusEmojiData"
-#define IBUS_EMOJI_DATA_VERSION (4)
+#define IBUS_EMOJI_DATA_VERSION (5)
 
 enum {
     PROP_0 = 0,
