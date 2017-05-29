@@ -83,6 +83,17 @@ Move to the next or previous page in the emoji list.
 \fBHead, End, Control-h or Control-e\fR
 Select the first or last emoji on the list if an annotation is not typed.
 Otherwise move the cursor to the head or end in the typed annotation.
+.TP
+\fBControl-u\fR
+Erase the typed annotation.
+.TP
+\fBControl-x or Control-v or Control-c\fR
+Cut the selected annotation to the clipboard with Control-x. Paste
+the contents of the clipboard into the annotation entry with Control-v.
+Copy the selected annotation to the clipboard with Control-c.
+.TP
+\fBControl-Shift-c\fR
+Copy the selected emoji to the clipboard.
 
 .SH BUGS
 If you find a bug, please report it at https://github.com/ibus/ibus/issues

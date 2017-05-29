@@ -1392,7 +1392,26 @@ class IBusEmojier : Gtk.ApplicationWindow {
             return true;
         case Gdk.Key.BackSpace:
             if (m_entry.get_text().len() > 0) {
-                GLib.Signal.emit_by_name(m_entry, "backspace");
+                if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
+                    GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
+                                             Gtk.DeleteType.WORD_ENDS, -1);
+                } else {
+                    GLib.Signal.emit_by_name(m_entry, "backspace");
+                }
+                return true;
+            }
+            break;
+        case Gdk.Key.Delete:
+        case Gdk.Key.KP_Delete:
+            if (m_entry.get_text().len() > 0) {
+                if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
+                    GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
+                                             Gtk.DeleteType.WORD_ENDS, 1);
+                } else {
+                    GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
+                                             Gtk.DeleteType.CHARS, 1);
+                }
+                return true;
             }
             break;
         case Gdk.Key.space:
@@ -1445,6 +1464,10 @@ class IBusEmojier : Gtk.ApplicationWindow {
             if (key_press_cursor_home_end(keyval, modifiers))
                 return true;
             break;
+        case Gdk.Key.Insert:
+        case Gdk.Key.KP_Insert:
+            GLib.Signal.emit_by_name(m_entry, "toggle-overwrite");
+            return true;
         }
 
         if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
@@ -1470,8 +1493,13 @@ class IBusEmojier : Gtk.ApplicationWindow {
                     return true;
                 break;
             case Gdk.Key.u:
-                if (key_press_escape())
+                if (m_entry.get_text().len() > 0) {
+                    GLib.Signal.emit_by_name(m_entry,
+                                             "delete-from-cursor",
+                                             Gtk.DeleteType.PARAGRAPH_ENDS,
+                                             -1);
                     return true;
+                }
                 break;
             case Gdk.Key.a:
                 if (m_entry.get_text().len() > 0) {
@@ -1479,6 +1507,32 @@ class IBusEmojier : Gtk.ApplicationWindow {
                     return true;
                 }
                 break;
+            case Gdk.Key.x:
+                if (m_entry.get_text().len() > 0) {
+                    GLib.Signal.emit_by_name(m_entry, "cut-clipboard");
+                    return true;
+                }
+                break;
+            case Gdk.Key.C:
+            case Gdk.Key.c:
+                if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
+                    if (m_candidate_panel_is_visible) {
+                        uint index = m_lookup_table.get_cursor_pos();
+                        var text = m_lookup_table.get_candidate(index).text;
+                        Gtk.Clipboard clipboard =
+                                Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
+                        clipboard.set_text(text, -1);
+                        clipboard.store();
+                        return true;
+                    }
+                } else if (m_entry.get_text().len() > 0) {
+                    GLib.Signal.emit_by_name(m_entry, "copy-clipboard");
+                    return true;
+                }
+                break;
+            case Gdk.Key.v:
+                GLib.Signal.emit_by_name(m_entry, "paste-clipboard");
+                return true;
             }
             return false;
         }
