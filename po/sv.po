@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2017-05-01 17:26+0900\n"
+"POT-Creation-Date: 2017-05-06 02:04+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-04-28 04:21-0400\n"
+"PO-Revision-Date: 2017-06-02 04:07-0400\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -256,28 +256,32 @@ msgid ""
 "Match emoji annotations partially with the following condition and more than "
 "the number of characters:"
 msgstr ""
+"Matcha emoji-annotationer partiellt med följande villkor och mer än antalet "
+"tecken:"
 
 #: ../setup/setup.ui.h:56
 msgid ""
 "If emoji annotations can be matched with a partial string instead of the "
 "exact match"
 msgstr ""
+"Om emoji-annotationer kan matchas med en partiell sträng istället för en "
+"exakt matchning"
 
 #: ../setup/setup.ui.h:57
 msgid "Prefix match"
-msgstr ""
+msgstr "Prefixmatchning"
 
 #: ../setup/setup.ui.h:58
 msgid "Suffix match"
-msgstr ""
+msgstr "Suffixmatchning"
 
 #: ../setup/setup.ui.h:59
 msgid "Containing match"
-msgstr ""
+msgstr "Innehållsmatchning"
 
 #: ../setup/setup.ui.h:60
 msgid "Emoji"
-msgstr ""
+msgstr "Emoji"
 
 #: ../setup/setup.ui.h:61 ../data/ibus.schemas.in.h:44
 msgid "Use system keyboard layout"
@@ -590,34 +594,40 @@ msgstr ""
 "tecken."
 
 #: ../data/ibus.schemas.in.h:57
-msgid "Whether emoji annotaions can be match partially or not"
-msgstr ""
+msgid "Whether emoji annotations can be match partially or not"
+msgstr "Huruvida emoji-annotationer kan matchas partiellt eller inte"
 
 #: ../data/ibus.schemas.in.h:58
 msgid ""
 "Whether emoji annotations can be matched with a partial string instead of "
 "the exact match or not."
 msgstr ""
+"Huruvida emoji-annotationer kan matchas med en partiell sträng istället för "
+"den exakta matchningen eller inte."
 
 #: ../data/ibus.schemas.in.h:59
-msgid "Match emoji annotaions with the specified length"
-msgstr ""
+msgid "Match emoji annotations with the specified length"
+msgstr "Matcha emoji-annotationer med den angivna längden"
 
 #: ../data/ibus.schemas.in.h:60
 msgid ""
 "Match emoji annotations partially with more than the specified number of "
 "characters instead of the exact match."
 msgstr ""
+"Matcha emoji-annotationer partiellt med mer än det angivna antalet tecken "
+"istället för den exakta matchningen."
 
 #: ../data/ibus.schemas.in.h:61
 msgid "Choose a condition to match emoji annotations partially"
-msgstr ""
+msgstr "Välj ett villkor för att matcha emoji-annotationer partiellt"
 
 #: ../data/ibus.schemas.in.h:62
 msgid ""
 "Choose one of the following conditions to match emoji annotations partially: "
 "0 == Prefix match, 1 == Suffix match, 2 == Containing match"
 msgstr ""
+"Välj en av följande villkor för att matcha emoji-annotationer partiellt: 0 =="
+" prefixmatchning, 1 == suffixmatchning, 2 == innehållsmatchning"
 
 #: ../data/ibus.schemas.in.h:63
 msgid "Embed Preedit Text"
@@ -935,46 +945,58 @@ msgid "%s is unknown command!\n"
 msgstr "%s är ett okänt kommando!\n"
 
 #: ../ui/gtk3/emojier.vala:170
-msgid "Others"
-msgstr "Annat"
+msgid "Show emoji variants"
+msgstr "Visa emoji-varianter"
 
-#: ../ui/gtk3/emojier.vala:287 ../ui/gtk3/panel.vala:1264
-msgid "Emoji Choice"
-msgstr "Emoji-val"
+#: ../ui/gtk3/emojier.vala:175
+msgid "Menu"
+msgstr "Meny"
 
-#: ../ui/gtk3/emojier.vala:293
-msgid "Type annotation or choose emoji"
-msgstr "Ange annotation eller välj emoji"
-
-#: ../ui/gtk3/emojier.vala:598 ../ui/gtk3/emojier.vala:645
+#: ../ui/gtk3/emojier.vala:189
 msgid "Favorites"
 msgstr "Favoriter"
 
-#: ../ui/gtk3/emojier.vala:670
+#: ../ui/gtk3/emojier.vala:190
+msgid "Others"
+msgstr "Annat"
+
+#: ../ui/gtk3/emojier.vala:324 ../ui/gtk3/panel.vala:1264
+msgid "Emoji Choice"
+msgstr "Emoji-val"
+
+#: ../ui/gtk3/emojier.vala:330
+msgid "Type annotation or choose emoji"
+msgstr "Ange annotation eller välj emoji"
+
+#: ../ui/gtk3/emojier.vala:752
 msgid "Page Down"
 msgstr "Bläddra ned"
 
-#: ../ui/gtk3/emojier.vala:681
+#: ../ui/gtk3/emojier.vala:763
 msgid "Page Up"
 msgstr "Bläddra upp"
 
-#. TODO: Provide a custom description and annotation for
-#. the favorite emojis.
-#: ../ui/gtk3/emojier.vala:889 ../ui/gtk3/emojier.vala:903
-#, c-format
-msgid "Description: %s"
-msgstr "Beskrivning: %s"
-
-#: ../ui/gtk3/emojier.vala:889
-msgid "None"
-msgstr "Ingen"
-
-#: ../ui/gtk3/emojier.vala:894 ../ui/gtk3/emojier.vala:933
+#: ../ui/gtk3/emojier.vala:882
 #, c-format
 msgid "Code point: %s"
 msgstr "Kodpunkt: %s"
 
-#: ../ui/gtk3/emojier.vala:914
+#: ../ui/gtk3/emojier.vala:888
+msgid "Has emoji variants"
+msgstr "Har emoji-varianter"
+
+#. TODO: Provide a custom description and annotation for
+#. the favorite emojis.
+#: ../ui/gtk3/emojier.vala:995 ../ui/gtk3/emojier.vala:1004
+#, c-format
+msgid "Description: %s"
+msgstr "Beskrivning: %s"
+
+#: ../ui/gtk3/emojier.vala:995
+msgid "None"
+msgstr "Ingen"
+
+#: ../ui/gtk3/emojier.vala:1015
 #, c-format
 msgid "Annotations: %s"
 msgstr "Annotationer: %s"
@@ -1010,16 +1032,16 @@ msgid "LANG"
 msgstr "SPRÅK"
 
 #: ../ui/gtk3/emojierapp.vala:83
-msgid "Emoji annotaions can be match partially"
-msgstr ""
+msgid "Emoji annotations can be match partially"
+msgstr "Emoji-annotationer kan matcha partiellt"
 
 #: ../ui/gtk3/emojierapp.vala:87
 msgid "Match with the length of the specified integer"
-msgstr ""
+msgstr "Matcha med längden på det angivna heltalet"
 
 #: ../ui/gtk3/emojierapp.vala:91
 msgid "Match with the condition of the specified integer"
-msgstr ""
+msgstr "Matcha med villkoret för det angivna heltalet"
 
 #: ../ui/gtk3/panel.vala:283 ../ui/gtk3/panel.vala:314
 msgid "IBus Panel"

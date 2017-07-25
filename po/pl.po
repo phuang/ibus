@@ -608,7 +608,7 @@ msgid ""
 msgstr "Wpisane tutaj znaki pojawią się na liście ulubionych emoji."
 
 #: ../data/ibus.schemas.in.h:57
-msgid "Whether emoji annotaions can be match partially or not"
+msgid "Whether emoji annotations can be match partially or not"
 msgstr "Czy uwagi emoji mogą być dopasowywane częściowo"
 
 #: ../data/ibus.schemas.in.h:58
@@ -620,7 +620,7 @@ msgstr ""
 "z dokładnym dopasowaniem."
 
 #: ../data/ibus.schemas.in.h:59
-msgid "Match emoji annotaions with the specified length"
+msgid "Match emoji annotations with the specified length"
 msgstr "Dopasowywanie uwag emoji o podanej długości"
 
 #: ../data/ibus.schemas.in.h:60
@@ -1048,7 +1048,7 @@ msgid "LANG"
 msgstr "JĘZYK"
 
 #: ../ui/gtk3/emojierapp.vala:83
-msgid "Emoji annotaions can be match partially"
+msgid "Emoji annotations can be match partially"
 msgstr "Uwagi emoji mogą być częściowo dopasowywane"
 
 #: ../ui/gtk3/emojierapp.vala:87

@@ -613,7 +613,7 @@ msgstr ""
 "heeft."
 
 #: ../data/ibus.schemas.in.h:57
-msgid "Whether emoji annotaions can be match partially or not"
+msgid "Whether emoji annotations can be match partially or not"
 msgstr "Worden emoji annotaties wel of niet gedeeltelijk gematched"
 
 #: ../data/ibus.schemas.in.h:58
@@ -625,7 +625,7 @@ msgstr ""
 "in plaats van de exacte match."
 
 #: ../data/ibus.schemas.in.h:59
-msgid "Match emoji annotaions with the specified length"
+msgid "Match emoji annotations with the specified length"
 msgstr "Match emoji annotaties met de gespecificeerde lengte"
 
 #: ../data/ibus.schemas.in.h:60
@@ -1053,7 +1053,7 @@ msgid "LANG"
 msgstr "TAAL"
 
 #: ../ui/gtk3/emojierapp.vala:83
-msgid "Emoji annotaions can be match partially"
+msgid "Emoji annotations can be match partially"
 msgstr "Emoji annotaties kunnen gedeeltelijk gematched worden"
 
 #: ../ui/gtk3/emojierapp.vala:87

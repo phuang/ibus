@@ -96,7 +96,7 @@ public class EmojiApplication : Application {
               N_("\"LANG\" for annotations on emoji dialog. E.g. \"en\""),
               N_("LANG") },
             { "partial-match", 0, 0, OptionArg.NONE, out partial_match,
-              N_("Emoji annotaions can be match partially"),
+              N_("Emoji annotations can be match partially"),
               null },
             { "partial-match-length", 0, 0, OptionArg.INT,
               out partial_match_length,

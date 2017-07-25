@@ -423,7 +423,7 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-        <short>Whether emoji annotaions can be match partially or not</short>
+        <short>Whether emoji annotations can be match partially or not</short>
 	    <long>Whether emoji annotations can be matched with a partial
                   string instead of the exact match or not.</long>
       </locale>
@@ -435,7 +435,7 @@
       <type>int</type>
       <default>3</default>
       <locale name="C">
-        <short>Match emoji annotaions with the specified length</short>
+        <short>Match emoji annotations with the specified length</short>
 	    <long>Match emoji annotations partially with more than
                   the specified number of characters instead of
                   the exact match.</long>

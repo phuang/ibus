@@ -12,16 +12,17 @@
 # Daniel Lara <danniel@fedoraproject.org>, 2016. #zanata
 # Frederico Henrique Gonçalves Lima <fred@fredericolima.com.br>, 2017. #zanata
 # Jonathan Muttini Topanotti <jontopanotti@gmail.com>, 2017. #zanata
+# Mateus de Melo Santos <mateusms@tutanota.com>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2017-04-27 12:38+0900\n"
+"POT-Creation-Date: 2017-05-06 02:04+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-04-19 09:33-0400\n"
-"Last-Translator: Jonathan Muttini Topanotti <jontopanotti@gmail.com>\n"
+"PO-Revision-Date: 2017-06-09 04:32-0400\n"
+"Last-Translator: Mateus de Melo Santos <mateusms@tutanota.com>\n"
 "Language-Team: Portuguese (Brazil) <trans-pt_br@lists.fedoraproject.org>\n"
 "Language: pt-BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -90,168 +91,144 @@ msgid "Previous input method:"
 msgstr "Método de entrada anterior:"
 
 #: ../setup/setup.ui.h:16
-msgid "The shortcut keys for showing emoji dialog"
-msgstr "A tecla de atalho para exibição do diálogo emoji"
-
-#: ../setup/setup.ui.h:17
-msgid "Emoji choice:"
-msgstr "Escolha do emoji"
-
-#: ../setup/setup.ui.h:18
 msgid "..."
 msgstr "..."
 
-#: ../setup/setup.ui.h:19 ../data/ibus.schemas.in.h:16
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:16
 msgid "The shortcut keys for turning input method on or off"
 msgstr "As teclas de atalho para ligar ou desligar o método de entrada"
 
-#: ../setup/setup.ui.h:20
+#: ../setup/setup.ui.h:18
 msgid "Enable or disable:"
 msgstr "Ativa ou desativa:"
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:19
 msgid "Enable:"
 msgstr "Habilitar:"
 
-#: ../setup/setup.ui.h:22
+#: ../setup/setup.ui.h:20
 msgid "Disable:"
 msgstr "Desabilitar:"
 
-#: ../setup/setup.ui.h:23
+#: ../setup/setup.ui.h:21
 msgid "<b>Keyboard Shortcuts</b>"
 msgstr "<b>Atalhos do Teclado</b>"
 
-#: ../setup/setup.ui.h:24
+#: ../setup/setup.ui.h:22
 msgid "Set the orientation of candidates in lookup table"
 msgstr "Configure a orientação dos candidatos na tabela de observação"
 
-#: ../setup/setup.ui.h:25
+#: ../setup/setup.ui.h:23
 msgid "Candidates orientation:"
 msgstr "Orientação dos candidatos:"
 
-#: ../setup/setup.ui.h:26
+#: ../setup/setup.ui.h:24
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 "Configure o comportamento do ibus para como demonstrar ou ocultar a barra de "
 "linguagem"
 
-#: ../setup/setup.ui.h:27
+#: ../setup/setup.ui.h:25
 msgid "Show property panel:"
 msgstr "Mostrar painel de propriedades:"
 
-#: ../setup/setup.ui.h:28
+#: ../setup/setup.ui.h:26
 msgid "Language panel position:"
 msgstr "Posição do Painel de Idioma:"
 
-#: ../setup/setup.ui.h:29 ../data/ibus.schemas.in.h:36
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:36
 msgid "Show icon on system tray"
 msgstr "Apresenta um ícone na bandeja do sistema"
 
-#: ../setup/setup.ui.h:30 ../data/ibus.schemas.in.h:38
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:38
 msgid "Show input method name on language bar"
 msgstr "Apresenta o nome do método de entrada na barra de idioma"
 
-#: ../setup/setup.ui.h:31
+#: ../setup/setup.ui.h:29
 msgid "Show input method's name on language bar when check the checkbox"
 msgstr ""
 "Apresente o nome do método de entrada na barra de linguagem quando "
 "selecionando a caixa de seleção"
 
-#: ../setup/setup.ui.h:32
+#: ../setup/setup.ui.h:30
 msgid "Embed preedit text in application window"
 msgstr "Embutir texto de pré-edição na janela do aplicativo "
 
-#: ../setup/setup.ui.h:33
+#: ../setup/setup.ui.h:31
 msgid "Embed the preedit text of input method in the application window"
 msgstr ""
 "Embutir o texto de pré-edição do método de entrada na janela do aplicativo"
 
-#: ../setup/setup.ui.h:34
+#: ../setup/setup.ui.h:32
 msgid "Use custom font:"
 msgstr "Usa a fonte padrão:"
 
-#: ../setup/setup.ui.h:35
-msgid "Set a font of emoji candidates on the emoji dialog"
-msgstr "Defina uma fonte de candidatos emoji no diálogo emoji"
-
-#: ../setup/setup.ui.h:36
-msgid "Emoji font:"
-msgstr "Fonte do emoji"
-
-#: ../setup/setup.ui.h:37
-msgid "Set a language of emoji annotations on the emoji dialog"
-msgstr "Defina um idioma de anotações emoji no diálogo emoji"
-
-#: ../setup/setup.ui.h:38
-msgid "Emoji annotation language:"
-msgstr "Idioma de anotação de emoji:"
-
-#: ../setup/setup.ui.h:39
+#: ../setup/setup.ui.h:33
 msgid "<b>Font and Style</b>"
 msgstr "<b>Fonte e Estilo</b>"
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:34
 msgid "General"
 msgstr "Geral"
 
 #. add button
-#: ../setup/setup.ui.h:41 ../setup/enginedialog.py:61
+#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:61
 #: ../setup/keyboardshortcut.py:124
 msgid "_Add"
 msgstr "_Adicionar"
 
-#: ../setup/setup.ui.h:42
+#: ../setup/setup.ui.h:36
 msgid "Add the selected input method into the enabled input methods"
 msgstr ""
 "Adicione o método de entrada selecionado nos métodos de entrada ativados"
 
-#: ../setup/setup.ui.h:43
+#: ../setup/setup.ui.h:37
 msgid "_Remove"
 msgstr "_Remover"
 
-#: ../setup/setup.ui.h:44
+#: ../setup/setup.ui.h:38
 msgid "Remove the selected input method from the enabled input methods"
 msgstr ""
 "Remova o método de entrada selecionado a partir dos métodos de entrada "
 "ativados"
 
-#: ../setup/setup.ui.h:45
+#: ../setup/setup.ui.h:39
 msgid "_Up"
 msgstr "A_cima"
 
-#: ../setup/setup.ui.h:46
+#: ../setup/setup.ui.h:40
 msgid "Move up the selected input method in the enabled input methods list"
 msgstr ""
 "Mova para cima o método de entrada selecionado na lista dos métodos de "
 "entrada"
 
-#: ../setup/setup.ui.h:47
+#: ../setup/setup.ui.h:41
 msgid "_Down"
 msgstr "A_baixo"
 
-#: ../setup/setup.ui.h:48
+#: ../setup/setup.ui.h:42
 msgid "Move down the selected input method in the enabled input methods"
 msgstr ""
 "Mova o método de entrada selecionado para baixo nos métodos de entrada "
 "ativados"
 
-#: ../setup/setup.ui.h:49
+#: ../setup/setup.ui.h:43
 msgid "_About"
 msgstr "_Sobre"
 
-#: ../setup/setup.ui.h:50
+#: ../setup/setup.ui.h:44
 msgid "Show information of the selected input method"
 msgstr "Apresente a informação do método de entrada selecionado"
 
-#: ../setup/setup.ui.h:51
+#: ../setup/setup.ui.h:45
 msgid "_Preferences"
 msgstr "_Preferências"
 
-#: ../setup/setup.ui.h:52
+#: ../setup/setup.ui.h:46
 msgid "Show setup of the selected input method"
 msgstr "Mostrar configuração do método de entrada selecionado"
 
-#: ../setup/setup.ui.h:53
+#: ../setup/setup.ui.h:47
 msgid ""
 "<small><i>The active input method can be switched around from the selected "
 "ones in the above list by pressing the keyboard shortcut keys or clicking "
@@ -262,35 +239,87 @@ msgstr ""
 "ícone do painel.</i></small>"
 
 #. create im name & icon column
-#: ../setup/setup.ui.h:54 ../setup/enginetreeview.py:68
+#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:68
 msgid "Input Method"
 msgstr "Método de Entrada"
 
-#: ../setup/setup.ui.h:55 ../data/ibus.schemas.in.h:44
+#: ../setup/setup.ui.h:49
+msgid "The shortcut keys for showing emoji dialog"
+msgstr "A tecla de atalho para exibição do diálogo emoji"
+
+#: ../setup/setup.ui.h:50
+msgid "Emoji choice:"
+msgstr "Escolha do emoji"
+
+#: ../setup/setup.ui.h:51
+msgid "Set a font of emoji candidates on the emoji dialog"
+msgstr "Defina uma fonte de candidatos emoji no diálogo emoji"
+
+#: ../setup/setup.ui.h:52
+msgid "Emoji font:"
+msgstr "Fonte do emoji"
+
+#: ../setup/setup.ui.h:53
+msgid "Set a language of emoji annotations on the emoji dialog"
+msgstr "Defina um idioma de anotações emoji no diálogo emoji"
+
+#: ../setup/setup.ui.h:54
+msgid "Emoji annotation language:"
+msgstr "Idioma de anotação de emoji:"
+
+#: ../setup/setup.ui.h:55
+msgid ""
+"Match emoji annotations partially with the following condition and more than "
+"the number of characters:"
+msgstr ""
+
+#: ../setup/setup.ui.h:56
+msgid ""
+"If emoji annotations can be matched with a partial string instead of the "
+"exact match"
+msgstr ""
+
+#: ../setup/setup.ui.h:57
+msgid "Prefix match"
+msgstr ""
+
+#: ../setup/setup.ui.h:58
+msgid "Suffix match"
+msgstr ""
+
+#: ../setup/setup.ui.h:59
+msgid "Containing match"
+msgstr ""
+
+#: ../setup/setup.ui.h:60
+msgid "Emoji"
+msgstr "Emoji"
+
+#: ../setup/setup.ui.h:61 ../data/ibus.schemas.in.h:44
 msgid "Use system keyboard layout"
 msgstr "Usa o desenho do teclado do sistema"
 
-#: ../setup/setup.ui.h:56 ../data/ibus.schemas.in.h:45
+#: ../setup/setup.ui.h:62 ../data/ibus.schemas.in.h:45
 msgid "Use system keyboard (XKB) layout"
 msgstr "Usa o desenho do teclado do sistema (XKB)"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:63
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Desenho do Teclado</b>"
 
-#: ../setup/setup.ui.h:58 ../data/ibus.schemas.in.h:60
+#: ../setup/setup.ui.h:64 ../data/ibus.schemas.in.h:66
 msgid "Share the same input method among all applications"
 msgstr "Compartilhar o mesmo método de entrada entre todos os aplicativos"
 
-#: ../setup/setup.ui.h:59
+#: ../setup/setup.ui.h:65
 msgid "<b>Global input method settings</b>"
 msgstr "<b>Configurações de Método de Entrada Global</b> "
 
-#: ../setup/setup.ui.h:60
+#: ../setup/setup.ui.h:66
 msgid "Advanced"
 msgstr "Avançado"
 
-#: ../setup/setup.ui.h:61
+#: ../setup/setup.ui.h:67
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -306,19 +335,19 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.ui.h:68
+#: ../setup/setup.ui.h:74
 msgid "Start ibus on login"
 msgstr "Inicie o ibus na conexão "
 
-#: ../setup/setup.ui.h:69
+#: ../setup/setup.ui.h:75
 msgid "<b>Startup</b>"
 msgstr "<b>Inicialização</b>"
 
-#: ../setup/setup.ui.h:70 ../setup/engineabout.py:37 ../ui/gtk3/panel.vala:1250
+#: ../setup/setup.ui.h:76 ../setup/engineabout.py:37 ../ui/gtk3/panel.vala:1272
 msgid "About"
 msgstr "Sobre"
 
-#: ../setup/setup.ui.h:71 ../setup/engineabout.py:40
+#: ../setup/setup.ui.h:77 ../setup/engineabout.py:40
 msgid "_Close"
 msgstr "_Fechar"
 
@@ -582,32 +611,62 @@ msgstr ""
 "algum caractere."
 
 #: ../data/ibus.schemas.in.h:57
+msgid "Whether emoji annotations can be match partially or not"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:58
+msgid ""
+"Whether emoji annotations can be matched with a partial string instead of "
+"the exact match or not."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:59
+msgid "Match emoji annotations with the specified length"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:60
+msgid ""
+"Match emoji annotations partially with more than the specified number of "
+"characters instead of the exact match."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:61
+msgid "Choose a condition to match emoji annotations partially"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:62
+msgid ""
+"Choose one of the following conditions to match emoji annotations partially: "
+"0 == Prefix match, 1 == Suffix match, 2 == Containing match"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:63
 msgid "Embed Preedit Text"
 msgstr "Embutir Texto de Pré-Edição "
 
-#: ../data/ibus.schemas.in.h:58
+#: ../data/ibus.schemas.in.h:64
 msgid "Embed Preedit Text in Application Window"
 msgstr "Embutir Texto de Pré-edição na Janela do Aplicativo"
 
-#: ../data/ibus.schemas.in.h:59
+#: ../data/ibus.schemas.in.h:65
 msgid "Use global input method"
 msgstr "Use o método de entrada global"
 
-#: ../data/ibus.schemas.in.h:61
+#: ../data/ibus.schemas.in.h:67
 msgid "Enable input method by default"
 msgstr "Habilitar método de entrada por padrão"
 
-#: ../data/ibus.schemas.in.h:62
+#: ../data/ibus.schemas.in.h:68
 msgid "Enable input method by default when the application gets input focus"
 msgstr ""
 "Habilitar método de entrada por padrão quando o aplicativo obtiver o foco de "
 "entradas"
 
-#: ../data/ibus.schemas.in.h:63
+#: ../data/ibus.schemas.in.h:69
 msgid "DConf preserve name prefixes"
 msgstr "Prefixo de nome de preservação do DConf"
 
-#: ../data/ibus.schemas.in.h:64
+#: ../data/ibus.schemas.in.h:70
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "Prefixos das chaves do DConf para parar a conversão do nome"
 
@@ -628,12 +687,12 @@ msgid "Select a language"
 msgstr "Selecione uma língua"
 
 #: ../setup/emojilang.py:70 ../setup/enginedialog.py:60
-#: ../setup/keyboardshortcut.py:339 ../setup/main.py:457
+#: ../setup/keyboardshortcut.py:339 ../setup/main.py:552
 msgid "_Cancel"
 msgstr "_Cancelar"
 
 #: ../setup/emojilang.py:71 ../setup/keyboardshortcut.py:340
-#: ../setup/main.py:458
+#: ../setup/main.py:553
 msgid "_OK"
 msgstr "_OK"
 
@@ -706,17 +765,17 @@ msgstr ""
 msgid "Please press a key (or a key combination)"
 msgstr "Por favor pressione uma tecla (ou uma combinação de teclas)"
 
-#: ../setup/main.py:121 ../setup/main.py:485
+#: ../setup/main.py:121 ../setup/main.py:580
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr ""
 "Utilize o atalho com o alterador para mudar para o método de entrada "
 "anterior"
 
-#: ../setup/main.py:412
+#: ../setup/main.py:507
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "O daemon IBus não está sendo executado. Você deseja iniciá-lo"
 
-#: ../setup/main.py:433
+#: ../setup/main.py:528
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to "
 "your $HOME/.bashrc; then relog into your desktop.\n"
@@ -732,24 +791,24 @@ msgstr ""
 "exportar QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:447
+#: ../setup/main.py:542
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "O daemon do IBus não pôde ser iniciado em %d segundos"
 
-#: ../setup/main.py:459
+#: ../setup/main.py:554
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Selecione o atalho do teclado para %s"
 
 #. Translators: Title of the window
-#: ../setup/main.py:461
+#: ../setup/main.py:556
 msgid "switching input methods"
 msgstr "mudando métodos de entrada"
 
 #: ../src/ibusemojigen.h:30
 msgid "Activities"
-msgstr ""
+msgstr "Atividades"
 
 #: ../src/ibusemojigen.h:31
 msgid "Animals & Nature"
@@ -757,7 +816,7 @@ msgstr ""
 
 #: ../src/ibusemojigen.h:32
 msgid "Flags"
-msgstr ""
+msgstr "Bandeiras"
 
 #: ../src/ibusemojigen.h:33
 msgid "Food & Drink"
@@ -765,7 +824,7 @@ msgstr ""
 
 #: ../src/ibusemojigen.h:34
 msgid "Objects"
-msgstr ""
+msgstr "Objetos"
 
 #: ../src/ibusemojigen.h:35
 msgid "Smileys & People"
@@ -773,7 +832,7 @@ msgstr ""
 
 #: ../src/ibusemojigen.h:36
 msgid "Symbols"
-msgstr ""
+msgstr "Símbolos"
 
 #: ../src/ibusemojigen.h:37
 msgid "Travel & Places"
@@ -901,109 +960,133 @@ msgid "%s is unknown command!\n"
 msgstr "%s é um comando desconhecido!\n"
 
 #: ../ui/gtk3/emojier.vala:170
-msgid "Others"
+msgid "Show emoji variants"
 msgstr ""
 
-#: ../ui/gtk3/emojier.vala:284 ../ui/gtk3/panel.vala:1242
-msgid "Emoji Choice"
-msgstr "Escolha do emoji"
+#: ../ui/gtk3/emojier.vala:175
+msgid "Menu"
+msgstr "Menu"
 
-#: ../ui/gtk3/emojier.vala:290
-msgid "Type annotation or choose emoji"
-msgstr "Digite a anotação ou escolha o emoji"
-
-#: ../ui/gtk3/emojier.vala:595 ../ui/gtk3/emojier.vala:642
+#: ../ui/gtk3/emojier.vala:189
 msgid "Favorites"
 msgstr "Favoritos"
 
-#: ../ui/gtk3/emojier.vala:667
+#: ../ui/gtk3/emojier.vala:190
+msgid "Others"
+msgstr "Outros"
+
+#: ../ui/gtk3/emojier.vala:324 ../ui/gtk3/panel.vala:1264
+msgid "Emoji Choice"
+msgstr "Escolha do emoji"
+
+#: ../ui/gtk3/emojier.vala:330
+msgid "Type annotation or choose emoji"
+msgstr "Digite a anotação ou escolha o emoji"
+
+#: ../ui/gtk3/emojier.vala:752
 msgid "Page Down"
 msgstr "Page Down"
 
-#: ../ui/gtk3/emojier.vala:678
+#: ../ui/gtk3/emojier.vala:763
 msgid "Page Up"
 msgstr "Page Up"
 
-#. TODO: Provide a custom description and annotation for
-#. the favorite emojis.
-#: ../ui/gtk3/emojier.vala:849 ../ui/gtk3/emojier.vala:863
-#, c-format
-msgid "Description: %s"
-msgstr "Descrição: %s"
-
-#: ../ui/gtk3/emojier.vala:849
-msgid "None"
-msgstr "Nenhum"
-
-#: ../ui/gtk3/emojier.vala:854 ../ui/gtk3/emojier.vala:893
+#: ../ui/gtk3/emojier.vala:882
 #, c-format
 msgid "Code point: %s"
 msgstr "Ponto de código: %s"
 
-#: ../ui/gtk3/emojier.vala:874
+#: ../ui/gtk3/emojier.vala:888
+msgid "Has emoji variants"
+msgstr ""
+
+#. TODO: Provide a custom description and annotation for
+#. the favorite emojis.
+#: ../ui/gtk3/emojier.vala:995 ../ui/gtk3/emojier.vala:1004
+#, c-format
+msgid "Description: %s"
+msgstr "Descrição: %s"
+
+#: ../ui/gtk3/emojier.vala:995
+msgid "None"
+msgstr "Nenhum"
+
+#: ../ui/gtk3/emojier.vala:1015
 #, c-format
 msgid "Annotations: %s"
 msgstr "Anotações: %s"
 
-#: ../ui/gtk3/emojierapp.vala:44
+#: ../ui/gtk3/emojierapp.vala:47
 msgid "Canceled to choose an emoji."
 msgstr "Escolha de um emoji cancelada."
 
-#: ../ui/gtk3/emojierapp.vala:51
+#: ../ui/gtk3/emojierapp.vala:54
 msgid "Copied an emoji to your clipboard."
 msgstr "Emoji copiado para a sua área de transferência."
 
 #. TRANSLATORS: "FONT" should be capital and translatable.
 #. * It's used for an argument command --font=FONT
 #. 
-#: ../ui/gtk3/emojierapp.vala:71
+#: ../ui/gtk3/emojierapp.vala:74
 msgid "\"FONT\" for emoji chracters on emoji dialog"
 msgstr "\"FONT\" para caracteres  no diálogo emoji"
 
-#: ../ui/gtk3/emojierapp.vala:72
+#: ../ui/gtk3/emojierapp.vala:75
 msgid "FONT"
 msgstr "FONT"
 
 #. TRANSLATORS: "LANG" should be capital and translatable.
 #. * It's used for an argument command --lang=LANG
 #. 
-#: ../ui/gtk3/emojierapp.vala:77
+#: ../ui/gtk3/emojierapp.vala:80
 msgid "\"LANG\" for annotations on emoji dialog. E.g. \"en\""
 msgstr "\"LANG\" para anotações em diálogo emoji. V.g. \"en\""
 
-#: ../ui/gtk3/emojierapp.vala:78
+#: ../ui/gtk3/emojierapp.vala:81
 msgid "LANG"
 msgstr "LANG"
 
-#: ../ui/gtk3/panel.vala:271 ../ui/gtk3/panel.vala:302
+#: ../ui/gtk3/emojierapp.vala:83
+msgid "Emoji annotations can be match partially"
+msgstr ""
+
+#: ../ui/gtk3/emojierapp.vala:87
+msgid "Match with the length of the specified integer"
+msgstr ""
+
+#: ../ui/gtk3/emojierapp.vala:91
+msgid "Match with the condition of the specified integer"
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:283 ../ui/gtk3/panel.vala:314
 msgid "IBus Panel"
 msgstr "Painel IBus"
 
-#: ../ui/gtk3/panel.vala:832
+#: ../ui/gtk3/panel.vala:853
 msgid "IBus Update"
 msgstr "Atualização IBus"
 
-#: ../ui/gtk3/panel.vala:833 ../ui/gtk3/panel.vala:844
+#: ../ui/gtk3/panel.vala:854 ../ui/gtk3/panel.vala:865
 msgid "Super+space is now the default hotkey."
 msgstr "Super + espaço agora são as teclas de atalho padrão."
 
-#: ../ui/gtk3/panel.vala:1214
+#: ../ui/gtk3/panel.vala:1236
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus é um bus de entrada inteligente para o Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:1218
+#: ../ui/gtk3/panel.vala:1240
 msgid "translator-credits"
 msgstr "créditos-tradutor"
 
-#: ../ui/gtk3/panel.vala:1237
+#: ../ui/gtk3/panel.vala:1259
 msgid "Preferences"
 msgstr "Preferências"
 
-#: ../ui/gtk3/panel.vala:1256
+#: ../ui/gtk3/panel.vala:1278
 msgid "Restart"
 msgstr "Reinicie"
 
-#: ../ui/gtk3/panel.vala:1260
+#: ../ui/gtk3/panel.vala:1282
 msgid "Quit"
 msgstr "Sair"
 

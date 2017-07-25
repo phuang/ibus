@@ -629,7 +629,7 @@ msgstr ""
 "esta lista."
 
 #: ../data/ibus.schemas.in.h:57
-msgid "Whether emoji annotaions can be match partially or not"
+msgid "Whether emoji annotations can be match partially or not"
 msgstr ""
 "Si se permiten o no las coincidencias parciales en las anotaciones de emoji"
 
@@ -642,7 +642,7 @@ msgstr ""
 "de emoji en lugar de una exacta."
 
 #: ../data/ibus.schemas.in.h:59
-msgid "Match emoji annotaions with the specified length"
+msgid "Match emoji annotations with the specified length"
 msgstr ""
 "Realizar búsquedas en las anotaciones de emoji con la longitud de texto "
 "indicada"
@@ -1075,7 +1075,7 @@ msgid "LANG"
 msgstr "IDIOMA"
 
 #: ../ui/gtk3/emojierapp.vala:83
-msgid "Emoji annotaions can be match partially"
+msgid "Emoji annotations can be match partially"
 msgstr "Se permiten coincidencias parciales en las anotaciones de emoji"
 
 #: ../ui/gtk3/emojierapp.vala:87
