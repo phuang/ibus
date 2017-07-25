@@ -276,6 +276,17 @@ class IBusEmojier : Gtk.ApplicationWindow {
             warning("Could not open display.");
             return;
         }
+        // Set en locale because de_DE's decimal_point is ',' instead of '.'
+        string? backup_locale =
+            Intl.setlocale(LocaleCategory.NUMERIC, null).dup();
+        if (Intl.setlocale(LocaleCategory.NUMERIC, "en_US.UTF-8") == null) {
+          if (Intl.setlocale(LocaleCategory.NUMERIC, "C.UTF-8") == null) {
+              if (Intl.setlocale(LocaleCategory.NUMERIC, "C") == null) {
+                  warning("You don't install either en_US.UTF-8 or C.UTF-8 " +
+                          "or C locale");
+              }
+          }
+        }
         m_rgba = new ThemedRGBA(this);
         uint bg_red = (uint)(m_rgba.normal_bg.red * 255);
         uint bg_green = (uint)(m_rgba.normal_bg.green * 255);
@@ -321,6 +332,10 @@ class IBusEmojier : Gtk.ApplicationWindow {
             warning("Failed css_provider_from_data: %s", e.message);
             return;
         }
+        if (backup_locale != null)
+            Intl.setlocale(LocaleCategory.NUMERIC, backup_locale);
+        else
+            Intl.setlocale(LocaleCategory.NUMERIC, "");
 
         Gtk.StyleContext.add_provider_for_screen(
                 screen,
@@ -424,8 +439,9 @@ class IBusEmojier : Gtk.ApplicationWindow {
         unowned GLib.SList<string> annotations = data.get_annotations();
         foreach (string annotation in annotations) {
             bool has_emoji = false;
-            unowned GLib.SList<string> hits =
-                    m_annotation_to_emojis_dict.lookup(annotation);
+            GLib.SList<string> hits =
+                    m_annotation_to_emojis_dict.lookup(annotation).copy_deep(
+                            GLib.strdup);
             foreach (string hit_emoji in hits) {
                 if (hit_emoji == emoji) {
                     has_emoji = true;
@@ -485,7 +501,8 @@ class IBusEmojier : Gtk.ApplicationWindow {
     private static void
     update_annotations_with_description (IBus.EmojiData data,
                                          string         description) {
-        unowned GLib.SList<string> annotations = data.get_annotations();
+        GLib.SList<string> annotations =
+                data.get_annotations().copy_deep(GLib.strdup);
         bool update_annotations = false;
         string former = null;
         string later = null;
@@ -574,8 +591,9 @@ class IBusEmojier : Gtk.ApplicationWindow {
                 buff.append_unichar(0xfe0f);
                 if (m_emoji_to_data_dict.lookup(buff.str) != null)
                     base_emoji = buff.str;
-                unowned GLib.SList<string>? variants =
-                    m_emoji_to_emoji_variants_dict.lookup(base_emoji);
+                GLib.SList<string>? variants =
+                        m_emoji_to_emoji_variants_dict.lookup(
+                                base_emoji).copy_deep(GLib.strdup);
                 if (variants.find_custom(emoji, GLib.strcmp) == null) {
                     if (variants == null)
                         variants.append(base_emoji);
@@ -587,8 +605,9 @@ class IBusEmojier : Gtk.ApplicationWindow {
                 return;
             }
             bool has_emoji = false;
-            unowned GLib.SList<string> hits =
-                    m_category_to_emojis_dict.lookup(category);
+            GLib.SList<string> hits =
+                    m_category_to_emojis_dict.lookup(category).copy_deep(
+                            GLib.strdup);
             foreach (string hit_emoji in hits) {
                 if (hit_emoji == emoji) {
                     has_emoji = true;

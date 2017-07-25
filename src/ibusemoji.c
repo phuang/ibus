@@ -591,6 +591,7 @@ out_load_cache:
         g_variant_unref (variant);
     if (variant_table)
         g_variant_unref (variant_table);
+    g_free (contents);
 
     return retval;
 }
