@@ -3,6 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -99,6 +100,9 @@ class Application {
     }
 
     public static void main(string[] argv) {
+        // for Gdk.X11.get_default_xdisplay()
+        Gdk.set_allowed_backends("x11");
+
         Application app = new Application(argv);
         app.run();
     }
