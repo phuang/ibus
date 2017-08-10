@@ -999,6 +999,24 @@ ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
         gtk_im_context_set_client_window (ibusimcontext->slave, client);
 }
 
+static void
+_set_rect_scale_factor_with_window (GdkRectangle *area,
+                                    GdkWindow    *window)
+{
+#if GTK_CHECK_VERSION (3, 10, 0)
+    int scale_factor;
+
+    g_assert (area);
+    g_assert (GDK_IS_WINDOW (window));
+
+    scale_factor = gdk_window_get_scale_factor (window);
+    area->x *= scale_factor;
+    area->y *= scale_factor;
+    area->width *= scale_factor;
+    area->height *= scale_factor;
+#endif
+}
+
 static gboolean
 _set_cursor_location_internal (IBusIMContext *ibusimcontext)
 {
@@ -1024,6 +1042,8 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
             window = parent;
         }
 
+        _set_rect_scale_factor_with_window (&area,
+                                            ibusimcontext->client_window);
         ibus_input_context_set_cursor_location_relative (
             ibusimcontext->ibuscontext,
             area.x,
@@ -1049,6 +1069,7 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
     gdk_window_get_root_coords (ibusimcontext->client_window,
                                 area.x, area.y,
                                 &area.x, &area.y);
+    _set_rect_scale_factor_with_window (&area, ibusimcontext->client_window);
     ibus_input_context_set_cursor_location (ibusimcontext->ibuscontext,
                                             area.x,
                                             area.y,
