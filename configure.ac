@@ -153,7 +153,7 @@ PKG_CHECK_MODULES(GOBJECT2, [
     gobject-2.0 >= glib_required_version
 ])
 PKG_CHECK_MODULES(GIO2, [
-    gio-2.0 >= glib_required_version
+    gio-2.0 gio-unix-2.0 >= glib_required_version
 ])
 PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= glib_required_version
@@ -660,6 +660,8 @@ PKG_CHECK_MODULES(ISOCODES, [
 ISOCODES_PREFIX=`$PKG_CONFIG iso-codes --variable=prefix`
 AC_SUBST(ISOCODES_PREFIX)
 
+AC_SUBST([GDBUS_CODEGEN], [`$PKG_CONFIG --variable gdbus_codegen gio-2.0`])
+
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
@@ -674,6 +676,7 @@ src/Makefile
 src/ibusversion.h
 src/tests/Makefile
 bus/Makefile
+portal/Makefile
 engine/Makefile
 util/Makefile
 util/IMdkit/Makefile

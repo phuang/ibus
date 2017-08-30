@@ -52,6 +52,13 @@
 #define IBUS_SERVICE_IBUS       "org.freedesktop.IBus"
 
 /**
+ * IBUS_SERVICE_PORTAL:
+ *
+ * Address of IBus portalservice.
+ */
+#define IBUS_SERVICE_PORTAL     "org.freedesktop.portal.IBus"
+
+/**
  * IBUS_SERVICE_PANEL:
  *
  * Address of IBus panel service.
@@ -120,6 +127,13 @@
  * D-Bus interface for IBus.
  */
 #define IBUS_INTERFACE_IBUS     "org.freedesktop.IBus"
+
+/**
+ * IBUS_INTERFACE_PORTAL:
+ *
+ * D-Bus interface for IBus portal.
+ */
+#define IBUS_INTERFACE_PORTAL   "org.freedesktop.IBus.Portal"
 
 /**
  * IBUS_INTERFACE_INPUT_CONTEXT:

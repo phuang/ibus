@@ -51,6 +51,7 @@ SUBDIRS = \
 	util \
 	conf \
 	client \
+	portal \
 	data \
 	m4 \
 	po \
