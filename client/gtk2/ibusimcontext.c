@@ -583,7 +583,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
 
     /* init bus object */
     if (_bus == NULL) {
-        _bus = ibus_bus_new_async ();
+        _bus = ibus_bus_new_async_client ();
 
         /* init the global fake context */
         if (ibus_bus_is_connected (_bus)) {
@@ -603,7 +603,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     }
 
     _daemon_name_watch_id = g_bus_watch_name (G_BUS_TYPE_SESSION,
-                                              IBUS_SERVICE_IBUS,
+                                              ibus_bus_get_service_name (_bus),
                                               G_BUS_NAME_WATCHER_FLAGS_NONE,
                                               daemon_name_appeared,
                                               daemon_name_vanished,

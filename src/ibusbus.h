@@ -105,6 +105,19 @@ IBusBus     *ibus_bus_new               (void);
  */
 IBusBus     *ibus_bus_new_async         (void);
 
+/**
+ * ibus_bus_new_async_client:
+ *
+ * Creates a new #IBusBus instance for client use only. It will possibly
+ * be limited in what it can do.
+ *
+ * The instance will asynchronously connect to the IBus daemon.
+ *
+ * Returns: A newly allocated #IBusBus instance, and the instance is not
+ * floating.
+ */
+IBusBus     *ibus_bus_new_async_client  (void);
+
 
 /**
  * ibus_bus_is_connected:
@@ -126,6 +139,16 @@ gboolean     ibus_bus_is_connected      (IBusBus        *bus);
  */
 GDBusConnection *
              ibus_bus_get_connection    (IBusBus        *bus);
+
+/**
+ * ibus_bus_get_service_name:
+ * @bus: An #IBusBus.
+ *
+ * Return the main service name to use for calls on the ibus connection.
+ *
+ * Returns: at dbus name.
+ */
+const gchar * ibus_bus_get_service_name (IBusBus        *bus);
 
 /**
  * ibus_bus_hello:

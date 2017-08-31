@@ -48,12 +48,14 @@ enum {
 enum {
     PROP_0 = 0,
     PROP_CONNECT_ASYNC,
+    PROP_CLIENT_ONLY,
 };
 
 /* IBusBusPriv */
 struct _IBusBusPrivate {
     GFileMonitor *monitor;
     GDBusConnection *connection;
+    gboolean connected;
     gboolean watch_dbus_signal;
     guint watch_dbus_signal_id;
     gboolean watch_ibus_signal;
@@ -62,7 +64,10 @@ struct _IBusBusPrivate {
     gchar *unique_name;
     gboolean connect_async;
     gchar *bus_address;
+    gboolean use_portal;
+    gboolean client_only;
     GCancellable *cancellable;
+    guint portal_name_watch_id;
 };
 
 static guint    bus_signals[LAST_SIGNAL] = { 0 };
@@ -74,6 +79,7 @@ static GObject  *ibus_bus_constructor           (GType                   type,
                                                  guint                   n_params,
                                                  GObjectConstructParam  *params);
 static void      ibus_bus_destroy               (IBusObject             *object);
+static void      ibus_bus_connect_async         (IBusBus                *bus);
 static void      ibus_bus_watch_dbus_signal     (IBusBus                *bus);
 static void      ibus_bus_unwatch_dbus_signal   (IBusBus                *bus);
 static void      ibus_bus_watch_ibus_signal     (IBusBus                *bus);
@@ -117,8 +123,10 @@ ibus_bus_class_init (IBusBusClass *class)
     IBusObjectClass *ibus_object_class = IBUS_OBJECT_CLASS (class);
 
     gobject_class->constructor = ibus_bus_constructor;
-    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_bus_set_property;
-    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_bus_get_property;
+    gobject_class->set_property =
+            (GObjectSetPropertyFunc) ibus_bus_set_property;
+    gobject_class->get_property =
+            (GObjectGetPropertyFunc) ibus_bus_get_property;
     ibus_object_class->destroy = ibus_bus_destroy;
 
     /* install properties */
@@ -128,13 +136,28 @@ ibus_bus_class_init (IBusBusClass *class)
      * Whether the #IBusBus object should connect asynchronously to the bus.
      *
      */
-    g_object_class_install_property (gobject_class,
-                                     PROP_CONNECT_ASYNC,
-                                     g_param_spec_boolean ("connect-async",
-                                                           "Connect Async",
-                                                           "Connect asynchronously to the bus",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (
+            gobject_class,
+            PROP_CONNECT_ASYNC,
+            g_param_spec_boolean ("connect-async",
+                                  "Connect Async",
+                                  "Connect asynchronously to the bus",
+                                  FALSE,
+                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+    /**
+     * IBusBus:client-only:
+     *
+     * Whether the #IBusBus object is for client use only.
+     *
+     */
+    g_object_class_install_property (
+            gobject_class,
+            PROP_CLIENT_ONLY,
+            g_param_spec_boolean ("client-only",
+                                  "ClientOnly",
+                                  "Client use only",
+                                  FALSE,
+                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /* install signals */
     /**
@@ -294,6 +317,8 @@ ibus_bus_close_connection (IBusBus *bus)
     g_cancellable_cancel (bus->priv->cancellable);
     g_cancellable_reset (bus->priv->cancellable);
 
+    bus->priv->connected = FALSE;
+
     /* unref the old connection at first */
     if (bus->priv->connection != NULL) {
         g_signal_handlers_disconnect_by_func (bus->priv->connection,
@@ -311,6 +336,8 @@ static void
 ibus_bus_connect_completed (IBusBus *bus)
 {
     g_assert (bus->priv->connection);
+
+    bus->priv->connected = TRUE;
     /* FIXME */
     ibus_bus_hello (bus);
 
@@ -329,9 +356,38 @@ ibus_bus_connect_completed (IBusBus *bus)
 }
 
 static void
+_bus_connect_start_portal_cb (GObject      *source_object,
+                              GAsyncResult *res,
+                              gpointer      user_data)
+{
+    IBusBus *bus = IBUS_BUS (user_data);
+    GVariant *result;
+    GError *error = NULL;
+
+    result = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source_object),
+                                            res,
+                                            &error);
+    if (result != NULL) {
+        ibus_bus_connect_completed (bus);
+        g_variant_unref (result);
+    } else {
+        g_error_free (error);
+
+        g_dbus_connection_close (bus->priv->connection, NULL, NULL, NULL);
+        g_object_unref (bus->priv->connection);
+        bus->priv->connection = NULL;
+
+        g_free (bus->priv->bus_address);
+        bus->priv->bus_address = NULL;
+    }
+
+    g_object_unref (bus);
+}
+
+static void
 _bus_connect_async_cb (GObject      *source_object,
-                        GAsyncResult *res,
-                        gpointer      user_data)
+                       GAsyncResult *res,
+                       gpointer      user_data)
 {
     g_return_if_fail (user_data != NULL);
     g_return_if_fail (IBUS_IS_BUS (user_data));
@@ -349,7 +405,26 @@ _bus_connect_async_cb (GObject      *source_object,
     }
 
     if (bus->priv->connection != NULL) {
-        ibus_bus_connect_completed (bus);
+        if (bus->priv->use_portal) {
+            g_object_set_data (G_OBJECT (bus->priv->connection),
+                               "ibus-portal-connection",
+                               GINT_TO_POINTER (TRUE));
+            g_dbus_connection_call (
+                    bus->priv->connection,
+                    IBUS_SERVICE_PORTAL,
+                    IBUS_PATH_IBUS,
+                    "org.freedesktop.DBus.Peer",
+                    "Ping",
+                    g_variant_new ("()"),
+                    G_VARIANT_TYPE ("()"),
+                    G_DBUS_CALL_FLAGS_NONE,
+                    -1,
+                    bus->priv->cancellable,
+                    (GAsyncReadyCallback) _bus_connect_start_portal_cb,
+                    g_object_ref (bus));
+        } else {
+            ibus_bus_connect_completed (bus);
+        }
     }
     else {
         g_free (bus->priv->bus_address);
@@ -360,21 +435,32 @@ _bus_connect_async_cb (GObject      *source_object,
     g_object_unref (bus);
 }
 
+static gchar *
+ibus_bus_get_bus_address (IBusBus *bus)
+{
+    if (_bus->priv->use_portal)
+        return g_dbus_address_get_for_bus_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+    else
+        return g_strdup (ibus_get_address ());
+}
+
 static void
 ibus_bus_connect_async (IBusBus *bus)
 {
-    const gchar *bus_address = ibus_get_address ();
+    gchar *bus_address = ibus_bus_get_bus_address (bus);
 
     if (bus_address == NULL)
         return;
 
-    if (g_strcmp0 (bus->priv->bus_address, bus_address) == 0)
+    if (g_strcmp0 (bus->priv->bus_address, bus_address) == 0) {
+        g_free (bus_address);
         return;
+    }
 
     /* Close current connection and cancel ongoing connect request. */
     ibus_bus_close_connection (bus);
 
-    bus->priv->bus_address = g_strdup (bus_address);
+    bus->priv->bus_address = bus_address;
     g_object_ref (bus);
     g_dbus_connection_new_for_address (
             bus_address,
@@ -383,6 +469,28 @@ ibus_bus_connect_async (IBusBus *bus)
             NULL,
             bus->priv->cancellable,
             _bus_connect_async_cb, bus);
+}
+
+static gboolean
+is_in_flatpak (void)
+{
+    static gboolean flatpak_info_read;
+    static gboolean in_flatpak;
+
+    if (flatpak_info_read)
+        return in_flatpak;
+
+    flatpak_info_read = TRUE;
+    if (g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
+        in_flatpak = TRUE;
+    return in_flatpak;
+}
+
+static gboolean
+ibus_bus_should_connect_portal (IBusBus *bus)
+{
+    return bus->priv->client_only &&
+        (is_in_flatpak () || g_getenv ("IBUS_USE_PORTAL") != NULL);
 }
 
 static void
@@ -431,7 +539,6 @@ ibus_bus_init (IBusBus *bus)
 {
     struct stat buf;
     gchar *path;
-    GFile *file;
 
     bus->priv = IBUS_BUS_GET_PRIVATE (bus);
 
@@ -443,6 +550,7 @@ ibus_bus_init (IBusBus *bus)
     bus->priv->watch_ibus_signal_id = 0;
     bus->priv->unique_name = NULL;
     bus->priv->connect_async = FALSE;
+    bus->priv->client_only = FALSE;
     bus->priv->bus_address = NULL;
     bus->priv->cancellable = g_cancellable_new ();
 
@@ -453,17 +561,12 @@ ibus_bus_init (IBusBus *bus)
 
     if (stat (path, &buf) == 0) {
         if (buf.st_uid != getuid ()) {
-            g_warning ("The owner of %s is not %s!", path, ibus_get_user_name ());
+            g_warning ("The owner of %s is not %s!",
+                       path, ibus_get_user_name ());
             return;
         }
     }
 
-    file = g_file_new_for_path (ibus_get_socket_path ());
-    bus->priv->monitor = g_file_monitor_file (file, 0, NULL, NULL);
-
-    g_signal_connect (bus->priv->monitor, "changed", (GCallback) _changed_cb, bus);
-
-    g_object_unref (file);
     g_free (path);
 }
 
@@ -476,6 +579,9 @@ ibus_bus_set_property (IBusBus      *bus,
     switch (prop_id) {
     case PROP_CONNECT_ASYNC:
         bus->priv->connect_async = g_value_get_boolean (value);
+        break;
+    case PROP_CLIENT_ONLY:
+        bus->priv->client_only = g_value_get_boolean (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (bus, prop_id, pspec);
@@ -492,10 +598,37 @@ ibus_bus_get_property (IBusBus    *bus,
     case PROP_CONNECT_ASYNC:
         g_value_set_boolean (value, bus->priv->connect_async);
         break;
+    case PROP_CLIENT_ONLY:
+        g_value_set_boolean (value, bus->priv->client_only);
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (bus, prop_id, pspec);
     }
 }
+
+static void
+portal_name_appeared (GDBusConnection *connection,
+                      const gchar     *name,
+                      const gchar     *owner,
+                      gpointer         user_data)
+{
+    IBusBus *bus = IBUS_BUS (user_data);
+
+    if (bus->priv->connection == NULL)
+        ibus_bus_connect_async (bus);
+}
+
+static void
+portal_name_vanished (GDBusConnection *connection,
+                      const gchar     *name,
+                      gpointer         user_data)
+{
+    IBusBus *bus = IBUS_BUS (user_data);
+
+    if (bus->priv->connection)
+        g_dbus_connection_close (bus->priv->connection, NULL, NULL, NULL);
+}
+
 
 static GObject*
 ibus_bus_constructor (GType                  type,
@@ -503,13 +636,34 @@ ibus_bus_constructor (GType                  type,
                       GObjectConstructParam *params)
 {
     GObject *object;
+    GFile *file;
 
     /* share one IBusBus instance in whole application */
     if (_bus == NULL) {
-        object = G_OBJECT_CLASS (ibus_bus_parent_class)->constructor (type, n_params, params);
+        object = G_OBJECT_CLASS (ibus_bus_parent_class)->constructor (
+                type, n_params, params);
         /* make bus object sink */
         g_object_ref_sink (object);
         _bus = IBUS_BUS (object);
+
+        _bus->priv->use_portal = ibus_bus_should_connect_portal (_bus);
+
+        if (!_bus->priv->use_portal) {
+            file = g_file_new_for_path (ibus_get_socket_path ());
+            _bus->priv->monitor = g_file_monitor_file (file, 0, NULL, NULL);
+            g_signal_connect (_bus->priv->monitor, "changed",
+                              (GCallback) _changed_cb, _bus);
+            g_object_unref (file);
+        } else {
+            _bus->priv->portal_name_watch_id =
+                g_bus_watch_name (G_BUS_TYPE_SESSION,
+                                  IBUS_SERVICE_PORTAL,
+                                  G_BUS_NAME_WATCHER_FLAGS_NONE,
+                                  portal_name_appeared,
+                                  portal_name_vanished,
+                                  _bus, NULL);
+        }
+
 
         if (_bus->priv->connect_async)
             ibus_bus_connect_async (_bus);
@@ -560,6 +714,11 @@ ibus_bus_destroy (IBusObject *object)
     g_cancellable_cancel (bus->priv->cancellable);
     g_object_unref (bus->priv->cancellable);
     bus->priv->cancellable = NULL;
+
+    if (bus->priv->portal_name_watch_id) {
+        g_bus_unwatch_name (bus->priv->portal_name_watch_id);
+        bus->priv->portal_name_watch_id = 0;
+    }
 
     IBUS_OBJECT_CLASS (ibus_bus_parent_class)->destroy (object);
 }
@@ -656,6 +815,7 @@ ibus_bus_new (void)
 {
     IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS,
                                            "connect-async", FALSE,
+                                           "client-only", FALSE,
                                            NULL));
 
     return bus;
@@ -666,6 +826,18 @@ ibus_bus_new_async (void)
 {
     IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS,
                                            "connect-async", TRUE,
+                                           "client-only", FALSE,
+                                           NULL));
+
+    return bus;
+}
+
+IBusBus *
+ibus_bus_new_async_client (void)
+{
+    IBusBus *bus = IBUS_BUS (g_object_new (IBUS_TYPE_BUS,
+                                           "connect-async", TRUE,
+                                           "client-only", TRUE,
                                            NULL));
 
     return bus;
@@ -679,7 +851,7 @@ ibus_bus_is_connected (IBusBus *bus)
     if (bus->priv->connection == NULL || g_dbus_connection_is_closed (bus->priv->connection))
         return FALSE;
 
-    return TRUE;
+    return bus->priv->connected;
 }
 
 IBusInputContext *
@@ -795,9 +967,9 @@ ibus_bus_create_input_context_async (IBusBus            *bus,
      * 2. New local IBusInputContext proxy of the remote IC
      */
     g_dbus_connection_call (bus->priv->connection,
-            IBUS_SERVICE_IBUS,
+            ibus_bus_get_service_name (bus),
             IBUS_PATH_IBUS,
-            IBUS_INTERFACE_IBUS,
+            bus->priv->use_portal ? IBUS_INTERFACE_PORTAL : IBUS_INTERFACE_IBUS,
             "CreateInputContext",
             g_variant_new ("(s)", client_name),
             G_VARIANT_TYPE("(o)"),
@@ -1452,6 +1624,14 @@ ibus_bus_get_connection (IBusBus *bus)
     g_return_val_if_fail (IBUS_IS_BUS (bus), NULL);
 
     return bus->priv->connection;
+}
+
+const gchar *
+ibus_bus_get_service_name (IBusBus *bus)
+{
+    if (bus->priv->use_portal)
+        return IBUS_SERVICE_PORTAL;
+    return IBUS_SERVICE_IBUS;
 }
 
 gboolean
@@ -2369,6 +2549,13 @@ ibus_bus_call_sync (IBusBus            *bus,
     g_assert (member != NULL);
     g_return_val_if_fail (ibus_bus_is_connected (bus), NULL);
 
+    if (bus->priv->use_portal &&
+        g_strcmp0 (bus_name, IBUS_SERVICE_IBUS) == 0)  {
+        bus_name = IBUS_SERVICE_PORTAL;
+        if (g_strcmp0 (interface, IBUS_INTERFACE_IBUS) == 0)
+            interface = IBUS_INTERFACE_PORTAL;
+    }
+
     GError *error = NULL;
     GVariant *result;
     result = g_dbus_connection_call_sync (bus->priv->connection,
@@ -2435,6 +2622,13 @@ ibus_bus_call_async (IBusBus            *bus,
 
     task = g_task_new (bus, cancellable, callback, user_data);
     g_task_set_source_tag (task, source_tag);
+
+    if (bus->priv->use_portal &&
+        g_strcmp0 (bus_name, IBUS_SERVICE_IBUS) == 0)  {
+        bus_name = IBUS_SERVICE_PORTAL;
+        if (g_strcmp0 (interface, IBUS_INTERFACE_IBUS) == 0)
+            interface = IBUS_INTERFACE_PORTAL;
+    }
 
     g_dbus_connection_call (bus->priv->connection,
                             bus_name,

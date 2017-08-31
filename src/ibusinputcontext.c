@@ -684,16 +684,20 @@ ibus_input_context_new (const gchar     *path,
 {
     g_assert (path != NULL);
     g_assert (G_IS_DBUS_CONNECTION (connection));
+    const gchar *service_name = IBUS_SERVICE_IBUS;
 
     GInitable *initable;
 
     GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
 
+    if (g_object_get_data (G_OBJECT (connection), "ibus-portal-connection"))
+        service_name = IBUS_SERVICE_PORTAL;
+
     initable = g_initable_new (IBUS_TYPE_INPUT_CONTEXT,
                                cancellable,
                                error,
                                "g-connection",      connection,
-                               "g-name",            IBUS_SERVICE_IBUS,
+                               "g-name",            service_name,
                                "g-flags",           flags,
                                "g-interface-name",  IBUS_INTERFACE_INPUT_CONTEXT,
                                "g-object-path",     path,
@@ -714,8 +718,12 @@ ibus_input_context_new_async (const gchar         *path,
     g_assert (path != NULL);
     g_assert (G_IS_DBUS_CONNECTION (connection));
     g_assert (callback != NULL);
+    const gchar *service_name = IBUS_SERVICE_IBUS;
 
     GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
+
+    if (g_object_get_data (G_OBJECT (connection), "ibus-portal-connection"))
+        service_name = IBUS_SERVICE_PORTAL;
 
     g_async_initable_new_async (IBUS_TYPE_INPUT_CONTEXT,
                                 G_PRIORITY_DEFAULT,
@@ -723,7 +731,7 @@ ibus_input_context_new_async (const gchar         *path,
                                 callback,
                                 user_data,
                                 "g-connection",      connection,
-                                "g-name",            IBUS_SERVICE_IBUS,
+                                "g-name",            service_name,
                                 "g-flags",           flags,
                                 "g-interface-name",  IBUS_INTERFACE_INPUT_CONTEXT,
                                 "g-object-path",     path,
