@@ -101,10 +101,6 @@ _forward_method_cb (GObject *source_object,
                     gpointer user_data)
 {
     GDBusMethodInvocation *invocation = user_data;
-    IBusPortalContext *portal_context =
-            (IBusPortalContext *) g_dbus_method_invocation_get_user_data (
-                    invocation);
-    IBusEngineDesc *desc;
     GError *error = NULL;
 
     GVariant *variant = g_dbus_proxy_call_finish ((GDBusProxy *) source_object,
@@ -413,6 +409,7 @@ ibus_portal_context_handle_destroy (IBusDbusService       *object,
                                     IBusPortalContext     *portal_context)
 {
     g_object_unref (portal_context);
+    return FALSE;
 }
 
 static IBusPortalContext *
@@ -475,7 +472,6 @@ create_input_context_done (IBusBus               *bus,
     GError *error = NULL;
     IBusInputContext *context;
     IBusPortalContext *portal_context;
-    char *object_path;
 
     context = ibus_bus_create_input_context_async_finish (ibus_bus,
                                                           res,
