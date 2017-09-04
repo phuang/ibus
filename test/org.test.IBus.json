@@ -1,0 +1,43 @@
+{
+    "app-id": "org.test.IBus",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.24",
+    "sdk": "org.gnome.Sdk",
+    "command": "/usr/bin/zenity",
+    "finish-args": [
+        /* X11 + XShm access */
+        "--share=ipc", "--socket=x11",
+        /* Wayland access */
+        "--socket=wayland",
+        /* Needed for dconf to work */
+        "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+        "--env=GTK_IM_MODULE_FILE=/app/lib/gtk-3.0/3.0.0/immodules.cache"
+    ],
+    "build-options" : {
+        "cflags": "-O2 -g",
+        "cxxflags": "-O2 -g",
+        "env": {
+            "V": "1"
+        }
+    },
+    "cleanup": ["/include", "/lib/pkgconfig",
+                "/share/pkgconfig", "/share/aclocal",
+                "/man", "/share/man", "/share/gtk-doc",
+                "/share/vala",
+                "*.la", "*.a"],
+    "modules": [
+        {
+            "name": "ibus",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/alexlarsson/ibus",
+                    "branch": "ibus-portal"
+                }
+            ],
+            "config-opts": ["--disable-emoji-dict", "--disable-dconf"],
+            "post-install": ["gtk-query-immodules-3.0 /app/lib/gtk-3.0/3.0.0/immodules/im-ibus.so > /app/lib/gtk-3.0/3.0.0/immodules.cache"]
+        }
+    ]
+}
