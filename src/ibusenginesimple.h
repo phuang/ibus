@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2016 Red Hat, Inc.
+ * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,7 @@
  */
 
 #include "ibusengine.h"
+#include "ibuskeysyms.h"
 
 G_BEGIN_DECLS
 
@@ -92,6 +93,25 @@ struct _IBusEngineSimpleClass {
     /*< private >*/
     /* padding */
     gpointer pdummy[8];
+};
+
+static const guint16 IBUS_COMPOSE_IGNORE_KEYLIST[] = {
+    IBUS_KEY_Shift_L,
+    IBUS_KEY_Shift_R,
+    IBUS_KEY_Control_L,
+    IBUS_KEY_Control_R,
+    IBUS_KEY_Caps_Lock,
+    IBUS_KEY_Shift_Lock,
+    IBUS_KEY_Meta_L,
+    IBUS_KEY_Meta_R,
+    IBUS_KEY_Alt_L,
+    IBUS_KEY_Alt_R,
+    IBUS_KEY_Super_L,
+    IBUS_KEY_Super_R,
+    IBUS_KEY_Hyper_L,
+    IBUS_KEY_Hyper_R,
+    IBUS_KEY_Mode_switch,
+    IBUS_KEY_ISO_Level3_Shift
 };
 
 GType   ibus_engine_simple_get_type       (void);

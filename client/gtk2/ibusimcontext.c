@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -245,6 +246,39 @@ _focus_out_cb (GtkWidget     *widget,
         ibus_input_context_focus_out (_fake_context);
     }
     return FALSE;
+}
+
+static gboolean
+ibus_im_context_commit_event (IBusIMContext *ibusimcontext,
+                              GdkEventKey   *event)
+{
+    int i;
+    GdkModifierType no_text_input_mask;
+    gunichar ch;
+
+    if (event->type == GDK_KEY_RELEASE)
+        return FALSE;
+    /* Ignore modifier key presses */
+    for (i = 0; i < G_N_ELEMENTS (IBUS_COMPOSE_IGNORE_KEYLIST); i++)
+        if (event->keyval == IBUS_COMPOSE_IGNORE_KEYLIST[i])
+            return FALSE;
+    no_text_input_mask = gdk_keymap_get_modifier_mask (
+            gdk_keymap_get_for_display (gdk_display_get_default ()),
+            GDK_MODIFIER_INTENT_NO_TEXT_INPUT);
+    if (event->state & no_text_input_mask ||
+        event->keyval == GDK_KEY_Return ||
+        event->keyval == GDK_KEY_ISO_Enter ||
+        event->keyval == GDK_KEY_KP_Enter) {
+        return FALSE;
+    }
+    ch = ibus_keyval_to_unicode (event->keyval);
+    if (ch != 0 && !g_unichar_iscntrl (ch)) {
+        IBusText *text = ibus_text_new_from_unichar (ch);
+        g_signal_emit (ibusimcontext, _signal_commit_id, 0, text->text);
+        g_object_unref (text);
+        return TRUE;
+    }
+   return FALSE;
 }
 
 static void
@@ -797,8 +831,11 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     if (event->state & IBUS_HANDLED_MASK)
         return TRUE;
 
+    /* Do not call gtk_im_context_filter_keypress() because
+     * gtk_im_context_simple_filter_keypress() binds Ctrl-Shift-u
+     */
     if (event->state & IBUS_IGNORED_MASK)
-        return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
+        return ibus_im_context_commit_event (ibusimcontext, event);
 
     /* XXX it is a workaround for some applications do not set client
      * window. */

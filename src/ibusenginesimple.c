@@ -81,25 +81,6 @@ const IBusComposeTableCompact ibus_compose_table_compact = {
 
 static GSList *global_tables;
 
-static const guint16 ibus_compose_ignore[] = {
-    IBUS_KEY_Shift_L,
-    IBUS_KEY_Shift_R,
-    IBUS_KEY_Control_L,
-    IBUS_KEY_Control_R,
-    IBUS_KEY_Caps_Lock,
-    IBUS_KEY_Shift_Lock,
-    IBUS_KEY_Meta_L,
-    IBUS_KEY_Meta_R,
-    IBUS_KEY_Alt_L,
-    IBUS_KEY_Alt_R,
-    IBUS_KEY_Super_L,
-    IBUS_KEY_Super_R,
-    IBUS_KEY_Hyper_L,
-    IBUS_KEY_Hyper_R,
-    IBUS_KEY_Mode_switch,
-    IBUS_KEY_ISO_Level3_Shift
-};
-
 /* functions prototype */
 static void     ibus_engine_simple_destroy      (IBusEngineSimple   *simple);
 static void     ibus_engine_simple_reset        (IBusEngine         *engine);
@@ -1045,8 +1026,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     }
 
     /* Ignore modifier key presses */
-    for (i = 0; i < G_N_ELEMENTS (ibus_compose_ignore); i++)
-        if (keyval == ibus_compose_ignore[i])
+    for (i = 0; i < G_N_ELEMENTS (IBUS_COMPOSE_IGNORE_KEYLIST); i++)
+        if (keyval == IBUS_COMPOSE_IGNORE_KEYLIST[i])
             return FALSE;
 
     if ((priv->in_hex_sequence || priv->in_emoji_sequence)
