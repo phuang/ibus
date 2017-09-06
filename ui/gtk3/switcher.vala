@@ -91,6 +91,9 @@ class Switcher : Gtk.Window {
     private uint m_popup_delay_time_id = 0;
     private int m_root_x;
     private int m_root_y;
+    private double m_mouse_init_x;
+    private double m_mouse_init_y;
+    private bool   m_mouse_moved;
     private GLib.HashTable<string, string> m_xkb_languages =
             new GLib.HashTable<string, string>(GLib.str_hash,
                                                GLib.str_equal);
@@ -221,6 +224,11 @@ class Switcher : Gtk.Window {
                               Gdk.CURRENT_TIME);
         if (status != Gdk.GrabStatus.SUCCESS)
             warning("Grab pointer failed! status = %d", status);
+        // Probably we can delete m_popup_delay_time in 1.6
+        pointer.get_position_double(null,
+                                    out m_mouse_init_x,
+                                    out m_mouse_init_y);
+        m_mouse_moved = false;
 
 
         m_loop = new GLib.MainLoop();
@@ -263,12 +271,30 @@ class Switcher : Gtk.Window {
             var button = new IBusEngineButton(engine, this);
             var longname = engine.get_longname();
             button.set_relief(Gtk.ReliefStyle.NONE);
+            button.add_events(Gdk.EventMask.POINTER_MOTION_MASK);
             button.show();
 
             button.enter_notify_event.connect((e) => {
+                // avoid gtk_button_update_state()
+                return true;
+            });
+            button.motion_notify_event.connect((e) => {
+#if VALA_0_24
+                Gdk.EventMotion pe = e;
+#else
+                Gdk.EventMotion *pe = &e;
+#endif
+                if (m_selected_engine == index)
+                    return false;
+                if (!m_mouse_moved &&
+                    m_mouse_init_x == pe.x_root &&
+                    m_mouse_init_y == pe.y_root) {
+                    return false;
+                }
+                m_mouse_moved = true;
                 button.grab_focus();
                 m_selected_engine = index;
-                return true;
+                return false;
             });
 
             button.button_press_event.connect((e) => {
