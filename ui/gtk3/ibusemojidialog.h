@@ -170,5 +170,31 @@ void          ibus_emojier_set_favorites          (gchar**      favorites,
                                                    favorite_annotations,
                                                    int
                                                    favorite_annotations_length);
+
+/**
+ * ibus_emojier_set_partial_match:
+ * @has_partial_match: Enable the partial match if %TRUE. Otherwise if %FALSE.
+ *
+ * Set partial match for emoji annotations.
+ */
+void          ibus_emojier_set_partial_match      (gboolean  has_partial_match);
+
+/**
+ * ibus_emojier_set_partial_match_length:
+ * @length: minimum lenght to match partially.
+ *
+ * Set the minimum lenght to match partially.
+ */
+void          ibus_emojier_set_partial_match_length
+                                                  (gint         length);
+
+/**
+ * ibus_emojier_set_partial_match_condition:
+ * @condition: condition id between 0 and 2.
+ *
+ * Set the partial match condition with the integer.
+ */
+void          ibus_emojier_set_partial_match_condition
+                                                  (gint         condition);
 G_END_DECLS
 #endif

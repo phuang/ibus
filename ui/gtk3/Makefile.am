@@ -81,10 +81,6 @@ AM_VALAFLAGS = \
 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
 	$(NULL)
 
-MAINTAINERCLEANFILES =
-DISTCLEANFILES =
-noinst_DATA =
-
 if ENABLE_LIBNOTIFY
 AM_CFLAGS += \
 	@LIBNOTIFY_CFLAGS@ \
@@ -158,9 +154,8 @@ man_seven_in_files = ibus-emoji.7.in
 EXTRA_DIST =                            \
     $(emoji_headers)                    \
     $(man_seven_in_files)               \
-    IBusEmojiDialog-1.0.metadata        \
+    emojierapp.vala                     \
     gtkpanel.xml.in                     \
-    ibus-emoji-dialog-1.0.deps          \
     notification-item.xml               \
     notification-watcher.xml            \
     $(NULL)
@@ -168,98 +163,40 @@ EXTRA_DIST =                            \
 if ENABLE_EMOJI_DICT
 AM_VALAFLAGS += --define=EMOJI_DICT
 
-libibus_emoji_dialog = libibus-emoji-dialog-1.0.la
-
-noinst_LTLIBRARIES = $(libibus_emoji_dialog)
-
-libibus_emoji_dialog_1_0_la_CFLAGS = $(AM_CFLAGS)
-libibus_emoji_dialog_1_0_la_LDFLAGS =   \
-    -no-undefined                       \
-    -export-symbols-regex "ibus_.*"     \
-    -version-info @LT_VERSION_INFO@     \
-    $(NULL)
-libibus_emoji_dialog_1_0_la_SOURCES =   \
-    candidatearea.vala                  \
-    emojier.vala                        \
-    iconwidget.vala                     \
-    pango.vala                          \
-    separator.vala                      \
-    $(NULL)
-
 libexec_PROGRAMS += ibus-ui-emojier
 
-ibus_ui_emojier_SOURCES =                       \
-    $(libibus_emoji_dialog_1_0_la_SOURCES)      \
+ibus_ui_emojier_VALASOURCES =                   \
     emojierapp.vala                             \
+    candidatearea.vala                          \
+    emojier.vala                                \
+    iconwidget.vala                             \
+    pango.vala                                  \
+    separator.vala                              \
+    $(NULL)
+ibus_ui_emojier_SOURCES =                       \
+    $(ibus_ui_emojier_VALASOURCES:.vala=.c)     \
     $(NULL)
 
 ibus_ui_emojier_LDADD =                         \
     $(AM_LDADD)                                 \
     $(NULL)
 
--include $(INTROSPECTION_MAKEFILE)
-INTROSPECTION_SCANNER_ARGS =
-INTROSPECTION_COMPILER_ARGS =      \
-    --includedir=$(srcdir)         \
-    --includedir=.                 \
-    --includedir=$(top_srcdir)/src \
+ibus_ui_emojier_VALAFLAGS =                     \
+    $(AM_VALAFLAGS)                             \
     $(NULL)
 
-if HAVE_INTROSPECTION
-introspection_sources =                \
-    $(emoji_headers)                   \
-    $(NULL)
-IBusEmojiDialog-1.0.gir: $(libibus_emoji_dialog) Makefile
-IBusEmojiDialog_1_0_gir_SCANNERFLAGS = \
-    --pkg-export=ibus-1.0              \
-    --pkg=gtk+-3.0                     \
-    $(IBUS_GIR_SCANNERFLAGS)           \
-    $(NULL)
-IBusEmojiDialog-1.0.gir: $(libibus_emoji_dialog) Makefile
-IBusEmojiDialog_1_0_gir_INCLUDES = Gtk-3.0 GLib-2.0 GObject-2.0 Gio-2.0
-IBusEmojiDialog_1_0_gir_LIBS = $(libibus_emoji_dialog) $(libibus)
-IBusEmojiDialog_1_0_gir_FILES =                      \
-    $(addprefix $(srcdir)/,$(introspection_sources)) \
-    $(NULL)
-IBusEmojiDialog_1_0_gir_CFLAGS =       \
-    -DIBUS_COMPILATION                 \
-    -I$(srcdir)                        \
-    -I$(builddir)                      \
-    -I$(top_srcdir)/src                \
-    $(NULL)
-INTROSPECTION_GIRS = IBusEmojiDialog-1.0.gir
-
-girdir = $(datadir)/gir-1.0
-noinst_DATA += $(INTROSPECTION_GIRS)
-CLEANFILES += $(INTROSPECTION_GIRS)
-
-typelibsdir = $(libdir)/girepository-1.0
-noinst_DATA += $(INTROSPECTION_GIRS:.gir=.typelib)
-CLEANFILES += $(INTROSPECTION_GIRS:.gir=.typelib)
-
-
-if ENABLE_VAPIGEN
--include $(VAPIGEN_MAKEFILE)
-
-ibus-emoji-dialog-1.0.vapi: $(INTROSPECTION_GIRS) IBusEmojiDialog-1.0.metadata
-
-VAPIGEN_VAPIS = ibus-emoji-dialog-1.0.vapi
-
-ibus_emoji_dialog_1_0_vapi_DEPS = gtk+-3.0 gio-2.0
-ibus_emoji_dialog_1_0_vapi_METADATADIRS = $(srcdir)
-ibus_emoji_dialog_1_0_vapi_FILES = $(INTROSPECTION_GIRS)
-
-vapidir = $(datadir)/vala/vapi
-noinst_DATA += $(VAPIGEN_VAPIS) $(VAPIGEN_VAPIS:.vapi=.deps)
-
-MAINTAINERCLEANFILES += $(VAPIGEN_VAPIS)
-DISTCLEANFILES += $(VAPIGEN_VAPIS)
-EXTRA_DIST += $(VAPIGEN_VAPIS)
-
-# end of ENABLE_VAPIGEN
-endif
-# end of HAVE_INTROSPECTION
-endif
+# This line and foo_VALASOURCES line can delete the duplicated entries
+# of emojier.c: emojier.vala
+emojierapp.c: $(ibus_ui_emojier_VALASOURCES)
+	$(AM_V_VALAC)$(am__cd) $(srcdir) && $(VALAC) $(AM_VALAFLAGS) \
+$(VALAFLAGS) -C $(ibus_ui_emojier_VALASOURCES)
+	$(NULL)
+# make dist creates .c files in a different srcdir
+emojierapp.o: $(srcdir)/emojierapp.c
+	$(AM_V_CC)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
+	$(NULL)
 
 man_seven_files = $(man_seven_in_files:.7.in=.7)
 man_seven_DATA =$(man_seven_files:.7=.7.gz)
@@ -276,7 +213,7 @@ CLEANFILES += \
     $(man_seven_files) \
     $(NULL)
 
-# end of ENABLE_EMOJI_DICT
 endif
+# end of ENABLE_EMOJI_DICT
 
 -include $(top_srcdir)/git.mk

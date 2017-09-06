@@ -1139,6 +1139,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
                     m_category_active_index = (int)list.length();
         }
         Gtk.Adjustment adjustment = m_list_box.get_adjustment();
+        m_scrolled_window.set_hadjustment(new Gtk.Adjustment(0, 0, 0, 0, 0, 0));
         m_scrolled_window.set_vadjustment(adjustment);
         show_category_list();
     }
@@ -1156,7 +1157,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             else if (keyval == Gdk.Key.Right)
                 m_lookup_table.cursor_down();
             show_candidate_panel();
-        } else if (m_entry.get_text().len() > 0) {
+        } else if (m_entry.get_text().length > 0) {
             int step = 0;
             if (keyval == Gdk.Key.Left)
                 step = -1;
@@ -1211,7 +1212,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             show_candidate_panel();
             return true;
         }
-        if (m_entry.get_text().len() > 0) {
+        if (m_entry.get_text().length > 0) {
             int step = 0;
             if (keyval == Gdk.Key.Home)
                 step = -1;
@@ -1410,7 +1411,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             key_press_enter();
             return true;
         case Gdk.Key.BackSpace:
-            if (m_entry.get_text().len() > 0) {
+            if (m_entry.get_text().length > 0) {
                 if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
                     GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
                                              Gtk.DeleteType.WORD_ENDS, -1);
@@ -1422,7 +1423,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             break;
         case Gdk.Key.Delete:
         case Gdk.Key.KP_Delete:
-            if (m_entry.get_text().len() > 0) {
+            if (m_entry.get_text().length > 0) {
                 if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
                     GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
                                              Gtk.DeleteType.WORD_ENDS, 1);
@@ -1436,7 +1437,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
         case Gdk.Key.space:
         case Gdk.Key.KP_Space:
             if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
-                if (m_entry.get_text().len() > 0)
+                if (m_entry.get_text().length > 0)
                     entry_enter_keyval(keyval);
             } else if (m_candidate_panel_is_visible) {
                 enter_notify_disable_with_timer();
@@ -1512,7 +1513,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
                     return true;
                 break;
             case Gdk.Key.u:
-                if (m_entry.get_text().len() > 0) {
+                if (m_entry.get_text().length > 0) {
                     GLib.Signal.emit_by_name(m_entry,
                                              "delete-from-cursor",
                                              Gtk.DeleteType.PARAGRAPH_ENDS,
@@ -1521,13 +1522,13 @@ class IBusEmojier : Gtk.ApplicationWindow {
                 }
                 break;
             case Gdk.Key.a:
-                if (m_entry.get_text().len() > 0) {
+                if (m_entry.get_text().length > 0) {
                     m_entry.select_region(0, -1);
                     return true;
                 }
                 break;
             case Gdk.Key.x:
-                if (m_entry.get_text().len() > 0) {
+                if (m_entry.get_text().length > 0) {
                     GLib.Signal.emit_by_name(m_entry, "cut-clipboard");
                     return true;
                 }
@@ -1544,7 +1545,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
                         clipboard.store();
                         return true;
                     }
-                } else if (m_entry.get_text().len() > 0) {
+                } else if (m_entry.get_text().length > 0) {
                     GLib.Signal.emit_by_name(m_entry, "copy-clipboard");
                     return true;
                 }

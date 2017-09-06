@@ -2,6 +2,11 @@
 # Please keep this file in alphabetical order.
 # Files under ui/gtk2/ are not shipped in the distribution, but kept
 # in the git repository for reference.
+bindings/vala/candidatearea.c
+bindings/vala/emojier.c
+bindings/vala/iconwidget.c
+bindings/vala/pango.c
+bindings/vala/separator.c
 ibus/_config.py
 tools/main.c
 ui/gtk2/candidatepanel.py
