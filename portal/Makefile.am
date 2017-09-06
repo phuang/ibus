@@ -65,12 +65,6 @@ ibus_portal_LDADD = \
 	$(AM_LDADD) \
 	$(NULL)
 
-EXTRA_DIST = \
-	$(NULL)
-
-CLEANFILES = \
-	$(NULL)
-
 $(libibus):
 	$(MAKE) -C $(top_builddir)/src
 
@@ -89,7 +83,14 @@ $(ibus_dbus_built_sources) : org.freedesktop.IBus.Portal.xml
 		$^ \
 		$(NULL)
 
-EXTRA_DIST += $(dbusservice_in_files)
-CLEANFILES += $(dbusservice_DATA)
+EXTRA_DIST = \
+    $(dbusservice_in_files) \
+    org.freedesktop.IBus.Portal.xml \
+    $(NULL)
+
+CLEANFILES = \
+    $(dbusservice_DATA) \
+    $(NULL)
+
 
 -include $(top_srcdir)/git.mk
