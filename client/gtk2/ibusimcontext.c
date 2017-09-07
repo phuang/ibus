@@ -262,9 +262,21 @@ ibus_im_context_commit_event (IBusIMContext *ibusimcontext,
     for (i = 0; i < G_N_ELEMENTS (IBUS_COMPOSE_IGNORE_KEYLIST); i++)
         if (event->keyval == IBUS_COMPOSE_IGNORE_KEYLIST[i])
             return FALSE;
+#if GTK_CHECK_VERSION (3, 4, 0)
     no_text_input_mask = gdk_keymap_get_modifier_mask (
             gdk_keymap_get_for_display (gdk_display_get_default ()),
             GDK_MODIFIER_INTENT_NO_TEXT_INPUT);
+#else
+#  ifndef GDK_WINDOWING_QUARTZ
+#    define _IBUS_NO_TEXT_INPUT_MOD_MASK (GDK_MOD1_MASK | GDK_CONTROL_MASK)
+#  else
+#    define _IBUS_NO_TEXT_INPUT_MOD_MASK (GDK_MOD2_MASK | GDK_CONTROL_MASK)
+#  endif
+
+    no_text_input_mask = _IBUS_NO_TEXT_INPUT_MOD_MASK;
+
+#  undef _IBUS_NO_TEXT_INPUT_MOD_MASK
+#endif
     if (event->state & no_text_input_mask ||
         event->keyval == GDK_KEY_Return ||
         event->keyval == GDK_KEY_ISO_Enter ||
