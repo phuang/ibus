@@ -1,5 +1,0 @@
-ibus (${version}-1phuang${release}~${serie}1) ${serie}; urgency=low
-
-  * Upstream release.
-
- -- Peng Huang <shawn.p.huang@gmail.com>  ${date}
