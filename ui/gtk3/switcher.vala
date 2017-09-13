@@ -157,32 +157,6 @@ class Switcher : Gtk.Window {
         m_label.set_text(m_buttons[index].longname);
         m_buttons[index].grab_focus();
 
-        Gdk.Device device = event.get_device();
-        if (device == null) {
-            var display = get_display();
-            var device_manager = display.get_device_manager();
-/* The macro VALA_X_Y supports even numbers.
- * http://git.gnome.org/browse/vala/commit/?id=294b374af6
- */
-#if VALA_0_16
-            device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
-#else
-            unowned GLib.List<Gdk.Device> devices =
-                    device_manager.list_devices(Gdk.DeviceType.MASTER);
-            device = devices.data;
-#endif
-        }
-
-        Gdk.Device keyboard;
-        Gdk.Device pointer;
-        if (device.get_source() == Gdk.InputSource.KEYBOARD) {
-            keyboard = device;
-            pointer = device.get_associated_device();
-        } else {
-            pointer = device;
-            keyboard = device.get_associated_device();
-        }
-
         // Avoid regressions.
         if (m_popup_delay_time > 0) {
             get_position(out m_root_x, out m_root_y);
@@ -201,6 +175,60 @@ class Switcher : Gtk.Window {
                 restore_window_position("timeout");
                 return false;
             });
+        }
+
+        Gdk.Device pointer;
+#if VALA_0_34
+        Gdk.Seat seat = event.get_seat();
+        if (seat == null) {
+            var display = get_display();
+            seat = display.get_default_seat();
+        }
+        //keyboard = seat.get_keyboard();
+        pointer = seat.get_pointer();
+
+        Gdk.GrabStatus status;
+        // Grab all keyboard events
+        status = seat.grab(get_window(),
+                           Gdk.SeatCapabilities.KEYBOARD,
+                           true,
+                           null,
+                           event,
+                           null);
+        if (status != Gdk.GrabStatus.SUCCESS)
+            warning("Grab keyboard failed! status = %d", status);
+        status = seat.grab(get_window(),
+                           Gdk.SeatCapabilities.POINTER,
+                           true,
+                           null,
+                           event,
+                           null);
+        if (status != Gdk.GrabStatus.SUCCESS)
+            warning("Grab pointer failed! status = %d", status);
+#else
+        Gdk.Device device = event.get_device();
+        if (device == null) {
+            var display = get_display();
+            var device_manager = display.get_device_manager();
+/* The macro VALA_X_Y supports even numbers.
+ * http://git.gnome.org/browse/vala/commit/?id=294b374af6
+ */
+#if VALA_0_16
+            device = device_manager.list_devices(Gdk.DeviceType.MASTER).data;
+#else
+            unowned GLib.List<Gdk.Device> devices =
+                    device_manager.list_devices(Gdk.DeviceType.MASTER);
+            device = devices.data;
+#endif
+        }
+
+        Gdk.Device keyboard;
+        if (device.get_source() == Gdk.InputSource.KEYBOARD) {
+            keyboard = device;
+            pointer = device.get_associated_device();
+        } else {
+            pointer = device;
+            keyboard = device.get_associated_device();
         }
 
         Gdk.GrabStatus status;
@@ -224,6 +252,8 @@ class Switcher : Gtk.Window {
                               Gdk.CURRENT_TIME);
         if (status != Gdk.GrabStatus.SUCCESS)
             warning("Grab pointer failed! status = %d", status);
+#endif
+
         // Probably we can delete m_popup_delay_time in 1.6
         pointer.get_position_double(null,
                                     out m_mouse_init_x,
@@ -235,8 +265,12 @@ class Switcher : Gtk.Window {
         m_loop.run();
         m_loop = null;
 
+#if VALA_0_34
+        seat.ungrab();
+#else
         keyboard.ungrab(Gdk.CURRENT_TIME);
         pointer.ungrab(Gdk.CURRENT_TIME);
+#endif
 
         hide();
         // Make sure the switcher is hidden before returning from this function.
@@ -319,13 +353,19 @@ class Switcher : Gtk.Window {
         m_label.set_ellipsize(Pango.EllipsizeMode.END);
 
         Gdk.Display display = Gdk.Display.get_default();
+        int screen_width = 0;
+#if VALA_0_34
+        Gdk.Monitor monitor = display.get_monitor_at_window(this.get_window());
+        Gdk.Rectangle area = monitor.get_geometry();
+        screen_width = area.width;
+#else
         Gdk.Screen screen = (display != null) ?
                 display.get_default_screen() : null;
-        int screen_width = 0;
 
         if (screen != null) {
             screen_width = screen.get_width();
         }
+#endif
 
         if (screen_width > 0 && max_label_width > (screen_width / 4)) {
             max_label_width = screen_width / 4;

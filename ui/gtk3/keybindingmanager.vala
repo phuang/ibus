@@ -18,7 +18,7 @@ public class KeybindingManager : GLib.Object {
 
     private static KeybindingManager m_instance = null;
 
-    public static const uint MODIFIER_FILTER =
+    public const uint MODIFIER_FILTER =
         Gdk.ModifierType.MODIFIER_MASK & ~(
         Gdk.ModifierType.LOCK_MASK |  // Caps Lock
         // Gdk.ModifierType.MOD1_MASK |  // Alt

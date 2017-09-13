@@ -4,7 +4,7 @@
  *
  * Copyright(c) 2013-2016 Red Hat, Inc.
  * Copyright(c) 2013-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2013-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2013-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -330,8 +330,16 @@ public class PropertyPanel : Gtk.Box {
         Gtk.Allocation allocation;
         m_toplevel.get_allocation(out allocation);
 
+        Gdk.Rectangle monitor_area;
+#if VALA_0_34
+        // gdk_screen_get_monitor_workarea() no longer return the correct
+        // area from "_NET_WORKAREA" atom in GTK 3.22
+        Gdk.Monitor monitor = Gdk.Display.get_default().get_monitor(0);
+        monitor_area = monitor.get_workarea();
+#else
         Gdk.Screen screen = Gdk.Screen.get_default();
-        Gdk.Rectangle monitor_area = screen.get_monitor_workarea(0);
+        monitor_area = screen.get_monitor_workarea(0);
+#endif
         int monitor_right = monitor_area.x + monitor_area.width;
         int monitor_bottom = monitor_area.y + monitor_area.height;
         int x, y;
@@ -472,8 +480,15 @@ public class PropMenu : Gtk.Menu, IPropToolItem {
     public new void popup(uint       button,
                           uint32     activate_time,
                           Gtk.Widget widget) {
+#if VALA_0_34
+        base.popup_at_widget(widget,
+                             Gdk.Gravity.SOUTH_WEST,
+                             Gdk.Gravity.NORTH_WEST,
+                             null);
+#else
         m_parent_button = widget;
         base.popup(null, null, menu_position, button, activate_time);
+#endif
     }
 
     public override void destroy() {
@@ -532,6 +547,7 @@ public class PropMenu : Gtk.Menu, IPropToolItem {
         }
     }
 
+#if !VALA_0_34
     private void menu_position(Gtk.Menu menu,
                                out int  x,
                                out int  y,
@@ -580,6 +596,7 @@ public class PropMenu : Gtk.Menu, IPropToolItem {
 
         push_in = false;
     }
+#endif
 }
 
 public class PropToolButton : Gtk.ToolButton, IPropToolItem {

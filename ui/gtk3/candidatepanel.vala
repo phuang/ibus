@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -292,6 +292,26 @@ public class CandidatePanel : Gtk.Box{
             adjust_window_position_vertical();
     }
 
+    private Gdk.Rectangle get_monitor_geometry() {
+        Gdk.Rectangle monitor_area = { 0, };
+
+        // Use get_monitor_geometry() instead of get_monitor_area().
+        // get_monitor_area() excludes docks, but the lookup window should be
+        // shown over them.
+#if VALA_0_34
+        Gdk.Monitor monitor = Gdk.Display.get_default().get_monitor_at_point(
+                m_cursor_location.x,
+                m_cursor_location.y);
+        monitor_area = monitor.get_geometry();
+#else
+        Gdk.Screen screen = Gdk.Screen.get_default();
+        int monitor_num = screen.get_monitor_at_point(m_cursor_location.x,
+                                                      m_cursor_location.y);
+        screen.get_monitor_geometry(monitor_num, out monitor_area);
+#endif
+        return monitor_area;
+    }
+
     private void adjust_window_position_horizontal() {
         Gdk.Point cursor_right_bottom = {
                 m_cursor_location.x + m_cursor_location.width,
@@ -305,14 +325,7 @@ public class CandidatePanel : Gtk.Box{
             cursor_right_bottom.y + allocation.height
         };
 
-        Gdk.Screen screen = Gdk.Screen.get_default();
-        int monitor_num = screen.get_monitor_at_point(m_cursor_location.x,
-                                                      m_cursor_location.y);
-        // Use get_monitor_geometry() instead of get_monitor_area().
-        // get_monitor_area() excludes docks, but the lookup window should be
-        // shown over them.
-        Gdk.Rectangle monitor_area;
-        screen.get_monitor_geometry(monitor_num, out monitor_area);
+        Gdk.Rectangle monitor_area = get_monitor_geometry();
         int monitor_right = monitor_area.x + monitor_area.width;
         int monitor_bottom = monitor_area.y + monitor_area.height;
 
@@ -358,14 +371,7 @@ public class CandidatePanel : Gtk.Box{
             m_cursor_location.y + allocation.height
         };
 
-        Gdk.Screen screen = Gdk.Screen.get_default();
-        int monitor_num = screen.get_monitor_at_point(m_cursor_location.x,
-                                                      m_cursor_location.y);
-        // Use get_monitor_geometry() instead of get_monitor_area().
-        // get_monitor_area() excludes docks, but the lookup window should be
-        // shown over them.
-        Gdk.Rectangle monitor_area;
-        screen.get_monitor_geometry(monitor_num, out monitor_area);
+        Gdk.Rectangle monitor_area = get_monitor_geometry();
         int monitor_right = monitor_area.x + monitor_area.width;
         int monitor_bottom = monitor_area.y + monitor_area.height;
 

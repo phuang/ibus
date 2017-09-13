@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2016 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2016-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -59,7 +59,6 @@ class Handle : Gtk.EventBox {
 
     public override void realize() {
         base.realize();
-        // get_window().set_cursor(new Gdk.Cursor(Gdk.CursorType.FLEUR));
     }
 
     public override bool button_press_event(Gdk.EventButton event) {
@@ -138,7 +137,9 @@ class Handle : Gtk.EventBox {
         m_move_begined = false;
         m_press_pos.x = 0;
         m_press_pos.y = 0;
-        get_window().set_cursor(new Gdk.Cursor(Gdk.CursorType.LEFT_PTR));
+        get_window().set_cursor(new Gdk.Cursor.for_display(
+                   Gdk.Display.get_default(),
+                   Gdk.CursorType.FLEUR));
         move_end();
         return true;
     }

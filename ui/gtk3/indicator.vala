@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright(c) 2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -97,6 +97,7 @@ class Indicator : IBus.Service
     private int m_context_menu_y;
     private int m_activate_menu_x;
     private int m_activate_menu_y;
+    private Gdk.Window m_indicator_window;
 
     public Indicator(string id,
                      GLib.DBusConnection connection,
@@ -206,7 +207,8 @@ class Indicator : IBus.Service
         GLib.Variant var_y = parameters.get_child_value(1);
         m_context_menu_x = var_x.get_int32();
         m_context_menu_y = var_y.get_int32();
-        context_menu(2, 0);
+        Gdk.Window window = query_gdk_window();
+        context_menu(m_context_menu_x, m_context_menu_y, window, 2, 0);
     }
 
     private void _activate_menu_cb(GLib.DBusConnection       connection,
@@ -216,7 +218,57 @@ class Indicator : IBus.Service
         GLib.Variant var_y = parameters.get_child_value(1);
         m_activate_menu_x = var_x.get_int32();
         m_activate_menu_y = var_y.get_int32();
-        activate();
+        Gdk.Window window = query_gdk_window();
+        activate(m_activate_menu_x, m_activate_menu_y, window);
+    }
+
+    private Gdk.Window? query_gdk_window() {
+        if (m_indicator_window != null)
+            return m_indicator_window;
+
+        Gdk.Display display = Gdk.Display.get_default();
+        unowned X.Display xdisplay =
+                (display as Gdk.X11.Display).get_xdisplay();
+        X.Window current = xdisplay.default_root_window();
+        X.Window parent = 0;
+        X.Window child = 0;
+        int root_x, root_y, win_x, win_y;
+        uint mask = 0;
+        root_x = root_y = win_x = win_y = 0;
+        bool retval;
+        // Need XSetErrorHandler for BadWindow?
+        while ((retval = xdisplay.query_pointer(current,
+                                      out parent, out child,
+                                      out root_x, out root_y,
+                                      out win_x, out win_y,
+                                      out mask))) {
+            if (child == 0)
+                break;
+            current = child;
+        }
+        if (!retval) {
+            string format =
+                    "XQueryPointer is failed: current: %x root: %x " +
+                    "child: %x (%d, %d), (%d, %d), %u";
+            string message = format.printf((uint)current,
+                                           (uint)xdisplay.default_root_window(),
+                                           (uint)child,
+                                           root_x, root_y, win_x, win_y,
+                                           mask);
+            warning("XQueryPointer is failed: %s", message);
+            return null;
+        }
+        if (current == xdisplay.default_root_window())
+            warning("The query window is root window");
+        m_indicator_window = Gdk.X11.Window.lookup_for_display(
+                display as Gdk.X11.Display,
+                current);
+        if (m_indicator_window != null)
+            return m_indicator_window;
+        m_indicator_window = new Gdk.X11.Window.foreign_for_display(
+                display as Gdk.X11.Display,
+                current);
+        return m_indicator_window;
     }
 
     private GLib.Variant? _get_id(GLib.DBusConnection connection) {
@@ -479,7 +531,13 @@ class Indicator : IBus.Service
         push_in = false;
     }
 
-    public signal void context_menu(uint button, uint activate_time);
-    public signal void activate();
+    public signal void context_menu(int        x,
+                                    int        y,
+                                    Gdk.Window window,
+                                    uint       button,
+                                    uint       activate_time);
+    public signal void activate(int        x,
+                                int        y,
+                                Gdk.Window window);
     public signal void registered_status_notifier_item();
 }

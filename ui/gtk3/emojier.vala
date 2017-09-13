@@ -575,7 +575,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
         if (lang == "en") {
             bool has_variant = false;
             foreach (unichar ch in EMOJI_VARIANT_LIST) {
-                if (emoji.chr(-1, ch) != null) {
+                if (emoji.index_of_char(ch) >= 0) {
                     has_variant = true;
                     break;
                 }
@@ -782,15 +782,17 @@ class IBusEmojier : Gtk.ApplicationWindow {
     private bool check_unicode_point() {
         string annotation = m_entry.get_text();
         m_unicode_point = null;
-        var buff = new GLib.StringBuilder();
+        // Add "0x" because uint64.ascii_strtoull() is not accessible
+        // and need to use uint64.parse()
+        var buff = new GLib.StringBuilder("0x");
         var retval = new GLib.StringBuilder();
         for (int i = 0; i < annotation.char_count(); i++) {
             unichar ch = annotation.get_char(i);
             if (ch == 0)
                 return false;
             if (ch.isspace()) {
-                unichar code = (unichar)buff.str.to_ulong(null, 16);
-                buff.erase();
+                unichar code = (unichar)uint64.parse(buff.str);
+                buff.assign("0x");
                 if (!code.validate())
                     return false;
                 retval.append(code.to_string());
@@ -800,7 +802,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
                 return false;
             buff.append_unichar(ch);
         }
-        unichar code = (unichar)buff.str.to_ulong(null, 16);
+        unichar code = (unichar)uint64.parse(buff.str);
         if (!code.validate())
             return false;
         retval.append(code.to_string());
@@ -834,7 +836,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
                         matched = true;
                     break;
                 case 2:
-                    if (key.str(annotation) != null)
+                    if (key.index_of(annotation) >= 0)
                         matched = true;
                     break;
                 default:
@@ -1586,10 +1588,16 @@ class IBusEmojier : Gtk.ApplicationWindow {
     public void present_centralize(Gdk.Event event) {
         Gtk.Allocation allocation;
         get_allocation(out allocation);
-        Gdk.Screen screen = Gdk.Screen.get_default();
-        int monitor_num = screen.get_monitor_at_window(get_window());
         Gdk.Rectangle monitor_area;
+#if VALA_0_34
+        Gdk.Display display = Gdk.Display.get_default();
+        Gdk.Monitor monitor = display.get_monitor_at_window(this.get_window());
+        monitor_area = monitor.get_geometry();
+#else
+        Gdk.Screen screen = Gdk.Screen.get_default();
+        int monitor_num = screen.get_monitor_at_window(this.get_window());
         screen.get_monitor_geometry(monitor_num, out monitor_area);
+#endif
         int x = (monitor_area.x + monitor_area.width - allocation.width)/2;
         int y = (monitor_area.y + monitor_area.height
                  - allocation.height)/2;
