@@ -100,6 +100,12 @@ class Application {
     }
 
     public static void main(string[] argv) {
+        // https://bugzilla.redhat.com/show_bug.cgi?id=1226465#c20
+        // In /etc/xdg/plasma-workspace/env/gtk3_scrolling.sh
+        // Plasma deskop sets this variable and prevents Super-space,
+        // and Ctrl-Shift-e when ibus-ui-gtk3 runs after the
+        // desktop is launched.
+        GLib.Environment.unset_variable("GDK_CORE_DEVICE_EVENTS");
         // for Gdk.X11.get_default_xdisplay()
         Gdk.set_allowed_backends("x11");
 

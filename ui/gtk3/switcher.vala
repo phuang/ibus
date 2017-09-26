@@ -355,7 +355,8 @@ class Switcher : Gtk.Window {
         Gdk.Display display = Gdk.Display.get_default();
         int screen_width = 0;
 #if VALA_0_34
-        Gdk.Monitor monitor = display.get_monitor_at_window(this.get_window());
+        // display.get_monitor_at_window() is null because of unrealized window
+        Gdk.Monitor monitor = display.get_primary_monitor();
         Gdk.Rectangle area = monitor.get_geometry();
         screen_width = area.width;
 #else
