@@ -41,8 +41,15 @@ public class EmojiApplication : Application {
 
     private void show_dialog(ApplicationCommandLine command_line) {
         m_emojier = new IBusEmojier();
-        Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
-        event.key.time = Gdk.CURRENT_TIME;
+        Gdk.Event event = Gtk.get_current_event();
+        // Plasma and GNOME3 desktop returns null event
+        if (event == null) {
+            event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
+            event.key.time = Gdk.CURRENT_TIME;
+            // event.get_seat() refers event.any.window
+            event.key.window = Gdk.get_default_root_window();
+            event.key.window.ref();
+        }
         string emoji = m_emojier.run("", event);
         if (emoji == null) {
             m_emojier = null;

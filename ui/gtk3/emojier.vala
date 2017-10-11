@@ -39,6 +39,25 @@ class IBusEmojier : Gtk.ApplicationWindow {
                 halign : Gtk.Align.FILL,
                 valign : Gtk.Align.FILL
             );
+            this.motion_notify_event.connect((e) => {
+#if VALA_0_24
+                Gdk.EventMotion pe = e;
+#else
+                Gdk.EventMotion *pe = &e;
+#endif
+                if (m_mouse_x == pe.x_root && m_mouse_y == pe.y_root)
+                    return false;
+                m_mouse_x = pe.x_root;
+                m_mouse_y = pe.y_root;
+                var row = this.get_row_at_y((int)e.y);
+                if (row != null)
+                    this.select_row(row);
+                return false;
+            });
+            this.enter_notify_event.connect((e) => {
+                // avoid gtk_button_update_state()
+                return true;
+            });
         }
     }
     private class EBoxRow : Gtk.ListBoxRow {
@@ -233,6 +252,8 @@ class IBusEmojier : Gtk.ApplicationWindow {
     private bool m_enter_notify_enable = true;
     private uint m_entry_notify_show_id;
     private uint m_entry_notify_disable_id;
+    protected static double m_mouse_x;
+    protected static double m_mouse_y;
 
     public signal void candidate_clicked(uint index, uint button, uint state);
 
@@ -974,6 +995,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
             label.set_halign(Gtk.Align.FILL);
             label.set_valign(Gtk.Align.FILL);
             Gtk.EventBox candidate_ebox = new Gtk.EventBox();
+            candidate_ebox.add_events(Gdk.EventMask.POINTER_MOTION_MASK);
             candidate_ebox.add(label);
             // Make a copy of i to workaround a bug in vala.
             // https://bugzilla.gnome.org/show_bug.cgi?id=628336
@@ -982,15 +1004,27 @@ class IBusEmojier : Gtk.ApplicationWindow {
                 candidate_clicked(index, e.button, e.state);
                 return true;
             });
-            candidate_ebox.enter_notify_event.connect((e) => {
+            candidate_ebox.motion_notify_event.connect((e) => {
                 // m_enter_notify_enable is added because
                 // enter_notify_event conflicts with keyboard operations.
                 if (!m_enter_notify_enable)
-                    return true;
+                    return false;
                 if (m_lookup_table.get_cursor_pos() == index)
-                    return true;
+                    return false;
+#if VALA_0_24
+                Gdk.EventMotion pe = e;
+#else
+                Gdk.EventMotion *pe = &e;
+#endif
+                if (m_mouse_x == pe.x_root && m_mouse_y == pe.y_root)
+                    return false;
+                m_mouse_x = pe.x_root;
+                m_mouse_y = pe.y_root;
+
                 m_lookup_table.set_cursor_pos(index);
-                if (m_entry_notify_show_id > 0) {
+                if (m_entry_notify_show_id > 0 &&
+                    GLib.MainContext.default().find_source_by_id(
+                            m_entry_notify_show_id) != null) {
                         GLib.Source.remove(m_entry_notify_show_id);
                 }
                 // If timeout is not added, memory leak happens and
@@ -999,7 +1033,7 @@ class IBusEmojier : Gtk.ApplicationWindow {
                         show_candidate_panel();
                         return false;
                 });
-                return true;
+                return false;
             });
             grid.attach(candidate_ebox,
                         n % (int)EMOJI_GRID_PAGE, n / (int)EMOJI_GRID_PAGE,
@@ -1367,6 +1401,29 @@ class IBusEmojier : Gtk.ApplicationWindow {
          */
         uint32 timestamp = event.get_time();
         present_with_time(timestamp);
+
+        Gdk.Device pointer;
+#if VALA_0_34
+        Gdk.Seat seat = event.get_seat();
+        if (seat == null) {
+            var display = get_display();
+            seat = display.get_default_seat();
+        }
+        pointer = seat.get_pointer();
+#else
+        Gdk.Device device = event.get_device();
+        if (device == null) {
+            var display = get_display();
+            device = display.list_devices().data;
+        }
+        if (device.get_source() == Gdk.InputSource.KEYBOARD)
+            pointer = device.get_associated_device();
+        else
+            pointer = device;
+#endif
+        pointer.get_position_double(null,
+                                    out m_mouse_x,
+                                    out m_mouse_y);
 
         m_loop = new GLib.MainLoop();
         m_loop.run();

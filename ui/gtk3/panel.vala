@@ -1327,7 +1327,14 @@ class Panel : IBus.PanelService {
 #if EMOJI_DICT
             item = new Gtk.MenuItem.with_label(_("Emoji Choice"));
             item.activate.connect((i) => {
-                Gdk.Event event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
+                Gdk.Event event = Gtk.get_current_event();
+                if (event == null) {
+                    event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
+                    event.key.time = Gdk.CURRENT_TIME;
+                    // event.get_seat() refers event.any.window
+                    event.key.window = Gdk.get_default_root_window();
+                    event.key.window.ref();
+                }
                 handle_emoji_typing(event);
             });
             m_sys_menu.append(item);
