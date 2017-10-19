@@ -99,6 +99,7 @@ class Indicator : IBus.Service
     private int m_activate_menu_y;
     private Gdk.Window m_indicator_window;
 
+
     public Indicator(string id,
                      GLib.DBusConnection connection,
                      Category category = Category.OTHER) {
@@ -143,6 +144,7 @@ class Indicator : IBus.Service
         check_connect();
     }
 
+
     private void check_connect() {
         if (m_proxy == null) {
             GLib.DBusProxy.new.begin(
@@ -161,6 +163,7 @@ class Indicator : IBus.Service
             bus_watcher_ready(null, null);
         }
     }
+
 
     private void bus_watcher_ready(GLib.Object? obj, GLib.AsyncResult? res) {
         if (res != null) {
@@ -200,6 +203,7 @@ class Indicator : IBus.Service
                            });
     }
 
+
     private void _context_menu_cb(GLib.DBusConnection       connection,
                                   GLib.Variant              parameters,
                                   GLib.DBusMethodInvocation invocation) {
@@ -211,6 +215,7 @@ class Indicator : IBus.Service
         context_menu(m_context_menu_x, m_context_menu_y, window, 2, 0);
     }
 
+
     private void _activate_menu_cb(GLib.DBusConnection       connection,
                                    GLib.Variant              parameters,
                                    GLib.DBusMethodInvocation invocation) {
@@ -221,6 +226,7 @@ class Indicator : IBus.Service
         Gdk.Window window = query_gdk_window();
         activate(m_activate_menu_x, m_activate_menu_y, window);
     }
+
 
     private Gdk.Window? query_gdk_window() {
         if (m_indicator_window != null)
@@ -271,65 +277,80 @@ class Indicator : IBus.Service
         return m_indicator_window;
     }
 
+
     private GLib.Variant? _get_id(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.id);
     }
+
 
     private GLib.Variant? _get_category(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.category_s);
     }
 
+
     private GLib.Variant? _get_status(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.status_s);
     }
+
 
     private GLib.Variant? _get_icon_name(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.icon_name);
     }
 
+
     private GLib.Variant? _get_icon_vector(GLib.DBusConnection connection) {
         return this.icon_vector;
     }
 
+
     private GLib.Variant? _get_icon_desc(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.icon_desc);
     }
+
 
     private GLib.Variant? _get_attention_icon_name(GLib.DBusConnection
                                                              connection) {
         return new GLib.Variant.string(this.attention_icon_name);
     }
 
+
     private GLib.Variant? _get_attention_icon_desc(GLib.DBusConnection
                                                              connection) {
         return new GLib.Variant.string(this.attention_icon_desc);
     }
 
+
     private GLib.Variant? _get_title(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.title);
     }
+
 
     private GLib.Variant? _get_icon_theme_path(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.icon_theme_path);
     }
 
+
     private GLib.Variant? _get_menu(GLib.DBusConnection connection) {
         return null;
     }
 
+
     private GLib.Variant? _get_xayatana_label(GLib.DBusConnection connection) {
         return new GLib.Variant.string(this.label_s);
     }
+
 
     private GLib.Variant? _get_xayatana_label_guide(GLib.DBusConnection
                                                               connection) {
         return new GLib.Variant.string(this.label_guide_s);
     }
 
+
     private GLib.Variant? _get_xayatana_ordering_index(GLib.DBusConnection
                                                               connection) {
         return new GLib.Variant.uint32(this.ordering_index);
     }
+
 
     public override void service_method_call(GLib.DBusConnection
                                                                 connection,
@@ -355,6 +376,7 @@ class Indicator : IBus.Service
         warning("service_method_call() does not handle the method: " +
                 method_name);
     }
+
 
     public override GLib.Variant? service_get_property(GLib.DBusConnection
                                                                 connection,
@@ -402,6 +424,7 @@ class Indicator : IBus.Service
         return null;
     }
 
+
     public override bool service_set_property(GLib.DBusConnection
                                                            connection,
                                               string       sender,
@@ -411,6 +434,7 @@ class Indicator : IBus.Service
                                               GLib.Variant value) {
         return false;
     }
+
 
     // AppIndicator.set_status() converts enum value to string internally.
     public void set_status(Status status) {
@@ -436,6 +460,7 @@ class Indicator : IBus.Service
             warning("Unable to send signal for NewIcon: %s", e.message);
         }
     }
+
 
     // AppIndicator.set_icon() is deprecated.
     public void set_icon_full(string icon_name, string? icon_desc) {
@@ -469,6 +494,7 @@ class Indicator : IBus.Service
             warning("Unable to send signal for NewIcon: %s", e.message);
         }
     }
+
 
     public void set_cairo_image_surface_full(Cairo.ImageSurface image,
                                              string?            icon_desc) {
@@ -513,6 +539,7 @@ class Indicator : IBus.Service
         }
     }
 
+
     public void position_context_menu(Gtk.Menu menu,
                                       out int  x,
                                       out int  y,
@@ -522,6 +549,7 @@ class Indicator : IBus.Service
         push_in = false;
     }
 
+
     public void position_activate_menu(Gtk.Menu menu,
                                        out int  x,
                                        out int  y,
@@ -530,6 +558,23 @@ class Indicator : IBus.Service
         y = m_activate_menu_y;
         push_in = false;
     }
+
+
+    /**
+     * unregister_connection:
+     *
+     * "Destroy" dbus method is not called for the indicator's connection
+     * when panel's connection is disconneted because the dbus connection
+     * is a shared session bus so need to call
+     * g_dbus_connection_unregister_object() by manual here
+     * so that g_object_unref(m_panel) will be called later with an idle method,
+     * which was assigned in the arguments of
+     * g_dbus_connection_register_object()
+     */
+    public void unregister_connection() {
+        unregister(get_connection());
+    }
+
 
     public signal void context_menu(int        x,
                                     int        y,

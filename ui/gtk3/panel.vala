@@ -99,6 +99,14 @@ class Panel : IBus.PanelService {
     private string m_icon_prop_key = "";
     private int m_property_icon_delay_time = 500;
     private uint m_property_icon_delay_time_id;
+#if INDICATOR
+    private bool m_is_kde = is_kde();
+#else
+    private bool m_is_kde = false;
+#endif
+    private ulong m_popup_menu_id;
+    private ulong m_activate_id;
+    private ulong m_registered_status_notifier_item_id;
 
     private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
 
@@ -114,7 +122,7 @@ class Panel : IBus.PanelService {
 
         // init ui
 #if INDICATOR
-        if (is_kde()) {
+        if (m_is_kde) {
             init_indicator();
         } else {
             init_status_icon();
@@ -155,6 +163,11 @@ class Panel : IBus.PanelService {
     }
 
     ~Panel() {
+#if INDICATOR
+        // unref m_indicator
+        if (m_indicator != null)
+            m_indicator.unregister_connection();
+#endif
         unbind_switch_shortcut(KeyEventFuncType.ANY);
     }
 
@@ -289,7 +302,7 @@ class Panel : IBus.PanelService {
     }
 
 #if INDICATOR
-    private bool is_kde() {
+    private static bool is_kde() {
         if (Environment.get_variable("XDG_CURRENT_DESKTOP") == "KDE")
             return true;
         warning ("If you launch KDE5 on xterm, " +
@@ -320,17 +333,21 @@ class Panel : IBus.PanelService {
                                       m_session_bus_connection,
                                       Indicator.Category.APPLICATION_STATUS);
                 m_indicator.title = _("IBus Panel");
-                m_indicator.registered_status_notifier_item.connect(() => {
+                m_registered_status_notifier_item_id =
+                        m_indicator.registered_status_notifier_item.connect(
+                                () => {
                     m_indicator.set_status(Indicator.Status.ACTIVE);
                     state_changed();
                 });
-                m_indicator.context_menu.connect((x, y, w, b, t) => {
+                m_popup_menu_id =
+                        m_indicator.context_menu.connect((x, y, w, b, t) => {
                     popup_menu_at_pointer_window(
-                            create_context_menu(),
-                            x, y, w,
-                            m_indicator.position_context_menu);
+                        create_context_menu(),
+                        x, y, w,
+                        m_indicator.position_context_menu);
                 });
-                m_indicator.activate.connect((x, y, w) => {
+                m_activate_id =
+                        m_indicator.activate.connect((x, y, w) => {
                     popup_menu_at_pointer_window(
                             create_activate_menu(),
                             x, y, w,
@@ -379,12 +396,12 @@ class Panel : IBus.PanelService {
 #else
         func = m_status_icon.position_menu;
 #endif
-        m_status_icon.popup_menu.connect((b, t) => {
+        m_popup_menu_id = m_status_icon.popup_menu.connect((b, t) => {
                 popup_menu_at_area_window(
                         create_context_menu(),
                         area, window, func);
         });
-        m_status_icon.activate.connect(() => {
+        m_activate_id = m_status_icon.activate.connect(() => {
                 popup_menu_at_area_window(
                         create_activate_menu(),
                         area, window, func);
@@ -983,6 +1000,46 @@ class Panel : IBus.PanelService {
         set_emoji_favorites();
         set_emoji_lang();
         set_emoji_partial_match();
+    }
+
+    /**
+     * disconnect_signals:
+     *
+     * Call this API before m_panel = null so that the ref_count becomes 0
+     */
+    public void disconnect_signals() {
+        unowned GLib.Object object = m_status_icon;
+#if INDICATOR
+        if (m_is_kde)
+            object = m_indicator;
+#endif
+        if (m_popup_menu_id > 0) {
+            // No name functions refer m_panel in m_status_icon
+            if (GLib.SignalHandler.is_connected(object, m_popup_menu_id))
+                object.disconnect(m_popup_menu_id);
+            m_popup_menu_id = 0;
+        }
+        if (m_activate_id > 0) {
+            if (GLib.SignalHandler.is_connected(object, m_activate_id))
+                object.disconnect(m_activate_id);
+            m_activate_id = 0;
+        }
+        if (m_registered_status_notifier_item_id > 0) {
+            if (GLib.SignalHandler.is_connected(
+                    object,
+                    m_registered_status_notifier_item_id)) {
+                object.disconnect(m_registered_status_notifier_item_id);
+            }
+            m_registered_status_notifier_item_id = 0;
+        }
+        if (m_preload_engines_id > 0) {
+            GLib.Source.remove(m_preload_engines_id);
+            m_preload_engines_id = 0;
+        }
+        if (m_emojier_set_emoji_lang_id > 0) {
+            GLib.Source.remove(m_emojier_set_emoji_lang_id);
+            m_emojier_set_emoji_lang_id = 0;
+        }
     }
 
     private void engine_contexts_insert(IBus.EngineDesc engine) {

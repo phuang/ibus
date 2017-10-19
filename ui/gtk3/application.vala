@@ -86,7 +86,16 @@ class Application {
                                   string interface_name,
                                   string signal_name,
                                   Variant parameters) {
+        // "Destroy" dbus method was called before this callback is called.
+        // "Destroy" dbus method -> ibus_service_destroy()
+        // -> g_dbus_connection_unregister_object()
+        // -> g_object_unref(m_panel) will be called later with an idle method,
+        // which was assigned in the arguments of
+        // g_dbus_connection_register_object()
         debug("signal_name = %s", signal_name);
+
+        // unref m_panel
+        m_panel.disconnect_signals();
         m_panel = null;
     }
 
