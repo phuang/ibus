@@ -40,7 +40,9 @@ public class PropertyPanel : Gtk.Box {
     private uint m_auto_hide_timeout = 10000;
     private uint m_auto_hide_timeout_id = 0;
     private bool m_follow_input_cursor_when_always_shown = false;
-    private const uint MONITOR_NET_WORKAREA_TIMEOUT = 60000;
+    // The timeout indicates milliseconds. 1000 msec == 1 sec
+    private const uint MONITOR_NET_WORKAREA_TIMEOUT = 300000;
+    private uint m_remove_filter_id;
 
     public PropertyPanel() {
         /* Chain up base class constructor */
@@ -390,6 +392,11 @@ public class PropertyPanel : Gtk.Box {
             string aname = m_xdisplay.get_atom_name(xevent.xproperty.atom);
             if (aname == "_NET_WORKAREA" && xevent.xproperty.state == 0) {
                 set_default_location();
+                m_root_window.remove_filter(root_window_filter);
+                if (m_remove_filter_id > 0) {
+                    GLib.Source.remove(m_remove_filter_id);
+                    m_remove_filter_id = 0;
+                }
                 return Gdk.FilterReturn.CONTINUE;
             }
         }
@@ -404,7 +411,9 @@ public class PropertyPanel : Gtk.Box {
 
         m_root_window.add_filter(root_window_filter);
 
-        GLib.Timeout.add(MONITOR_NET_WORKAREA_TIMEOUT, () => {
+        m_remove_filter_id = GLib.Timeout.add(MONITOR_NET_WORKAREA_TIMEOUT,
+                                              () => {
+            m_remove_filter_id = 0;
             m_root_window.remove_filter(root_window_filter);
             return false;
         },
