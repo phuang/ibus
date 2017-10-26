@@ -21,18 +21,21 @@
  * USA
  */
 
+private const string IBUS_SCHEMAS_GENERAL = "org.freedesktop.ibus.general";
+private const string IBUS_SCHEMAS_GENERAL_PANEL =
+        "org.freedesktop.ibus.general.panel";
+private const string IBUS_SCHEMAS_PANEL = "org.freedesktop.ibus.panel";
+
 private const string[] IBUS_SCHEMAS = {
-    "org.freedesktop.ibus.general",
-    "org.freedesktop.ibus.general.hotkey",
-    "org.freedesktop.ibus.panel",
+    IBUS_SCHEMAS_GENERAL,
+    IBUS_SCHEMAS_GENERAL_PANEL,
+    IBUS_SCHEMAS_PANEL,
 };
 
 bool name_only = false;
 /* system() exists as a public API. */
 bool is_system = false;
 string cache_file = null;
-string emoji_font = null;
-string annotation_lang = null;
 
 class EngineList {
     public IBus.EngineDesc[] data = {};
@@ -175,7 +178,11 @@ int get_set_engine(string[] argv) {
         return Posix.EXIT_FAILURE;
     }
 
-    return exec_setxkbmap(desc);
+    var settings = new GLib.Settings(IBUS_SCHEMAS_GENERAL);
+    if (!settings.get_boolean("use-system-keyboard-layout"))
+        return exec_setxkbmap(desc);
+
+    return Posix.EXIT_SUCCESS;
 }
 
 int message_watch(string[] argv) {
@@ -362,7 +369,7 @@ struct CommandEntry {
     unowned EntryFunc entry;
 }
 
-static const CommandEntry commands[]  = {
+const CommandEntry commands[]  = {
     { "engine", N_("Set or get engine"), get_set_engine },
     { "exit", N_("Exit ibus-daemon"), exit_daemon },
     { "list-engine", N_("Show available engines"), list_engine },
