@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus - The Input Bus
  * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -678,30 +678,33 @@ ibus_compose_table_load_cache (const gchar *compose_file)
     gsize length = 0;
     GError *error = NULL;
 
-    hash = g_str_hash (compose_file);
-    if ((path = ibus_compose_hash_get_cache_path (hash)) == NULL)
-        return NULL;
-    if (!g_file_test (path, G_FILE_TEST_EXISTS))
-        goto out_load_cache;
+    do {
+        hash = g_str_hash (compose_file);
+        if ((path = ibus_compose_hash_get_cache_path (hash)) == NULL)
+            return NULL;
+        if (!g_file_test (path, G_FILE_TEST_EXISTS))
+            break;
 
-    g_stat (compose_file, &original_buf);
-    g_stat (path, &cache_buf);
-    if (original_buf.st_mtime > cache_buf.st_mtime)
-        goto out_load_cache;
-    if (!g_file_get_contents (path, &contents, &length, &error)) {
-        g_warning ("Failed to get cache content %s: %s", path, error->message);
-        g_error_free (error);
-        goto out_load_cache;
-    }
+        if (g_stat (compose_file, &original_buf))
+            break;
+        if (g_stat (path, &cache_buf))
+            break;
+        if (original_buf.st_mtime > cache_buf.st_mtime)
+            break;
+        if (!g_file_get_contents (path, &contents, &length, &error)) {
+            g_warning ("Failed to get cache content %s: %s",
+                       path, error->message);
+            g_error_free (error);
+            break;
+        }
 
-    retval = ibus_compose_table_deserialize (contents, length);
-    if (retval == NULL)
-        g_warning ("Failed to load the cache file: %s", path);
-    else
-        retval->id = hash;
+        retval = ibus_compose_table_deserialize (contents, length);
+        if (retval == NULL)
+            g_warning ("Failed to load the cache file: %s", path);
+        else
+            retval->id = hash;
+    } while (0);
 
-
-out_load_cache:
     g_free (contents);
     g_free (path);
     return retval;

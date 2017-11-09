@@ -48,6 +48,27 @@
 #define IBUS_ENGINE_SIMPLE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimplePrivate))
 
+#define SET_COMPOSE_BUFFER_ELEMENT_NEXT(buffer, index, value) {         \
+    if ((index) < EMOJI_SOURCE_LEN) {                                   \
+        (buffer)[(index)] = (value);                                    \
+        (index) += 1;                                                   \
+    }                                                                   \
+}
+
+#define SET_COMPOSE_BUFFER_ELEMENT_END(buffer, index, value) {          \
+    if ((index) >= EMOJI_SOURCE_LEN) {                                  \
+        (index) = EMOJI_SOURCE_LEN;                                     \
+        (buffer)[EMOJI_SOURCE_LEN - 1] = (value);                       \
+    } else {                                                            \
+        (buffer)[(index)] = (value);                                    \
+    }                                                                   \
+}
+
+#define CHECK_COMPOSE_BUFFER_LENGTH(index) {                            \
+    if ((index) > EMOJI_SOURCE_LEN)                                     \
+        (index) = EMOJI_SOURCE_LEN;                                     \
+}
+
 typedef struct {
     GHashTable *dict;
     int         max_seq_len;
@@ -307,6 +328,8 @@ check_hex (IBusEngineSimple *simple,
     gchar *nptr = NULL;
     gchar buf[7];
 
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
+
     priv->tentative_match = 0;
     priv->tentative_match_len = 0;
 
@@ -386,6 +409,8 @@ check_emoji_table (IBusEngineSimple       *simple,
     GSList *words = NULL;
 
     g_assert (IBUS_IS_ENGINE_SIMPLE (simple));
+
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
     if (priv->lookup_table == NULL) {
         priv->lookup_table = ibus_lookup_table_new (10, 0, TRUE, TRUE);
@@ -492,6 +517,7 @@ check_table (IBusEngineSimple       *simple,
     guint16 *seq;
 
     g_assert (IBUS_IS_ENGINE_SIMPLE (simple));
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
     if (n_compose > table->max_seq_len)
         return FALSE;
@@ -561,6 +587,8 @@ ibus_check_compact_table (const IBusComposeTableCompact *table,
         *compose_finish = FALSE;
     if (output_char)
         *output_char = 0;
+
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
     /* Will never match, if the sequence in the compose buffer is longer
      * than the sequences in the table.  Further, compare_seq (key, val)
@@ -659,6 +687,8 @@ check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
 
     n_combinations = 1;
 
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
+
     for (i = 1; i < n_compose; i++ )
         n_combinations *= i;
 
@@ -718,6 +748,8 @@ ibus_check_algorithmically (const guint16 *compose_buffer,
 
     if (output_char)
         *output_char = 0;
+
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
     if (n_compose >= IBUS_MAX_COMPOSE_LEN)
         return FALSE;
@@ -805,6 +837,8 @@ no_sequence_matches (IBusEngineSimple *simple,
     IBusEngineSimplePrivate *priv = simple->priv;
 
     gunichar ch;
+
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
     /* No compose sequences found, check first if we have a partial
      * match pending.
@@ -975,8 +1009,12 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     gboolean compose_finish;
     gunichar output_char;
 
-    while (priv->compose_buffer[n_compose] != 0)
+    while (priv->compose_buffer[n_compose] != 0 && n_compose < EMOJI_SOURCE_LEN)
         n_compose++;
+    if (n_compose >= EMOJI_SOURCE_LEN) {
+        g_warning ("copmose table buffer is full.");
+        n_compose = EMOJI_SOURCE_LEN - 1;
+    }
 
     if (modifiers & IBUS_RELEASE_MASK) {
         if (priv->in_hex_sequence &&
@@ -1197,15 +1235,16 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
     /* Then, check for compose sequences */
     if (priv->in_hex_sequence) {
-        if (hex_keyval)
-            priv->compose_buffer[n_compose++] = hex_keyval;
-        else if (is_escape) {
+        if (hex_keyval) {
+            SET_COMPOSE_BUFFER_ELEMENT_NEXT (priv->compose_buffer,
+                                             n_compose,
+                                             hex_keyval);
+        } else if (is_escape) {
             // FIXME
             ibus_engine_simple_reset (engine);
 
             return TRUE;
-        }
-        else if (!is_hex_end) {
+        } else if (!is_hex_end) {
             // FIXME
             /* non-hex character in hex sequence */
             // beep_window (event->window);
@@ -1220,11 +1259,15 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
                  * E.g. "1" and "2" are  indexes of emoji "1".
                  * "100" is an annotation of the emoji "100".
                  */
-                priv->compose_buffer[n_compose++] = printable_keyval;
+                SET_COMPOSE_BUFFER_ELEMENT_NEXT (priv->compose_buffer,
+                                                 n_compose,
+                                                 printable_keyval);
             }
         }
         else if (is_space && (modifiers & IBUS_SHIFT_MASK)) {
-            priv->compose_buffer[n_compose++] = IBUS_KEY_space;
+            SET_COMPOSE_BUFFER_ELEMENT_NEXT (priv->compose_buffer,
+                                             n_compose,
+                                             IBUS_KEY_space);
         }
         else if (is_escape) {
             ibus_engine_simple_reset (engine);
@@ -1235,10 +1278,14 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             return TRUE;
         }
     } else {
-        priv->compose_buffer[n_compose++] = keyval;
+        SET_COMPOSE_BUFFER_ELEMENT_NEXT (priv->compose_buffer,
+                                         n_compose,
+                                         keyval);
     }
 
-    priv->compose_buffer[n_compose] = 0;
+    SET_COMPOSE_BUFFER_ELEMENT_END (priv->compose_buffer,
+                                    n_compose,
+                                    0);
 
     if (priv->in_hex_sequence) {
         /* If the modifiers are still held down, consider the sequence again */
@@ -1427,6 +1474,7 @@ ibus_engine_simple_candidate_clicked (IBusEngine *engine,
         keyval = IBUS_KEY_1 + index;
     while (priv->compose_buffer[n_compose] != 0)
         n_compose++;
+    CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
     ibus_engine_simple_set_number_on_lookup_table (simple, keyval, n_compose);
 }
 
