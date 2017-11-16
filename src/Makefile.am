@@ -312,10 +312,12 @@ emoji_parser_SOURCES =          \
     $(NULL)
 emoji_parser_CFLAGS =           \
     $(GLIB2_CFLAGS)             \
+    $(GOBJECT2_CFLAGS)          \
     $(NULL)
 emoji_parser_LDADD =            \
-    $(GLIB2_LIBS)               \
     $(libibus)                  \
+    $(GLIB2_LIBS)               \
+    $(GOBJECT2_LIBS)            \
     $(NULL)
 
 clean-local:
