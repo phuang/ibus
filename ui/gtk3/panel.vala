@@ -1429,8 +1429,10 @@ class Panel : IBus.PanelService {
         foreach (var engine in m_engines) {
             var language = engine.get_language();
             var longname = engine.get_longname();
+            var textdomain = engine.get_textdomain();
+            var transname = GLib.dgettext(textdomain, longname);
             var item = new Gtk.MenuItem.with_label(
-                "%s - %s".printf (IBus.get_language_name(language), longname));
+                "%s - %s".printf (IBus.get_language_name(language), transname));
             // Make a copy of engine to workaround a bug in vala.
             // https://bugzilla.gnome.org/show_bug.cgi?id=628336
             var e = engine;

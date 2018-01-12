@@ -26,7 +26,9 @@ class Switcher : Gtk.Window {
         public IBusEngineButton(IBus.EngineDesc engine, Switcher switcher) {
             GLib.Object();
 
-            this.longname = engine.get_longname();
+            var longname = engine.get_longname();
+            var textdomain = engine.get_textdomain();
+            this.transname = GLib.dgettext(textdomain, longname);
 
             var name = engine.get_name();
 
@@ -58,7 +60,7 @@ class Switcher : Gtk.Window {
             }
         }
 
-        public string longname { get; set; }
+        public string transname { get; set; }
 
         public override bool draw(Cairo.Context cr) {
             base.draw(cr);
@@ -154,7 +156,7 @@ class Switcher : Gtk.Window {
         /* Let gtk recalculate the window size. */
         resize(1, 1);
 
-        m_label.set_text(m_buttons[index].longname);
+        m_label.set_text(m_buttons[index].transname);
         m_buttons[index].grab_focus();
 
         // Avoid regressions.
@@ -304,6 +306,8 @@ class Switcher : Gtk.Window {
             var engine = m_engines[i];
             var button = new IBusEngineButton(engine, this);
             var longname = engine.get_longname();
+            var textdomain = engine.get_textdomain();
+            var transname = GLib.dgettext(textdomain, longname);
             button.set_relief(Gtk.ReliefStyle.NONE);
             button.add_events(Gdk.EventMask.POINTER_MOTION_MASK);
             button.show();
@@ -338,8 +342,8 @@ class Switcher : Gtk.Window {
                 return true;
             });
 
-            button.longname = longname;
-            m_label.set_label(longname);
+            button.transname = transname;
+            m_label.set_label(transname);
 
             int width;
             m_label.get_preferred_width(null, out width);
@@ -349,7 +353,7 @@ class Switcher : Gtk.Window {
             m_buttons += button;
         }
 
-        m_label.set_text(m_buttons[0].longname);
+        m_label.set_text(m_buttons[0].transname);
         m_label.set_ellipsize(Pango.EllipsizeMode.END);
 
         Gdk.Display display = Gdk.Display.get_default();
@@ -382,7 +386,7 @@ class Switcher : Gtk.Window {
             m_selected_engine = 0;
         else
             m_selected_engine ++;
-        m_label.set_text(m_buttons[m_selected_engine].longname);
+        m_label.set_text(m_buttons[m_selected_engine].transname);
         set_focus(m_buttons[m_selected_engine]);
     }
 
@@ -391,7 +395,7 @@ class Switcher : Gtk.Window {
             m_selected_engine = m_engines.length - 1;
         else
             m_selected_engine --;
-        m_label.set_text(m_buttons[m_selected_engine].longname);
+        m_label.set_text(m_buttons[m_selected_engine].transname);
         set_focus(m_buttons[m_selected_engine]);
     }
 
