@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -1148,6 +1148,20 @@ _ic_set_surrounding_text (BusInputContext       *context,
     g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
+/*
+ * Since IBusService is inherited by IBusImpl, this method cannot be
+ * applied to IBusServiceClass.method_call() directly but can be in
+ * each child class.method_call().
+ */
+static gboolean
+bus_input_context_service_authorized_method (IBusService     *service,
+                                             GDBusConnection *connection)
+{
+    if (ibus_service_get_connection (service) == connection)
+        return TRUE;
+    return FALSE;
+}
+
 /**
  * bus_input_context_service_method_call:
  *
@@ -1197,6 +1211,10 @@ bus_input_context_service_method_call (IBusService            *service,
     };
 
     gint i;
+
+    if (!bus_input_context_service_authorized_method (service, connection))
+        return;
+
     for (i = 0; i < G_N_ELEMENTS (methods); i++) {
         if (g_strcmp0 (method_name, methods[i].method_name) == 0) {
             methods[i].method_callback ((BusInputContext *)service, parameters, invocation);
@@ -1270,6 +1288,9 @@ bus_input_context_service_set_property (IBusService     *service,
                                   error);
     }
 
+    if (!bus_input_context_service_authorized_method (service, connection))
+        return FALSE;
+
     if (g_strcmp0 (property_name, "ContentType") == 0) {
         BusInputContext *context = (BusInputContext *) service;
         _ic_set_content_type (context, value);
@@ -1278,6 +1299,7 @@ bus_input_context_service_set_property (IBusService     *service,
 
     g_return_val_if_reached (FALSE);
 }
+
 
 gboolean
 bus_input_context_has_focus (BusInputContext *context)
