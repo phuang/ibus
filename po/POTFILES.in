@@ -51,6 +51,7 @@ src/ibuspanelservice.c
 src/ibusproxy.c
 src/ibusregistry.c
 src/ibusservice.c
+src/ibusunicodegen.h
 src/ibusutil.c
 src/keyname-table.h
 tools/main.vala

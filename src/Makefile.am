@@ -41,6 +41,7 @@ INTROSPECTION_COMPILER_ARGS = \
     $(NULL)
 INTROSPECTION_GIRS =
 CLEANFILES =
+noinst_PROGRAMS =
 
 # C preprocessor flags
 AM_CPPFLAGS =                                           \
@@ -100,6 +101,7 @@ ibus_sources =              \
     ibusservice.c           \
     ibusshare.c             \
     ibustext.c              \
+    ibusunicode.c           \
     ibusutil.c              \
     ibusxml.c               \
     $(NULL)
@@ -151,6 +153,7 @@ ibus_headers =              \
     ibusshare.h             \
     ibustext.h              \
     ibustypes.h             \
+    ibusunicode.h           \
     ibusutil.h              \
     ibusxml.h               \
     $(NULL)
@@ -169,6 +172,7 @@ ibus_private_headers =          \
     ibusemojigen.h              \
     ibusenginesimpleprivate.h   \
     ibusinternal.h              \
+    ibusunicodegen.h            \
     keyname-table.h             \
     $(NULL)
 noinst_HEADERS =            \
@@ -241,7 +245,7 @@ dictdir = $(pkgdatadir)/dicts
 dict_DATA = dicts/emoji-en.dict
 LANG_FILES = $(basename $(notdir $(wildcard $(EMOJI_ANNOTATION_DIR)/*.xml)))
 
-noinst_PROGRAMS = emoji-parser
+noinst_PROGRAMS += emoji-parser
 
 dicts/emoji-en.dict: emoji-parser
 	$(AM_V_at)if test x"$(LANG_FILES)" = x ; then \
@@ -325,12 +329,60 @@ clean-local:
 	$(NULL)
 endif
 
+if ENABLE_UNICODE_DICT
+unicodedir = $(pkgdatadir)/dicts
+unicode_DATA = dicts/unicode-names.dict dicts/unicode-blocks.dict
+noinst_PROGRAMS += unicode-parser
+
+dicts/unicode-names.dict: unicode-parser
+	$(AM_V_at)input_file="$(UCD_DIR)/NamesList.txt"; \
+	if test ! -f "$$input_file" ; then \
+	    echo "WARNING: Not found $$input_file" 1>&2; \
+	else \
+	    $(builddir)/unicode-parser \
+	        --input-names-list $$input_file \
+	        --output-names-list $@; \
+	    echo "Generated $@"; \
+	fi;
+
+dicts/unicode-blocks.dict: unicode-parser
+	$(AM_V_at)input_file="$(UCD_DIR)/Blocks.txt"; \
+	if test ! -f "$$input_file" ; then \
+	    echo "WARNING: Not found $$input_file" 1>&2; \
+	else \
+	    $(builddir)/unicode-parser \
+	        --input-blocks $$input_file \
+	        --output-blocks-trans ibusunicodegen.h \
+	        --output-blocks $@; \
+	    echo "Generated $@"; \
+	fi;
+
+ibusunicodegen.h: dicts/unicode-blocks.dict
+	$(NULL)
+
+unicode_parser_SOURCES =        \
+    unicode-parser.c            \
+    $(NULL)
+unicode_parser_CFLAGS =         \
+    $(GLIB2_CFLAGS)             \
+    $(NULL)
+unicode_parser_LDADD =          \
+    $(GLIB2_LIBS)               \
+    $(libibus)                  \
+    $(NULL)
+
+clean-local:
+	-rm -rf dicts
+	$(NULL)
+endif
+
 EXTRA_DIST =                    \
     emoji-parser.c              \
     ibusversion.h.in            \
     ibusmarshalers.list         \
     ibusenumtypes.h.template    \
     ibusenumtypes.c.template    \
+    unicode-parser.c            \
     $(NULL)
 
 CLEANFILES +=                   \
@@ -341,6 +393,7 @@ CLEANFILES +=                   \
 
 DISTCLEANFILES =                \
     ibusemojigen.h              \
+    ibusunicodegen.h            \
     ibusversion.h               \
     $(NULL)
 

@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -196,5 +196,12 @@ void          ibus_emojier_set_partial_match_length
  */
 void          ibus_emojier_set_partial_match_condition
                                                   (gint         condition);
+/**
+ * ibus_emojier_load_unicode_dict:
+ *
+ * Load the dictionary of #IBusUnicodeData.
+ */
+void          ibus_emojier_load_unicode_dict      (void);
+
 G_END_DECLS
 #endif

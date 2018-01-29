@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2017 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2018 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -871,6 +871,7 @@ class Panel : IBus.PanelService {
             IBusEmojier.set_annotation_lang(
                     m_settings_emoji.get_string("lang"));
             m_emojier_set_emoji_lang_id = 0;
+            IBusEmojier.load_unicode_dict();
             return false;
         });
     }

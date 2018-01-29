@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2016-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2016-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -1126,6 +1126,7 @@ category_file_save (const gchar *filename,
     if (!g_file_get_contents (__FILE__, &content, &length, &error)) {
         g_warning ("Failed to load %s: %s", __FILE__, error->message);
         g_clear_pointer (&error, g_error_free);
+        return;
     }
     buff = g_string_new (NULL);
     p = content;

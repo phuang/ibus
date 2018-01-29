@@ -176,6 +176,8 @@ public class EmojiApplication : Application {
                 m_settings_emoji.get_strv("favorites"),
                 m_settings_emoji.get_strv("favorite-annotations"));
 
+        IBusEmojier.load_unicode_dict();
+
         activate_dialog(command_line);
 
         return Posix.EXIT_SUCCESS;
