@@ -412,7 +412,8 @@ ibus_unicode_data_list_deserialize (GVariant *variant,
                 IBUS_UNICODE_DESERIALIZE_SIGNALL_STR,
                 G_OBJECT_TYPE (source_object));
         if (!has_signal) {
-            const gchar type_name = g_type_name (source_object);
+            const gchar *type_name =
+                    g_type_name (G_OBJECT_TYPE (source_object));
             g_warning ("GObject %s does not have the signal \"%s\"",
                        type_name ? type_name : "(null)",
                        IBUS_UNICODE_DESERIALIZE_SIGNALL_STR);
@@ -677,7 +678,7 @@ ibus_unicode_block_class_init (IBusUnicodeBlockClass *class)
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
 
-    object_class->destroy = (IBusObjectDestroyFunc) ibus_unicode_data_destroy;
+    object_class->destroy = (IBusObjectDestroyFunc) ibus_unicode_block_destroy;
     gobject_class->set_property =
             (GObjectSetPropertyFunc) ibus_unicode_block_set_property;
     gobject_class->get_property =

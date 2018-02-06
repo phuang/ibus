@@ -1373,8 +1373,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                     return;
                 }
             }
-            // TODO: Provide a custom description and annotation for
-            // the favorite emojis.
             EPaddedLabelBox widget = new EPaddedLabelBox(
                         _("Description: %s").printf(_("None")),
                         Gtk.Align.START);
@@ -1790,8 +1788,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
          * prevention logic:
          * https://mail.gnome.org/archives/gtk-devel-list/2017-May/msg00026.html
          */
-        //uint32 timestamp = event.get_time();
-        //present_with_time(timestamp);
         present_centralize(event);
 
         Gdk.Device pointer;
