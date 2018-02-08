@@ -1,6 +1,6 @@
 Please fill in the following items if you don't know the root cause.
 
-Which distribusion and version?: 
+Which distribution and version?: 
 (E.g. Fedora 27. Check /etc/fedora-release)
 
 Which desktop environment and version?: 
@@ -12,7 +12,7 @@ Which session type?:
 Which application and version?: 
 (E.g. gedit 3.24, leafpad, kate, xterm)
 
-IBus verion?: 
+IBus version?: 
 (Run `ibus version`)
 
 Issue description:
