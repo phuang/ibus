@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2013-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,6 +43,7 @@ static gboolean xim = FALSE;
 static gboolean replace = FALSE;
 static gboolean restart = FALSE;
 static gchar *panel = "default";
+static gchar *panel_extension = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
 
@@ -60,6 +62,7 @@ static const GOptionEntry entries[] =
     { "xim",       'x', 0, G_OPTION_ARG_NONE,   &xim,       "execute ibus XIM server.", NULL },
     { "desktop",   'n', 0, G_OPTION_ARG_STRING, &desktop,   "specify the name of desktop session. [default=gnome]", "name" },
     { "panel",     'p', 0, G_OPTION_ARG_STRING, &panel,     "specify the cmdline of panel program. pass 'disable' not to start a panel program.", "cmdline" },
+    { "panel-extension", 'E', 0, G_OPTION_ARG_STRING, &panel_extension, "specify the cmdline of panel extension program. pass 'disable' not to start an extension program.", "cmdline" },
     { "config",    'c', 0, G_OPTION_ARG_STRING, &config,    "specify the cmdline of config program. pass 'disable' not to start a config program.", "cmdline" },
     { "address",   'a', 0, G_OPTION_ARG_STRING, &g_address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
@@ -268,7 +271,27 @@ main (gint argc, gchar **argv)
             if (!execute_cmdline (panel))
                 exit (-1);
         }
+
+#ifdef EMOJI_DICT
+        if (g_strcmp0 (panel_extension, "default") == 0) {
+            BusComponent *component;
+            component = bus_ibus_impl_lookup_component_by_name (
+                    BUS_DEFAULT_IBUS, IBUS_SERVICE_PANEL_EXTENSION);
+            if (component) {
+                bus_component_set_restart (component, restart);
+            }
+            if (component == NULL ||
+                !bus_component_start (component, g_verbose)) {
+                g_printerr ("Can not execute default panel program\n");
+                exit (-1);
+            }
+        } else if (g_strcmp0 (panel_extension, "disable") != 0 &&
+                   g_strcmp0 (panel_extension, "") != 0) {
+            if (!execute_cmdline (panel_extension))
+                exit (-1);
+        }
     }
+#endif
 
     /* execute ibus xim server */
     if (xim) {

@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -251,7 +252,7 @@ ibus_serializable_copy (IBusSerializable *object)
 }
 
 GVariant *
-ibus_serializable_serialize (IBusSerializable *object)
+ibus_serializable_serialize_object (IBusSerializable *object)
 {
     g_return_val_if_fail (IBUS_IS_SERIALIZABLE (object), FALSE);
     gboolean retval;
@@ -267,7 +268,7 @@ ibus_serializable_serialize (IBusSerializable *object)
 }
 
 IBusSerializable *
-ibus_serializable_deserialize (GVariant *variant)
+ibus_serializable_deserialize_object (GVariant *variant)
 {
     g_return_val_if_fail (variant != NULL, NULL);
 

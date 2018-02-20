@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2011-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,6 +74,7 @@ struct _BusIBusImpl {
 
     BusInputContext *focused_context;
     BusPanelProxy   *panel;
+    BusPanelProxy   *extension;
 
     /* a default keymap of ibus-daemon (usually "us") which is used only
      * when use_sys_layout is FALSE. */
@@ -290,10 +292,35 @@ _panel_destroy_cb (BusPanelProxy *panel,
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
-    g_return_if_fail (ibus->panel == panel);
-
-    ibus->panel = NULL;
+    if (ibus->panel == panel)
+        ibus->panel = NULL;
+    else if (ibus->extension == panel)
+        ibus->extension = NULL;
+    else
+        g_return_if_reached ();
     g_object_unref (panel);
+}
+
+static void
+_panel_panel_extension_cb (BusPanelProxy *panel,
+                           GVariant      *parameters,
+                           BusIBusImpl  *ibus)
+{
+    if (!ibus->extension) {
+        g_warning ("Panel extension is not running.");
+        return;
+    }
+
+    g_return_if_fail (BUS_IS_IBUS_IMPL (ibus));
+    g_return_if_fail (BUS_IS_PANEL_PROXY (ibus->extension));
+
+    /* Use the DBus method because it seems any DBus signal,
+     * g_dbus_message_new_signal(), cannot be reached to the server. */
+    g_dbus_proxy_call (G_DBUS_PROXY (ibus->extension),
+                       "PanelExtensionReceived",
+                       parameters,
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
 }
 
 static void
@@ -317,32 +344,46 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
                              const gchar   *new_name,
                              BusIBusImpl   *ibus)
 {
+    PanelType panel_type = PANEL_TYPE_NONE;
+
     g_assert (BUS_IS_DBUS_IMPL (dbus));
     g_assert (name != NULL);
     g_assert (old_name != NULL);
     g_assert (new_name != NULL);
     g_assert (BUS_IS_IBUS_IMPL (ibus));
 
-    if (g_strcmp0 (name, IBUS_SERVICE_PANEL) == 0) {
+    if (!g_strcmp0 (name, IBUS_SERVICE_PANEL))
+        panel_type = PANEL_TYPE_PANEL;
+    else if (!g_strcmp0 (name, IBUS_SERVICE_PANEL_EXTENSION))
+        panel_type = PANEL_TYPE_EXTENSION;
+
+    if (panel_type != PANEL_TYPE_NONE) {
         if (g_strcmp0 (new_name, "") != 0) {
             /* a Panel process is started. */
             BusConnection *connection;
             BusInputContext *context = NULL;
+            BusPanelProxy   **panel = (panel_type == PANEL_TYPE_PANEL) ?
+                                       &ibus->panel : &ibus->extension;
 
-            if (ibus->panel != NULL) {
-                ibus_proxy_destroy ((IBusProxy *) ibus->panel);
-                /* panel should be NULL after destroy. See _panel_destroy_cb for details. */
-                g_assert (ibus->panel == NULL);
+            if (*panel != NULL) {
+                ibus_proxy_destroy ((IBusProxy *)(*panel));
+                /* panel should be NULL after destroy. See _panel_destroy_cb
+                 * for details. */
+                g_assert (*panel == NULL);
             }
 
             connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, new_name);
             g_return_if_fail (connection != NULL);
 
-            ibus->panel = bus_panel_proxy_new (connection);
+            *panel = bus_panel_proxy_new (connection, panel_type);
 
-            g_signal_connect (ibus->panel,
+            g_signal_connect (*panel,
                               "destroy",
                               G_CALLBACK (_panel_destroy_cb),
+                              ibus);
+            g_signal_connect (*panel,
+                              "panel-extension",
+                              G_CALLBACK (_panel_panel_extension_cb),
                               ibus);
 
             if (ibus->focused_context != NULL) {
@@ -355,14 +396,13 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
             if (context != NULL) {
                 BusEngineProxy *engine;
 
-                bus_panel_proxy_focus_in (ibus->panel, context);
+                bus_panel_proxy_focus_in (*panel, context);
 
                 engine = bus_input_context_get_engine (context);
                 if (engine != NULL) {
                     IBusPropList *prop_list =
                         bus_engine_proxy_get_properties (engine);
-                    bus_panel_proxy_register_properties (ibus->panel,
-                                                         prop_list);
+                    bus_panel_proxy_register_properties (*panel, prop_list);
                 }
             }
         }
@@ -403,6 +443,7 @@ bus_ibus_impl_init (BusIBusImpl *ibus)
     ibus->contexts = NULL;
     ibus->focused_context = NULL;
     ibus->panel = NULL;
+    ibus->extension = NULL;
 
     ibus->keymap = ibus_keymap_get ("us");
 
@@ -635,6 +676,8 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
 
         if (ibus->panel != NULL)
             bus_panel_proxy_focus_out (ibus->panel, ibus->focused_context);
+        if (ibus->extension != NULL)
+            bus_panel_proxy_focus_out (ibus->extension, ibus->focused_context);
 
         bus_input_context_get_content_type (ibus->focused_context,
                                             &purpose, &hints);
@@ -658,6 +701,8 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
 
         if (ibus->panel != NULL)
             bus_panel_proxy_focus_in (ibus->panel, context);
+        if (ibus->extension != NULL)
+            bus_panel_proxy_focus_in (ibus->extension, context);
     }
 
     if (engine != NULL)
@@ -846,8 +891,13 @@ _context_destroy_cb (BusInputContext    *context,
         bus_ibus_impl_set_focused_context (ibus, NULL);
 
     if (ibus->panel &&
-        bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS)
+        bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) {
         bus_panel_proxy_destroy_context (ibus->panel, context);
+    }
+    if (ibus->extension &&
+        bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS) {
+        bus_panel_proxy_destroy_context (ibus->extension, context);
+    }
 
     ibus->contexts = g_list_remove (ibus->contexts, context);
     g_object_unref (context);

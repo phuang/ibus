@@ -106,6 +106,7 @@ test -d $tstdir || mkdir $tstdir
     --daemonize \
     --cache=none \
     --panel=disable \
+    --panel-extension=disable \
     --config=default \
     --verbose;
 

@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -248,10 +249,10 @@ void                 ibus_serializable_remove_qattachment
  *
  * See also: IBusSerializableCopyFunc().
  */
-IBusSerializable    *ibus_serializable_copy             (IBusSerializable   *serializable);
+IBusSerializable    *ibus_serializable_copy (IBusSerializable   *serializable);
 
 /**
- * ibus_serializable_serialize:
+ * ibus_serializable_serialize_object:
  * @serializable: An #IBusSerializable.
  *
  * Serialize an #IBusSerializable to a #GVariant.
@@ -261,10 +262,11 @@ IBusSerializable    *ibus_serializable_copy             (IBusSerializable   *ser
  *
  * See also: IBusSerializableCopyFunc().
  */
-GVariant            *ibus_serializable_serialize        (IBusSerializable   *serializable);
+GVariant            *ibus_serializable_serialize_object
+                                            (IBusSerializable   *serializable);
 
 /**
- * ibus_serializable_deserialize:
+ * ibus_serializable_deserialize_object:
  * @variant: A #GVariant.
  *
  * Deserialize a #GVariant to an #IBusSerializable/
@@ -274,7 +276,11 @@ GVariant            *ibus_serializable_serialize        (IBusSerializable   *ser
  *
  * See also: IBusSerializableCopyFunc().
  */
-IBusSerializable    *ibus_serializable_deserialize      (GVariant           *variant);
+IBusSerializable    *ibus_serializable_deserialize_object
+                                            (GVariant           *variant);
+
+#define ibus_serializable_serialize ibus_serializable_serialize_object
+#define ibus_serializable_deserialize ibus_serializable_deserialize_object
 
 G_END_DECLS
 #endif

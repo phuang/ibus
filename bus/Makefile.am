@@ -3,7 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2013 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2013 Red Hat, Inc.
+# Copyright (c) 2013-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -104,6 +105,10 @@ marshalers.c: marshalers.h marshalers.list
 	$(AM_V_GEN) (echo "#include \"marshalers.h\""; \
 	$(GLIB_GENMARSHAL) --prefix=bus_marshal $(srcdir)/marshalers.list --body --internal) > $@.tmp && \
 	mv $@.tmp $@
+
+if ENABLE_EMOJI_DICT
+AM_CFLAGS += -DEMOJI_DICT
+endif
 
 
 if ENABLE_TESTS

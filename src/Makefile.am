@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -103,6 +103,7 @@ ibus_sources =              \
     ibustext.c              \
     ibusunicode.c           \
     ibusutil.c              \
+    ibusxevent.c            \
     ibusxml.c               \
     $(NULL)
 libibus_1_0_la_SOURCES =    \
@@ -155,6 +156,7 @@ ibus_headers =              \
     ibustypes.h             \
     ibusunicode.h           \
     ibusutil.h              \
+    ibusxevent.h            \
     ibusxml.h               \
     $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@

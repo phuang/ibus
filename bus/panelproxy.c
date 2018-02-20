@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2014 Red Hat, Inc.
+ * Copyright (C) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,6 +51,7 @@ enum {
     PROPERTY_SHOW,
     PROPERTY_HIDE,
     COMMIT_TEXT,
+    PANEL_EXTENSION,
     LAST_SIGNAL,
 };
 
@@ -59,6 +60,7 @@ struct _BusPanelProxy {
 
     /* instance members */
     BusInputContext *focused_context;
+    PanelType panel_type;
 };
 
 struct _BusPanelProxyClass {
@@ -110,22 +112,39 @@ static void     bus_panel_proxy_commit_text
 G_DEFINE_TYPE(BusPanelProxy, bus_panel_proxy, IBUS_TYPE_PROXY)
 
 BusPanelProxy *
-bus_panel_proxy_new (BusConnection *connection)
+bus_panel_proxy_new (BusConnection *connection,
+                     PanelType      panel_type)
 {
+    const gchar *path = NULL;
+    GObject *obj;
+    BusPanelProxy *panel;
+
     g_assert (BUS_IS_CONNECTION (connection));
 
-    GObject *obj;
+    switch (panel_type) {
+    case PANEL_TYPE_PANEL:
+        path = IBUS_PATH_PANEL;
+        break;
+    case PANEL_TYPE_EXTENSION:
+        path = IBUS_PATH_PANEL_EXTENSION;
+        break;
+    default:
+        g_return_val_if_reached (NULL);
+    }
+
     obj = g_initable_new (BUS_TYPE_PANEL_PROXY,
                           NULL,
                           NULL,
-                          "g-object-path",     IBUS_PATH_PANEL,
+                          "g-object-path",     path,
                           "g-interface-name",  IBUS_INTERFACE_PANEL,
                           "g-connection",      bus_connection_get_dbus_connection (connection),
                           "g-default-timeout", g_gdbus_timeout,
                           "g-flags",           G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START | G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
                           NULL);
 
-    return BUS_PANEL_PROXY (obj);
+    panel = BUS_PANEL_PROXY (obj);
+    panel->panel_type = panel_type;
+    return panel;
 }
 
 static void
@@ -231,6 +250,16 @@ bus_panel_proxy_class_init (BusPanelProxyClass *class)
             bus_marshal_VOID__OBJECT,
             G_TYPE_NONE, 1,
             IBUS_TYPE_TEXT);
+
+    panel_signals[PANEL_EXTENSION] =
+        g_signal_new (I_("panel-extension"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__VARIANT,
+            G_TYPE_NONE, 1,
+            G_TYPE_VARIANT);
 }
 
 static void
@@ -334,6 +363,15 @@ bus_panel_proxy_g_signal (GDBusProxy  *proxy,
         g_return_if_fail (text != NULL);
         g_signal_emit (panel, panel_signals[COMMIT_TEXT], 0, text);
         _g_object_unref_if_floating (text);
+        return;
+    }
+
+    if (g_strcmp0 ("PanelExtension", signal_name) == 0) {
+        if (panel->panel_type != PANEL_TYPE_PANEL) {
+            g_warning ("Wrong signal");
+            return;
+        }
+        g_signal_emit (panel, panel_signals[PANEL_EXTENSION], 0, parameters);
         return;
     }
 
@@ -831,4 +869,11 @@ bus_panel_proxy_destroy_context (BusPanelProxy    *panel,
                        -1, NULL, NULL, NULL);
 
     g_object_unref (context);
+}
+
+PanelType
+bus_panel_proxy_get_panel_type (BusPanelProxy    *panel)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    return panel->panel_type;
 }

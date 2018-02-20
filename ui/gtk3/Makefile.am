@@ -3,8 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2017 Takao Fujwiara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2017 Red Hat, Inc.
+# Copyright (c) 2015-2018 Takao Fujwiara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -30,7 +30,7 @@ component_DATA = \
 	$(NULL)
 componentdir = $(pkgdatadir)/component
 
-gtkpanel.xml: gtkpanel.xml.in
+%.xml: %.xml.in
 	$(AM_V_GEN) sed \
 		-e 's|@VERSION[@]|$(VERSION)|g' \
 		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
@@ -108,6 +108,7 @@ libexec_PROGRAMS = ibus-ui-gtk3
 
 ibus_ui_gtk3_SOURCES = \
 	application.vala \
+	bindingcommon.vala \
 	candidatearea.vala \
 	candidatepanel.vala \
 	emojier.vala \
@@ -155,9 +156,12 @@ EXTRA_DIST =                            \
     $(emoji_headers)                    \
     $(man_seven_in_files)               \
     emojierapp.vala                     \
+    extension.vala                      \
+    gtkextension.xml.in                 \
     gtkpanel.xml.in                     \
     notification-item.xml               \
     notification-watcher.xml            \
+    panelbinding.vala                   \
     $(NULL)
 
 if ENABLE_EMOJI_DICT
@@ -167,10 +171,8 @@ libexec_PROGRAMS += ibus-ui-emojier
 
 ibus_ui_emojier_VALASOURCES =                   \
     emojierapp.vala                             \
-    candidatearea.vala                          \
     emojier.vala                                \
     iconwidget.vala                             \
-    pango.vala                                  \
     separator.vala                              \
     $(NULL)
 ibus_ui_emojier_SOURCES =                       \
@@ -193,6 +195,53 @@ $(VALAFLAGS) -C $(ibus_ui_emojier_VALASOURCES)
 	$(NULL)
 # make dist creates .c files in a different srcdir
 emojierapp.o: $(srcdir)/emojierapp.c
+	$(AM_V_CC)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
+	$(NULL)
+
+component_DATA += gtkextension.xml
+CLEANFILES += gtkextension.xml
+libexec_PROGRAMS += ibus-extension-gtk3
+
+ibus_extension_gtk3_VALASOURCES =               \
+    bindingcommon.vala                          \
+    emojier.vala                                \
+    extension.vala                              \
+    iconwidget.vala                             \
+    keybindingmanager.vala                      \
+    panelbinding.vala                           \
+    $(NULL)
+ibus_extension_gtk3_SOURCES =                   \
+    $(ibus_extension_gtk3_VALASOURCES:.vala=.c) \
+    $(NULL)
+
+ibus_extension_gtk3_LDADD =                     \
+    $(AM_LDADD)                                 \
+    $(NULL)
+ibus_extension_gtk3_VALAFLAGS =                 \
+    $(AM_VALAFLAGS)                             \
+    $(NULL)
+
+# This line and foo_VALASOURCES line can delete the duplicated entries
+# of emojier.c: emojier.vala
+extension.c: $(ibus_extension_gtk3_VALASOURCES)
+	$(AM_V_VALAC)$(am__cd) $(srcdir) && $(VALAC) $(AM_VALAFLAGS) \
+$(VALAFLAGS) -C $(ibus_extension_gtk3_VALASOURCES)
+	$(NULL)
+# make dist creates .c files in a different srcdir
+extension.o: $(srcdir)/extension.c
+	$(AM_V_CC)source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
+	$(NULL)
+# of emojier.c: emojier.vala
+panelbinding.c: $(ibus_extension_gtk3_VALASOURCES)
+	$(AM_V_VALAC)$(am__cd) $(srcdir) && $(VALAC) $(AM_VALAFLAGS) \
+$(VALAFLAGS) -C $(ibus_extension_gtk3_VALASOURCES)
+	$(NULL)
+# make dist creates .c files in a different srcdir
+panelbinding.o: $(srcdir)/panelbinding.c
 	$(AM_V_CC)source='$<' object='$@' libtool=no \
 	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<

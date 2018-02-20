@@ -6,4 +6,8 @@ namespace IBus {
 		[CCode (cname = "ibus_text_new_from_static_string", has_construct_function = false)]
 		public Text.from_static_string (string str);
 	}
+	public class XEvent : IBus.Serializable {
+		[CCode (cname = "ibus_x_event_new", has_construct_function = true)]
+		public XEvent (string first_property_name, ...);
+	}
 }

@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (c) 2009-2014 Google Inc. All rights reserved.
- * Copyright (c) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (c) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -128,6 +128,9 @@ struct _IBusPanelServiceClass {
                                             gint                    y,
                                             gint                    w,
                                             gint                    h);
+    void     (* panel_extension_received)
+                                           (IBusPanelService       *panel,
+                                            GVariant               *data);
 
     /*< private >*/
     /* padding */
@@ -242,5 +245,15 @@ void ibus_panel_service_property_hide     (IBusPanelService *panel,
 void ibus_panel_service_commit_text       (IBusPanelService *panel,
                                            IBusText         *text);
 
+/**
+ * ibus_panel_service_panel_extension:
+ * @panel: An #IBusPanelService
+ * @data: (transfer full): A #GVariant data which is sent to a panel extension. 
+ *
+ * Notify that a data is sent
+ * by sending a "PanelExtension" message to IBus panel extension service.
+ */
+void ibus_panel_service_panel_extension   (IBusPanelService *panel,
+                                           GVariant         *data);
 G_END_DECLS
 #endif

@@ -22,39 +22,16 @@
  */
 
 class Panel : IBus.PanelService {
-    private class Keybinding {
-        public Keybinding(uint keysym,
-                          Gdk.ModifierType modifiers,
-                          bool reverse,
-                          KeyEventFuncType ftype) {
-            this.keysym = keysym;
-            this.modifiers = modifiers;
-            this.reverse = reverse;
-            this.ftype = ftype;
-        }
-
-        public uint keysym { get; set; }
-        public Gdk.ModifierType modifiers { get; set; }
-        public bool reverse { get; set; }
-        public KeyEventFuncType ftype { get; set; }
-    }
 
     private enum IconType {
         STATUS_ICON,
         INDICATOR,
     }
 
-    private enum KeyEventFuncType {
-        ANY,
-        IME_SWITCHER,
-        EMOJI_TYPING,
-    }
-
     private IBus.Bus m_bus;
     private GLib.Settings m_settings_general = null;
     private GLib.Settings m_settings_hotkey = null;
     private GLib.Settings m_settings_panel = null;
-    private GLib.Settings m_settings_emoji = null;
     private IconType m_icon_type = IconType.STATUS_ICON;
     private Indicator m_indicator;
 #if INDICATOR
@@ -73,10 +50,6 @@ class Panel : IBus.PanelService {
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private uint m_switcher_focus_set_engine_id;
-    private IBusEmojier? m_emojier;
-    private uint m_emojier_set_emoji_lang_id;
-    private uint m_emojier_focus_commit_text_id;
-    private string[] m_emojier_favorites = {};
     private PropertyManager m_property_manager;
     private PropertyPanel m_property_panel;
     private GLib.Pid m_setup_pid = 0;
@@ -108,7 +81,8 @@ class Panel : IBus.PanelService {
     private ulong m_activate_id;
     private ulong m_registered_status_notifier_item_id;
 
-    private GLib.List<Keybinding> m_keybindings = new GLib.List<Keybinding>();
+    private GLib.List<BindingCommon.Keybinding> m_keybindings =
+            new GLib.List<BindingCommon.Keybinding>();
 
     public Panel(IBus.Bus bus) {
         GLib.assert(bus.is_connected());
@@ -147,8 +121,6 @@ class Panel : IBus.PanelService {
             m_switcher.set_popup_delay_time((uint) m_switcher_delay_time);
         }
 
-        bind_emoji_shortcut();
-
         m_property_manager = new PropertyManager();
         m_property_manager.property_activate.connect((w, k, s) => {
             property_activate(k, s);
@@ -168,7 +140,9 @@ class Panel : IBus.PanelService {
         if (m_indicator != null)
             m_indicator.unregister_connection();
 #endif
-        unbind_switch_shortcut(KeyEventFuncType.ANY);
+        BindingCommon.unbind_switch_shortcut(
+                BindingCommon.KeyEventFuncType.ANY, m_keybindings);
+        m_keybindings = null;
     }
 
     private void init_settings() {
@@ -176,7 +150,6 @@ class Panel : IBus.PanelService {
         m_settings_hotkey =
                 new GLib.Settings("org.freedesktop.ibus.general.hotkey");
         m_settings_panel = new GLib.Settings("org.freedesktop.ibus.panel");
-        m_settings_emoji = new GLib.Settings("org.freedesktop.ibus.panel.emoji");
 
         m_settings_general.changed["preload-engines"].connect((key) => {
                 update_engines(m_settings_general.get_strv(key),
@@ -205,16 +178,23 @@ class Panel : IBus.PanelService {
         });
 
         m_settings_hotkey.changed["triggers"].connect((key) => {
-                unbind_switch_shortcut(KeyEventFuncType.IME_SWITCHER);
+                BindingCommon.unbind_switch_shortcut(
+                        BindingCommon.KeyEventFuncType.IME_SWITCHER,
+                        m_keybindings);
+                m_keybindings = null;
                 bind_switch_shortcut();
         });
 
         m_settings_panel.changed["custom-font"].connect((key) => {
-                set_custom_font();
+                BindingCommon.set_custom_font(m_settings_panel,
+                                              null,
+                                              ref m_css_provider);
         });
 
         m_settings_panel.changed["use-custom-font"].connect((key) => {
-                set_custom_font();
+                BindingCommon.set_custom_font(m_settings_panel,
+                                              null,
+                                              ref m_css_provider);
         });
 
         m_settings_panel.changed["show-icon-on-systray"].connect((key) => {
@@ -244,39 +224,6 @@ class Panel : IBus.PanelService {
 
         m_settings_panel.changed["property-icon-delay-time"].connect((key) => {
                 set_property_icon_delay_time();
-        });
-
-        m_settings_emoji.changed["hotkey"].connect((key) => {
-                unbind_switch_shortcut(KeyEventFuncType.EMOJI_TYPING);
-                bind_emoji_shortcut();
-        });
-
-        m_settings_emoji.changed["font"].connect((key) => {
-                set_custom_font();
-        });
-
-        m_settings_emoji.changed["favorites"].connect((key) => {
-                set_emoji_favorites();
-        });
-
-        m_settings_emoji.changed["favorite-annotations"].connect((key) => {
-                set_emoji_favorites();
-        });
-
-        m_settings_emoji.changed["lang"].connect((key) => {
-                set_emoji_lang();
-        });
-
-        m_settings_emoji.changed["has-partial-match"].connect((key) => {
-                set_emoji_partial_match();
-        });
-
-        m_settings_emoji.changed["partial-match-length"].connect((key) => {
-                set_emoji_partial_match();
-        });
-
-        m_settings_emoji.changed["partial-match-condition"].connect((key) => {
-                set_emoji_partial_match();
         });
     }
 
@@ -409,120 +356,40 @@ class Panel : IBus.PanelService {
         m_status_icon.set_from_icon_name("ibus-keyboard");
     }
 
-    private void keybinding_manager_bind(KeybindingManager keybinding_manager,
-                                         string?           accelerator,
-                                         KeyEventFuncType  ftype) {
-        uint switch_keysym = 0;
-        Gdk.ModifierType switch_modifiers = 0;
-        Gdk.ModifierType reverse_modifier = Gdk.ModifierType.SHIFT_MASK;
-        Keybinding keybinding;
-
-        Gtk.accelerator_parse(accelerator,
-                out switch_keysym, out switch_modifiers);
-
-        // Map virtual modifiers to (i.e. Mod2, Mod3, ...)
-        const Gdk.ModifierType VIRTUAL_MODIFIERS = (
-                Gdk.ModifierType.SUPER_MASK |
-                Gdk.ModifierType.HYPER_MASK |
-                Gdk.ModifierType.META_MASK);
-        if ((switch_modifiers & VIRTUAL_MODIFIERS) != 0) {
-        // workaround a bug in gdk vapi vala > 0.18
-        // https://bugzilla.gnome.org/show_bug.cgi?id=677559
-#if VALA_0_18
-            Gdk.Keymap.get_default().map_virtual_modifiers(
-                    ref switch_modifiers);
-#else
-            if ((switch_modifiers & Gdk.ModifierType.SUPER_MASK) != 0)
-                switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
-            if ((switch_modifiers & Gdk.ModifierType.HYPER_MASK) != 0)
-                switch_modifiers |= Gdk.ModifierType.MOD4_MASK;
-#endif
-            switch_modifiers &= ~VIRTUAL_MODIFIERS;
-        }
-
-        if (switch_keysym == 0 && switch_modifiers == 0) {
-            warning("Parse accelerator '%s' failed!", accelerator);
-            return;
-        }
-
-        keybinding = new Keybinding(switch_keysym,
-                                    switch_modifiers,
-                                    false,
-                                    ftype);
-        m_keybindings.append(keybinding);
-
-        /* Workaround not to free the pointer of handle_engine_switch() */
-        if (ftype == KeyEventFuncType.IME_SWITCHER) {
-            keybinding_manager.bind(switch_keysym, switch_modifiers,
-                    (e) => handle_engine_switch(e, false));
-        } else if (ftype == KeyEventFuncType.EMOJI_TYPING) {
-            keybinding_manager.bind(switch_keysym, switch_modifiers,
-                    (e) => handle_emoji_typing(e));
-            return;
-        }
-
-        // accelerator already has Shift mask
-        if ((switch_modifiers & reverse_modifier) != 0) {
-            return;
-        }
-
-        switch_modifiers |= reverse_modifier;
-
-        keybinding = new Keybinding(switch_keysym,
-                                    switch_modifiers,
-                                    true,
-                                    ftype);
-        m_keybindings.append(keybinding);
-
-        if (ftype == KeyEventFuncType.IME_SWITCHER) {
-            keybinding_manager.bind(switch_keysym, switch_modifiers,
-                    (e) => handle_engine_switch(e, true));
-        }
-    }
-
     private void bind_switch_shortcut() {
         string[] accelerators = m_settings_hotkey.get_strv("triggers");
 
         var keybinding_manager = KeybindingManager.get_instance();
 
         foreach (var accelerator in accelerators) {
-            keybinding_manager_bind(keybinding_manager,
-                                    accelerator,
-                                    KeyEventFuncType.IME_SWITCHER);
+            BindingCommon.keybinding_manager_bind(
+                    keybinding_manager,
+                    ref m_keybindings,
+                    accelerator,
+                    BindingCommon.KeyEventFuncType.IME_SWITCHER,
+                    handle_engine_switch_normal,
+                    handle_engine_switch_reverse);
         }
     }
 
-    private void bind_emoji_shortcut() {
-#if EMOJI_DICT
-        string[] accelerators = m_settings_emoji.get_strv("hotkey");
-
+/*
+    public static void
+    unbind_switch_shortcut(KeyEventFuncType      ftype,
+                           GLib.List<Keybinding> keybindings) {
         var keybinding_manager = KeybindingManager.get_instance();
-
-        foreach (var accelerator in accelerators) {
-            keybinding_manager_bind(keybinding_manager,
-                                    accelerator,
-                                    KeyEventFuncType.EMOJI_TYPING);
-        }
-#endif
-    }
-
-    private void unbind_switch_shortcut(KeyEventFuncType ftype) {
-        var keybinding_manager = KeybindingManager.get_instance();
-
-        unowned GLib.List<Keybinding> keybindings = m_keybindings;
 
         while (keybindings != null) {
             Keybinding keybinding = keybindings.data;
 
-            if (ftype == KeyEventFuncType.ANY || ftype == keybinding.ftype) {
+            if (ftype == KeyEventFuncType.ANY ||
+                ftype == keybinding.ftype) {
                 keybinding_manager.unbind(keybinding.keysym,
                                           keybinding.modifiers);
             }
             keybindings = keybindings.next;
         }
-
-        m_keybindings = null;
     }
+*/
 
     /**
      * panel_get_engines_from_xkb:
@@ -670,69 +537,6 @@ class Panel : IBus.PanelService {
         m_settings_general.set_strv("preload-engines", names);
     }
 
-    private void set_custom_font() {
-        Gdk.Display display = Gdk.Display.get_default();
-        Gdk.Screen screen = (display != null) ?
-                display.get_default_screen() : null;
-
-        if (screen == null) {
-            warning("Could not open display.");
-            return;
-        }
-
-        string emoji_font = m_settings_emoji.get_string("font");
-        if (emoji_font == null) {
-            warning("No config emoji:font.");
-            return;
-        }
-        IBusEmojier.set_emoji_font(emoji_font);
-
-        bool use_custom_font = m_settings_panel.get_boolean("use-custom-font");
-
-        if (m_css_provider != null) {
-            Gtk.StyleContext.remove_provider_for_screen(screen,
-                                                        m_css_provider);
-            m_css_provider = null;
-        }
-
-        if (use_custom_font == false) {
-            return;
-        }
-
-        string custom_font = m_settings_panel.get_string("custom-font");
-        if (custom_font == null) {
-            warning("No config panel:custom-font.");
-            return;
-        }
-
-        Pango.FontDescription font_desc =
-                Pango.FontDescription.from_string(custom_font);
-        string font_family = font_desc.get_family();
-        int font_size = font_desc.get_size() / Pango.SCALE;
-        string data;
-
-        if (Gtk.MAJOR_VERSION < 3 ||
-            (Gtk.MAJOR_VERSION == 3 && Gtk.MINOR_VERSION < 20)) {
-            data = "GtkLabel { font: %s; }".printf(custom_font);
-        } else {
-            data = "label { font-family: %s; font-size: %dpt; }"
-                           .printf(font_family, font_size);
-        }
-
-        m_css_provider = new Gtk.CssProvider();
-
-        try {
-            m_css_provider.load_from_data(data, -1);
-        } catch (GLib.Error e) {
-            warning("Failed css_provider_from_data: %s: %s", custom_font,
-                                                             e.message);
-            return;
-        }
-
-        Gtk.StyleContext.add_provider_for_screen(screen,
-                                                 m_css_provider,
-                                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
-    }
 
     private void set_switcher_delay_time() {
         m_switcher_delay_time =
@@ -855,35 +659,6 @@ class Panel : IBus.PanelService {
                 m_settings_panel.get_int("property-icon-delay-time");
     }
 
-    private void set_emoji_favorites() {
-        m_emojier_favorites = m_settings_emoji.get_strv("favorites");
-        IBusEmojier.set_favorites(
-                m_emojier_favorites,
-                m_settings_emoji.get_strv("favorite-annotations"));
-    }
-
-    private void set_emoji_lang() {
-        if (m_emojier_set_emoji_lang_id > 0) {
-            GLib.Source.remove(m_emojier_set_emoji_lang_id);
-            m_emojier_set_emoji_lang_id = 0;
-        }
-        m_emojier_set_emoji_lang_id = GLib.Idle.add(() => {
-            IBusEmojier.set_annotation_lang(
-                    m_settings_emoji.get_string("lang"));
-            m_emojier_set_emoji_lang_id = 0;
-            IBusEmojier.load_unicode_dict();
-            return false;
-        });
-    }
-
-    private void set_emoji_partial_match() {
-        IBusEmojier.set_partial_match(
-                m_settings_emoji.get_boolean("has-partial-match"));
-        IBusEmojier.set_partial_match_length(
-                m_settings_emoji.get_int("partial-match-length"));
-        IBusEmojier.set_partial_match_condition(
-                m_settings_emoji.get_int("partial-match-condition"));
-    }
 
     private int compare_versions(string version1, string version2) {
         string[] version1_list = version1.split(".");
@@ -985,12 +760,16 @@ class Panel : IBus.PanelService {
         set_use_xmodmap();
         update_engines(m_settings_general.get_strv("preload-engines"),
                        m_settings_general.get_strv("engines-order"));
-        unbind_switch_shortcut(KeyEventFuncType.ANY);
+        BindingCommon.unbind_switch_shortcut(
+                BindingCommon.KeyEventFuncType.ANY,
+                m_keybindings);
+        m_keybindings = null;
         bind_switch_shortcut();
-        bind_emoji_shortcut();
         set_switcher_delay_time();
         set_embed_preedit_text();
-        set_custom_font();
+        BindingCommon.set_custom_font(m_settings_panel,
+                                      null,
+                                      ref m_css_provider);
         set_show_icon_on_systray();
         set_lookup_table_orientation();
         set_show_property_panel();
@@ -998,9 +777,6 @@ class Panel : IBus.PanelService {
         set_follow_input_cursor_when_always_shown_property_panel();
         set_xkb_icon_rgba();
         set_property_icon_delay_time();
-        set_emoji_favorites();
-        set_emoji_lang();
-        set_emoji_partial_match();
     }
 
     /**
@@ -1036,10 +812,6 @@ class Panel : IBus.PanelService {
         if (m_preload_engines_id > 0) {
             GLib.Source.remove(m_preload_engines_id);
             m_preload_engines_id = 0;
-        }
-        if (m_emojier_set_emoji_lang_id > 0) {
-            GLib.Source.remove(m_emojier_set_emoji_lang_id);
-            m_emojier_set_emoji_lang_id = 0;
         }
     }
 
@@ -1091,7 +863,15 @@ class Panel : IBus.PanelService {
         set_engine(engine);
     }
 
-    private void handle_engine_switch(Gdk.Event event, bool revert) {
+    private void handle_engine_switch_normal(Gdk.Event event) {
+        handle_engine_switch(event, false);
+    }
+
+    private void handle_engine_switch_reverse(Gdk.Event event) {
+        handle_engine_switch(event, true);
+    }
+
+    private void handle_engine_switch(Gdk.Event event, bool reverse) {
         // Do not need switch IME
         if (m_engines.length <= 1)
             return;
@@ -1105,12 +885,12 @@ class Panel : IBus.PanelService {
         bool pressed = KeybindingManager.primary_modifier_still_pressed(
                 event, primary_modifiers);
 
-        if (revert) {
+        if (reverse) {
             modifiers &= ~Gdk.ModifierType.SHIFT_MASK;
         }
 
         if (pressed && m_switcher_delay_time >= 0) {
-            int i = revert ? m_engines.length - 1 : 1;
+            int i = reverse ? m_engines.length - 1 : 1;
 
             /* The flag of m_switcher.is_running avoids the following problem:
              *
@@ -1132,28 +912,11 @@ class Panel : IBus.PanelService {
                 this.switcher_focus_set_engine();
             }
         } else {
-            int i = revert ? m_engines.length - 1 : 1;
+            int i = reverse ? m_engines.length - 1 : 1;
             switch_engine(i);
         }
     }
 
-    private void show_emojier(Gdk.Event event) {
-        m_emojier = new IBusEmojier();
-        string emoji = m_emojier.run(m_real_current_context_path, event);
-        if (emoji == null) {
-            m_emojier = null;
-            return;
-        }
-        this.emojier_focus_commit();
-    }
-
-    private void handle_emoji_typing(Gdk.Event event) {
-        if (m_emojier != null && m_emojier.is_running()) {
-            m_emojier.present_centralize(event);
-            return;
-        }
-        show_emojier(event);
-    }
 
     private void run_preload_engines(IBus.EngineDesc[] engines, int index) {
         string[] names = {};
@@ -1393,7 +1156,18 @@ class Panel : IBus.PanelService {
                     event.key.window = Gdk.get_default_root_window();
                     event.key.window.ref();
                 }
-                handle_emoji_typing(event);
+                IBus.XEvent xevent = new IBus.XEvent(
+                        "event-type", IBus.XEventType.KEY_PRESS,
+                        "window",
+                        (event.key.window as Gdk.X11.Window).get_xid(),
+                        "time", event.key.time,
+                        "purpose", "emoji");
+                /* new GLib.Variant("(sv)", "emoji", xevent.serialize_object())
+                 * will call g_variant_unref() for the child variant by vala.
+                 * I have no idea not to unref the object so integrated
+                 * the purpose to IBus.XEvent above.
+                 */
+                panel_extension(xevent.serialize_object());
             });
             m_sys_menu.append(item);
 #endif
@@ -1557,67 +1331,6 @@ class Panel : IBus.PanelService {
         }
     }
 
-    private bool emojier_focus_commit_real() {
-        if (m_emojier == null)
-            return true;
-        string selected_string = m_emojier.get_selected_string();
-        string prev_context_path = m_emojier.get_input_context_path();
-        if (selected_string != null &&
-            prev_context_path != "" &&
-            prev_context_path == m_current_context_path) {
-            IBus.Text text = new IBus.Text.from_string(selected_string);
-            commit_text(text);
-            m_emojier = null;
-            bool has_favorite = false;
-            foreach (unowned string favorite in m_emojier_favorites) {
-                if (favorite == selected_string) {
-                    has_favorite = true;
-                    break;
-                }
-            }
-            if (!has_favorite) {
-                m_emojier_favorites += selected_string;
-                m_settings_emoji.set_strv("favorites", m_emojier_favorites);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    private void emojier_focus_commit() {
-        if (m_emojier == null)
-            return;
-        string selected_string = m_emojier.get_selected_string();
-        string prev_context_path = m_emojier.get_input_context_path();
-        if (selected_string == null &&
-            prev_context_path != "" &&
-            m_emojier.is_running()) {
-            var context = GLib.MainContext.default();
-            if (m_emojier_focus_commit_text_id > 0 &&
-                context.find_source_by_id(m_emojier_focus_commit_text_id)
-                        != null) {
-                GLib.Source.remove(m_emojier_focus_commit_text_id);
-            }
-            m_emojier_focus_commit_text_id = GLib.Timeout.add(100, () => {
-                // focus_in is comming before switcher returns
-                emojier_focus_commit_real();
-                m_emojier_focus_commit_text_id = -1;
-                return false;
-            });
-        } else {
-            if (emojier_focus_commit_real()) {
-                var context = GLib.MainContext.default();
-                if (m_emojier_focus_commit_text_id > 0 &&
-                    context.find_source_by_id(m_emojier_focus_commit_text_id)
-                            != null) {
-                    GLib.Source.remove(m_emojier_focus_commit_text_id);
-                }
-                m_emojier_focus_commit_text_id = -1;
-            }
-        }
-    }
-
     public override void focus_in(string input_context_path) {
         m_current_context_path = input_context_path;
 
@@ -1632,7 +1345,6 @@ class Panel : IBus.PanelService {
             m_real_current_context_path = m_current_context_path;
             m_property_panel.focus_in();
             this.switcher_focus_set_engine();
-            this.emojier_focus_commit();
         }
 
         if (m_use_global_engine)

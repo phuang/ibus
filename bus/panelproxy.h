@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2014 Red Hat, Inc.
+ * Copyright (C) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,12 +51,25 @@
 
 G_BEGIN_DECLS
 
+typedef enum
+{
+    PANEL_TYPE_NONE,
+    PANEL_TYPE_PANEL,
+    PANEL_TYPE_EXTENSION
+} PanelType;
+
 typedef struct _BusPanelProxy BusPanelProxy;
 typedef struct _BusPanelProxyClass BusPanelProxyClass;
 
 GType            bus_panel_proxy_get_type      (void);
-BusPanelProxy   *bus_panel_proxy_new           (BusConnection     *connection);
+BusPanelProxy   *bus_panel_proxy_new           (BusConnection     *connection,
+                                                PanelType          panel_type);
 
+gboolean         bus_panel_proxy_send_signal   (BusPanelProxy   *panel,
+                                                const gchar     *interface_name,
+                                                const gchar     *signal_name,
+                                                GVariant        *parameters,
+                                                GError         **error);
 /* functions that invoke D-Bus methods of the panel component. */
 void             bus_panel_proxy_focus_in      (BusPanelProxy     *panel,
                                                 BusInputContext   *context);
@@ -119,6 +133,8 @@ void             bus_panel_proxy_set_content_type
                                                (BusPanelProxy     *panel,
                                                 guint              purpose,
                                                 guint              hints);
+PanelType        bus_panel_proxy_get_panel_type
+                                               (BusPanelProxy     *panel);
 G_END_DECLS
 #endif
 
