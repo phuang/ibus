@@ -198,7 +198,8 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     private class EPaddedLabelBox : Gtk.Box {
         public EPaddedLabelBox(string          text,
                                Gtk.Align       align,
-                               TravelDirection direction=TravelDirection.NONE) {
+                               TravelDirection direction=TravelDirection.NONE,
+                               string?         caption=null) {
             GLib.Object(
                 name : "IBusEmojierPaddedLabelBox",
                 orientation : Gtk.Orientation.HORIZONTAL,
@@ -218,6 +219,11 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             }
             EPaddedLabel label = new EPaddedLabel(text, align);
             pack_start(label, true, true, 0);
+            if (caption != null) {
+                EPaddedLabel label_r = new EPaddedLabel(caption,
+                                                        Gtk.Align.END);
+                pack_end(label_r, true, true, 0);
+            }
         }
     }
     private class ETitleLabelBox : Gtk.HeaderBar {
@@ -979,9 +985,13 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         uint n = 0;
         foreach (unowned IBus.UnicodeBlock block in m_unicode_block_list) {
             string name = block.get_name();
+            string caption = "U+%08X".printf(block.get_start());
             EBoxRow row = new EBoxRow(name);
             EPaddedLabelBox widget =
-                    new EPaddedLabelBox(_(name), Gtk.Align.CENTER);
+                    new EPaddedLabelBox(_(name),
+                                        Gtk.Align.CENTER,
+                                        TravelDirection.NONE,
+                                        caption);
             row.add(widget);
             m_list_box.add(row);
             if (n++ == m_category_active_index) {
