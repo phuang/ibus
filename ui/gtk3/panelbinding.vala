@@ -35,6 +35,10 @@ class PanelBinding : IBus.PanelService {
     private const uint PRELOAD_ENGINES_DELAY_TIME = 30000;
     private GLib.List<BindingCommon.Keybinding> m_keybindings =
             new GLib.List<BindingCommon.Keybinding>();
+    private bool m_load_emoji_at_startup;
+    private bool m_loaded_emoji = false;
+    private bool m_load_unicode_at_startup;
+    private bool m_loaded_unicode = false;
 
     public PanelBinding(IBus.Bus bus) {
         GLib.assert(bus.is_connected());
@@ -109,6 +113,14 @@ class PanelBinding : IBus.PanelService {
         m_settings_emoji.changed["partial-match-condition"].connect((key) => {
                 set_emoji_partial_match();
         });
+
+        m_settings_emoji.changed["load-emoji-at-startup"].connect((key) => {
+                set_load_emoji_at_startup();
+        });
+
+        m_settings_emoji.changed["load-unicode-at-startup"].connect((key) => {
+                set_load_unicode_at_startup();
+        });
     }
 
 
@@ -148,7 +160,11 @@ class PanelBinding : IBus.PanelService {
             IBusEmojier.set_annotation_lang(
                     m_settings_emoji.get_string("lang"));
             m_emojier_set_emoji_lang_id = 0;
-            IBusEmojier.load_unicode_dict();
+            m_loaded_emoji = true;
+            if (m_load_unicode_at_startup && !m_loaded_unicode) {
+                IBusEmojier.load_unicode_dict();
+                m_loaded_unicode = true;
+            }
             return false;
         });
     }
@@ -164,7 +180,21 @@ class PanelBinding : IBus.PanelService {
     }
 
 
+    private void set_load_emoji_at_startup() {
+        m_load_emoji_at_startup =
+            m_settings_emoji.get_boolean("load-emoji-at-startup");
+    }
+
+
+    private void set_load_unicode_at_startup() {
+        m_load_unicode_at_startup =
+            m_settings_emoji.get_boolean("load-unicode-at-startup");
+    }
+
     public void load_settings() {
+
+        set_load_emoji_at_startup();
+        set_load_unicode_at_startup();
         BindingCommon.unbind_switch_shortcut(BindingCommon.KeyEventFuncType.ANY,
                                              m_keybindings);
         bind_emoji_shortcut();
@@ -172,7 +202,8 @@ class PanelBinding : IBus.PanelService {
                                       m_settings_emoji,
                                       ref m_css_provider);
         set_emoji_favorites();
-        set_emoji_lang();
+        if (m_load_emoji_at_startup && !m_loaded_emoji)
+            set_emoji_lang();
         set_emoji_partial_match();
     }
 
@@ -191,6 +222,12 @@ class PanelBinding : IBus.PanelService {
 
 
     private void show_emojier(Gdk.Event event) {
+        if (!m_loaded_emoji)
+            set_emoji_lang();
+        if (!m_loaded_unicode && m_loaded_emoji) {
+            IBusEmojier.load_unicode_dict();
+            m_loaded_unicode = true;
+        }
         m_emojier = new IBusEmojier();
         string emoji = m_emojier.run(m_real_current_context_path, event);
         if (emoji == null) {

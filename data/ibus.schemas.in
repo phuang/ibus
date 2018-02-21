@@ -456,6 +456,38 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/load-emoji-at-startup</key>
+      <applyto>/desktop/ibus/panel/emoji/load-emoji-at-startup</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Load the emoji data at the time of startup</short>
+	    <long>Load the emoji data at the time of startup if true.
+                  About 10MB memory is needed to load the data.
+                  Load the emoji data when open the emoji dialog at the
+                  beginning if false.
+            </long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/load-unicode-at-startup</key>
+      <applyto>/desktop/ibus/panel/emoji/load-unicode-at-startup</applyto>
+      <owner>ibus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Load the Unicode data at the time of startup</short>
+	    <long>Load the Unicode data at the time of startup if true.
+                  About 15MB memory is needed to load the data.
+                  Load the Unicode data when open the emoji dialog at the
+                  beginning if false.
+                  The Unicode data is always loaded after the emoji data
+                  is loaded even if true.
+            </long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/general/embed_preedit_text</key>
       <applyto>/desktop/ibus/general/embed_preedit_text</applyto>
       <owner>ibus</owner>
