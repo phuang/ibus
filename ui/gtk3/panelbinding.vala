@@ -33,8 +33,6 @@ class PanelBinding : IBus.PanelService {
     private string[] m_emojier_favorites = {};
     private Gtk.CssProvider m_css_provider;
     private const uint PRELOAD_ENGINES_DELAY_TIME = 30000;
-    private GLib.List<BindingCommon.Keybinding> m_keybindings =
-            new GLib.List<BindingCommon.Keybinding>();
     private bool m_load_emoji_at_startup;
     private bool m_loaded_emoji = false;
     private bool m_load_unicode_at_startup;
@@ -49,15 +47,6 @@ class PanelBinding : IBus.PanelService {
         m_bus = bus;
 
         init_settings();
-
-        bind_emoji_shortcut();
-    }
-
-
-    ~PanelBinding() {
-        BindingCommon.unbind_switch_shortcut(
-                BindingCommon.KeyEventFuncType.ANY,
-                m_keybindings);
     }
 
 
@@ -75,13 +64,6 @@ class PanelBinding : IBus.PanelService {
                 BindingCommon.set_custom_font(m_settings_panel,
                                               m_settings_emoji,
                                               ref m_css_provider);
-        });
-
-        m_settings_emoji.changed["hotkey"].connect((key) => {
-                BindingCommon.unbind_switch_shortcut(
-                        BindingCommon.KeyEventFuncType.EMOJI_TYPING,
-                        m_keybindings);
-                bind_emoji_shortcut();
         });
 
         m_settings_emoji.changed["font"].connect((key) => {
@@ -121,25 +103,6 @@ class PanelBinding : IBus.PanelService {
         m_settings_emoji.changed["load-unicode-at-startup"].connect((key) => {
                 set_load_unicode_at_startup();
         });
-    }
-
-
-    private void bind_emoji_shortcut() {
-#if EMOJI_DICT
-        string[] accelerators = m_settings_emoji.get_strv("hotkey");
-
-        var keybinding_manager = KeybindingManager.get_instance();
-
-        foreach (var accelerator in accelerators) {
-            BindingCommon.keybinding_manager_bind(
-                    keybinding_manager,
-                    ref m_keybindings,
-                    accelerator,
-                    BindingCommon.KeyEventFuncType.EMOJI_TYPING,
-                    handle_emoji_typing,
-                    null);
-        }
-#endif
     }
 
 
@@ -195,9 +158,6 @@ class PanelBinding : IBus.PanelService {
 
         set_load_emoji_at_startup();
         set_load_unicode_at_startup();
-        BindingCommon.unbind_switch_shortcut(BindingCommon.KeyEventFuncType.ANY,
-                                             m_keybindings);
-        bind_emoji_shortcut();
         BindingCommon.set_custom_font(m_settings_panel,
                                       m_settings_emoji,
                                       ref m_css_provider);
@@ -354,19 +314,26 @@ class PanelBinding : IBus.PanelService {
             return;
         }
         Gdk.Event event = new Gdk.Event(event_type);
-        event.key.time = xevent.get_time();
-        Gdk.Display? display = Gdk.Display.get_default();
+        uint32 time = xevent.get_time();
+        if (time == 0)
+            time = Gtk.get_current_event_time();
+        event.key.time = time;
         X.Window xid = xevent.get_window();
-        Gdk.X11.Window window;
-        window = Gdk.X11.Window.lookup_for_display(
-                display as Gdk.X11.Display, xid);
-        if (window != null) {
-            event.key.window = window;
-        } else {
+        Gdk.Display? display = Gdk.Display.get_default();
+        Gdk.Window? window = null;
+        if (window == null && xid != 0) {
+            window = Gdk.X11.Window.lookup_for_display(
+                    display as Gdk.X11.Display, xid);
+        }
+        if (window == null && xid != 0) {
             window = new Gdk.X11.Window.foreign_for_display(
                     display as Gdk.X11.Display, xid);
-            event.key.window = window;
         }
+        if (window == null) {
+            window = Gdk.get_default_root_window();
+            window.ref();
+        }
+        event.key.window = window;
         handle_emoji_typing(event);
     }
 }

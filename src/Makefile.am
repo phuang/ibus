@@ -72,6 +72,7 @@ libibus_1_0_la_LDFLAGS =            \
     $(NULL)
 
 ibus_sources =              \
+    ibusaccelgroup.c        \
     ibusattribute.c         \
     ibusattrlist.c          \
     ibusbus.c               \
@@ -122,6 +123,7 @@ ibus_enumtypes_sources =    \
     $(NULL)
 ibus_headers =              \
     ibus.h                  \
+    ibusaccelgroup.h        \
     ibusattribute.h         \
     ibusattrlist.h          \
     ibusbus.h               \

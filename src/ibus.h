@@ -60,6 +60,7 @@
 #include <ibusemoji.h>
 #include <ibusunicode.h>
 #include <ibusxevent.h>
+#include <ibusaccelgroup.h>
 
 #ifndef IBUS_DISABLE_DEPRECATED
 #include <ibuskeysyms-compat.h>

@@ -302,9 +302,8 @@ _panel_destroy_cb (BusPanelProxy *panel,
 }
 
 static void
-_panel_panel_extension_cb (BusPanelProxy *panel,
-                           GVariant      *parameters,
-                           BusIBusImpl  *ibus)
+bus_ibus_impl_panel_extension_received (BusIBusImpl *ibus,
+                                        GVariant    *parameters)
 {
     if (!ibus->extension) {
         g_warning ("Panel extension is not running.");
@@ -321,6 +320,14 @@ _panel_panel_extension_cb (BusPanelProxy *panel,
                        parameters,
                        G_DBUS_CALL_FLAGS_NONE,
                        -1, NULL, NULL, NULL);
+}
+
+static void
+_panel_panel_extension_cb (BusPanelProxy *panel,
+                           GVariant      *parameters,
+                           BusIBusImpl  *ibus)
+{
+    bus_ibus_impl_panel_extension_received (ibus, parameters);
 }
 
 static void
@@ -642,6 +649,21 @@ bus_ibus_impl_set_context_engine_from_desc (BusIBusImpl     *ibus,
                                           NULL);
 }
 
+static void
+_context_panel_extension_cb (BusInputContext *context,
+                             GVariant        *parameters,
+                             BusIBusImpl     *ibus)
+{
+    bus_ibus_impl_panel_extension_received (ibus, parameters);
+}
+
+const static struct {
+    const gchar *name;
+    GCallback    callback;
+} context_signals [] = {
+    { "panel-extension",             G_CALLBACK (_context_panel_extension_cb) }
+};
+
 /**
  * bus_ibus_impl_set_focused_context:
  *
@@ -651,6 +673,11 @@ static void
 bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
                                    BusInputContext *context)
 {
+    gint i;
+    BusEngineProxy *engine = NULL;
+    guint purpose = 0;
+    guint hints = 0;
+
     g_assert (BUS_IS_IBUS_IMPL (ibus));
     g_assert (context == NULL || BUS_IS_INPUT_CONTEXT (context));
     g_assert (context == NULL || bus_input_context_get_capabilities (context) & IBUS_CAP_FOCUS);
@@ -659,10 +686,6 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
     if (ibus->focused_context == context) {
         return;
     }
-
-    BusEngineProxy *engine = NULL;
-    guint purpose = 0;
-    guint hints = 0;
 
     if (ibus->focused_context) {
         if (ibus->use_global_engine) {
@@ -681,6 +704,10 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
 
         bus_input_context_get_content_type (ibus->focused_context,
                                             &purpose, &hints);
+        for (i = 0; i < G_N_ELEMENTS(context_signals); i++) {
+            g_signal_handlers_disconnect_by_func (ibus->focused_context,
+                    context_signals[i].callback, ibus);
+        }
         g_object_unref (ibus->focused_context);
         ibus->focused_context = NULL;
     }
@@ -697,6 +724,12 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
         if (engine != NULL) {
             bus_input_context_set_engine (context, engine);
             bus_input_context_enable (context);
+        }
+        for (i = 0; i < G_N_ELEMENTS(context_signals); i++) {
+            g_signal_connect (ibus->focused_context,
+                              context_signals[i].name,
+                              context_signals[i].callback,
+                              ibus);
         }
 
         if (ibus->panel != NULL)

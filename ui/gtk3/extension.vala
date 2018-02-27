@@ -115,8 +115,9 @@ class ExtensionGtk {
         // and Ctrl-Shift-e when ibus-ui-gtk3 runs after the
         // desktop is launched.
         GLib.Environment.unset_variable("GDK_CORE_DEVICE_EVENTS");
-        // for Gdk.X11.get_default_xdisplay()
-        Gdk.set_allowed_backends("x11");
+        // Gdk.set_allowed_backends("x11") let present_with_time() failed on
+        // launching the dialog secondly in Wayland.
+        //Gdk.set_allowed_backends("x11");
 
         ExtensionGtk extension = new ExtensionGtk(argv);
         extension.run();

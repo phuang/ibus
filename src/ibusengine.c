@@ -20,12 +20,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  * USA
  */
-#include "ibusengine.h"
 #include <stdarg.h>
 #include <string.h>
+
+#include "ibusaccelgroup.h"
+#include "ibusengine.h"
+#include "ibuskeysyms.h"
 #include "ibusmarshalers.h"
 #include "ibusinternal.h"
 #include "ibusshare.h"
+#include "ibusxevent.h"
 
 #define IBUS_ENGINE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE, IBusEnginePrivate))
@@ -60,6 +64,8 @@ enum {
 };
 
 
+typedef struct _IBusEngineKeybinding IBusEngineKeybinding;
+
 /* IBusEnginePriv */
 struct _IBusEnginePrivate {
     gchar *engine_name;
@@ -74,11 +80,19 @@ struct _IBusEnginePrivate {
     /* cached content-type */
     guint content_purpose;
     guint content_hints;
+
+    GSettings             *settings_emoji;
+    IBusEngineKeybinding **emoji_keybindings;
+};
+
+struct _IBusEngineKeybinding {
+    guint            keyval;
+    IBusModifierType modifiers;
 };
 
 static guint            engine_signals[LAST_SIGNAL] = { 0 };
 
-static IBusText *text_empty = NULL;
+static IBusText *text_empty;
 
 /* functions prototype */
 static void      ibus_engine_destroy         (IBusEngine         *engine);
@@ -176,6 +190,11 @@ static void      ibus_engine_dbus_property_changed
                                              (IBusEngine         *engine,
                                               const gchar        *property_name,
                                               GVariant           *value);
+static void      ibus_engine_keybinding_free (IBusEngine         *engine);
+static void      settings_emoji_hotkey_changed_cb 
+                                             (GSettings          *settings,
+                                              const gchar        *key,
+                                              gpointer            data);
 
 
 G_DEFINE_TYPE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
@@ -263,10 +282,26 @@ static const gchar introspection_xml[] =
     "      <arg type='u' name='keycode' />"
     "      <arg type='u' name='state' />"
     "    </signal>"
+    "    <signal name='PanelExtension'>"
+    "      <arg type='v' name='data' />"
+    "    </signal>"
     /* FIXME properties */
     "    <property name='ContentType' type='(uu)' access='write' />"
     "  </interface>"
     "</node>";
+
+static const guint IBUS_MODIFIER_FILTER =
+        IBUS_MODIFIER_MASK & ~(
+        IBUS_LOCK_MASK |  /* Caps Lock */
+        IBUS_MOD2_MASK |  /* Num Lock */
+        IBUS_BUTTON1_MASK |
+        IBUS_BUTTON2_MASK |
+        IBUS_BUTTON3_MASK |
+        IBUS_BUTTON4_MASK |
+        IBUS_BUTTON5_MASK |
+        IBUS_SUPER_MASK |
+        IBUS_HYPER_MASK |
+        IBUS_META_MASK);
 
 static void
 ibus_engine_class_init (IBusEngineClass *class)
@@ -802,9 +837,15 @@ ibus_engine_class_init (IBusEngineClass *class)
 static void
 ibus_engine_init (IBusEngine *engine)
 {
-    engine->priv = IBUS_ENGINE_GET_PRIVATE (engine);
+    IBusEnginePrivate *priv;
+    engine->priv = priv = IBUS_ENGINE_GET_PRIVATE (engine);
 
-    engine->priv->surrounding_text = g_object_ref_sink (text_empty);
+    priv->surrounding_text = g_object_ref_sink (text_empty);
+    priv->settings_emoji =
+            g_settings_new ("org.freedesktop.ibus.panel.emoji");
+    settings_emoji_hotkey_changed_cb (priv->settings_emoji, "hotkey", engine);
+    g_signal_connect (priv->settings_emoji, "changed::hotkey",
+                      G_CALLBACK (settings_emoji_hotkey_changed_cb), engine);
 }
 
 static void
@@ -817,6 +858,7 @@ ibus_engine_destroy (IBusEngine *engine)
         g_object_unref (engine->priv->surrounding_text);
         engine->priv->surrounding_text = NULL;
     }
+    ibus_engine_keybinding_free (engine);
 
     IBUS_OBJECT_CLASS(ibus_engine_parent_class)->destroy (IBUS_OBJECT (engine));
 }
@@ -850,6 +892,53 @@ ibus_engine_get_property (IBusEngine *engine,
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (engine, prop_id, pspec);
     }
+}
+
+static void
+ibus_engine_panel_extension (IBusEngine *engine)
+{
+    IBusXEvent *xevent = ibus_x_event_new (
+            "event-type", IBUS_X_EVENT_KEY_PRESS,
+            "purpose", "emoji",
+            NULL);
+    GVariant *data = ibus_serializable_serialize_object (
+            IBUS_SERIALIZABLE (xevent));
+
+    g_assert (data != NULL);
+    ibus_engine_emit_signal (engine,
+                             "PanelExtension",
+                             g_variant_new ("(v)", data));
+}
+
+static gboolean
+ibus_engine_filter_key_event (IBusEngine *engine,
+                              guint       keyval,
+                              guint       keycode,
+                              guint       state)
+{
+    IBusEnginePrivate *priv;
+    int i;
+    guint modifiers;
+
+    if ((state & IBUS_RELEASE_MASK) != 0)
+        return FALSE;
+    g_return_val_if_fail (IBUS_IS_ENGINE (engine), FALSE);
+
+    priv = engine->priv;
+    modifiers = state & IBUS_MODIFIER_FILTER;
+    if (keyval >= IBUS_KEY_A && keyval <= IBUS_KEY_Z &&
+        (modifiers & IBUS_SHIFT_MASK) != 0) {
+        keyval = keyval - IBUS_KEY_A + IBUS_KEY_a;
+    }
+    for (i = 0; priv->emoji_keybindings[i]; i++) {
+        IBusEngineKeybinding *binding = priv->emoji_keybindings[i];
+        if (binding->keyval == keyval &&
+            binding->modifiers == modifiers) {
+            ibus_engine_panel_extension (engine);
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 static gboolean
@@ -892,6 +981,7 @@ ibus_engine_service_method_call (IBusService           *service,
     if (g_strcmp0 (method_name, "ProcessKeyEvent") == 0) {
         guint keyval, keycode, state;
         gboolean retval = FALSE;
+
         g_variant_get (parameters, "(uuu)", &keyval, &keycode, &state);
         g_signal_emit (engine,
                        engine_signals[PROCESS_KEY_EVENT],
@@ -900,6 +990,12 @@ ibus_engine_service_method_call (IBusService           *service,
                        keycode,
                        state,
                        &retval);
+        if (!retval) {
+            retval = ibus_engine_filter_key_event (engine,
+                                                   keyval,
+                                                   keycode,
+                                                   state);
+        }
         g_dbus_method_invocation_return_value (invocation, g_variant_new ("(b)", retval));
         return;
     }
@@ -1336,6 +1432,79 @@ ibus_engine_dbus_property_changed (IBusEngine  *engine,
         g_error_free (error);
     }
     g_object_unref (message);
+}
+
+static void
+ibus_engine_keybinding_free (IBusEngine *engine)
+{
+    IBusEnginePrivate *priv;
+    int i;
+
+    g_return_if_fail (IBUS_IS_ENGINE (engine));
+
+    priv = engine->priv;
+    if (priv->emoji_keybindings) {
+        for (i = 0; priv->emoji_keybindings[i]; i++)
+            g_slice_free (IBusEngineKeybinding, priv->emoji_keybindings[i]);
+        g_clear_pointer (&priv->emoji_keybindings, g_free);
+    }
+}
+
+static IBusEngineKeybinding *
+ibus_engine_keybinding_new (IBusEngine  *engine,
+                            const gchar *accelerator)
+{
+    guint keyval = 0U;
+    IBusModifierType modifiers = 0;
+    IBusEngineKeybinding *binding = NULL;
+
+    ibus_accelerator_parse (accelerator, &keyval, &modifiers);
+    if (keyval == 0U && modifiers == 0) {
+        g_warning ("Failed to parse shortcut key '%s'", accelerator);
+        return NULL;
+    }
+    if (modifiers & IBUS_SUPER_MASK) {
+        modifiers^=IBUS_SUPER_MASK;
+        modifiers|=IBUS_MOD4_MASK;
+    }
+
+    binding = g_slice_new0 (IBusEngineKeybinding);
+    binding->keyval = keyval;
+    binding->modifiers = modifiers;
+    return binding;
+}
+
+static void
+settings_emoji_hotkey_changed_cb (GSettings   *settings,
+                                  const gchar *key,
+                                  gpointer     data)
+{
+    IBusEngine *engine;
+    IBusEnginePrivate *priv;
+    gchar **accelerators;
+    int i, j, length;
+    g_return_if_fail (IBUS_IS_ENGINE (data));
+    engine = IBUS_ENGINE (data);
+    priv = engine->priv;
+
+    if (g_strcmp0 (key, "hotkey") != 0)
+        return;
+    accelerators = g_settings_get_strv (settings, key);
+    length = g_strv_length (accelerators);
+    ibus_engine_keybinding_free (engine);
+    if (length == 0) {
+        g_strfreev (accelerators);
+        return;
+    }
+    priv->emoji_keybindings = g_new0 (IBusEngineKeybinding*, length + 1);
+    for (i = 0, j = 0; i < length; i++) {
+        IBusEngineKeybinding *binding =
+                ibus_engine_keybinding_new (engine, accelerators[i]);
+        if (!binding)
+            continue;
+        priv->emoji_keybindings[j++] = binding;
+    }
+    g_strfreev (accelerators);
 }
 
 IBusEngine *

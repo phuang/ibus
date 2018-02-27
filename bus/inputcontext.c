@@ -127,6 +127,7 @@ enum {
     ENGINE_CHANGED,
     REQUEST_ENGINE,
     SET_CONTENT_TYPE,
+    PANEL_EXTENSION,
     LAST_SIGNAL,
 };
 
@@ -597,6 +598,17 @@ bus_input_context_class_init (BusInputContextClass *class)
             2,
             G_TYPE_UINT,
             G_TYPE_UINT);
+
+    context_signals[PANEL_EXTENSION] =
+        g_signal_new (I_("panel-extension"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__VARIANT,
+            G_TYPE_NONE,
+            1,
+            G_TYPE_VARIANT);
 
     text_empty = ibus_text_new_from_string ("");
     g_object_ref_sink (text_empty);
@@ -2102,6 +2114,20 @@ _engine_update_property_cb (BusEngineProxy  *engine,
     bus_input_context_update_property (context, prop);
 }
 
+/**
+ * _engine_panel_extension_cb:
+ *
+ * A function to be called when "panel-extension" glib signal is sent
+ * from the engine object.
+ */
+static void
+_engine_panel_extension_cb (BusEngineProxy  *engine,
+                            GVariant        *parameters,
+                            BusInputContext *context)
+{
+    g_signal_emit (context, context_signals[PANEL_EXTENSION], 0, parameters);
+}
+
 #define DEFINE_FUNCTION(name)                                   \
     static void                                                 \
     _engine_##name##_cb (BusEngineProxy   *engine,              \
@@ -2244,7 +2270,8 @@ const static struct {
     { "cursor-down-lookup-table", G_CALLBACK (_engine_cursor_down_lookup_table_cb) },
     { "register-properties",      G_CALLBACK (_engine_register_properties_cb) },
     { "update-property",          G_CALLBACK (_engine_update_property_cb) },
-    { "destroy",                  G_CALLBACK (_engine_destroy_cb) },
+    { "panel-extension",          G_CALLBACK (_engine_panel_extension_cb) },
+    { "destroy",                  G_CALLBACK (_engine_destroy_cb) }
 };
 
 static void

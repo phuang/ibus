@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -90,6 +90,7 @@ enum {
     CURSOR_DOWN_LOOKUP_TABLE,
     REGISTER_PROPERTIES,
     UPDATE_PROPERTY,
+    PANEL_EXTENSION,
     LAST_SIGNAL,
 };
 
@@ -370,6 +371,17 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
             1,
             IBUS_TYPE_PROPERTY);
 
+    engine_signals[PANEL_EXTENSION] =
+        g_signal_new (I_("panel-extension"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__VARIANT,
+            G_TYPE_NONE,
+            1,
+            G_TYPE_VARIANT);
+
     text_empty = ibus_text_new_from_static_string ("");
     g_object_ref_sink (text_empty);
 
@@ -628,6 +640,11 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
 
         g_signal_emit (engine, engine_signals[UPDATE_PROPERTY], 0, prop);
         _g_object_unref_if_floating (prop);
+        return;
+    }
+
+    if (g_strcmp0 (signal_name, "PanelExtension") == 0) {
+        g_signal_emit (engine, engine_signals[PANEL_EXTENSION], 0, parameters);
         return;
     }
 

@@ -2062,6 +2062,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         // Do not hide a bottom panel in XFCE4
         if (work_area.y < y)
             y = work_area.y;
+        // FIXME: move() does not work in Wayland
         move(x, y);
 
         uint32 timestamp = event.get_time();
