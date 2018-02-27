@@ -47,6 +47,10 @@ static gchar *panel_extension = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
 
+static gchar *panel_extension_disable_users[] = {
+    "gdm"
+};
+
 static void
 show_version_and_quit (void)
 {
@@ -170,6 +174,9 @@ _sig_usr2_handler (int sig)
 gint
 main (gint argc, gchar **argv)
 {
+    int i;
+    const gchar *username = ibus_get_user_name ();
+
     setlocale (LC_ALL, "");
 
     GOptionContext *context = g_option_context_new ("- ibus daemon");
@@ -194,9 +201,7 @@ main (gint argc, gchar **argv)
 
     /* check uid */
     {
-        const gchar *username = ibus_get_user_name ();
-        uid_t uid = getuid ();
-        struct passwd *pwd = getpwuid (uid);
+        struct passwd *pwd = getpwuid (getuid ());
 
         if (pwd == NULL || g_strcmp0 (pwd->pw_name, username) != 0) {
             g_printerr ("Please run ibus-daemon with login user! Do not run ibus-daemon with sudo or su.\n");
@@ -237,6 +242,12 @@ main (gint argc, gchar **argv)
     }
 
     bus_server_init ();
+    for (i = 0; i < G_N_ELEMENTS(panel_extension_disable_users); i++) {
+        if (!g_strcmp0 (username, panel_extension_disable_users[i]) != 0) {
+            panel_extension = "disable";
+            break;
+        }
+    }
     if (!single) {
         /* execute config component */
         if (g_strcmp0 (config, "default") == 0) {
@@ -271,25 +282,25 @@ main (gint argc, gchar **argv)
             if (!execute_cmdline (panel))
                 exit (-1);
         }
+    }
 
 #ifdef EMOJI_DICT
-        if (g_strcmp0 (panel_extension, "default") == 0) {
-            BusComponent *component;
-            component = bus_ibus_impl_lookup_component_by_name (
-                    BUS_DEFAULT_IBUS, IBUS_SERVICE_PANEL_EXTENSION);
-            if (component) {
-                bus_component_set_restart (component, restart);
-            }
-            if (component == NULL ||
-                !bus_component_start (component, g_verbose)) {
-                g_printerr ("Can not execute default panel program\n");
-                exit (-1);
-            }
-        } else if (g_strcmp0 (panel_extension, "disable") != 0 &&
-                   g_strcmp0 (panel_extension, "") != 0) {
-            if (!execute_cmdline (panel_extension))
-                exit (-1);
+    if (g_strcmp0 (panel_extension, "default") == 0) {
+        BusComponent *component;
+        component = bus_ibus_impl_lookup_component_by_name (
+                BUS_DEFAULT_IBUS, IBUS_SERVICE_PANEL_EXTENSION);
+        if (component) {
+            bus_component_set_restart (component, restart);
         }
+        if (component == NULL ||
+            !bus_component_start (component, g_verbose)) {
+            g_printerr ("Can not execute default panel program\n");
+            exit (-1);
+        }
+    } else if (g_strcmp0 (panel_extension, "disable") != 0 &&
+               g_strcmp0 (panel_extension, "") != 0) {
+        if (!execute_cmdline (panel_extension))
+            exit (-1);
     }
 #endif
 
