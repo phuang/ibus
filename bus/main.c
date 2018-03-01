@@ -48,7 +48,8 @@ static gchar *config = "default";
 static gchar *desktop = "gnome";
 
 static gchar *panel_extension_disable_users[] = {
-    "gdm"
+    "gdm",
+    "liveuser"
 };
 
 static void
