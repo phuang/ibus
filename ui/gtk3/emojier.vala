@@ -1525,6 +1525,19 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
+    private int get_page_num() {
+        if (m_category_active_index < 0)
+            m_category_active_index = 0;
+        var row = m_list_box.get_row_at_index(m_category_active_index);
+        Gtk.Allocation alloc = { 0, 0, 0, 0 };
+        row.get_allocation(out alloc);
+        var adjustment = m_scrolled_window.get_vadjustment();
+        var page_size = (int)adjustment.get_page_size();
+        int page_num = page_size / alloc.height;
+        page_num += ((page_size % alloc.height) > 0) ? 1 : 0;
+        return page_num;
+    }
+
     private bool category_list_cursor_move(uint keyval) {
         GLib.List<weak Gtk.Widget> list = m_list_box.get_children();
         int length = (int)list.length();
@@ -1544,6 +1557,24 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             break;
         case Gdk.Key.End:
             m_category_active_index = length - 1;
+            break;
+        case Gdk.Key.Page_Down:
+            var page_num = get_page_num();
+            if (m_category_active_index + 1 == length)
+                m_category_active_index = 0;
+            else if (m_category_active_index + page_num >= length)
+                m_category_active_index = length - 1;
+            else
+                m_category_active_index += page_num;
+            break;
+        case Gdk.Key.Page_Up:
+            var page_num = get_page_num();
+            if (m_category_active_index  == 0)
+                m_category_active_index = length - 1;
+            else if (m_category_active_index - page_num < 0)
+                m_category_active_index = 0;
+            else
+                m_category_active_index -= page_num;
             break;
         }
         var row = m_list_box.get_selected_row();
@@ -1599,15 +1630,37 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    private bool key_press_cursor_vertical(uint keyval) {
-        assert (keyval == Gdk.Key.Down || keyval == Gdk.Key.Up);
+    private bool key_press_cursor_vertical(uint keyval,
+                                           uint modifiers) {
+        assert (keyval == Gdk.Key.Down || keyval == Gdk.Key.Up ||
+                keyval == Gdk.Key.Page_Down || keyval == Gdk.Key.Page_Up);
 
+        if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
+            if (keyval == Gdk.Key.Down)
+                keyval = Gdk.Key.Page_Down;
+            else if (keyval == Gdk.Key.Up)
+                keyval = Gdk.Key.Page_Up;
+        }
         uint ncandidates = m_lookup_table.get_number_of_candidates();
         if (m_candidate_panel_is_visible && ncandidates > 1) {
-            if (keyval == Gdk.Key.Down)
+            switch (keyval) {
+            case Gdk.Key.Down:
                 candidate_panel_cursor_down();
-            else if (keyval == Gdk.Key.Up)
+                break;
+            case Gdk.Key.Up:
                 candidate_panel_cursor_up();
+                break;
+            case Gdk.Key.Page_Down:
+                enter_notify_disable_with_timer();
+                m_lookup_table.page_down();
+                show_candidate_panel();
+                break;
+            case Gdk.Key.Page_Up:
+                enter_notify_disable_with_timer();
+                m_lookup_table.page_up();
+                show_candidate_panel();
+                break;
+            }
         } else {
             return category_list_cursor_move(keyval);
         }
@@ -1912,27 +1965,17 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             key_press_cursor_horizontal(keyval, modifiers);
             return true;
         case Gdk.Key.Down:
-            key_press_cursor_vertical(keyval);
+            key_press_cursor_vertical(keyval, modifiers);
             return true;
         case Gdk.Key.Up:
-            key_press_cursor_vertical(keyval);
+            key_press_cursor_vertical(keyval, modifiers);
             return true;
         case Gdk.Key.Page_Down:
-            if (m_candidate_panel_is_visible) {
-                enter_notify_disable_with_timer();
-                m_lookup_table.page_down();
-                show_candidate_panel();
-                return true;
-            }
-            break;
+            key_press_cursor_vertical(keyval, modifiers);
+            return true;
         case Gdk.Key.Page_Up:
-            if (m_candidate_panel_is_visible) {
-                enter_notify_disable_with_timer();
-                m_lookup_table.page_up();
-                show_candidate_panel();
-                return true;
-            }
-            break;
+            key_press_cursor_vertical(keyval, modifiers);
+            return true;
         case Gdk.Key.Home:
             if (key_press_cursor_home_end(keyval, modifiers))
                 return true;
@@ -1956,10 +1999,12 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 key_press_cursor_horizontal(Gdk.Key.Left, modifiers);
                 return true;
             case Gdk.Key.n:
-                key_press_cursor_vertical(Gdk.Key.Down);
+            case Gdk.Key.N:
+                key_press_cursor_vertical(Gdk.Key.Down, modifiers);
                 return true;
             case Gdk.Key.p:
-                key_press_cursor_vertical(Gdk.Key.Up);
+            case Gdk.Key.P:
+                key_press_cursor_vertical(Gdk.Key.Up, modifiers);
                 return true;
             case Gdk.Key.h:
                 if (key_press_cursor_home_end(Gdk.Key.Home, modifiers))

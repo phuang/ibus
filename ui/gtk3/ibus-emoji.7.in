@@ -77,8 +77,8 @@ If Shift\-Space is typed,
 a space chararacter can be inserted between words in an annotation or
 Unicode points. E.g. 1f466 Shift\-Space 1f3fb
 .TP
-\fBPageDown or PageUp\fR
-Move to the next or previous page in the emoji list.
+\fBPageDown, PageUp, Control-Shift-n or Control-Shift-p\fR
+Move to the next or previous page in the category or emoji list.
 .TP
 \fBHead, End, Control-h or Control-e\fR
 Select the first or last emoji on the list if an annotation is not typed.
