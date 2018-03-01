@@ -21,16 +21,18 @@
  * USA
  */
 
-class ExtensionGtk {
+class ExtensionGtk : Gtk.Application {
     private IBus.Bus m_bus;
     private PanelBinding m_panel;
 
-    public ExtensionGtk(string[] argv) {
+    public ExtensionGtk(string[] args) {
+        Object(application_id: "org.freedesktop.IBus.Panel.Extension.Gtk3",
+               flags: ApplicationFlags.FLAGS_NONE);
         GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE,
                                  Config.GLIB_LOCALE_DIR);
         GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
         IBus.init();
-        Gtk.init(ref argv);
+        Gtk.init(ref args);
 
         m_bus = new IBus.Bus();
 
@@ -64,10 +66,6 @@ class ExtensionGtk {
         m_bus.request_name(IBus.SERVICE_PANEL_EXTENSION, flags);
     }
 
-    public int run() {
-        Gtk.main();
-        return 0;
-    }
 
     private void bus_name_acquired_cb(DBusConnection connection,
                                       string sender_name,
@@ -76,7 +74,7 @@ class ExtensionGtk {
                                       string signal_name,
                                       Variant parameters) {
         debug("signal_name = %s", signal_name);
-        m_panel = new PanelBinding(m_bus);
+        m_panel = new PanelBinding(m_bus, this);
         m_panel.load_settings();
     }
 
@@ -108,7 +106,13 @@ class ExtensionGtk {
         init();
     }
 
-    public static void main(string[] argv) {
+
+    public override void activate() {
+        Gtk.main();
+    }
+
+
+    public static int main(string[] args) {
         // https://bugzilla.redhat.com/show_bug.cgi?id=1226465#c20
         // In /etc/xdg/plasma-workspace/env/gtk3_scrolling.sh
         // Plasma deskop sets this variable and prevents Super-space,
@@ -119,7 +123,8 @@ class ExtensionGtk {
         // launching the dialog secondly in Wayland.
         //Gdk.set_allowed_backends("x11");
 
-        ExtensionGtk extension = new ExtensionGtk(argv);
-        extension.run();
+        ExtensionGtk extension = new ExtensionGtk(args);
+        int status = extension.run(args);
+        return status;
     }
 }

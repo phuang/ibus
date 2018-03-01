@@ -23,6 +23,7 @@
 
 class PanelBinding : IBus.PanelService {
     private IBus.Bus m_bus;
+    private Gtk.Application m_application;
     private GLib.Settings m_settings_panel = null;
     private GLib.Settings m_settings_emoji = null;
     private string m_current_context_path = "";
@@ -38,13 +39,15 @@ class PanelBinding : IBus.PanelService {
     private bool m_load_unicode_at_startup;
     private bool m_loaded_unicode = false;
 
-    public PanelBinding(IBus.Bus bus) {
+    public PanelBinding(IBus.Bus bus,
+                        Gtk.Application application) {
         GLib.assert(bus.is_connected());
         // Chain up base class constructor
         GLib.Object(connection : bus.get_connection(),
                     object_path : IBus.PATH_PANEL_EXTENSION);
 
         m_bus = bus;
+        m_application = application;
 
         init_settings();
     }
@@ -178,6 +181,7 @@ class PanelBinding : IBus.PanelService {
             GLib.Source.remove(m_emojier_set_emoji_lang_id);
             m_emojier_set_emoji_lang_id = 0;
         }
+        m_application = null;
     }
 
 
@@ -189,7 +193,10 @@ class PanelBinding : IBus.PanelService {
             m_loaded_unicode = true;
         }
         m_emojier = new IBusEmojier();
+        // For title handling in gnome-shell
+        m_application.add_window(m_emojier);
         string emoji = m_emojier.run(m_real_current_context_path, event);
+        m_application.remove_window(m_emojier);
         if (emoji == null) {
             m_emojier = null;
             return;

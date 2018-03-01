@@ -61,6 +61,8 @@ ui/gtk3/candidatepanel.vala
 ui/gtk3/emojier.vala
 ui/gtk3/emojierapp.vala
 ui/gtk3/handle.vala
+ui/gtk3/ibus-extension-gtk3.desktop.in.in
+ui/gtk3/ibus-ui-emojier.desktop.in.in
 ui/gtk3/iconwidget.vala
 ui/gtk3/keybindingmanager.vala
 ui/gtk3/panel.vala

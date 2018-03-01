@@ -1,0 +1,6 @@
+[Desktop Entry]
+_Name=Emoji Choice
+Icon=ibus
+Exec=@libexecdir@/ibus-extension-gtk3
+Type=Application
+OnlyShowIn=

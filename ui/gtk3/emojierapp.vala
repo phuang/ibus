@@ -26,14 +26,14 @@ bool partial_match = false;
 int partial_match_length = -1;
 int partial_match_condition = -1;
 
-public class EmojiApplication : Application {
+public class EmojiApplication : Gtk.Application {
     private IBusEmojier? m_emojier;
     GLib.Settings m_settings_emoji =
             new GLib.Settings("org.freedesktop.ibus.panel.emoji");
 
 
     private EmojiApplication() {
-        Object(application_id: "org.freedesktop.ibus.panel.emojier",
+        Object(application_id: "org.freedesktop.IBus.Panel.Emojier",
                flags: ApplicationFlags.HANDLES_COMMAND_LINE);
         set_inactivity_timeout(100000);
     }
@@ -41,6 +41,8 @@ public class EmojiApplication : Application {
 
     private void show_dialog(ApplicationCommandLine command_line) {
         m_emojier = new IBusEmojier();
+        // For title handling in gnome-shell
+        add_window(m_emojier);
         Gdk.Event event = Gtk.get_current_event();
         // Plasma and GNOME3 desktop returns null event
         if (event == null) {
@@ -51,6 +53,7 @@ public class EmojiApplication : Application {
             event.key.window.ref();
         }
         string emoji = m_emojier.run("", event);
+        remove_window(m_emojier);
         if (emoji == null) {
             m_emojier = null;
             command_line.print("%s\n", _("Canceled to choose an emoji."));
