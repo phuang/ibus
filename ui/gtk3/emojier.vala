@@ -1918,6 +1918,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 return true;
             break;
         case Gdk.Key.Return:
+        case Gdk.Key.KP_Enter:
             key_press_enter();
             return true;
         case Gdk.Key.BackSpace:
@@ -1959,29 +1960,37 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             }
             return true;
         case Gdk.Key.Right:
-            key_press_cursor_horizontal(keyval, modifiers);
+        case Gdk.Key.KP_Right:
+            key_press_cursor_horizontal(Gdk.Key.Right, modifiers);
             return true;
         case Gdk.Key.Left:
-            key_press_cursor_horizontal(keyval, modifiers);
+        case Gdk.Key.KP_Left:
+            key_press_cursor_horizontal(Gdk.Key.Left, modifiers);
             return true;
         case Gdk.Key.Down:
-            key_press_cursor_vertical(keyval, modifiers);
+        case Gdk.Key.KP_Down:
+            key_press_cursor_vertical(Gdk.Key.Down, modifiers);
             return true;
         case Gdk.Key.Up:
-            key_press_cursor_vertical(keyval, modifiers);
+        case Gdk.Key.KP_Up:
+            key_press_cursor_vertical(Gdk.Key.Up, modifiers);
             return true;
         case Gdk.Key.Page_Down:
-            key_press_cursor_vertical(keyval, modifiers);
+        case Gdk.Key.KP_Page_Down:
+            key_press_cursor_vertical(Gdk.Key.Page_Down, modifiers);
             return true;
         case Gdk.Key.Page_Up:
-            key_press_cursor_vertical(keyval, modifiers);
+        case Gdk.Key.KP_Page_Up:
+            key_press_cursor_vertical(Gdk.Key.Page_Up, modifiers);
             return true;
         case Gdk.Key.Home:
-            if (key_press_cursor_home_end(keyval, modifiers))
+        case Gdk.Key.KP_Home:
+            if (key_press_cursor_home_end(Gdk.Key.Home, modifiers))
                 return true;
             break;
         case Gdk.Key.End:
-            if (key_press_cursor_home_end(keyval, modifiers))
+        case Gdk.Key.KP_End:
+            if (key_press_cursor_home_end(Gdk.Key.End, modifiers))
                 return true;
             break;
         case Gdk.Key.Insert:
