@@ -1144,9 +1144,11 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     lookup_emojis_from_annotation(string annotation) {
         GLib.SList<string>? total_emojis = null;
         unowned GLib.SList<string>? sub_emojis = null;
+        unowned GLib.SList<unichar>? sub_exact_unicodes = null;
         unowned GLib.SList<unichar>? sub_unicodes = null;
         int length = annotation.length;
         if (m_has_partial_match && length >= m_partial_match_length) {
+            GLib.SList<string>? sorted_emojis = null;
             foreach (unowned string key in
                      m_annotation_to_emojis_dict.get_keys()) {
                 if (key.length < length)
@@ -1173,8 +1175,13 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 sub_emojis = m_annotation_to_emojis_dict.lookup(key);
                 foreach (unowned string emoji in sub_emojis) {
                     if (total_emojis.find_custom(emoji, GLib.strcmp) == null) {
-                        total_emojis.append(emoji);
+                        sorted_emojis.insert_sorted(emoji, GLib.strcmp);
                     }
+                }
+            }
+            foreach (string emoji in sorted_emojis) {
+                if (total_emojis.find_custom(emoji, GLib.strcmp) == null) {
+                    total_emojis.append(emoji);
                 }
             }
         } else {
@@ -1182,7 +1189,15 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             foreach (unowned string emoji in sub_emojis)
                 total_emojis.append(emoji);
         }
+        sub_exact_unicodes = m_name_to_unicodes_dict.lookup(annotation);
+        foreach (unichar code in sub_exact_unicodes) {
+            string ch = code.to_string();
+            if (total_emojis.find_custom(ch, GLib.strcmp) == null) {
+                total_emojis.append(ch);
+            }
+        }
         if (length >= m_partial_match_length) {
+            GLib.SList<string>? sorted_unicodes = null;
             foreach (unowned string key in m_name_to_unicodes_dict.get_keys()) {
                 bool matched = false;
                 if (key.index_of(annotation) >= 0)
@@ -1192,9 +1207,14 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 sub_unicodes = m_name_to_unicodes_dict.lookup(key);
                 foreach (unichar code in sub_unicodes) {
                     string ch = code.to_string();
-                    if (total_emojis.find_custom(ch, GLib.strcmp) == null) {
-                        total_emojis.append(ch);
+                    if (sorted_unicodes.find_custom(ch, GLib.strcmp) == null) {
+                        sorted_unicodes.insert_sorted(ch, GLib.strcmp);
                     }
+                }
+            }
+            foreach (string ch in sorted_unicodes) {
+                if (total_emojis.find_custom(ch, GLib.strcmp) == null) {
+                    total_emojis.append(ch);
                 }
             }
         }
