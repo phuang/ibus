@@ -2,6 +2,10 @@
 #include "ibus.h"
 #include "ibuscomposetable.h"
 
+#define GREEN "\033[0;32m"
+#define RED   "\033[0;31m"
+#define NC    "\033[0m"
+
 IBusBus *m_bus;
 IBusComposeTable *m_compose_table;
 IBusEngine *m_engine;
@@ -172,7 +176,12 @@ window_inserted_text_cb (GtkEntryBuffer *buffer,
                          guint           nchars,
                          gpointer        data)
 {
+/* https://gitlab.gnome.org/GNOME/gtk/commit/9981f46e0b
+ * The latest GTK does not emit "inserted-text" when the text is "".
+ */
+#if !GTK_CHECK_VERSION (3, 22, 16)
     static int n_loop = 0;
+#endif
     static guint stride = 0;
     guint i;
     int seq;
@@ -182,16 +191,18 @@ window_inserted_text_cb (GtkEntryBuffer *buffer,
 
     g_assert (m_compose_table != NULL);
 
+#if !GTK_CHECK_VERSION (3, 22, 16)
     if (n_loop % 2 == 1) {
         n_loop = 0;
         return;
     }
+#endif
     i = stride + (m_compose_table->max_seq_len + 2) - 1;
     seq = (i + 1) / (m_compose_table->max_seq_len + 2);
     if (m_compose_table->data[i] == code) {
-        test = "OK";
+        test = GREEN "PASS" NC;
     } else {
-        test = "NG";
+        test = RED "FAIL" NC;
         m_retval = -1;
     }
     g_print ("%05d/%05d %s expected: %04X typed: %04X\n",
@@ -207,7 +218,9 @@ window_inserted_text_cb (GtkEntryBuffer *buffer,
     }
 
     stride += m_compose_table->max_seq_len + 2;
+#if !GTK_CHECK_VERSION (3, 22, 16)
     n_loop++;
+#endif
     gtk_entry_set_text (entry, "");
 }
 
