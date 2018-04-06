@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*-
+# vim:set et sts=4:
+
 # Run a test case given by the first argument in a separate directory.
 # This script may also launch $top_builddir/bus/ibus-daemon for testing.
 
@@ -17,6 +20,8 @@
 : ${top_builddir:=../..}
 : ${top_srcdir:=../..}
 : ${builddir:=.}
+: ${srcdir:=.}
+: ${DISABLE_GUI_TESTS:=''}
 
 BUS_REQUIRED_TESTS="
 ibus-bus
@@ -29,50 +34,51 @@ ibus-engine-switch
 ibus-compose
 test-stress
 "
+retval=0
 
 # Portable replacement of basename.
 func_basename () {
-  case "$1" in
+    case "$1" in
     */*)
-      expr "$1" : '.*/\(.*\)'
-      ;;
+        expr "$1" : '.*/\(.*\)'
+        ;;
     *)
-      echo "$1"
-  esac
+        echo "$1"
+    esac
 }
 
 # Portable replacement of dirname.
 func_dirname () {
-  case "$1" in
+    case "$1" in
     */*)
-      expr "$1" : '\(.*\)/.*'
-      ;;
+        expr "$1" : '\(.*\)/.*'
+        ;;
     *)
-      echo .
-  esac
+        echo .
+    esac
 }
 
 # Kill ibus-daemon process and remove temporary files.
 func_cleanup () {
-  tstdir=$1
-  if test -f $tstdir/ibus-daemon.pid; then
-    . $tstdir/ibus-daemon.pid
-    kill $IBUS_DAEMON_PID &> /dev/null
-  fi
-  rm -fr $tstdir
+    tstdir=$1
+    if test -f $tstdir/ibus-daemon.pid; then
+        . $tstdir/ibus-daemon.pid
+        kill $IBUS_DAEMON_PID &> /dev/null
+    fi
+    rm -fr $tstdir
 }
 
 # Prepare component files necessary for testing, under components/.
 func_copy_component () {
-  file=$1
-  base=`func_basename $file`
-  libexecdir=`func_dirname $file`
-  # top_srcdir != top_builddir in make dist
-  libexecdir=`echo "$libexecdir" | sed -e "s|$top_srcdir|$top_builddir|"`
-  if test -f $file.in; then
-    mkdir -p components
-    sed "s|@libexecdir@|$libexecdir|g" < $file.in > components/$base
-  fi
+    file=$1
+    base=`func_basename $file`
+    libexecdir=`func_dirname $file`
+    # top_srcdir != top_builddir in make dist
+    libexecdir=`echo "$libexecdir" | sed -e "s|$top_srcdir|$top_builddir|"`
+    if test -f $file.in; then
+        mkdir -p components
+        sed "s|@libexecdir@|$libexecdir|g" < $file.in > components/$base
+    fi
 }
 
 trap 'func_cleanup $tstdir' 1 2 3 15
@@ -80,44 +86,79 @@ trap 'func_cleanup $tstdir' 1 2 3 15
 tst=$1; shift
 tstdir=tmp-`func_basename $tst`
 
+for t in $DISABLE_GUI_TESTS; do
+    if test $t = `func_basename $tst`; then
+        exit 77
+    fi
+done
+
 test -d $tstdir || mkdir $tstdir
 
-( cd $tstdir
+run_test_case()
+{
+    pushd $tstdir
 
-  need_bus=no
-  for t in $BUS_REQUIRED_TESTS; do
-    if test $t = `func_basename $tst`; then
-      need_bus=yes
+    need_bus=no
+    for t in $BUS_REQUIRED_TESTS; do
+        if test $t = `func_basename $tst`; then
+            need_bus=yes
+        fi
+    done
+
+    if test $need_bus = yes; then
+        func_copy_component "../$top_srcdir/engine/simple.xml"
+        func_copy_component "../$top_srcdir/conf/memconf/memconf.xml"
+
+        IBUS_COMPONENT_PATH=$PWD/components
+        export IBUS_COMPONENT_PATH
+
+        IBUS_ADDRESS_FILE=$PWD/ibus-daemon.pid
+        export IBUS_ADDRESS_FILE
+
+        # Start ibus-daemon.
+        ../$top_builddir/bus/ibus-daemon \
+        --daemonize \
+        --cache=none \
+        --panel=disable \
+        --panel-extension=disable \
+        --config=default \
+        --verbose;
+
+        # Wait until all necessary components are up.
+        sleep 1
     fi
-  done
 
-  if test $need_bus = yes; then
-    func_copy_component "../$top_srcdir/engine/simple.xml"
-    func_copy_component "../$top_srcdir/conf/memconf/memconf.xml"
+    "../$tst" ${1+"$@"}
 
-    IBUS_COMPONENT_PATH=$PWD/components
-    export IBUS_COMPONENT_PATH
+    retval=`expr $retval \| $?`
 
-    IBUS_ADDRESS_FILE=$PWD/ibus-daemon.pid
-    export IBUS_ADDRESS_FILE
+    $popd
 
-    # Start ibus-daemon.
-    ../$top_builddir/bus/ibus-daemon \
-    --daemonize \
-    --cache=none \
-    --panel=disable \
-    --panel-extension=disable \
-    --config=default \
-    --verbose;
+    func_cleanup $tstdir
+}
 
-    # Wait until all necessary components are up.
-    sleep 1
-  fi
-
-  exec "../$tst" ${1+"$@"} )
-
-retval=$?
-
-func_cleanup $tstdir
+envfile=$srcdir/`func_basename $tst`.env
+if test -f $envfile ; then
+    ENVS="`cat $envfile`"
+fi;
+if test x"$ENVS" = x ; then
+    run_test_case
+else
+    LANG_backup=$LANG
+    i=1
+    for e in $ENVS; do
+        first=`echo "$e" | cut -c1-1`
+        if test x"$first" = x"#" ; then
+            continue
+        fi
+        export $e
+        echo "Run `func_basename $tst` on $e"
+        echo "======================="
+        run_test_case
+        echo ""
+        i=`expr $i + 1`
+    done
+    export LANG=$LANG_backup
+fi
 
 exit $retval

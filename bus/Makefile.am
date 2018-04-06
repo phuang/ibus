@@ -122,6 +122,7 @@ TESTS_ENVIRONMENT = \
     top_builddir=$(top_builddir) \
     top_srcdir=$(top_srcdir) \
     builddir=$(builddir) \
+    srcdir=$(srcdir) \
     $(NULL)
 
 LOG_COMPILER = $(top_srcdir)/src/tests/runtest

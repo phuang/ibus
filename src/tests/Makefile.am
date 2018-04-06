@@ -3,7 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2015 Red Hat, Inc.
+# Copyright (c) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -66,6 +67,8 @@ TESTS_ENVIRONMENT = \
 	top_builddir=$(top_builddir) \
 	top_srcdir=$(top_srcdir) \
 	builddir=$(builddir) \
+	srcdir=$(srcdir) \
+	DISABLE_GUI_TESTS=$(DISABLE_GUI_TESTS) \
 	$(NULL)
 
 LOG_COMPILER = $(srcdir)/runtest
