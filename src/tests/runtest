@@ -92,10 +92,9 @@ for t in $DISABLE_GUI_TESTS; do
     fi
 done
 
-test -d $tstdir || mkdir $tstdir
-
 run_test_case()
 {
+    test -d $tstdir || mkdir $tstdir
     pushd $tstdir
 
     need_bus=no
@@ -132,7 +131,7 @@ run_test_case()
 
     retval=`expr $retval \| $?`
 
-    $popd
+    popd
 
     func_cleanup $tstdir
 }
