@@ -4,6 +4,8 @@
 #
 # Copyright (c) 2012 Daiki Ueno <ueno@unixuser.org>
 # Copyright (c) 2014-2016 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2012-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,11 +24,13 @@
 
 NULL =
 
+if ENABLE_PYTHON2
 py2_compile = PYTHON=$(PYTHON2) $(SHELL) $(py_compile)
 overrides2dir = $(py2overridesdir)
 overrides2_DATA =				\
 	gi/overrides/IBus.py			\
 	$(NULL)
+endif
 
 overridesdir = $(pyoverridesdir)
 overrides_PYTHON =				\
@@ -56,6 +60,7 @@ EXTRA_DIST =					\
 	$(NULL)
 
 install-data-hook:
+if ENABLE_PYTHON2
 	@for data in $(overrides2_DATA); do \
 	    file=`echo $$data | sed -e 's|^.*/||'`; \
 	    dlist="$$dlist $$file"; \
@@ -63,6 +68,7 @@ install-data-hook:
 	$(py2_compile) --destdir "$(DESTDIR)" \
 	               --basedir "$(overrides2dir)" \
 	               $$dlist
+endif
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
