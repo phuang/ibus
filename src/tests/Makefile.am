@@ -68,7 +68,7 @@ TESTS_ENVIRONMENT = \
 	top_srcdir=$(top_srcdir) \
 	builddir=$(builddir) \
 	srcdir=$(srcdir) \
-	DISABLE_GUI_TESTS=$(DISABLE_GUI_TESTS) \
+	DISABLE_GUI_TESTS="$(DISABLE_GUI_TESTS)" \
 	$(NULL)
 
 LOG_COMPILER = $(srcdir)/runtest
