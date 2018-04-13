@@ -110,7 +110,6 @@ if ENABLE_EMOJI_DICT
 AM_CFLAGS += -DEMOJI_DICT
 endif
 
-
 if ENABLE_TESTS
 TESTS = \
 	test-matchrule \
@@ -123,6 +122,7 @@ TESTS_ENVIRONMENT = \
     top_srcdir=$(top_srcdir) \
     builddir=$(builddir) \
     srcdir=$(srcdir) \
+    DISABLE_GUI_TESTS="$(DISABLE_GUI_TESTS)" \
     $(NULL)
 
 LOG_COMPILER = $(top_srcdir)/src/tests/runtest
