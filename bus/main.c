@@ -293,7 +293,7 @@ main (gint argc, gchar **argv)
         if (component) {
             bus_component_set_restart (component, restart);
         }
-        if (component == NULL ||
+        if (component != NULL &&
             !bus_component_start (component, g_verbose)) {
             g_printerr ("Can not execute default panel program\n");
             exit (-1);
