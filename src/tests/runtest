@@ -34,6 +34,8 @@ ibus-engine-switch
 ibus-compose
 test-stress
 "
+IBUS_SCHEMA_FILE='org.freedesktop.ibus.gschema.xml'
+
 retval=0
 
 # Portable replacement of basename.
@@ -92,6 +94,12 @@ for t in $DISABLE_GUI_TESTS; do
     fi
 done
 
+# IBusEngine has GSettings
+if test ! -f "$top_builddir/data/dconf/$IBUS_SCHEMA_FILE" ; then
+    echo "NOT FOUND $top_builddir/data/dconf/$IBUS_SCHEMA_FILE"
+    exit -1
+fi
+
 run_test_case()
 {
     test -d $tstdir || mkdir $tstdir
@@ -113,6 +121,20 @@ run_test_case()
 
         IBUS_ADDRESS_FILE=$PWD/ibus-daemon.pid
         export IBUS_ADDRESS_FILE
+
+        cp "../$top_builddir/data/dconf/$IBUS_SCHEMA_FILE" $PWD
+        glib-compile-schemas $PWD
+        if test $? -ne 0 ; then
+            echo "FAILED glib-compile-schemas"
+            retval=1
+            return
+        fi
+        if test ! -f $PWD/gschemas.compiled ; then
+            echo "NOT FOUND $PWD/gschemas.compiled"
+            retval=1
+            return
+        fi
+        export GSETTINGS_SCHEMA_DIR=$PWD
 
         # Start ibus-daemon.
         ../$top_builddir/bus/ibus-daemon \
