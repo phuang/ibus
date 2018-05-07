@@ -925,6 +925,9 @@ ibus_engine_filter_key_event (IBusEngine *engine,
     g_return_val_if_fail (IBUS_IS_ENGINE (engine), FALSE);
 
     priv = engine->priv;
+    if (!priv->emoji_keybindings)
+        return FALSE;
+
     modifiers = state & IBUS_MODIFIER_FILTER;
     if (keyval >= IBUS_KEY_A && keyval <= IBUS_KEY_Z &&
         (modifiers & IBUS_SHIFT_MASK) != 0) {
