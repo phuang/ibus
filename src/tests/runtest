@@ -32,6 +32,7 @@ ibus-inputcontext
 ibus-inputcontext-create
 ibus-engine-switch
 ibus-compose
+ibus-keypress
 test-stress
 "
 IBUS_SCHEMA_FILE='org.freedesktop.ibus.gschema.xml'

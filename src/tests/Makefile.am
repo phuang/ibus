@@ -61,6 +61,9 @@ endif
 
 if ENABLE_GTK3
 TESTS += ibus-compose
+if ENABLE_XTEST
+TESTS += ibus-keypress
+endif
 endif
 
 TESTS_ENVIRONMENT = \
@@ -102,6 +105,10 @@ ibus_inputcontext_create_LDADD = $(prog_ldadd)
 
 ibus_keynames_SOURCES = ibus-keynames.c
 ibus_keynames_LDADD = $(prog_ldadd)
+
+ibus_keypress_SOURCES = ibus-keypress.c
+ibus_keypress_CFLAGS = @GTK3_CFLAGS@ @XTEST_CFLAGS@
+ibus_keypress_LDADD = $(prog_ldadd) @GTK3_LIBS@ @XTEST_LIBS@
 
 ibus_registry_SOURCES = ibus-registry.c
 ibus_registry_LDADD = $(prog_ldadd)
