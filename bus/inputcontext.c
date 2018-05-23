@@ -716,7 +716,9 @@ bus_input_context_emit_signal (BusInputContext *context,
                                GError         **error)
 {
     if (context->connection == NULL) {
-        g_variant_unref (parameters);
+        /* fake context has no connections. */
+        if (parameters)
+            g_variant_unref (parameters);
         return TRUE;
     }
 
