@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,20 +22,17 @@
  */
 
 private const string IBUS_SCHEMAS_GENERAL = "org.freedesktop.ibus.general";
-private const string IBUS_SCHEMAS_GENERAL_PANEL =
-        "org.freedesktop.ibus.general.panel";
+private const string IBUS_SCHEMAS_GENERAL_HOTKEY =
+        "org.freedesktop.ibus.general.hotkey";
 private const string IBUS_SCHEMAS_PANEL = "org.freedesktop.ibus.panel";
-
-private const string[] IBUS_SCHEMAS = {
-    IBUS_SCHEMAS_GENERAL,
-    IBUS_SCHEMAS_GENERAL_PANEL,
-    IBUS_SCHEMAS_PANEL,
-};
+private const string IBUS_SCHEMAS_PANEL_EMOJI =
+        "org.freedesktop.ibus.panel.emoji";
 
 bool name_only = false;
 /* system() exists as a public API. */
 bool is_system = false;
 string cache_file = null;
+string engine_id = null;
 
 class EngineList {
     public IBus.EngineDesc[] data = {};
@@ -292,15 +289,78 @@ int print_address(string[] argv) {
     return Posix.EXIT_SUCCESS;
 }
 
-int read_config(string[] argv) {
-    var output = new GLib.StringBuilder();
+private int read_config_options(string[] argv) {
+    const OptionEntry[] options = {
+        { "engine-id", 0, 0, OptionArg.STRING, out engine_id,
+          N_("Use engine schema paths instead of ibus core, " +
+             "which can be comma-separated values."), "ENGINE_ID" },
+        { null }
+    };
 
-    foreach (string schema in IBUS_SCHEMAS) {
+    var option = new OptionContext();
+    option.add_main_entries(options, Config.GETTEXT_PACKAGE);
+
+    try {
+        option.parse(ref argv);
+    } catch (OptionError e) {
+        stderr.printf("%s\n", e.message);
+        return Posix.EXIT_FAILURE;
+    }
+    return Posix.EXIT_SUCCESS;
+}
+
+private GLib.SList<string> get_ibus_schemas() {
+    string[] ids = {};
+    if (engine_id != null) {
+        ids = engine_id.split(",");
+    }
+    GLib.SList<string> ibus_schemas = new GLib.SList<string>();
+    GLib.SettingsSchemaSource schema_source =
+            GLib.SettingsSchemaSource.get_default();
+    string[] list_schemas = {};
+    schema_source.list_schemas(true, out list_schemas, null);
+    foreach (string schema in list_schemas) {
+        if (ids.length != 0) {
+            foreach (unowned string id in ids) {
+                if (id == schema ||
+                    schema.has_prefix("org.freedesktop.ibus.engine." + id)) {
+                    ibus_schemas.prepend(schema);
+                    break;
+                }
+            }
+        } else if (schema.has_prefix("org.freedesktop.ibus") &&
+            !schema.has_prefix("org.freedesktop.ibus.engine")) {
+            ibus_schemas.prepend(schema);
+        }
+    }
+    if (ibus_schemas.length() == 0) {
+        printerr("Not found schemas of \"org.freedesktop.ibus\"\n");
+        return ibus_schemas;
+    }
+    ibus_schemas.sort(GLib.strcmp);
+
+    return ibus_schemas;
+}
+
+int read_config(string[] argv) {
+    if (read_config_options(argv) == Posix.EXIT_FAILURE)
+        return Posix.EXIT_FAILURE;
+
+    GLib.SList<string> ibus_schemas = get_ibus_schemas();
+    if (ibus_schemas.length() == 0)
+        return Posix.EXIT_FAILURE;
+
+    GLib.SettingsSchemaSource schema_source =
+            GLib.SettingsSchemaSource.get_default();
+    var output = new GLib.StringBuilder();
+    foreach (string schema in ibus_schemas) {
+        GLib.SettingsSchema settings_schema = schema_source.lookup(schema,
+                                                                   false);
         GLib.Settings settings = new GLib.Settings(schema);
 
         output.append_printf("SCHEMA: %s\n", schema);
 
-        foreach (string key in settings.list_keys()) {
+        foreach (string key in settings_schema.list_keys()) {
             GLib.Variant variant = settings.get_value(key);
             output.append_printf("  %s: %s\n", key, variant.print(true));
         }
@@ -311,14 +371,25 @@ int read_config(string[] argv) {
 }
 
 int reset_config(string[] argv) {
+    if (read_config_options(argv) == Posix.EXIT_FAILURE)
+        return Posix.EXIT_FAILURE;
+
+    GLib.SList<string> ibus_schemas = get_ibus_schemas();
+    if (ibus_schemas.length() == 0)
+        return Posix.EXIT_FAILURE;
+
     print("%s\n", _("Resetting…"));
 
-    foreach (string schema in IBUS_SCHEMAS) {
+    GLib.SettingsSchemaSource schema_source =
+            GLib.SettingsSchemaSource.get_default();
+    foreach (string schema in ibus_schemas) {
+        GLib.SettingsSchema settings_schema = schema_source.lookup(schema,
+                                                                   false);
         GLib.Settings settings = new GLib.Settings(schema);
 
         print("SCHEMA: %s\n", schema);
 
-        foreach (string key in settings.list_keys()) {
+        foreach (string key in settings_schema.list_keys()) {
             print("  %s\n", key);
             settings.reset(key);
         }
