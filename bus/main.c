@@ -43,7 +43,7 @@ static gboolean xim = FALSE;
 static gboolean replace = FALSE;
 static gboolean restart = FALSE;
 static gchar *panel = "default";
-static gchar *panel_extension = "default";
+static gchar *emoji_extension = "default";
 static gchar *config = "default";
 static gchar *desktop = "gnome";
 
@@ -67,7 +67,7 @@ static const GOptionEntry entries[] =
     { "xim",       'x', 0, G_OPTION_ARG_NONE,   &xim,       "execute ibus XIM server.", NULL },
     { "desktop",   'n', 0, G_OPTION_ARG_STRING, &desktop,   "specify the name of desktop session. [default=gnome]", "name" },
     { "panel",     'p', 0, G_OPTION_ARG_STRING, &panel,     "specify the cmdline of panel program. pass 'disable' not to start a panel program.", "cmdline" },
-    { "panel-extension", 'E', 0, G_OPTION_ARG_STRING, &panel_extension, "specify the cmdline of panel extension program. pass 'disable' not to start an extension program.", "cmdline" },
+    { "emoji-extension", 'E', 0, G_OPTION_ARG_STRING, &emoji_extension, "specify the cmdline of emoji extension program. pass 'disable' not to start an extension program.", "cmdline" },
     { "config",    'c', 0, G_OPTION_ARG_STRING, &config,    "specify the cmdline of config program. pass 'disable' not to start a config program.", "cmdline" },
     { "address",   'a', 0, G_OPTION_ARG_STRING, &g_address,   "specify the address of ibus daemon.", "address" },
     { "replace",   'r', 0, G_OPTION_ARG_NONE,   &replace,   "if there is an old ibus-daemon is running, it will be replaced.", NULL },
@@ -245,7 +245,7 @@ main (gint argc, gchar **argv)
     bus_server_init ();
     for (i = 0; i < G_N_ELEMENTS(panel_extension_disable_users); i++) {
         if (!g_strcmp0 (username, panel_extension_disable_users[i]) != 0) {
-            panel_extension = "disable";
+            emoji_extension = "disable";
             break;
         }
     }
@@ -286,7 +286,7 @@ main (gint argc, gchar **argv)
     }
 
 #ifdef EMOJI_DICT
-    if (g_strcmp0 (panel_extension, "default") == 0) {
+    if (g_strcmp0 (emoji_extension, "default") == 0) {
         BusComponent *component;
         component = bus_ibus_impl_lookup_component_by_name (
                 BUS_DEFAULT_IBUS, IBUS_SERVICE_PANEL_EXTENSION);
@@ -298,9 +298,9 @@ main (gint argc, gchar **argv)
             g_printerr ("Can not execute default panel program\n");
             exit (-1);
         }
-    } else if (g_strcmp0 (panel_extension, "disable") != 0 &&
-               g_strcmp0 (panel_extension, "") != 0) {
-        if (!execute_cmdline (panel_extension))
+    } else if (g_strcmp0 (emoji_extension, "disable") != 0 &&
+               g_strcmp0 (emoji_extension, "") != 0) {
+        if (!execute_cmdline (emoji_extension))
             exit (-1);
     }
 #endif
