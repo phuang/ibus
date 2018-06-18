@@ -29,8 +29,8 @@
 
 /**
  * SECTION: ibusxevent
- * @short_description: XEvent wrapper object
- * @title: IBusXEvent
+ * @short_description: Extension Event wrapper object
+ * @title: IBusExtensionEvent
  * @stability: Unstable
  *
  * An IBusXEvent provides a wrapper of XEvent.
@@ -45,24 +45,149 @@
  */
 
 /* define GOBJECT macros */
-#define IBUS_TYPE_X_EVENT            \
+#define IBUS_TYPE_EXTENSION_EVENT                                       \
+    (ibus_extension_event_get_type ())
+#define IBUS_EXTENSION_EVENT(obj)                                       \
+    (G_TYPE_CHECK_INSTANCE_CAST ((obj),                                 \
+                                 IBUS_TYPE_EXTENSION_EVENT,             \
+                                 IBusExtensionEvent))
+#define IBUS_EXTENSION_EVENT_CLASS(klass)                               \
+    (G_TYPE_CHECK_CLASS_CAST ((klass),                                  \
+                              IBUS_TYPE_EXTENSION_EVENT,                \
+                              IBusExtensionEventClass))
+#define IBUS_IS_EXTENSION_EVENT(obj)                                    \
+    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_EXTENSION_EVENT))
+#define IBUS_IS_EXTENSION_EVENT_CLASS(klass)                            \
+    (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_EXTENSION_EVENT))
+#define IBUS_EXTENSION_EVENT_GET_CLASS(obj)                             \
+    (G_TYPE_INSTANCE_GET_CLASS ((obj),                                  \
+                                IBUS_TYPE_EXTENSION_EVENT,              \
+                                IBusExtensionEventClass))
+
+#define IBUS_TYPE_X_EVENT                                               \
     (ibus_x_event_get_type ())
-#define IBUS_X_EVENT(obj)            \
+#define IBUS_X_EVENT(obj)                                               \
     (G_TYPE_CHECK_INSTANCE_CAST ((obj), IBUS_TYPE_X_EVENT, IBusXEvent))
-#define IBUS_X_EVENT_CLASS(klass)    \
+#define IBUS_X_EVENT_CLASS(klass)                                       \
     (G_TYPE_CHECK_CLASS_CAST ((klass), IBUS_TYPE_X_EVENT, IBusXEventClass))
-#define IBUS_IS_X_EVENT(obj)         \
+#define IBUS_IS_X_EVENT(obj)                                            \
     (G_TYPE_CHECK_INSTANCE_TYPE ((obj), IBUS_TYPE_X_EVENT))
-#define IBUS_IS_X_EVENT_CLASS(klass) \
+#define IBUS_IS_X_EVENT_CLASS(klass)                                    \
     (G_TYPE_CHECK_CLASS_TYPE ((klass), IBUS_TYPE_X_EVENT))
-#define IBUS_X_EVENT_GET_CLASS(obj)  \
+#define IBUS_X_EVENT_GET_CLASS(obj)                                     \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_X_EVENT, IBusXEventClass))
 
 G_BEGIN_DECLS
 
+typedef struct _IBusProcessKeyEventData IBusProcessKeyEventData;
+typedef struct _IBusExtensionEvent IBusExtensionEvent;
+typedef struct _IBusExtensionEventClass IBusExtensionEventClass;
+typedef struct _IBusExtensionEventPrivate IBusExtensionEventPrivate;
 typedef struct _IBusXEvent IBusXEvent;
 typedef struct _IBusXEventClass IBusXEventClass;
 typedef struct _IBusXEventPrivate IBusXEventPrivate;
+
+/**
+ * IBusProcessKeyEventData:
+ *
+ * IBuProcessKeyEventData properties.
+ */
+struct _IBusProcessKeyEventData {
+    /*< public >*/
+    guint keyval;
+    guint keycode;
+    guint state;
+};
+
+/**
+ * IBusExtensionEvent:
+ *
+ * IBusExtensionEvent properties.
+ */
+struct _IBusExtensionEvent {
+    /*< private >*/
+    IBusSerializable parent;
+    IBusExtensionEventPrivate *priv;
+
+    /* instance members */
+    /*< public >*/
+};
+
+struct _IBusExtensionEventClass {
+    /*< private >*/
+    IBusSerializableClass parent;
+
+    /* class members */
+    /*< public >*/
+
+    /*< private >*/
+    /* padding */
+    gpointer pdummy[10];
+};
+
+
+GType              ibus_extension_event_get_type    (void);
+
+/**
+ * ibus_extension_event_new:
+ * @first_property_name: Name of the first property.
+ * @...: the NULL-terminated arguments of the properties and values.
+ *
+ * Create a new #IBusExtensionEvent.
+ *
+ * Returns: A newly allocated #IBusExtensionEvent. E.g.
+ * ibus_extension_event_new ("name", "emoji", "is-enabled", TRUE, NULL);
+ */
+IBusExtensionEvent *ibus_extension_event_new        (const gchar
+                                                           *first_property_name,
+                                                     ...);
+
+/**
+ * ibus_extension_event_get_version:
+ * @event: An #IBusExtensionEvent.
+ *
+ * Returns: Version of #IBusExtensionEvent
+ */
+guint              ibus_extension_event_get_version (IBusExtensionEvent *event);
+
+/**
+ * ibus_extension_event_get_purpose:
+ * @event: An #IBusExtensionEvent.
+ *
+ * Returns: name of the extension for #IBusXEvent
+ */
+const gchar *      ibus_extension_event_get_name    (IBusExtensionEvent *event);
+
+/**
+ * ibus_extension_event_is_enabled:
+ * @event: An #IBusExtensionEvent.
+ *
+ * Returns: %TRUE if the extension is enabled for #IBusExtensionEvent
+ */
+gboolean           ibus_extension_event_is_enabled  (IBusExtensionEvent *event);
+
+/**
+ * ibus_extension_event_is_extension:
+ * @event: An #IBusExtensionEvent.
+ *
+ * Returns: %TRUE if the #IBusExtensionEvent is called by an extension.
+ * %FALSE if the #IBusExtensionEvent is called by an active engine or
+ * panel.
+ * If this value is %TRUE, the event is send to ibus-daemon, an active
+ * engine. If it's %FALSE, the event is sned to ibus-daemon, panels.
+ */
+gboolean           ibus_extension_event_is_extension
+                                                    (IBusExtensionEvent *event);
+
+/**
+ * ibus_extension_event_get_params:
+ * @event: An #IBusExtensionEvent.
+ *
+ * Returns: Parameters to enable the extension for #IBusXEvent
+ */
+const gchar *      ibus_extension_event_get_params  (IBusExtensionEvent *event);
+
+
 
 typedef enum {
     IBUS_X_EVENT_NOTHING           = -1,
@@ -76,7 +201,7 @@ typedef enum {
  * IBusXEvent:
  * @type: event type
  *
- * IBusEngine properties.
+ * IBusXEvent properties.
  */
 struct _IBusXEvent {
     /*< private >*/

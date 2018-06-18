@@ -1148,26 +1148,15 @@ class Panel : IBus.PanelService {
 #if EMOJI_DICT
             item = new Gtk.MenuItem.with_label(_("Emoji Choice"));
             item.activate.connect((i) => {
-                Gdk.Event event = Gtk.get_current_event();
-                if (event == null) {
-                    event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
-                    event.key.time = Gdk.CURRENT_TIME;
-                    // event.get_seat() refers event.any.window
-                    event.key.window = Gdk.get_default_root_window();
-                    event.key.window.ref();
-                }
-                IBus.XEvent xevent = new IBus.XEvent(
-                        "event-type", IBus.XEventType.KEY_PRESS,
-                        "window",
-                        (event.key.window as Gdk.X11.Window).get_xid(),
-                        "time", event.key.time,
-                        "purpose", "emoji");
-                /* new GLib.Variant("(sv)", "emoji", xevent.serialize_object())
+                IBus.ExtensionEvent event = new IBus.ExtensionEvent(
+                        "name", "emoji", "is-enabled", true,
+                        "params", "category-list");
+                /* new GLib.Variant("(sv)", "emoji", event.serialize_object())
                  * will call g_variant_unref() for the child variant by vala.
                  * I have no idea not to unref the object so integrated
-                 * the purpose to IBus.XEvent above.
+                 * the purpose to IBus.ExtensionEvent above.
                  */
-                panel_extension(xevent.serialize_object());
+                panel_extension(event);
             });
             m_sys_menu.append(item);
 #endif

@@ -55,7 +55,7 @@ typedef enum
 {
     PANEL_TYPE_NONE,
     PANEL_TYPE_PANEL,
-    PANEL_TYPE_EXTENSION
+    PANEL_TYPE_EXTENSION_EMOJI
 } PanelType;
 
 typedef struct _BusPanelProxy BusPanelProxy;
@@ -135,6 +135,27 @@ void             bus_panel_proxy_set_content_type
                                                 guint              hints);
 PanelType        bus_panel_proxy_get_panel_type
                                                (BusPanelProxy     *panel);
+void             bus_panel_proxy_panel_extension_received
+                                               (BusPanelProxy     *panel,
+                                                IBusExtensionEvent
+                                                                  *event);
+void             bus_panel_proxy_process_key_event
+                                               (BusPanelProxy     *panel,
+                                                guint              keyval,
+                                                guint              keycode,
+                                                guint              state,
+                                                GAsyncReadyCallback
+                                                                   callback,
+                                                gpointer           user_data);
+void             bus_panel_proxy_commit_text_received
+                                               (BusPanelProxy     *panel,
+                                                IBusText          *text);
+void             bus_panel_proxy_candidate_clicked_lookup_table
+                                               (BusPanelProxy     *panel,
+                                                guint              index,
+                                                guint              button,
+                                                guint              state);
+
 G_END_DECLS
 #endif
 

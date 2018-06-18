@@ -22,13 +22,23 @@
 #include "ibusinternal.h"
 #include "ibusxevent.h"
 
+#define IBUS_EXTENSION_EVENT_VERSION 1
+#define IBUS_EXTENSION_EVENT_GET_PRIVATE(o)                             \
+   (G_TYPE_INSTANCE_GET_PRIVATE ((o),                                   \
+                                 IBUS_TYPE_EXTENSION_EVENT,             \
+                                 IBusExtensionEventPrivate))
+
 #define IBUS_X_EVENT_VERSION 1
-#define IBUS_X_EVENT_GET_PRIVATE(o)  \
+#define IBUS_X_EVENT_GET_PRIVATE(o)                                     \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_X_EVENT, IBusXEventPrivate))
 
 enum {
     PROP_0,
     PROP_VERSION,
+    PROP_NAME,
+    PROP_IS_ENABLED,
+    PROP_IS_EXTENSION,
+    PROP_PARAMS,
     PROP_EVENT_TYPE,
     PROP_WINDOW,
     PROP_SEND_EVENT,
@@ -52,6 +62,14 @@ enum {
 };
 
 
+struct _IBusExtensionEventPrivate {
+    guint     version;
+    gchar    *name;
+    gboolean  is_enabled;
+    gboolean  is_extension;
+    gchar    *params;
+};
+
 struct _IBusXEventPrivate {
     guint    version;
     guint32  time;
@@ -73,23 +91,345 @@ struct _IBusXEventPrivate {
 };
 
 /* functions prototype */
-static void      ibus_x_event_destroy        (IBusXEvent         *event);
-static void      ibus_x_event_set_property   (IBusXEvent         *event,
-                                              guint               prop_id,
-                                              const GValue       *value,
-                                              GParamSpec         *pspec);
-static void      ibus_x_event_get_property   (IBusXEvent         *event,
-                                              guint               prop_id,
-                                              GValue             *value,
-                                              GParamSpec         *pspec);
-static gboolean  ibus_x_event_serialize      (IBusXEvent         *event,
-                                              GVariantBuilder    *builder);
-static gint      ibus_x_event_deserialize    (IBusXEvent         *event,
-                                              GVariant           *variant);
-static gboolean  ibus_x_event_copy           (IBusXEvent         *dest,
-                                              const IBusXEvent   *src);
+static void      ibus_extension_event_destroy      (IBusExtensionEvent *event);
+static void      ibus_extension_event_set_property (IBusExtensionEvent *event,
+                                                    guint               prop_id,
+                                                    const GValue       *value,
+                                                    GParamSpec         *pspec);
+static void      ibus_extension_event_get_property (IBusExtensionEvent *event,
+                                                    guint               prop_id,
+                                                    GValue             *value,
+                                                    GParamSpec         *pspec);
+static gboolean  ibus_extension_event_serialize    (IBusExtensionEvent *event,
+                                                    GVariantBuilder
+                                                                      *builder);
+static gint      ibus_extension_event_deserialize  (IBusExtensionEvent *event,
+                                                    GVariant
+                                                                      *variant);
+static gboolean  ibus_extension_event_copy         (IBusExtensionEvent
+                                                                          *dest,
+                                                    const IBusExtensionEvent
+                                                                          *src);
+static void      ibus_x_event_destroy              (IBusXEvent         *event);
+static void      ibus_x_event_set_property         (IBusXEvent         *event,
+                                                    guint               prop_id,
+                                                    const GValue       *value,
+                                                    GParamSpec         *pspec);
+static void      ibus_x_event_get_property         (IBusXEvent         *event,
+                                                    guint               prop_id,
+                                                    GValue             *value,
+                                                    GParamSpec         *pspec);
+static gboolean  ibus_x_event_serialize            (IBusXEvent         *event,
+                                                    GVariantBuilder
+                                                                      *builder);
+static gint      ibus_x_event_deserialize          (IBusXEvent         *event,
+                                                    GVariant
+                                                                      *variant);
+static gboolean  ibus_x_event_copy                 (IBusXEvent         *dest,
+                                                    const IBusXEvent   *src);
 
+G_DEFINE_TYPE (IBusExtensionEvent, ibus_extension_event, IBUS_TYPE_SERIALIZABLE)
 G_DEFINE_TYPE (IBusXEvent, ibus_x_event, IBUS_TYPE_SERIALIZABLE)
+
+static void
+ibus_extension_event_class_init (IBusExtensionEventClass *class)
+{
+    GObjectClass *gobject_class = G_OBJECT_CLASS (class);
+    IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
+    IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
+
+    gobject_class->set_property =
+            (GObjectSetPropertyFunc) ibus_extension_event_set_property;
+    gobject_class->get_property =
+            (GObjectGetPropertyFunc) ibus_extension_event_get_property;
+
+    object_class->destroy =
+            (IBusObjectDestroyFunc) ibus_extension_event_destroy;
+
+    serializable_class->serialize   =
+            (IBusSerializableSerializeFunc) ibus_extension_event_serialize;
+    serializable_class->deserialize =
+            (IBusSerializableDeserializeFunc) ibus_extension_event_deserialize;
+    serializable_class->copy        =
+            (IBusSerializableCopyFunc) ibus_extension_event_copy;
+
+    /* install properties */
+    /**
+     * IBusExtensionEvent:version:
+     *
+     * Version of the #IBusExtensionEvent.
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_VERSION,
+                    g_param_spec_uint ("version",
+                        "version",
+                        "version",
+                        0,
+                        G_MAXUINT32,
+                        IBUS_EXTENSION_EVENT_VERSION,
+                        G_PARAM_READABLE));
+
+    /**
+     * IBusExtensionEvent:name:
+     *
+     * Name of the extension in the #IBusExtensionEvent.
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_NAME,
+                    g_param_spec_string ("name",
+                        "name",
+                        "name of the extension",
+                        "",
+                        G_PARAM_READWRITE |
+                        G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusExtensionEvent:is-enabled:
+     *
+     * %TRUE if the extension is enabled in the #IBusExtensionEvent.
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_IS_ENABLED,
+                    g_param_spec_boolean ("is-enabled",
+                        "is enabled",
+                        "if the extension is enabled",
+                        FALSE,
+                        G_PARAM_READWRITE |
+                        G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusExtensionEvent:is-extension:
+     *
+     * %TRUE if the #IBusExtensionEvent is called by an extension.
+     * %FALSE if the #IBusExtensionEvent is called by an active engine or
+     * panel.
+     * If this value is %TRUE, the event is send to ibus-daemon, an active
+     * engine. If it's %FALSE, the event is sned to ibus-daemon, panels.
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_IS_EXTENSION,
+                    g_param_spec_boolean ("is-extension",
+                        "is extension",
+                        "if the event is called by an extension",
+                        FALSE,
+                        G_PARAM_READWRITE |
+                        G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusExtensionEvent:params:
+     *
+     * Parameters to enable the extension in the #IBusExtensionEvent.
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_PARAMS,
+                    g_param_spec_string ("params",
+                        "params",
+                        "Parameters to enable the extension",
+                        "",
+                        G_PARAM_READWRITE |
+                        G_PARAM_CONSTRUCT_ONLY));
+
+    g_type_class_add_private (class, sizeof (IBusExtensionEventPrivate));
+}
+
+static void
+ibus_extension_event_init (IBusExtensionEvent *event)
+{
+    event->priv = IBUS_EXTENSION_EVENT_GET_PRIVATE (event);
+    event->priv->version = IBUS_EXTENSION_EVENT_VERSION;
+}
+
+static void
+ibus_extension_event_destroy (IBusExtensionEvent *event)
+{
+    g_clear_pointer (&event->priv->name, g_free);
+
+    IBUS_OBJECT_CLASS(ibus_extension_event_parent_class)->
+            destroy (IBUS_OBJECT (event));
+}
+
+static void
+ibus_extension_event_set_property (IBusExtensionEvent   *event,
+                                   guint         prop_id,
+                                   const GValue *value,
+                                   GParamSpec   *pspec)
+{
+    IBusExtensionEventPrivate *priv = event->priv;
+
+    switch (prop_id) {
+    case PROP_NAME:
+        g_free (priv->name);
+        priv->name = g_value_dup_string (value);
+        break;
+    case PROP_IS_ENABLED:
+        priv->is_enabled = g_value_get_boolean (value);
+        break;
+    case PROP_IS_EXTENSION:
+        priv->is_extension = g_value_get_boolean (value);
+        break;
+    case PROP_PARAMS:
+        priv->params = g_value_dup_string (value);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (event, prop_id, pspec);
+    }
+}
+
+static void
+ibus_extension_event_get_property (IBusExtensionEvent *event,
+                                   guint               prop_id,
+                                   GValue             *value,
+                                   GParamSpec         *pspec)
+{
+    IBusExtensionEventPrivate *priv = event->priv;
+    switch (prop_id) {
+    case PROP_VERSION:
+        g_value_set_uint (value, priv->version);
+        break;
+    case PROP_NAME:
+        g_value_set_string (value, priv->name);
+        break;
+    case PROP_IS_ENABLED:
+        g_value_set_boolean (value, priv->is_enabled);
+        break;
+    case PROP_IS_EXTENSION:
+        g_value_set_boolean (value, priv->is_extension);
+        break;
+    case PROP_PARAMS:
+        g_value_set_string (value, priv->params);
+        break;
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (event, prop_id, pspec);
+    }
+}
+
+static gboolean
+ibus_extension_event_serialize (IBusExtensionEvent *event,
+                                GVariantBuilder    *builder)
+{
+    gboolean retval;
+    IBusExtensionEventPrivate *priv;
+
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_extension_event_parent_class)->
+            serialize ((IBusSerializable *)event, builder);
+    g_return_val_if_fail (retval, FALSE);
+    /* End dict iter */
+
+    priv = event->priv;
+#define NOTNULL(s) ((s) != NULL ? (s) : "")
+    /* If you will add a new property, you can append it at the end and
+     * you should not change the serialized order of name, longname,
+     * description, ... because the order is also used in other applications
+     * likes ibus-qt. */
+    g_variant_builder_add (builder, "u", priv->version);
+    g_variant_builder_add (builder, "s", NOTNULL (priv->name));
+    g_variant_builder_add (builder, "b", priv->is_enabled);
+    g_variant_builder_add (builder, "b", priv->is_extension);
+    g_variant_builder_add (builder, "s", NOTNULL (priv->params));
+#undef NOTNULL
+
+    return TRUE;
+}
+
+static gint
+ibus_extension_event_deserialize (IBusExtensionEvent *event,
+                                  GVariant           *variant)
+{
+    gint retval;
+    IBusExtensionEventPrivate *priv;
+
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_extension_event_parent_class)->
+            deserialize ((IBusSerializable *)event, variant);
+    g_return_val_if_fail (retval, 0);
+
+    priv = event->priv;
+    /* If you will add a new property, you can append it at the end and
+     * you should not change the serialized order of name, longname,
+     * description, ... because the order is also used in other applications
+     * likes ibus-qt. */
+    g_variant_get_child (variant, retval++, "u", &priv->version);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &priv->name);
+    g_variant_get_child (variant, retval++, "b", &priv->is_enabled);
+    g_variant_get_child (variant, retval++, "b", &priv->is_extension);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &priv->params);
+
+    return retval;
+}
+
+static gboolean
+ibus_extension_event_copy (IBusExtensionEvent       *dest,
+                           const IBusExtensionEvent *src)
+{
+    gboolean retval;
+    IBusExtensionEventPrivate *dest_priv = dest->priv;
+    IBusExtensionEventPrivate *src_priv = src->priv;
+
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_extension_event_parent_class)->
+            copy ((IBusSerializable *)dest, (IBusSerializable *)src);
+    g_return_val_if_fail (retval, FALSE);
+
+    dest_priv->version           = src_priv->version;
+    dest_priv->name              = g_strdup (src_priv->name);
+    dest_priv->is_enabled        = src_priv->is_enabled;
+    dest_priv->is_extension      = src_priv->is_extension;
+    dest_priv->params            = g_strdup (src_priv->params);
+    return TRUE;
+}
+
+IBusExtensionEvent *
+ibus_extension_event_new (const gchar   *first_property_name,
+                          ...)
+{
+    va_list var_args;
+    IBusExtensionEvent *event;
+
+    va_start (var_args, first_property_name);
+    event = (IBusExtensionEvent *) g_object_new_valist (
+            IBUS_TYPE_EXTENSION_EVENT,
+            first_property_name,
+            var_args);
+    va_end (var_args);
+    g_assert (event->priv->version != 0);
+    return event;
+}
+
+guint
+ibus_extension_event_get_version (IBusExtensionEvent *event)
+{
+    g_return_val_if_fail (IBUS_IS_EXTENSION_EVENT (event), 0);
+    return event->priv->version;
+}
+
+const gchar *
+ibus_extension_event_get_name (IBusExtensionEvent *event)
+{
+    g_return_val_if_fail (IBUS_IS_EXTENSION_EVENT (event), "");
+    return event->priv->name;
+}
+
+gboolean
+ibus_extension_event_is_enabled (IBusExtensionEvent *event)
+{
+    g_return_val_if_fail (IBUS_IS_EXTENSION_EVENT (event), FALSE);
+    return event->priv->is_enabled;
+}
+
+gboolean
+ibus_extension_event_is_extension (IBusExtensionEvent *event)
+{
+    g_return_val_if_fail (IBUS_IS_EXTENSION_EVENT (event), FALSE);
+    return event->priv->is_extension;
+}
+
+const gchar *
+ibus_extension_event_get_params (IBusExtensionEvent *event)
+{
+    g_return_val_if_fail (IBUS_IS_EXTENSION_EVENT (event), "");
+    return event->priv->params;
+}
+
 
 static void
 ibus_x_event_class_init (IBusXEventClass *class)
@@ -454,6 +794,7 @@ static void
 ibus_x_event_destroy (IBusXEvent *event)
 {
     g_clear_pointer (&event->priv->string, g_free);
+    g_clear_pointer (&event->priv->purpose, g_free);
 
     IBUS_OBJECT_CLASS(ibus_x_event_parent_class)->destroy (IBUS_OBJECT (event));
 }

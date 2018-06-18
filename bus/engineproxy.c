@@ -377,10 +377,10 @@ bus_engine_proxy_class_init (BusEngineProxyClass *class)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            bus_marshal_VOID__VARIANT,
+            bus_marshal_VOID__OBJECT,
             G_TYPE_NONE,
             1,
-            G_TYPE_VARIANT);
+            IBUS_TYPE_EXTENSION_EVENT);
 
     text_empty = ibus_text_new_from_static_string ("");
     g_object_ref_sink (text_empty);
@@ -644,7 +644,16 @@ bus_engine_proxy_g_signal (GDBusProxy  *proxy,
     }
 
     if (g_strcmp0 (signal_name, "PanelExtension") == 0) {
-        g_signal_emit (engine, engine_signals[PANEL_EXTENSION], 0, parameters);
+        GVariant *arg0 = NULL;
+        g_variant_get (parameters, "(v)", &arg0);
+        g_return_if_fail (arg0 != NULL);
+
+        IBusExtensionEvent *event = IBUS_EXTENSION_EVENT (
+                ibus_serializable_deserialize (arg0));
+        g_variant_unref (arg0);
+        g_return_if_fail (event != NULL);
+        g_signal_emit (engine, engine_signals[PANEL_EXTENSION], 0, event);
+        _g_object_unref_if_floating (event);
         return;
     }
 
@@ -1321,6 +1330,44 @@ bus_engine_proxy_is_enabled (BusEngineProxy *engine)
     g_assert (BUS_IS_ENGINE_PROXY (engine));
 
     return engine->enabled;
+}
+
+void
+bus_engine_proxy_panel_extension_received (BusEngineProxy     *engine,
+                                           IBusExtensionEvent *event)
+{
+    GVariant *variant;
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (IBUS_IS_EXTENSION_EVENT (event));
+
+    variant = ibus_serializable_serialize_object (
+            IBUS_SERIALIZABLE (event));
+    g_return_if_fail (variant != NULL);
+    g_dbus_proxy_call ((GDBusProxy *)engine,
+                       "PanelExtensionReceived",
+                       g_variant_new ("(v)", variant),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       NULL,
+                       NULL);
+}
+
+void
+bus_engine_proxy_panel_extension_register_keys (BusEngineProxy *engine,
+                                                GVariant       *parameters)
+{
+    g_assert (BUS_IS_ENGINE_PROXY (engine));
+    g_assert (parameters);
+
+    g_dbus_proxy_call ((GDBusProxy *)engine,
+                       "PanelExtensionRegisterKeys",
+                       g_variant_new ("(v)", g_variant_ref (parameters)),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       NULL,
+                       NULL);
 }
 
 static gboolean

@@ -4,7 +4,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2016 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -123,10 +123,15 @@ class Setup(object):
         name = 'emoji'
         label = 'emoji_dialog'
         self.__init_hotkey(name, label)
+        name = 'unicode'
+        label = 'unicode_dialog'
+        self.__init_hotkey(name, label)
 
     def __init_hotkey(self, name, label, comment=None):
         if name == 'emoji':
             shortcuts = self.__settings_emoji.get_strv('hotkey')
+        elif name == 'unicode':
+            shortcuts = self.__settings_emoji.get_strv('unicode-hotkey')
         else:
             shortcuts = self.__settings_hotkey.get_strv(name)
         button = self.__builder.get_object("button_%s" % label)
@@ -139,6 +144,9 @@ class Setup(object):
         if name == 'emoji':
             button.connect("clicked", self.__shortcut_button_clicked_cb,
                     'hotkey', 'panel/' + name, label, entry)
+        elif name == 'unicode':
+            button.connect("clicked", self.__shortcut_button_clicked_cb,
+                    'unicode-hotkey', 'panel/emoji', label, entry)
         else:
             button.connect("clicked", self.__shortcut_button_clicked_cb,
                     name, "general/hotkey", label, entry)

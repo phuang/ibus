@@ -74,6 +74,15 @@
 #define IBUS_SERVICE_PANEL_EXTENSION "org.freedesktop.IBus.Panel.Extension"
 
 /**
+ * IBUS_SERVICE_PANEL_EXTENSION_EMOJI:
+ *
+ * Address of IBus panel extension service for emoji.
+ * This service provides emoji, Unicode code point, Unicode name features.
+ */
+#define IBUS_SERVICE_PANEL_EXTENSION_EMOJI \
+        "org.freedesktop.IBus.Panel.Extension.Emoji"
+
+/**
  * IBUS_SERVICE_CONFIG:
  *
  * Address of IBus config service.
@@ -109,11 +118,13 @@
 #define IBUS_PATH_PANEL         "/org/freedesktop/IBus/Panel"
 
 /**
- * IBUS_PATH_PANEL_EXTENSION:
+ * IBUS_PATH_PANEL_EXTENSION_EMOJI:
  *
- * D-Bus path for IBus panel.
+ * D-Bus path for IBus extension panel for emoji.
+ * This service provides emoji, Unicode code point, Unicode name features.
  */
-#define IBUS_PATH_PANEL_EXTENSION "/org/freedesktop/IBus/Panel/Extension"
+#define IBUS_PATH_PANEL_EXTENSION_EMOJI \
+        "/org/freedesktop/IBus/Panel/Extension/Emoji"
 
 /**
  * IBUS_PATH_CONFIG:

@@ -50,20 +50,20 @@ class ExtensionGtk : Gtk.Application {
                                     "org.freedesktop.DBus",
                                     "NameAcquired",
                                     "/org/freedesktop/DBus",
-                                    IBus.SERVICE_PANEL_EXTENSION,
+                                    IBus.SERVICE_PANEL_EXTENSION_EMOJI,
                                     DBusSignalFlags.NONE,
                                     bus_name_acquired_cb);
         connection.signal_subscribe("org.freedesktop.DBus",
                                     "org.freedesktop.DBus",
                                     "NameLost",
                                     "/org/freedesktop/DBus",
-                                    IBus.SERVICE_PANEL_EXTENSION,
+                                    IBus.SERVICE_PANEL_EXTENSION_EMOJI,
                                     DBusSignalFlags.NONE,
                                     bus_name_lost_cb);
         var flags =
                 IBus.BusNameFlag.ALLOW_REPLACEMENT |
                 IBus.BusNameFlag.REPLACE_EXISTING;
-        m_bus.request_name(IBus.SERVICE_PANEL_EXTENSION, flags);
+        m_bus.request_name(IBus.SERVICE_PANEL_EXTENSION_EMOJI, flags);
     }
 
 

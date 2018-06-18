@@ -28,6 +28,11 @@
 #include "connection.h"
 #include "factoryproxy.h"
 
+#ifndef __BUS_PANEL_PROXY_DEFINED
+#define __BUS_PANEL_PROXY_DEFINED
+typedef struct _BusPanelProxy BusPanelProxy;
+#endif
+
 /*
  * Type macros.
  */
@@ -63,6 +68,7 @@ BusInputContext     *bus_input_context_new      (BusConnection      *connection,
 
 /**
  * bus_input_context_focus_in:
+ * @context: A #BusInputContext.
  *
  * Give a focus to the context. Call FocusIn, Enable, SetCapabilities,
  * and SetCursorLocation methods of the engine for the context,
@@ -73,6 +79,7 @@ void                 bus_input_context_focus_in (BusInputContext    *context);
 
 /**
  * bus_input_context_focus_out:
+ * @context: A #BusInputContext.
  *
  * Remove a focus from the context. Call FocusOut method of the engine for
  * the context.
@@ -83,6 +90,7 @@ void                 bus_input_context_focus_out
 
 /**
  * bus_input_context_has_focus:
+ * @context: A #BusInputContext.
  * @returns: context->has_focus.
  */
 gboolean             bus_input_context_has_focus
@@ -90,6 +98,7 @@ gboolean             bus_input_context_has_focus
 
 /**
  * bus_input_context_enable:
+ * @context: A #BusInputContext.
  *
  * Enable the current engine for the context. Request an engine (if needed),
  * call FocusIn, Enable, SetCapabilities, and SetCursorLocation methods
@@ -100,6 +109,7 @@ void                 bus_input_context_enable   (BusInputContext    *context);
 
 /**
  * bus_input_context_disable:
+ * @context: A #BusInputContext.
  *
  * Disable the current engine for the context. Request an engine (if needed),
  * call FocusIn, Enable, SetCapabilities, and SetCursorLocation methods
@@ -110,6 +120,7 @@ void                 bus_input_context_disable  (BusInputContext    *context);
 
 /**
  * bus_input_context_page_up:
+ * @context: A #BusInputContext.
  *
  * Call page_up method of the current engine proxy.
  */
@@ -117,6 +128,7 @@ void                 bus_input_context_page_up  (BusInputContext    *context);
 
 /**
  * bus_input_context_page_down:
+ * @context: A #BusInputContext.
  *
  * Call page_down method of the current engine proxy.
  */
@@ -125,6 +137,7 @@ void                 bus_input_context_page_down
 
 /**
  * bus_input_context_cursor_up:
+ * @context: A #BusInputContext.
  *
  * Call cursor_up method of the current engine proxy.
  */
@@ -133,6 +146,7 @@ void                 bus_input_context_cursor_up
 
 /**
  * bus_input_context_cursor_down:
+ * @context: A #BusInputContext.
  *
  * Call cursor_down method of the current engine proxy.
  */
@@ -141,6 +155,10 @@ void                 bus_input_context_cursor_down
 
 /**
  * bus_input_context_candidate_clicked:
+ * @context: A #BusInputContext.
+ * @index: An index.
+ * @button: A button number.
+ * @state: A button state.
  *
  * Call candidate_clicked method of the current engine proxy.
  */
@@ -152,6 +170,8 @@ void                 bus_input_context_candidate_clicked
 
 /**
  * bus_input_context_set_engine:
+ * @context: A #BusInputContext.
+ * @engine: A #BusEngineProxy.
  *
  * Use the engine on the context.
  */
@@ -161,12 +181,14 @@ void                 bus_input_context_set_engine
 
 /**
  * bus_input_context_set_engine_by_desc:
+ * @context: A #BusInputContext.
  * @desc: the engine to use on the context.
  * @timeout: timeout (in ms) for D-Bus calls.
  * @callback: a function to be called when bus_input_context_set_engine_by_desc
  *            is finished. if NULL, the default callback
  *            function, which just calls
  *            bus_input_context_set_engine_by_desc_finish, is used.
+ * @user_data: an argument of @callback.
  *
  * Create a new BusEngineProxy object and use it on the context.
  */
@@ -181,6 +203,9 @@ void                 bus_input_context_set_engine_by_desc
 
 /**
  * bus_input_context_set_engine_by_desc_finish:
+ * @context: A #BusInputContext.
+ * @res: A #GAsyncResult.
+ * @error: A #GError.
  *
  * A function to be called by the GAsyncReadyCallback function for
  * bus_input_context_set_engine_by_desc.
@@ -192,6 +217,7 @@ gboolean             bus_input_context_set_engine_by_desc_finish
 
 /**
  * bus_input_context_get_engine:
+ * @context: A #BusInputContext.
  *
  * Get a BusEngineProxy object of the current engine.
  */
@@ -200,6 +226,7 @@ BusEngineProxy      *bus_input_context_get_engine
 
 /**
  * bus_input_context_get_engine_desc:
+ * @context: A #BusInputContext.
  *
  * Get an IBusEngineDesc object of the current engine.
  */
@@ -208,6 +235,9 @@ IBusEngineDesc      *bus_input_context_get_engine_desc
 
 /**
  * bus_input_context_property_activate:
+ * @context: A #BusInputContext.
+ * @prop_name: A property name.
+ * @prop_state: A property state.
  *
  * Call property_activate method of the current engine proxy.
  */
@@ -219,6 +249,7 @@ void                 bus_input_context_property_activate
 
 /**
  * bus_input_context_get_capabilities:
+ * @context: A #BusInputContext.
  * @returns: context->capabilities.
  */
 guint                bus_input_context_get_capabilities
@@ -226,6 +257,8 @@ guint                bus_input_context_get_capabilities
 
 /**
  * bus_input_context_set_capabilities:
+ * @context: A #BusInputContext.
+ * @capabilities: capabilities.
  *
  * Call set_capabilities method of the current engine proxy.
  */
@@ -236,6 +269,7 @@ void                 bus_input_context_set_capabilities
 
 /**
  * bus_input_context_get_client:
+ * @context: A #BusInputContext.
  * @returns: context->client.
  */
 const gchar         *bus_input_context_get_client
@@ -243,6 +277,7 @@ const gchar         *bus_input_context_get_client
 
 /**
  * bus_input_context_get_content_type:
+ * @context: A #BusInputContext.
  * @purpose: Input purpose.
  * @hints: Input hints.
  */
@@ -253,6 +288,7 @@ void                 bus_input_context_get_content_type
 
 /**
  * bus_input_context_set_content_type:
+ * @context: A #BusInputContext.
  * @purpose: Input purpose.
  * @hints: Input hints.
  */
@@ -263,11 +299,83 @@ void                 bus_input_context_set_content_type
 
 /**
  * bus_input_context_commit_text:
- * @text: a commited text.
+ * @context: A #BusInputContext.
+ * @text: A committed text.
  */
 void                 bus_input_context_commit_text
                                                 (BusInputContext *context,
                                                  IBusText        *text);
 
+/**
+ * bus_input_context_commit_text:
+ * @context: A #BusInputContext.
+ * @text: A committed text.
+ * @use_extension: Use an extension if it's %TRUE and the extension is
+ *                 available.
+ */
+void                 bus_input_context_commit_text_use_extension
+                                               (BusInputContext *context,
+                                                IBusText        *text,
+                                                gboolean         use_extension);
+
+/**
+ * bus_input_context_set_emoji_extension:
+ * @context: A #BusInputContext.
+ * @extension: A #BusPanelProxy.
+ */
+void                 bus_input_context_set_emoji_extension
+                                                (BusInputContext *context,
+                                                 BusPanelProxy   *extension);
+
+/**
+ * bus_input_context_update_preedit_text:
+ * @context: A #BusInputContext.
+ * @text: An #IBusText.
+ * @cursor_pos: The cursor position.
+ * @visible: %TRUE if the preedit is visible. Otherwise %FALSE.
+ * @mode: The preedit commit mode.
+ * @use_extension: %TRUE if preedit text is sent to the extesion at first.
+ *
+ * Update a preedit text. Send D-Bus signal to update status of client or
+ * send glib signal to the panel, depending on capabilities of the client.
+ */
+void                 bus_input_context_update_preedit_text
+                                                (BusInputContext    *context,
+                                                 IBusText           *text,
+                                                 guint               cursor_pos,
+                                                 gboolean            visible,
+                                                 guint               mode,
+                                                 gboolean
+                                                                 use_extension);
+
+/**
+ * bus_input_context_update_lookup_table:
+ * @context: A #BusInputContext.
+ * @table: An #IBusTable.
+ * @visible: %TRUE if the lookup table is visible. Otherwise %FALSE.
+ * @is_extension: %TRUE if the lookup table is created by panel extensions.
+ *
+ * Update contents in the lookup table.
+ * Send D-Bus signal to update status of client or send glib signal to the
+ * panel, depending on capabilities of the client.
+ */
+void                 bus_input_context_update_lookup_table
+                                                (BusInputContext    *context,
+                                                 IBusLookupTable    *table,
+                                                 gboolean            visible,
+                                                 gboolean
+                                                                  is_extension);
+
+
+/**
+ * bus_input_context_panel_extension_received:
+ * @context: A #BusInputContext.
+ * @event: An #IBusExtensionEvent.
+ *
+ * Send An #IBusExtensionEvent callback from an extension.
+ */
+void                 bus_input_context_panel_extension_received
+                                                (BusInputContext    *context,
+                                                 IBusExtensionEvent *event);
 G_END_DECLS
 #endif

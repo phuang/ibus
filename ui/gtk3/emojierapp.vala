@@ -28,8 +28,9 @@ int partial_match_condition = -1;
 
 public class EmojiApplication : Gtk.Application {
     private IBusEmojier? m_emojier;
-    GLib.Settings m_settings_emoji =
+    private GLib.Settings m_settings_emoji =
             new GLib.Settings("org.freedesktop.ibus.panel.emoji");
+    private ApplicationCommandLine? m_command_line = null;
 
 
     private EmojiApplication() {
@@ -40,25 +41,39 @@ public class EmojiApplication : Gtk.Application {
 
 
     private void show_dialog(ApplicationCommandLine command_line) {
-        m_emojier = new IBusEmojier();
-        // For title handling in gnome-shell
-        add_window(m_emojier);
-        Gdk.Event event = Gtk.get_current_event();
-        // Plasma and GNOME3 desktop returns null event
-        if (event == null) {
-            event = new Gdk.Event(Gdk.EventType.KEY_PRESS);
-            event.key.time = Gdk.CURRENT_TIME;
-            // event.get_seat() refers event.any.window
-            event.key.window = Gdk.get_default_root_window();
-            event.key.window.ref();
-        }
-        string emoji = m_emojier.run("", event);
-        remove_window(m_emojier);
-        if (emoji == null) {
-            m_emojier = null;
-            command_line.print("%s\n", _("Canceled to choose an emoji."));
+        m_command_line = command_line;
+        m_emojier.reset();
+        m_emojier.set_annotation("");
+        m_emojier.show_all();
+    }
+
+
+    public void candidate_clicked_lookup_table(uint index,
+                                               uint button,
+                                               uint state) {
+        if (m_command_line == null)
+            return;
+        if (button == IBusEmojier.BUTTON_CLOSE_BUTTON) {
+            m_emojier.hide();
+            m_command_line.print("%s\n", _("Canceled to choose an emoji."));
+            m_command_line = null;
             return;
         }
+        if (m_emojier == null)
+            return;
+        bool show_candidate = false;
+        uint ncandidates = m_emojier.get_number_of_candidates();
+        if (ncandidates > 0 && ncandidates >= index) {
+            m_emojier.set_cursor_pos(index);
+            show_candidate = m_emojier.has_variants(index);
+        } else {
+            return;
+        }
+        if (show_candidate) {
+            return;
+        }
+        string emoji = m_emojier.get_current_candidate();
+        m_emojier.hide();
         Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
         clipboard.set_text(emoji, -1);
         clipboard.store();
@@ -75,9 +90,8 @@ public class EmojiApplication : Gtk.Application {
             emojier_favorites += emoji;
             m_settings_emoji.set_strv("favorites", emojier_favorites);
         }
-
-        m_emojier = null;
-        command_line.print("%s\n", _("Copied an emoji to your clipboard."));
+        m_command_line.print("%s\n", _("Copied an emoji to your clipboard."));
+        m_command_line = null;
     }
 
 
@@ -88,7 +102,7 @@ public class EmojiApplication : Gtk.Application {
     }
 
 
-    private int _command_line (ApplicationCommandLine command_line) {
+    private int _command_line(ApplicationCommandLine command_line) {
         // Set default font size
         IBusEmojier.set_emoji_font(m_settings_emoji.get_string("font"));
 
@@ -181,18 +195,34 @@ public class EmojiApplication : Gtk.Application {
 
         IBusEmojier.load_unicode_dict();
 
+        if (m_emojier == null) {
+            m_emojier = new IBusEmojier();
+            // For title handling in gnome-shell
+            add_window(m_emojier);
+            m_emojier.candidate_clicked.connect((i, b, s) => {
+                candidate_clicked_lookup_table(i, b, s);
+            });
+        }
+
         activate_dialog(command_line);
 
         return Posix.EXIT_SUCCESS;
     }
 
 
-    public override int command_line (ApplicationCommandLine command_line) {
+    public override int command_line(ApplicationCommandLine command_line) {
         // keep the application running until we are done with this commandline
         this.hold();
         int result = _command_line(command_line);
         this.release();
         return result;
+    }
+
+
+    public override void shutdown() {
+        base.shutdown();
+        remove_window(m_emojier);
+        m_emojier = null;
     }
 
 

@@ -52,6 +52,10 @@ enum {
     PROPERTY_HIDE,
     COMMIT_TEXT,
     PANEL_EXTENSION,
+    PANEL_EXTENSION_REGISTER_KEYS,
+    UPDATE_PREEDIT_TEXT_RECEIVED,
+    UPDATE_LOOKUP_TABLE_RECEIVED,
+    UPDATE_AUXILIARY_TEXT_RECEIVED,
     LAST_SIGNAL,
 };
 
@@ -125,8 +129,8 @@ bus_panel_proxy_new (BusConnection *connection,
     case PANEL_TYPE_PANEL:
         path = IBUS_PATH_PANEL;
         break;
-    case PANEL_TYPE_EXTENSION:
-        path = IBUS_PATH_PANEL_EXTENSION;
+    case PANEL_TYPE_EXTENSION_EMOJI:
+        path = IBUS_PATH_PANEL_EXTENSION_EMOJI;
         break;
     default:
         g_return_val_if_reached (NULL);
@@ -257,9 +261,53 @@ bus_panel_proxy_class_init (BusPanelProxyClass *class)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
+            bus_marshal_VOID__OBJECT,
+            G_TYPE_NONE, 1,
+            IBUS_TYPE_EXTENSION_EVENT);
+
+    panel_signals[PANEL_EXTENSION_REGISTER_KEYS] =
+        g_signal_new (I_("panel-extension-register-keys"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
             bus_marshal_VOID__VARIANT,
             G_TYPE_NONE, 1,
             G_TYPE_VARIANT);
+
+    panel_signals[UPDATE_PREEDIT_TEXT_RECEIVED] =
+        g_signal_new (I_("update-preedit-text-received"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__OBJECT_UINT_BOOLEAN,
+            G_TYPE_NONE, 3,
+            IBUS_TYPE_TEXT,
+            G_TYPE_UINT,
+            G_TYPE_BOOLEAN);
+
+    panel_signals[UPDATE_LOOKUP_TABLE_RECEIVED] =
+        g_signal_new (I_("update-lookup-table-received"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__OBJECT_BOOLEAN,
+            G_TYPE_NONE, 2,
+            IBUS_TYPE_LOOKUP_TABLE,
+            G_TYPE_BOOLEAN);
+
+    panel_signals[UPDATE_AUXILIARY_TEXT_RECEIVED] =
+        g_signal_new (I_("update-auxiliary-text-received"),
+            G_TYPE_FROM_CLASS (class),
+            G_SIGNAL_RUN_LAST,
+            0,
+            NULL, NULL,
+            bus_marshal_VOID__OBJECT_BOOLEAN,
+            G_TYPE_NONE, 2,
+            IBUS_TYPE_TEXT,
+            G_TYPE_BOOLEAN);
 }
 
 static void
@@ -355,23 +403,83 @@ bus_panel_proxy_g_signal (GDBusProxy  *proxy,
 
     if (g_strcmp0 ("CommitText", signal_name) == 0) {
         GVariant *arg0 = NULL;
-        g_variant_get (parameters, "(v)", &arg0);
-        g_return_if_fail (arg0 != NULL);
 
+        g_variant_get (parameters, "(v)", &arg0);
+        g_return_if_fail (arg0);
         IBusText *text = IBUS_TEXT (ibus_serializable_deserialize (arg0));
         g_variant_unref (arg0);
-        g_return_if_fail (text != NULL);
+        g_return_if_fail (text);
         g_signal_emit (panel, panel_signals[COMMIT_TEXT], 0, text);
         _g_object_unref_if_floating (text);
         return;
     }
 
     if (g_strcmp0 ("PanelExtension", signal_name) == 0) {
-        if (panel->panel_type != PANEL_TYPE_PANEL) {
-            g_warning ("Wrong signal");
-            return;
-        }
-        g_signal_emit (panel, panel_signals[PANEL_EXTENSION], 0, parameters);
+        GVariant *arg0 = NULL;
+
+        g_variant_get (parameters, "(v)", &arg0);
+        g_return_if_fail (arg0);
+        IBusExtensionEvent *event = IBUS_EXTENSION_EVENT (
+                ibus_serializable_deserialize (arg0));
+        g_variant_unref (arg0);
+        g_return_if_fail (event);
+        g_signal_emit (panel, panel_signals[PANEL_EXTENSION], 0, event);
+        _g_object_unref_if_floating (event);
+        return;
+    }
+
+    if (g_strcmp0 ("PanelExtensionRegisterKeys", signal_name) == 0) {
+        g_signal_emit (panel, panel_signals[PANEL_EXTENSION_REGISTER_KEYS], 0,
+                       parameters);
+        return;
+    }
+
+    if (g_strcmp0 ("UpdatePreeditTextReceived", signal_name) == 0) {
+        GVariant *variant = NULL;
+        guint cursor_pos = 0;
+        gboolean visible = FALSE;
+        IBusText *text = NULL;
+
+        g_variant_get (parameters, "(vub)", &variant, &cursor_pos, &visible);
+        g_return_if_fail (variant);
+        text = (IBusText *) ibus_serializable_deserialize (variant);
+        g_variant_unref (variant);
+        g_return_if_fail (text);
+        g_signal_emit (panel, panel_signals[UPDATE_PREEDIT_TEXT_RECEIVED], 0,
+                       text, cursor_pos, visible);
+        _g_object_unref_if_floating (text);
+        return;
+    }
+
+    if (g_strcmp0 ("UpdateLookupTableReceived", signal_name) == 0) {
+        GVariant *variant = NULL;
+        gboolean visible = FALSE;
+        IBusLookupTable *table = NULL;
+
+        g_variant_get (parameters, "(vb)", &variant, &visible);
+        g_return_if_fail (variant);
+        table = (IBusLookupTable *) ibus_serializable_deserialize (variant);
+        g_variant_unref (variant);
+        g_return_if_fail (table);
+        g_signal_emit (panel, panel_signals[UPDATE_LOOKUP_TABLE_RECEIVED], 0,
+                       table, visible);
+        _g_object_unref_if_floating (table);
+        return;
+    }
+
+    if (g_strcmp0 ("UpdateAuxiliaryTextReceived", signal_name) == 0) {
+        GVariant *variant = NULL;
+        gboolean visible = FALSE;
+        IBusText *text = NULL;
+
+        g_variant_get (parameters, "(vb)", &variant, &visible);
+        g_return_if_fail (variant);
+        text = (IBusText *) ibus_serializable_deserialize (variant);
+        g_variant_unref (variant);
+        g_return_if_fail (text);
+        g_signal_emit (panel, panel_signals[UPDATE_AUXILIARY_TEXT_RECEIVED], 0,
+                       text, visible);
+        _g_object_unref_if_floating (text);
         return;
     }
 
@@ -552,12 +660,17 @@ static void
 bus_panel_proxy_commit_text (BusPanelProxy *panel,
                              IBusText      *text)
 {
+    gboolean use_extension = TRUE;
     g_assert (BUS_IS_PANEL_PROXY (panel));
     g_assert (text != NULL);
 
-    if (panel->focused_context) {
-        bus_input_context_commit_text (panel->focused_context, text);
-    }
+    if (!panel->focused_context)
+        return;
+    if (panel->panel_type != PANEL_TYPE_PANEL)
+        use_extension = FALSE;
+    bus_input_context_commit_text_use_extension (panel->focused_context,
+                                                 text,
+                                                 use_extension);
 }
 
 #define DEFINE_FUNCTION(Name, name)                     \
@@ -876,4 +989,75 @@ bus_panel_proxy_get_panel_type (BusPanelProxy    *panel)
 {
     g_assert (BUS_IS_PANEL_PROXY (panel));
     return panel->panel_type;
+}
+
+void
+bus_panel_proxy_panel_extension_received (BusPanelProxy      *panel,
+                                          IBusExtensionEvent *event)
+{
+    GVariant *data;
+
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (event);
+
+    data = ibus_serializable_serialize (IBUS_SERIALIZABLE (event));
+    g_return_if_fail (data);
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "PanelExtensionReceived",
+                       g_variant_new ("(v)", data),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
+}
+
+void
+bus_panel_proxy_process_key_event (BusPanelProxy       *panel,
+                                   guint                keyval,
+                                   guint                keycode,
+                                   guint                state,
+                                   GAsyncReadyCallback  callback,
+                                   gpointer             user_data)
+{
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "ProcessKeyEvent",
+                       g_variant_new ("(uuu)", keyval, keycode, state),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       callback,
+                       user_data);
+}
+
+void
+bus_panel_proxy_commit_text_received (BusPanelProxy *panel,
+                                      IBusText      *text)
+{
+    GVariant *variant;
+
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+    g_assert (IBUS_IS_TEXT (text));
+
+    variant = ibus_serializable_serialize (IBUS_SERIALIZABLE (text));
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "CommitTextReceived",
+                       g_variant_new ("(v)", variant),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
+}
+
+void
+bus_panel_proxy_candidate_clicked_lookup_table (BusPanelProxy *panel,
+                                                guint          index,
+                                                guint          button,
+                                                guint          state)
+{
+    gboolean use_extension = TRUE;
+    g_assert (BUS_IS_PANEL_PROXY (panel));
+
+    g_dbus_proxy_call ((GDBusProxy *)panel,
+                       "CandidateClickedLookupTable",
+                       g_variant_new ("(uuu)", index, button, state),
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, NULL, NULL);
 }

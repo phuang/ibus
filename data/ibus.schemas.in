@@ -354,6 +354,18 @@
       </locale>
     </schema>
     <schema>
+      <key>/schemas/desktop/ibus/panel/emoji/unicode-hotkey</key>
+      <applyto>/desktop/ibus/panel/emoji/unicode-hotkey</applyto>
+      <owner>ibus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[&lt;Control&gt;&lt;Shift&gt;u]</default>
+      <locale name="C">
+        <short>Unicode shortcut keys for gtk_accelerator_parse</short>
+          <long>The shortcut keys for turning Unicode typing on or off</long>
+      </locale>
+    </schema>
+    <schema>
       <key>/schemas/desktop/ibus/panel/emoji/hotkey</key>
       <applyto>/desktop/ibus/panel/emoji/hotkey</applyto>
       <owner>ibus</owner>

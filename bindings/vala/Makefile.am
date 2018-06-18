@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -86,6 +86,7 @@ EXTRA_DIST =                                    \
     ibus-1.0.deps                               \
     ibus-emoji-dialog-1.0.deps                  \
     config.vapi                                 \
+    gdk-wayland.vapi                            \
     xi.vapi                                     \
     $(NULL)
 

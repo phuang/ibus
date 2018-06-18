@@ -78,6 +78,7 @@ AM_VALAFLAGS = \
 	--pkg=ibus-1.0 \
 	--pkg=config \
 	--pkg=xi \
+	--pkg=gdk-wayland \
 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
 	$(NULL)
 
@@ -176,6 +177,7 @@ ibus_ui_emojier_VALASOURCES =                   \
     emojier.vala                                \
     iconwidget.vala                             \
     separator.vala                              \
+    pango.vala                                  \
     $(NULL)
 ibus_ui_emojier_SOURCES =                       \
     $(ibus_ui_emojier_VALASOURCES:.vala=.c)     \
@@ -213,6 +215,7 @@ ibus_extension_gtk3_VALASOURCES =               \
     iconwidget.vala                             \
     keybindingmanager.vala                      \
     panelbinding.vala                           \
+    pango.vala                                  \
     $(NULL)
 ibus_extension_gtk3_SOURCES =                   \
     $(ibus_extension_gtk3_VALASOURCES:.vala=.c) \

@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -324,6 +325,28 @@ void            bus_engine_proxy_set_content_type
  */
 IBusPropList   *bus_engine_proxy_get_properties
                                              (BusEngineProxy     *engine);
+
+/**
+ * bus_engine_proxy_panel_extension_received:
+ * @engine: A #BusEngineProxy.
+ * @event: An #IBusExtensionEvent.
+ *
+ * Send an #IBusExtensionEvent to the engine.
+ */
+void            bus_engine_proxy_panel_extension_received
+                                             (BusEngineProxy     *engine,
+                                              IBusExtensionEvent *event);
+
+/**
+ * bus_engine_proxy_panel_extension_register_keys:
+ * @engine: A #BusEngineProxy.
+ * @parameters: A #GVariant array which includes the name and shortcut keys.
+ *
+ * Send shortcut keys to the engine to enable the extension.
+ */
+void            bus_engine_proxy_panel_extension_register_keys
+                                             (BusEngineProxy     *engine,
+                                              GVariant           *parameters);
 
 G_END_DECLS
 #endif

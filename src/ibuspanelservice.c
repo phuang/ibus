@@ -57,6 +57,9 @@ enum {
     DESTROY_CONTEXT,
     SET_CONTENT_TYPE,
     PANEL_EXTENSION_RECEIVED,
+    PROCESS_KEY_EVENT,
+    COMMIT_TEXT_RECEIVED,
+    CANDIDATE_CLICKED_LOOKUP_TABLE,
     LAST_SIGNAL,
 };
 
@@ -153,7 +156,7 @@ static void      ibus_panel_service_set_content_type
                                     guint                   hints);
 static void      ibus_panel_service_panel_extension_received
                                    (IBusPanelService       *panel,
-                                    GVariant               *data);
+                                    IBusExtensionEvent     *event);
 
 G_DEFINE_TYPE (IBusPanelService, ibus_panel_service, IBUS_TYPE_SERVICE)
 
@@ -184,6 +187,11 @@ static const gchar introspection_xml[] =
     "    <method name='CursorDownLookupTable' />"
     "    <method name='PageUpLookupTable' />"
     "    <method name='PageDownLookupTable' />"
+    "    <method name='CandidateClickedLookupTable'>"
+    "      <arg direction='in' type='u' name='index' />"
+    "      <arg direction='in' type='u' name='button' />"
+    "      <arg direction='in' type='u' name='state' />"
+    "    </method>"
     "    <method name='RegisterProperties'>"
     "      <arg direction='in'  type='v' name='props' />"
     "    </method>"
@@ -221,7 +229,16 @@ static const gchar introspection_xml[] =
     "      <arg direction='in'  type='u' name='hints' />"
     "    </method>"
     "    <method name='PanelExtensionReceived'>"
-    "      <arg direction='in' type='v' name='data' />"
+    "      <arg direction='in' type='v' name='event' />"
+    "    </method>"
+    "    <method name='ProcessKeyEvent'>"
+    "      <arg direction='in'  type='u' name='keyval' />"
+    "      <arg direction='in'  type='u' name='keycode' />"
+    "      <arg direction='in'  type='u' name='state' />"
+    "      <arg direction='out' type='b' />"
+    "    </method>"
+    "    <method name='CommitTextReceived'>"
+    "      <arg direction='in' type='v' name='text' />"
     "    </method>"
     /* Signals */
     "    <signal name='CursorUp' />"
@@ -247,7 +264,23 @@ static const gchar introspection_xml[] =
     "      <arg type='v' name='text' />"
     "    </signal>"
     "    <signal name='PanelExtension'>"
+    "      <arg type='v' name='event' />"
+    "    </signal>"
+    "    <method name='PanelExtensionRegisterKeys'>"
     "      <arg type='v' name='data' />"
+    "    </method>"
+    "    <signal name='UpdatePreeditTextReceived'>"
+    "      <arg type='v' name='text' />"
+    "      <arg type='u' name='cursor_pos' />"
+    "      <arg type='b' name='visible' />"
+    "    </signal>"
+    "    <signal name='UpdateAuxiliaryTextReceived'>"
+    "      <arg type='v' name='text' />"
+    "      <arg type='b' name='visible' />"
+    "    </signal>"
+    "    <signal name='UpdateLookupTableReceived'>"
+    "      <arg type='v' name='table' />"
+    "      <arg type='b' name='visible' />"
     "    </signal>"
     "  </interface>"
     "</node>";
@@ -927,10 +960,81 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusPanelServiceClass, panel_extension_received),
             NULL, NULL,
-            _ibus_marshal_VOID__VARIANT,
+            _ibus_marshal_VOID__OBJECT,
             G_TYPE_NONE,
             1,
-            G_TYPE_VARIANT);
+            IBUS_TYPE_EXTENSION_EVENT);
+
+    /**
+     * IBusPanelService::process-key-event:
+     * @panel: An #IBusPanelService
+     * @keyval: Key symbol of the key press.
+     * @keycode: KeyCode of the key press.
+     * @state: Key modifier flags.
+     *
+     * Emitted when a key event is received.
+     * Implement the member function IBusPanelServiceClass::process_key_event
+     * in extended class to receive this signal.
+     * Both the key symbol and keycode are passed to the member function.
+     * See ibus_input_context_process_key_event() for further explanation of
+     * key symbol, keycode and which to use.
+     *
+     * Returns: %TRUE for successfully process the key; %FALSE otherwise.
+     * See also:  ibus_input_context_process_key_event().
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
+     */
+    panel_signals[PROCESS_KEY_EVENT] =
+        g_signal_new (I_("process-key-event"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusPanelServiceClass, process_key_event),
+            g_signal_accumulator_true_handled, NULL,
+            _ibus_marshal_BOOL__UINT_UINT_UINT,
+            G_TYPE_BOOLEAN,
+            3,
+            G_TYPE_UINT,
+            G_TYPE_UINT,
+            G_TYPE_UINT);
+
+    /**
+     * IBusPanelService::commit-text-received:
+     * @panel: An #IBusPanelService
+     * @text: A #IBusText
+     *
+     * Emitted when the client application get the ::commit-text-received.
+     * Implement the member function
+     * IBusPanelServiceClass::commit_text_received in extended class to
+     * receive this signal.
+     *
+     * <note><para>Argument @user_data is ignored in this function.</para>
+     * </note>
+     */
+    panel_signals[COMMIT_TEXT_RECEIVED] =
+        g_signal_new (I_("commit-text-received"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusPanelServiceClass, commit_text_received),
+            NULL, NULL,
+            _ibus_marshal_VOID__OBJECT,
+            G_TYPE_NONE,
+            1,
+            IBUS_TYPE_TEXT);
+
+    panel_signals[CANDIDATE_CLICKED_LOOKUP_TABLE] =
+        g_signal_new (I_("candidate-clicked-lookup-table"),
+            G_TYPE_FROM_CLASS (gobject_class),
+            G_SIGNAL_RUN_LAST,
+            G_STRUCT_OFFSET (IBusPanelServiceClass,
+                             candidate_clicked_lookup_table),
+            NULL, NULL,
+            _ibus_marshal_VOID__UINT_UINT_UINT,
+            G_TYPE_NONE,
+            3,
+            G_TYPE_UINT,
+            G_TYPE_UINT,
+            G_TYPE_UINT);
 }
 
 static void
@@ -1129,9 +1233,14 @@ ibus_panel_service_service_method_call (IBusService           *service,
     }
 
     if (g_strcmp0 (method_name, "PanelExtensionReceived") == 0) {
-        GVariant *variant = NULL;
-        g_variant_get (parameters, "(v)", &variant);
-        if (variant == NULL) {
+        GVariant *arg0 = NULL;
+        IBusExtensionEvent *event = NULL;
+        g_variant_get (parameters, "(v)", &arg0);
+        if (arg0) {
+            event = IBUS_EXTENSION_EVENT (ibus_serializable_deserialize (arg0));
+            g_variant_unref (arg0);
+        }
+        if (!event) {
             g_dbus_method_invocation_return_error (
                     invocation,
                     G_DBUS_ERROR,
@@ -1140,11 +1249,63 @@ ibus_panel_service_service_method_call (IBusService           *service,
             return;
         }
         g_signal_emit (panel, panel_signals[PANEL_EXTENSION_RECEIVED], 0,
-                       variant);
-        g_variant_unref (variant);
+                       event);
+        _g_object_unref_if_floating (event);
         g_dbus_method_invocation_return_value (invocation, NULL);
         return;
     }
+    if (g_strcmp0 (method_name, "ProcessKeyEvent") == 0) {
+        guint keyval, keycode, state;
+        gboolean retval = FALSE;
+
+        g_variant_get (parameters, "(uuu)", &keyval, &keycode, &state);
+        g_signal_emit (panel,
+                       panel_signals[PROCESS_KEY_EVENT],
+                       0,
+                       keyval,
+                       keycode,
+                       state,
+                       &retval);
+        g_dbus_method_invocation_return_value (invocation,
+                                               g_variant_new ("(b)", retval));
+        return;
+    }
+    if (g_strcmp0 (method_name, "CommitTextReceived") == 0) {
+        GVariant *arg0 = NULL;
+        IBusText *text = NULL;
+
+        g_variant_get (parameters, "(v)", &arg0);
+        if (arg0) {
+            text = (IBusText *) ibus_serializable_deserialize (arg0);
+            g_variant_unref (arg0);
+        }
+        if (!text) {
+            g_dbus_method_invocation_return_error (
+                    invocation,
+                    G_DBUS_ERROR,
+                    G_DBUS_ERROR_FAILED,
+                    "CommitTextReceived method gives NULL");
+            return;
+        }
+        g_signal_emit (panel,
+                       panel_signals[COMMIT_TEXT_RECEIVED],
+                       0,
+                       text);
+        _g_object_unref_if_floating (text);
+        return;
+    }
+    if (g_strcmp0 (method_name, "CandidateClickedLookupTable") == 0) {
+        guint index = 0;
+        guint button = 0;
+        guint state = 0;
+        g_variant_get (parameters, "(uuu)", &index, &button, &state);
+        g_signal_emit (panel,
+                       panel_signals[CANDIDATE_CLICKED_LOOKUP_TABLE],
+                       0,
+                       index, button, state);
+        return;
+    }
+
 
     const static struct {
         const gchar *name;
@@ -1318,8 +1479,8 @@ ibus_panel_service_set_content_type (IBusPanelService *panel,
 }
 
 static void
-ibus_panel_service_panel_extension_received (IBusPanelService *panel,
-                                             GVariant         *data)
+ibus_panel_service_panel_extension_received (IBusPanelService   *panel,
+                                             IBusExtensionEvent *event)
 {
     ibus_panel_service_not_implemented(panel);
 }
@@ -1396,10 +1557,11 @@ void
 ibus_panel_service_commit_text (IBusPanelService *panel,
                                 IBusText         *text)
 {
+    GVariant *variant;
     g_return_if_fail (IBUS_IS_PANEL_SERVICE (panel));
     g_return_if_fail (IBUS_IS_TEXT (text));
 
-    GVariant *variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    variant = ibus_serializable_serialize ((IBusSerializable *)text);
     ibus_service_emit_signal ((IBusService *) panel,
                               NULL,
                               IBUS_INTERFACE_PANEL,
@@ -1413,18 +1575,144 @@ ibus_panel_service_commit_text (IBusPanelService *panel,
 }
 
 void
-ibus_panel_service_panel_extension (IBusPanelService *panel,
-                                    GVariant         *variant)
+ibus_panel_service_panel_extension (IBusPanelService   *panel,
+                                    IBusExtensionEvent *event)
 {
+    GVariant *variant;
     g_return_if_fail (IBUS_IS_PANEL_SERVICE (panel));
-    g_return_if_fail (variant);
+    g_return_if_fail (IBUS_IS_EXTENSION_EVENT (event));
 
+    variant = ibus_serializable_serialize ((IBusSerializable *)event);
     ibus_service_emit_signal ((IBusService *) panel,
                               NULL,
                               IBUS_INTERFACE_PANEL,
                               "PanelExtension",
                               g_variant_new ("(v)", variant),
                               NULL);
+
+    if (g_object_is_floating (event)) {
+        g_object_unref (event);
+    }
+}
+
+void
+ibus_panel_service_panel_extension_register_keys (IBusPanelService   *panel,
+                                                  const gchar
+                                                           *first_property_name,
+                                                  ...)
+{
+    GVariantBuilder builder;
+    GVariantBuilder child;
+    const gchar *name;
+    va_list var_args;
+    IBusProcessKeyEventData *keys;
+
+    g_return_if_fail (first_property_name);
+
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
+    name = first_property_name;
+
+    va_start (var_args, first_property_name);
+    do {
+        keys = va_arg (var_args, IBusProcessKeyEventData *);
+        g_return_if_fail (keys != NULL);
+        g_variant_builder_init (&child, G_VARIANT_TYPE ("av"));
+        for (; keys; keys++) {
+            if (keys->keyval == 0 && keys->keycode == 0 && keys->state == 0)
+                break;
+            g_variant_builder_add (&child, "v",
+                                   g_variant_new ("(iii)",
+                                                  keys->keyval,
+                                                  keys->keycode, 
+                                                  keys->state));
+        }
+        g_variant_builder_add (&builder, "{sv}",
+                               g_strdup (name), g_variant_builder_end (&child));
+    } while ((name = va_arg (var_args, const gchar *)));
+    va_end (var_args);
+
+    ibus_service_emit_signal ((IBusService *) panel,
+                              NULL,
+                              IBUS_INTERFACE_PANEL,
+                              "PanelExtensionRegisterKeys",
+                              g_variant_new ("(v)",
+                                             g_variant_builder_end (&builder)),
+                              NULL);
+}
+
+void
+ibus_panel_service_update_preedit_text_received (IBusPanelService *panel,
+                                                 IBusText         *text,
+                                                 guint             cursor_pos,
+                                                 gboolean          visible)
+{
+    GVariant *variant;
+
+    g_return_if_fail (IBUS_IS_PANEL_SERVICE (panel));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    g_return_if_fail (variant);
+    ibus_service_emit_signal ((IBusService *) panel,
+                              NULL,
+                              IBUS_INTERFACE_PANEL,
+                              "UpdatePreeditTextReceived",
+                              g_variant_new ("(vub)",
+                                             variant, cursor_pos, visible),
+                              NULL);
+
+    if (g_object_is_floating (text)) {
+        g_object_unref (text);
+    }
+}
+
+void
+ibus_panel_service_update_auxiliary_text_received (IBusPanelService *panel,
+                                                   IBusText         *text,
+                                                   gboolean          visible)
+{
+    GVariant *variant;
+    g_return_if_fail (IBUS_IS_PANEL_SERVICE (panel));
+    g_return_if_fail (IBUS_IS_TEXT (text));
+
+    variant = ibus_serializable_serialize ((IBusSerializable *)text);
+    g_return_if_fail (variant);
+    ibus_service_emit_signal ((IBusService *) panel,
+                              NULL,
+                              IBUS_INTERFACE_PANEL,
+                              "UpdateAuxiliaryTextReceived",
+                              g_variant_new ("(vb)",
+                                             variant, visible),
+                              NULL);
+
+    if (g_object_is_floating (text)) {
+        g_object_unref (text);
+    }
+}
+
+void
+ibus_panel_service_update_lookup_table_received (IBusPanelService *panel,
+                                                 IBusLookupTable  *table,
+                                                 gboolean          visible)
+{
+    GVariant *variant;
+
+    g_return_if_fail (IBUS_IS_PANEL_SERVICE (panel));
+    g_return_if_fail (IBUS_IS_LOOKUP_TABLE (table));
+
+    variant = ibus_serializable_serialize ((IBusSerializable *)table);
+    g_return_if_fail (variant);
+    ibus_service_emit_signal ((IBusService *) panel,
+                              NULL,
+                              IBUS_INTERFACE_PANEL,
+                              "UpdateLookupTableReceived",
+                              g_variant_new ("(vb)",
+                                             variant, visible),
+                              NULL);
+
+    if (g_object_is_floating (table)) {
+        g_object_unref (table);
+    }
 }
 
 #define DEFINE_FUNC(name, Name)                             \

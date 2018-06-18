@@ -38,6 +38,7 @@
 #include "ibuslookuptable.h"
 #include "ibusservice.h"
 #include "ibusproplist.h"
+#include "ibusxevent.h"
 
 /*
  * Type macros.
@@ -130,11 +131,24 @@ struct _IBusPanelServiceClass {
                                             gint                    h);
     void     (* panel_extension_received)
                                            (IBusPanelService       *panel,
-                                            GVariant               *data);
+                                            IBusExtensionEvent     *event);
+    gboolean (* process_key_event)
+                                           (IBusPanelService       *panel,
+                                            guint                   keyval,
+                                            guint                   keycode,
+                                            guint                   state);
+    void     (* commit_text_received)
+                                           (IBusPanelService       *panel,
+                                            IBusText               *text);
+    void     (* candidate_clicked_lookup_table)
+                                           (IBusPanelService       *panel,
+                                            guint                   index,
+                                            guint                   button,
+                                            guint                   state);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[5];  // We can add 8 pointers without breaking the ABI.
+    gpointer pdummy[2];  // We can add 8 pointers without breaking the ABI.
 };
 
 GType            ibus_panel_service_get_type  (void);
@@ -248,12 +262,105 @@ void ibus_panel_service_commit_text       (IBusPanelService *panel,
 /**
  * ibus_panel_service_panel_extension:
  * @panel: An #IBusPanelService
- * @data: (transfer full): A #GVariant data which is sent to a panel extension. 
+ * @event: (transfer full): A #PanelExtensionEvent which is sent to a
+ *                          panel extension. 
  *
+ * Enable or disable a panel extension with #IBusExtensionEvent.
  * Notify that a data is sent
  * by sending a "PanelExtension" message to IBus panel extension service.
  */
-void ibus_panel_service_panel_extension   (IBusPanelService *panel,
-                                           GVariant         *data);
+void ibus_panel_service_panel_extension   (IBusPanelService   *panel,
+                                           IBusExtensionEvent *event);
+
+/**
+ * ibus_panel_service_panel_extension_register_keys:
+ * @panel: An #IBusPanelService
+ * @first_property_name: the first name of the shortcut keys. This is %NULL
+ " terminated.
+ *
+ * Register shortcut keys to enable panel extensions with #IBusExtensionEvent.
+ * Notify that a data is sent
+ * by sending a "PanelExtensionRegisterKeys" message to IBus panel extension
+ * service. Seems Vala does not support uint[][3] and use
+ * IBusProcessKeyEventData[]. E.g.
+ * IBusProcessKeyEventData[] keys = {{
+ *         IBUS_KEY_e, 0, IBUS_SHIFT_MASK | IBUS_SUPER_MASK }};
+ * ibus_panel_service_panel_extension_register_keys(panel, "emoji", keys, NULL);
+ */
+void ibus_panel_service_panel_extension_register_keys
+                                           (IBusPanelService  *panel,
+                                            const gchar       *first_property_name,
+                                            ...);
+
+/**
+ * ibus_panel_service_update_preedit_text_received:
+ * @panel: An #IBusPanelService
+ * @text: Update content.
+ * @cursor_pos: Current position of cursor
+ * @visible: Whether the pre-edit buffer is visible.
+ *
+ * Notify that the preedit is updated by the panel extension
+ *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
+ */
+void ibus_panel_service_update_preedit_text_received
+                                          (IBusPanelService *panel,
+                                           IBusText         *text,
+                                           guint             cursor_pos,
+                                           gboolean          visible);
+
+/**
+ * ibus_panel_service_show_preedit_text_received:
+ * @panel: An IBusPanelService
+ *
+ * Notify that the preedit is shown by the panel extension
+ */
+void ibus_panel_service_show_preedit_text_received
+                                          (IBusPanelService *panel);
+
+/**
+ * ibus_panel_service_hide_preedit_text_received:
+ * @panel: An IBusPanelService
+ *
+ * Notify that the preedit is hidden by the panel extension
+ */
+void ibus_panel_service_hide_preedit_text_received
+                                          (IBusPanelService *panel);
+
+/**
+ * ibus_panel_service_update_auxiliary_text_received:
+ * @panel: An #IBusPanelService
+ * @text: An #IBusText
+ * @visible: Whether the auxilirary text is visible.
+ *
+ * Notify that the auxilirary is updated by the panel extension.
+ *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
+ */
+void ibus_panel_service_update_auxiliary_text_received
+                                          (IBusPanelService *panel,
+                                           IBusText         *text,
+                                           gboolean          visible);
+
+/**
+ * ibus_panel_service_update_lookup_table_received:
+ * @panel: An #IBusPanelService
+ * @table: An #IBusLookupTable
+ * @visible: Whether the lookup table is visible.
+ *
+ * Notify that the lookup table is updated by the panel extension.
+ *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
+ */
+void ibus_panel_service_update_lookup_table_received
+                                          (IBusPanelService *panel,
+                                           IBusLookupTable  *table,
+                                           gboolean          visible);
 G_END_DECLS
 #endif
