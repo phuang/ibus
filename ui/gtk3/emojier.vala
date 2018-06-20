@@ -253,6 +253,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     private static string m_current_lang_id;
     private static string m_emoji_font_family;
     private static int m_emoji_font_size;
+    private static bool m_emoji_font_changed = false;
     private static string[] m_favorites;
     private static string[] m_favorite_annotations;
     private static int m_emoji_max_seq_len;
@@ -348,88 +349,20 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         add_action(action);
         if (m_current_lang_id == null)
             m_current_lang_id = "en";
-        if (m_emoji_font_family == null)
+        if (m_emoji_font_family == null) {
             m_emoji_font_family = "Monospace";
-        if (m_emoji_font_size == 0)
+            m_emoji_font_changed = true;
+        }
+        if (m_emoji_font_size == 0) {
             m_emoji_font_size = 16;
+            m_emoji_font_changed = true;
+        }
         if (m_favorites == null)
             m_favorites = {};
         if (m_favorite_annotations == null)
             m_favorite_annotations = {};
 
-        Gdk.Display display = Gdk.Display.get_default();
-        Gdk.Screen screen = (display != null) ?
-                display.get_default_screen() : null;
-
-        if (screen == null) {
-            warning("Could not open display.");
-            return;
-        }
-        // Set en locale because de_DE's decimal_point is ',' instead of '.'
-        string? backup_locale =
-            Intl.setlocale(LocaleCategory.NUMERIC, null).dup();
-        if (Intl.setlocale(LocaleCategory.NUMERIC, "en_US.UTF-8") == null) {
-          if (Intl.setlocale(LocaleCategory.NUMERIC, "C.UTF-8") == null) {
-              if (Intl.setlocale(LocaleCategory.NUMERIC, "C") == null) {
-                  warning("You don't install either en_US.UTF-8 or C.UTF-8 " +
-                          "or C locale");
-              }
-          }
-        }
-        m_rgba = new ThemedRGBA(this);
-        uint bg_red = (uint)(m_rgba.normal_bg.red * 255);
-        uint bg_green = (uint)(m_rgba.normal_bg.green * 255);
-        uint bg_blue = (uint)(m_rgba.normal_bg.blue * 255);
-        double bg_alpha = m_rgba.normal_bg.alpha;
-        string data =
-                "#IBusEmojierWhiteLabel { background-color: " +
-                        "rgba(%u, %u, %u, %lf); ".printf(
-                        bg_red, bg_green, bg_blue, bg_alpha) +
-                "font-family: %s; font-size: %dpt; ".printf(
-                        m_emoji_font_family, m_emoji_font_size) +
-                "border-width: 4px; border-radius: 3px; } ";
-
-        uint fg_red = (uint)(m_rgba.selected_fg.red * 255);
-        uint fg_green = (uint)(m_rgba.selected_fg.green * 255);
-        uint fg_blue = (uint)(m_rgba.selected_fg.blue * 255);
-        double fg_alpha = m_rgba.selected_fg.alpha;
-        bg_red = (uint)(m_rgba.selected_bg.red * 255);
-        bg_green = (uint)(m_rgba.selected_bg.green * 255);
-        bg_blue = (uint)(m_rgba.selected_bg.blue * 255);
-        bg_alpha = m_rgba.selected_bg.alpha;
-        data += "#IBusEmojierSelectedLabel { color: " +
-                        "rgba(%u, %u, %u, %lf); ".printf(
-                        fg_red, fg_green, fg_blue, fg_alpha) +
-                "font-family: %s; font-size: %dpt; ".printf(
-                        m_emoji_font_family, m_emoji_font_size) +
-                "background-color: " +
-                        "rgba(%u, %u, %u, %lf); ".printf(
-                        bg_red, bg_green, bg_blue, bg_alpha) +
-                "border-width: 4px; border-radius: 3px; }";
-        data += "#IBusEmojierGoldLabel { color: " +
-                        "rgba(%u, %u, %u, %lf); ".printf(
-                        fg_red, fg_green, fg_blue, fg_alpha) +
-                "font-family: %s; font-size: %dpt; ".printf(
-                        m_emoji_font_family, m_emoji_font_size) +
-                "background-color: #b09c5f; " +
-                "border-width: 4px; border-radius: 3px; }";
-
-        Gtk.CssProvider css_provider = new Gtk.CssProvider();
-        try {
-            css_provider.load_from_data(data, -1);
-        } catch (GLib.Error e) {
-            warning("Failed css_provider_from_data: %s", e.message);
-            return;
-        }
-        if (backup_locale != null)
-            Intl.setlocale(LocaleCategory.NUMERIC, backup_locale);
-        else
-            Intl.setlocale(LocaleCategory.NUMERIC, "");
-
-        Gtk.StyleContext.add_provider_for_screen(
-                screen,
-                css_provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        set_css_data();
 
         m_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(m_vbox);
@@ -795,6 +728,84 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
+    private void set_css_data() {
+        Gdk.Display display = Gdk.Display.get_default();
+        Gdk.Screen screen = (display != null) ?
+                display.get_default_screen() : null;
+
+        if (screen == null) {
+            warning("Could not open display.");
+            return;
+        }
+        // Set en locale because de_DE's decimal_point is ',' instead of '.'
+        string? backup_locale =
+            Intl.setlocale(LocaleCategory.NUMERIC, null).dup();
+        if (Intl.setlocale(LocaleCategory.NUMERIC, "en_US.UTF-8") == null) {
+          if (Intl.setlocale(LocaleCategory.NUMERIC, "C.UTF-8") == null) {
+              if (Intl.setlocale(LocaleCategory.NUMERIC, "C") == null) {
+                  warning("You don't install either en_US.UTF-8 or C.UTF-8 " +
+                          "or C locale");
+              }
+          }
+        }
+        if (m_rgba == null)
+            m_rgba = new ThemedRGBA(this);
+        uint bg_red = (uint)(m_rgba.normal_bg.red * 255);
+        uint bg_green = (uint)(m_rgba.normal_bg.green * 255);
+        uint bg_blue = (uint)(m_rgba.normal_bg.blue * 255);
+        double bg_alpha = m_rgba.normal_bg.alpha;
+        string data =
+                "#IBusEmojierWhiteLabel { background-color: " +
+                        "rgba(%u, %u, %u, %lf); ".printf(
+                        bg_red, bg_green, bg_blue, bg_alpha) +
+                "font-family: %s; font-size: %dpt; ".printf(
+                        m_emoji_font_family, m_emoji_font_size) +
+                "border-width: 4px; border-radius: 3px; } ";
+
+        uint fg_red = (uint)(m_rgba.selected_fg.red * 255);
+        uint fg_green = (uint)(m_rgba.selected_fg.green * 255);
+        uint fg_blue = (uint)(m_rgba.selected_fg.blue * 255);
+        double fg_alpha = m_rgba.selected_fg.alpha;
+        bg_red = (uint)(m_rgba.selected_bg.red * 255);
+        bg_green = (uint)(m_rgba.selected_bg.green * 255);
+        bg_blue = (uint)(m_rgba.selected_bg.blue * 255);
+        bg_alpha = m_rgba.selected_bg.alpha;
+        data += "#IBusEmojierSelectedLabel { color: " +
+                        "rgba(%u, %u, %u, %lf); ".printf(
+                        fg_red, fg_green, fg_blue, fg_alpha) +
+                "font-family: %s; font-size: %dpt; ".printf(
+                        m_emoji_font_family, m_emoji_font_size) +
+                "background-color: " +
+                        "rgba(%u, %u, %u, %lf); ".printf(
+                        bg_red, bg_green, bg_blue, bg_alpha) +
+                "border-width: 4px; border-radius: 3px; }";
+        data += "#IBusEmojierGoldLabel { color: " +
+                        "rgba(%u, %u, %u, %lf); ".printf(
+                        fg_red, fg_green, fg_blue, fg_alpha) +
+                "font-family: %s; font-size: %dpt; ".printf(
+                        m_emoji_font_family, m_emoji_font_size) +
+                "background-color: #b09c5f; " +
+                "border-width: 4px; border-radius: 3px; }";
+
+        Gtk.CssProvider css_provider = new Gtk.CssProvider();
+        try {
+            css_provider.load_from_data(data, -1);
+        } catch (GLib.Error e) {
+            warning("Failed css_provider_from_data: %s", e.message);
+            return;
+        }
+        if (backup_locale != null)
+            Intl.setlocale(LocaleCategory.NUMERIC, backup_locale);
+        else
+            Intl.setlocale(LocaleCategory.NUMERIC, "");
+
+        Gtk.StyleContext.add_provider_for_screen(
+                screen,
+                css_provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+    }
+
+
     private void set_fixed_size() {
         resize(20, 1);
     }
@@ -1038,7 +1049,8 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             m_lookup_table.append_candidate(text);
         }
         m_backward = block_name;
-        m_annotation = m_lookup_table.get_candidate(0).text;
+        if (m_lookup_table.get_number_of_candidates() > 0)
+            m_annotation = m_lookup_table.get_candidate(0).text;
     }
 
 
@@ -1385,6 +1397,10 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     private void show_candidate_panel() {
         remove_all_children();
         set_fixed_size();
+        if (m_emoji_font_changed) {
+            set_css_data();
+            m_emoji_font_changed = false;
+        }
         uint page_size = m_lookup_table.get_page_size();
         uint ncandidates = m_lookup_table.get_number_of_candidates();
         uint cursor = m_lookup_table.get_cursor_pos();
@@ -1488,32 +1504,33 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 
             m_candidates += label;
         }
-        if (n > 0) {
-            m_candidate_panel_is_visible = true;
-            if (!m_is_up_side_down) {
-                show_arrow_buttons();
-                if (backward_button != null) {
-                    m_vbox.add(backward_button);
-                    backward_button.show_all();
-                }
+        m_candidate_panel_is_visible = true;
+        if (!m_is_up_side_down) {
+            show_arrow_buttons();
+            if (backward_button != null) {
+                m_vbox.add(backward_button);
+                backward_button.show_all();
+            }
+            if (n > 0) {
                 m_vbox.add(grid);
                 grid.show_all();
                 show_description();
-                if (!m_loaded_unicode)
-                    show_unicode_progress_bar();
             }
-            if (m_is_up_side_down) {
-                if (!m_loaded_unicode)
-                    show_unicode_progress_bar();
+            if (!m_loaded_unicode)
+                show_unicode_progress_bar();
+        } else {
+            if (!m_loaded_unicode)
+                show_unicode_progress_bar();
+            if (n > 0) {
                 show_description();
                 m_vbox.add(grid);
                 grid.show_all();
-                if (backward_button != null) {
-                    m_vbox.add(backward_button);
-                    backward_button.show_all();
-                }
-                show_arrow_buttons();
             }
+            if (backward_button != null) {
+                m_vbox.add(backward_button);
+                backward_button.show_all();
+            }
+            show_arrow_buttons();
         }
     }
 
@@ -2618,11 +2635,15 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         Pango.FontDescription font_desc =
                 Pango.FontDescription.from_string(emoji_font);
         string font_family = font_desc.get_family();
-        if (font_family != null)
+        if (font_family != null) {
             m_emoji_font_family = font_family;
+            m_emoji_font_changed = true;
+        }
         int font_size = font_desc.get_size() / Pango.SCALE;
-        if (font_size != 0)
+        if (font_size != 0) {
             m_emoji_font_size = font_size;
+            m_emoji_font_changed = true;
+        }
     }
 
 

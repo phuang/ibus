@@ -142,7 +142,7 @@ run_test_case()
         --daemonize \
         --cache=none \
         --panel=disable \
-        --panel-extension=disable \
+        --emoji-extension=disable \
         --config=default \
         --verbose;
 

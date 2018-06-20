@@ -1010,9 +1010,9 @@
                           <object class="GtkLabel" id="label_emoji_font">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="tooltip_text" translatable="yes">Set a font of emoji candidates on the emoji dialog</property>
+                            <property name="tooltip_text" translatable="yes">Set a font of Unicode candidates on the emoji dialog</property>
                             <property name="halign">start</property>
-                            <property name="label" translatable="yes">Emoji font:</property>
+                            <property name="label" translatable="yes">Unicode font:</property>
                             <property name="justify">right</property>
                           </object>
                           <packing>
