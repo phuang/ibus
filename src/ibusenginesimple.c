@@ -189,10 +189,11 @@ ibus_engine_simple_reset (IBusEngine *engine)
         priv->tentative_match = 0;
         priv->tentative_match_len = 0;
         ibus_engine_hide_preedit_text ((IBusEngine *)simple);
-    }
-    if (priv->tentative_emoji || priv->in_emoji_sequence) {
+    } else if (priv->tentative_emoji || priv->in_emoji_sequence) {
         priv->in_emoji_sequence = FALSE;
         g_clear_pointer (&priv->tentative_emoji, g_free);
+        ibus_engine_hide_preedit_text ((IBusEngine *)simple);
+    } else if (!priv->in_hex_sequence && !priv->in_emoji_sequence) {
         ibus_engine_hide_preedit_text ((IBusEngine *)simple);
     }
 }
@@ -209,16 +210,76 @@ ibus_engine_simple_commit_char (IBusEngineSimple *simple,
         priv->in_hex_sequence = FALSE;
         priv->tentative_match = 0;
         priv->tentative_match_len = 0;
-        ibus_engine_simple_update_preedit_text (simple);
     }
     if (priv->tentative_emoji || priv->in_emoji_sequence) {
         priv->in_emoji_sequence = FALSE;
         g_clear_pointer (&priv->tentative_emoji, g_free);
-        ibus_engine_simple_update_preedit_text (simple);
     }
-
     ibus_engine_commit_text ((IBusEngine *)simple,
             ibus_text_new_from_unichar (ch));
+}
+
+#define COMPOSE_KEYSYM_TO_UNICHAR(keysym, unichar) {                    \
+
+static gunichar
+ibus_keysym_to_unicode (guint16 keysym) {
+#define CASE(keysym_suffix, unicode) \
+        case IBUS_KEY_dead_##keysym_suffix: return unicode
+    switch (keysym) {
+    CASE(a, 0x03041);
+    CASE(A, 0x03042);
+    CASE(i, 0x03043);
+    CASE(I, 0x03044);
+    CASE(u, 0x03045);
+    CASE(U, 0x03046);
+    CASE(e, 0x03047);
+    CASE(E, 0x03048);
+    CASE(o, 0x03049);
+    CASE(O, 0x0304a);
+    CASE(abovecomma,                    0x0313);
+    CASE(abovedot,                      0x0307);
+    CASE(abovereversedcomma,            0x0314);
+    CASE(abovering,                     0x030a);
+    CASE(acute,                         0x0301);
+    CASE(belowbreve,                    0x032e);
+    CASE(belowcircumflex,               0x032d);
+    CASE(belowcomma,                    0x0326);
+    CASE(belowdiaeresis,                0x0324);
+    CASE(belowdot,                      0x0323);
+    CASE(belowmacron,                   0x0331);
+    CASE(belowring,                     0x030a);
+    CASE(belowtilde,                    0x0330);
+    CASE(breve,                         0x0306);
+    CASE(capital_schwa,                 0x018f);
+    CASE(caron,                         0x030c);
+    CASE(cedilla,                       0x0327);
+    CASE(circumflex,                    0x0302);
+    CASE(currency,                      0x00a4);
+    // IBUS_KEY_dead_dasia == IBUS_KEY_dead_abovereversedcomma
+    CASE(diaeresis,                     0x0308);
+    CASE(doubleacute,                   0x030b);
+    CASE(doublegrave,                   0x030f);
+    CASE(grave,                         0x0300);
+    CASE(greek,                         0x03b1);
+    CASE(hook,                          0x0309);
+    CASE(horn,                          0x031b);
+    CASE(invertedbreve,                 0x032f);
+    CASE(iota,                          0x0345);
+    CASE(macron,                        0x0304);
+    CASE(ogonek,                        0x0328);
+    // IBUS_KEY_dead_perispomeni == IBUS_KEY_dead_tilde
+    // IBUS_KEY_dead_psili == IBUS_KEY_dead_abovecomma
+    CASE(semivoiced_sound,              0x309a);
+    CASE(small_schwa,                   0x1d4a);
+    CASE(stroke,                        0x29f8);
+    CASE(tilde,                         0x0303);
+    CASE(voiced_sound,                  0x3099);
+    case IBUS_KEY_Multi_key:
+        return 0x2384;
+    default:;
+    }
+    return 0x0;
+#undef CASE
 }
 
 static void
@@ -278,8 +339,7 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
             g_assert (len <= IBUS_MAX_COMPOSE_LEN + 1);
         else
             g_assert (len <= EMOJI_SOURCE_LEN + 1);
-    }
-    else if (priv->tentative_match) {
+    } else if (priv->tentative_match) {
         outbuf[len++] = priv->tentative_match;
     } else if (priv->tentative_emoji && *priv->tentative_emoji) {
         IBusText *text = ibus_text_new_from_string (priv->tentative_emoji);
@@ -288,6 +348,24 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
                 IBUS_ATTR_TYPE_UNDERLINE, IBUS_ATTR_UNDERLINE_SINGLE, 0, len);
         ibus_engine_update_preedit_text ((IBusEngine *)simple, text, len, TRUE);
         return;
+    } else {
+        int hexchars = 0;
+        while (priv->compose_buffer[hexchars] != 0) {
+            guint16 keysym= priv->compose_buffer[hexchars];
+            gunichar unichar = ibus_keysym_to_unicode (keysym);
+            if (unichar > 0)
+                outbuf[len] = unichar;
+            else
+                outbuf[len] = ibus_keyval_to_unicode (keysym);
+            if (!outbuf[len]) {
+                g_warning (
+                        "Not found alternative character of compose key 0x%X",
+                        priv->compose_buffer[hexchars]);
+            }
+            ++len;
+            ++hexchars;
+        }
+        g_assert (len <= IBUS_MAX_COMPOSE_LEN + 1);
     }
 
     outbuf[len] = L'\0';
@@ -569,8 +647,9 @@ check_table (IBusEngineSimple       *simple,
         }
 
         ibus_engine_simple_commit_char (simple, value);
-        // g_debug ("U+%04X\n", value);
         priv->compose_buffer[0] = 0;
+        ibus_engine_simple_update_preedit_text (simple);
+        // g_debug ("U+%04X\n", value);
     }
     return TRUE;
 }
@@ -768,44 +847,10 @@ ibus_check_algorithmically (const guint16 *compose_buffer,
         combination_buffer[n_compose] = 0;
         i--;
         while (i >= 0) {
-        switch (compose_buffer[i]) {
-#define CASE(keysym, unicode) \
-        case IBUS_KEY_dead_##keysym: \
-            combination_buffer[i+1] = unicode; \
-            break
-        CASE (grave, 0x0300);
-        CASE (acute, 0x0301);
-        CASE (circumflex, 0x0302);
-        CASE (tilde, 0x0303);    /* Also used with perispomeni, 0x342. */
-        CASE (macron, 0x0304);
-        CASE (breve, 0x0306);
-        CASE (abovedot, 0x0307);
-        CASE (diaeresis, 0x0308);
-        CASE (hook, 0x0309);
-        CASE (abovering, 0x030A);
-        CASE (doubleacute, 0x030B);
-        CASE (caron, 0x030C);
-        CASE (abovecomma, 0x0313);         /* Equivalent to psili */
-        CASE (abovereversedcomma, 0x0314); /* Equivalent to dasia */
-        CASE (horn, 0x031B);    /* Legacy use for psili, 0x313 (or 0x343). */
-        CASE (belowdot, 0x0323);
-        CASE (cedilla, 0x0327);
-        CASE (ogonek, 0x0328);    /* Legacy use for dasia, 0x314.*/
-        CASE (iota, 0x0345);
-        CASE (voiced_sound, 0x3099);    /* Per Markus Kuhn keysyms.txt file. */
-        CASE (semivoiced_sound, 0x309A);    /* Per Markus Kuhn keysyms.txt file. */
-
-        /* The following cases are to be removed once xkeyboard-config,
-          * xorg are fully updated.
-          */
-            /* Workaround for typo in 1.4.x xserver-xorg */
-        case 0xfe66: combination_buffer[i+1] = 0x314; break;
-        /* CASE (dasia, 0x314); */
-        /* CASE (perispomeni, 0x342); */
-        /* CASE (psili, 0x343); */
-#undef CASE
-        default:
-            combination_buffer[i+1] = ibus_keyval_to_unicode (compose_buffer[i]);
+        combination_buffer[i+1] = ibus_keysym_to_unicode (compose_buffer[i]);
+        if (!combination_buffer[i+1]) {
+            combination_buffer[i+1] =
+                    ibus_keyval_to_unicode (compose_buffer[i]);
         }
         i--;
     }
@@ -853,6 +898,7 @@ no_sequence_matches (IBusEngineSimple *simple,
 
         ibus_engine_simple_commit_char (simple, priv->tentative_match);
         priv->compose_buffer[0] = 0;
+        ibus_engine_simple_update_preedit_text (simple);
 
         for (i=0; i < n_compose - len - 1; i++) {
             ibus_engine_simple_process_key_event (
@@ -872,20 +918,21 @@ no_sequence_matches (IBusEngineSimple *simple,
         if (n_compose > 1) {
             /* Invalid sequence */
             // FIXME beep_window (event->window);
+            ibus_engine_simple_update_preedit_text (simple);
             return TRUE;
         }
 
+        ibus_engine_simple_update_preedit_text (simple);
         ch = ibus_keyval_to_unicode (keyval);
         /* IBUS_CHANGE: RH#769133
          * Since we use ibus xkb engines as the disable state,
          * do not commit the characters locally without in_hex_sequence. */
         if (ch != 0 && !g_unichar_iscntrl (ch) &&
             priv->in_hex_sequence) {
-            ibus_engine_simple_commit_char (simple, ch);
             return TRUE;
-        }
-        else
+        } else {
             return FALSE;
+        }
     }
     return FALSE;
 }
@@ -1027,6 +1074,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             if (priv->tentative_match &&
                 g_unichar_validate (priv->tentative_match)) {
                 ibus_engine_simple_commit_char (simple, priv->tentative_match);
+                ibus_engine_simple_update_preedit_text (simple);
             } else if (n_compose == 0) {
                 priv->modifiers_dropped = TRUE;
             } else {
@@ -1176,12 +1224,21 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
         return TRUE;
     }
+    if (!priv->in_hex_sequence && !priv->in_emoji_sequence && is_backspace) {
+        if (n_compose > 0) {
+            n_compose--;
+            priv->compose_buffer[n_compose] = 0;
+            ibus_engine_simple_update_preedit_text (simple);
+            return TRUE;
+        }
+    }
 
     /* Check for hex sequence restart */
     if (priv->in_hex_sequence && have_hex_mods && is_hex_start) {
         if (priv->tentative_match &&
             g_unichar_validate (priv->tentative_match)) {
             ibus_engine_simple_commit_char (simple, priv->tentative_match);
+            ibus_engine_simple_update_preedit_text (simple);
         }
         else {
             /* invalid hex sequence */
@@ -1283,6 +1340,12 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             return TRUE;
         }
     } else {
+        if (is_escape) {
+            if (n_compose > 0) {
+                ibus_engine_simple_reset (engine);
+                return TRUE;
+            }
+        }
         SET_COMPOSE_BUFFER_ELEMENT_NEXT (priv->compose_buffer,
                                          n_compose,
                                          keyval);
@@ -1302,6 +1365,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
                     ibus_engine_simple_commit_char (simple,
                             priv->tentative_match);
                     priv->compose_buffer[0] = 0;
+                    ibus_engine_simple_update_preedit_text (simple);
                 } else {
                     // FIXME
                     /* invalid hex sequence */
@@ -1417,9 +1481,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             if (compose_finish) {
                 ibus_engine_simple_commit_char (simple, output_char);
                 priv->compose_buffer[0] = 0;
-            } else {
-                ibus_engine_simple_update_preedit_text (simple);
             }
+            ibus_engine_simple_update_preedit_text (simple);
             return TRUE;
         }
 
@@ -1430,6 +1493,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
                 ibus_engine_simple_commit_char (simple, output_char);
                 priv->compose_buffer[0] = 0;
             }
+            ibus_engine_simple_update_preedit_text (simple);
             return TRUE;
         }
     }
