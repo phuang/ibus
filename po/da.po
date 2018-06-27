@@ -8,20 +8,21 @@
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # scootergrisen <scootergrisen@gmail.com>, 2017. #zanata
 # fujiwara <takao.fujiwara1@gmail.com>, 2018. #zanata
+# scootergrisen <scootergrisen@gmail.com>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2018-02-20 17:31+0900\n"
+"POT-Creation-Date: 2018-06-21 16:24+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-02-20 04:22-0500\n"
+"PO-Revision-Date: 2018-03-07 04:56+0000\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.9.6\n"
+"X-Generator: Zanata 4.4.5\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -225,30 +226,40 @@ msgid "Input Method"
 msgstr "Inputmetode"
 
 #: ../setup/setup.ui.h:49
-msgid "The shortcut keys for showing emoji dialog"
-msgstr "Genvejstasten til at vise emoji-dialogen"
+msgid ""
+"The shortcut keys to enable conversions of emoji annotations or Unicode "
+"names"
+msgstr ""
 
 #: ../setup/setup.ui.h:50
-msgid "Emoji choice:"
-msgstr "Valg af emoji:"
+msgid "Emoji annotation:"
+msgstr ""
 
 #: ../setup/setup.ui.h:51
-msgid "Set a font of emoji candidates on the emoji dialog"
-msgstr "Sæt en skrifttype af emoji-kandidater i emoji-dialogen"
+msgid "The shortcut keys to enable Unicode code point conversions"
+msgstr ""
 
 #: ../setup/setup.ui.h:52
-msgid "Emoji font:"
-msgstr "Emoji-skrifttype:"
+msgid "Unicode code point:"
+msgstr ""
 
 #: ../setup/setup.ui.h:53
+msgid "Set a font of Unicode candidates on the emoji dialog"
+msgstr ""
+
+#: ../setup/setup.ui.h:54
+msgid "Unicode font:"
+msgstr ""
+
+#: ../setup/setup.ui.h:55
 msgid "Set a language of emoji annotations on the emoji dialog"
 msgstr "Sæt et sprog af emoji-kandidater i emoji-dialogen"
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "Emoji annotation language:"
 msgstr "Emoji annoteringssprog:"
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid ""
 "Match emoji annotations partially with the following condition and more than "
 "the number of characters:"
@@ -256,7 +267,7 @@ msgstr ""
 "Match emoji-annoteringer delvist med følgende betingelse og flere end "
 "antallet af tegn:"
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:58
 msgid ""
 "If emoji annotations can be matched with a partial string instead of the "
 "exact match"
@@ -264,47 +275,47 @@ msgstr ""
 "Hvorvidt emoji-annonteringer kan matches med en delvis streng i stedet for "
 "det præcise match"
 
-#: ../setup/setup.ui.h:57
+#: ../setup/setup.ui.h:59
 msgid "Prefix match"
 msgstr "Præfiks match"
 
-#: ../setup/setup.ui.h:58
+#: ../setup/setup.ui.h:60
 msgid "Suffix match"
 msgstr "Suffiks match"
 
-#: ../setup/setup.ui.h:59
+#: ../setup/setup.ui.h:61
 msgid "Containing match"
 msgstr "Indeholdende match"
 
-#: ../setup/setup.ui.h:60
+#: ../setup/setup.ui.h:62
 msgid "Emoji"
 msgstr "Emoji"
 
-#: ../setup/setup.ui.h:61 ../data/ibus.schemas.in.h:44
+#: ../setup/setup.ui.h:63 ../data/ibus.schemas.in.h:44
 msgid "Use system keyboard layout"
 msgstr "Brug systemets tastaturlayout"
 
-#: ../setup/setup.ui.h:62 ../data/ibus.schemas.in.h:45
+#: ../setup/setup.ui.h:64 ../data/ibus.schemas.in.h:45
 msgid "Use system keyboard (XKB) layout"
 msgstr "Brug systemets tastaturlayout (XKB)"
 
-#: ../setup/setup.ui.h:63
+#: ../setup/setup.ui.h:65
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>Tastaturlayout</b>"
 
-#: ../setup/setup.ui.h:64 ../data/ibus.schemas.in.h:68
+#: ../setup/setup.ui.h:66 ../data/ibus.schemas.in.h:74
 msgid "Share the same input method among all applications"
 msgstr "Del den samme inputmetode i alle programmer"
 
-#: ../setup/setup.ui.h:65
+#: ../setup/setup.ui.h:67
 msgid "<b>Global input method settings</b>"
 msgstr "<b>Indstillinger for global inputmetode</b>"
 
-#: ../setup/setup.ui.h:66
+#: ../setup/setup.ui.h:68
 msgid "Advanced"
 msgstr "Avanceret"
 
-#: ../setup/setup.ui.h:67
+#: ../setup/setup.ui.h:69
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -320,19 +331,19 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.ui.h:74
+#: ../setup/setup.ui.h:76
 msgid "Start ibus on login"
 msgstr "Start ibus ved login"
 
-#: ../setup/setup.ui.h:75
+#: ../setup/setup.ui.h:77
 msgid "<b>Startup</b>"
 msgstr "<b>Opstart</b>"
 
-#: ../setup/setup.ui.h:76 ../setup/engineabout.py:37 ../ui/gtk3/panel.vala:1175
+#: ../setup/setup.ui.h:78 ../setup/engineabout.py:37 ../ui/gtk3/panel.vala:1164
 msgid "About"
 msgstr "Om"
 
-#: ../setup/setup.ui.h:77 ../setup/engineabout.py:40
+#: ../setup/setup.ui.h:79 ../setup/engineabout.py:40
 msgid "_Close"
 msgstr "_Luk"
 
@@ -556,22 +567,30 @@ msgid "Custom font name for language panel"
 msgstr "Tilpasset skrifttypenavn til sprogpanel"
 
 #: ../data/ibus.schemas.in.h:50
+msgid "Unicode shortcut keys for gtk_accelerator_parse"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:51
+msgid "The shortcut keys for turning Unicode typing on or off"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:52
 msgid "Emoji shortcut keys for gtk_accelerator_parse"
 msgstr "Emoji-genvejstaster for gtk_accelerator_parse"
 
-#: ../data/ibus.schemas.in.h:51
+#: ../data/ibus.schemas.in.h:53
 msgid "The shortcut keys for turning emoji typing on or off"
 msgstr "Genvejstasterne til at slå emoji-indtastning til eller fra"
 
-#: ../data/ibus.schemas.in.h:52
+#: ../data/ibus.schemas.in.h:54
 msgid "Custom font name for emoji characters on emoji dialog"
 msgstr "Tilpasset skrifttypenavn for emoji-tegn i emoji-dialog"
 
-#: ../data/ibus.schemas.in.h:53
+#: ../data/ibus.schemas.in.h:55
 msgid "Default language for emoji dictionary"
 msgstr "Standardsprog for emojiordbog"
 
-#: ../data/ibus.schemas.in.h:54
+#: ../data/ibus.schemas.in.h:56
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
 "value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
@@ -579,30 +598,30 @@ msgstr ""
 "Vælg et standardsprog af emoji-ordbøger i emoji-dialogen. Værdien $lang "
 "anvendes på /usr/share/ibus/dicts/emoji-$lang.dict"
 
-#: ../data/ibus.schemas.in.h:55
+#: ../data/ibus.schemas.in.h:57
 msgid "favorite emoji list on emoji dialog"
 msgstr "farvorit emojiliste i emoji-dialog"
 
-#: ../data/ibus.schemas.in.h:56
+#: ../data/ibus.schemas.in.h:58
 msgid ""
 "You can show the favorite emojis on emoji list if this list has any "
 "characters."
 msgstr ""
 "Du kan vise farvorit emojierne i emojiliste hvis denne liste har nogen tegn."
 
-#: ../data/ibus.schemas.in.h:57
+#: ../data/ibus.schemas.in.h:59
 msgid "favorite emoji annotation list on emoji dialog"
 msgstr "favorit emoji-annonteringsliste i emoji-dialog"
 
-#: ../data/ibus.schemas.in.h:58
+#: ../data/ibus.schemas.in.h:60
 msgid "You can assign an annotation for a favorite emoji in this list."
 msgstr "Du kan tildele en annotering til en favorit-emoji i denne liste."
 
-#: ../data/ibus.schemas.in.h:59
+#: ../data/ibus.schemas.in.h:61
 msgid "Whether emoji annotations can be match partially or not"
 msgstr "Hvorvidt emoji-annonteringer kan matches delvist eller ej"
 
-#: ../data/ibus.schemas.in.h:60
+#: ../data/ibus.schemas.in.h:62
 msgid ""
 "Whether emoji annotations can be matched with a partial string instead of "
 "the exact match or not."
@@ -610,11 +629,11 @@ msgstr ""
 "Hvorvidt emoji-annoteringer kan matches med en delvis streng i stedet for "
 "det præcise match eller ej."
 
-#: ../data/ibus.schemas.in.h:61
+#: ../data/ibus.schemas.in.h:63
 msgid "Match emoji annotations with the specified length"
 msgstr "Match emoji-annoteringer med den angivne længde"
 
-#: ../data/ibus.schemas.in.h:62
+#: ../data/ibus.schemas.in.h:64
 msgid ""
 "Match emoji annotations partially with more than the specified number of "
 "characters instead of the exact match."
@@ -622,11 +641,11 @@ msgstr ""
 "Match emoji-annoteringer delvist med flere end det angivne antal tegn i "
 "stedet for det præcise match."
 
-#: ../data/ibus.schemas.in.h:63
+#: ../data/ibus.schemas.in.h:65
 msgid "Choose a condition to match emoji annotations partially"
 msgstr "Vælg en betingelse til delvist at matche emoji-annonteringer"
 
-#: ../data/ibus.schemas.in.h:64
+#: ../data/ibus.schemas.in.h:66
 msgid ""
 "Choose one of the following conditions to match emoji annotations partially: "
 "0 == Prefix match, 1 == Suffix match, 2 == Containing match"
@@ -634,32 +653,55 @@ msgstr ""
 "Vælg en af følgende betingelser for at matche emoji-annoteringer delvist: 0 ="
 "= Præfiks match, 1 == Suffiks match, 2 == Indeholdende match"
 
-#: ../data/ibus.schemas.in.h:65
+#: ../data/ibus.schemas.in.h:67
+msgid "Load the emoji data at the time of startup"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:68
+msgid ""
+"Load the emoji data at the time of startup if true. About 10MB memory is "
+"needed to load the data. Load the emoji data when open the emoji dialog at "
+"the beginning if false."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:69
+msgid "Load the Unicode data at the time of startup"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:70
+msgid ""
+"Load the Unicode data at the time of startup if true. About 15MB memory is "
+"needed to load the data. Load the Unicode data when open the emoji dialog at "
+"the beginning if false. The Unicode data is always loaded after the emoji "
+"data is loaded even if true."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:71
 msgid "Embed Preedit Text"
 msgstr "Indbyg forudredigeret tekst"
 
-#: ../data/ibus.schemas.in.h:66
+#: ../data/ibus.schemas.in.h:72
 msgid "Embed Preedit Text in Application Window"
 msgstr "Indlejr forudredigeret tekst i programvindue"
 
-#: ../data/ibus.schemas.in.h:67
+#: ../data/ibus.schemas.in.h:73
 msgid "Use global input method"
 msgstr "Brug global inputmetode"
 
-#: ../data/ibus.schemas.in.h:69
+#: ../data/ibus.schemas.in.h:75
 msgid "Enable input method by default"
 msgstr "Aktivér inputmetode som standard"
 
-#: ../data/ibus.schemas.in.h:70
+#: ../data/ibus.schemas.in.h:76
 msgid "Enable input method by default when the application gets input focus"
 msgstr ""
 "Aktivér inputmetoder som standard når programmerne modtaget inputfokus"
 
-#: ../data/ibus.schemas.in.h:71
+#: ../data/ibus.schemas.in.h:77
 msgid "DConf preserve name prefixes"
 msgstr "DConf bevar navnepræfiks"
 
-#: ../data/ibus.schemas.in.h:72
+#: ../data/ibus.schemas.in.h:78
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "Præfiks af DConf-taster til stop af navnekonvertering"
 
@@ -680,12 +722,12 @@ msgid "Select a language"
 msgstr "Vælg et sprog"
 
 #: ../setup/emojilang.py:70 ../setup/enginedialog.py:60
-#: ../setup/keyboardshortcut.py:339 ../setup/main.py:552
+#: ../setup/keyboardshortcut.py:339 ../setup/main.py:560
 msgid "_Cancel"
 msgstr "_Annullér"
 
 #: ../setup/emojilang.py:71 ../setup/keyboardshortcut.py:340
-#: ../setup/main.py:553
+#: ../setup/main.py:561
 msgid "_OK"
 msgstr "_OK"
 
@@ -758,15 +800,15 @@ msgstr ""
 msgid "Please press a key (or a key combination)"
 msgstr "Tryk venligst på en tast (eller en tastekombination)"
 
-#: ../setup/main.py:121 ../setup/main.py:580
+#: ../setup/main.py:121 ../setup/main.py:588
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "Brug genvej med skift for at skifte til forrige inputmetode"
 
-#: ../setup/main.py:507
+#: ../setup/main.py:515
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "IBus-dæmonen kører. Vil du starte den?"
 
-#: ../setup/main.py:528
+#: ../setup/main.py:536
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to "
 "your $HOME/.bashrc; then relog into your desktop.\n"
@@ -781,18 +823,18 @@ msgstr ""
 "  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:542
+#: ../setup/main.py:550
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "IBus-dæmon kunne ikke startes på %d sekunder"
 
-#: ../setup/main.py:554
+#: ../setup/main.py:562
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Vælg tastaturgenveje til %s"
 
 #. Translators: Title of the window
-#: ../setup/main.py:556
+#: ../setup/main.py:564
 msgid "switching input methods"
 msgstr "skifter inputmetoder"
 
@@ -2674,7 +2716,7 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:1085
 msgid "Emoticons"
-msgstr ""
+msgstr "Emotikoner"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2788,248 +2830,270 @@ msgstr ""
 msgid "Supplementary Private Use Area-B"
 msgstr ""
 
-#: ../tools/main.vala:54
+#: ../tools/main.vala:51
 msgid "List engine name only"
 msgstr "Vis kun motornavn"
 
-#: ../tools/main.vala:70 ../tools/main.vala:195 ../tools/main.vala:205
+#: ../tools/main.vala:67 ../tools/main.vala:192 ../tools/main.vala:202
 msgid "Can't connect to IBus.\n"
 msgstr "Kan ikke oprette forbindelse til IBus.\n"
 
-#: ../tools/main.vala:96
+#: ../tools/main.vala:93
 #, c-format
 msgid "language: %s\n"
 msgstr "sprog: %s\n"
 
-#: ../tools/main.vala:164
+#: ../tools/main.vala:161
 msgid "No engine is set.\n"
 msgstr "Ingen motor er sat.\n"
 
-#: ../tools/main.vala:172
+#: ../tools/main.vala:169
 msgid "Set global engine failed.\n"
 msgstr "Sætning af global motor mislykkedes.\n"
 
-#: ../tools/main.vala:177
+#: ../tools/main.vala:174
 msgid "Get global engine failed.\n"
 msgstr "Hentning af global motor mislykkedes.\n"
 
-#: ../tools/main.vala:220
+#: ../tools/main.vala:217
 msgid "Read the system registry cache."
 msgstr "Læs systemets registreringsmellemlager."
 
-#: ../tools/main.vala:222
+#: ../tools/main.vala:219
 msgid "Read the registry cache FILE."
 msgstr "Læs den registreringsmellemlageret FIL."
 
-#: ../tools/main.vala:240 ../tools/main.vala:245
+#: ../tools/main.vala:237 ../tools/main.vala:242
 msgid "The registry cache is invalid.\n"
 msgstr "Registreringsmellemlageret er ugyldigt.\n"
 
-#: ../tools/main.vala:260
+#: ../tools/main.vala:257
 msgid "Write the system registry cache."
 msgstr "Skriv systemets registreringsmellemlager."
 
-#: ../tools/main.vala:262
+#: ../tools/main.vala:259
 msgid "Write the registry cache FILE."
 msgstr "Skriv den registreringsmellemlageret FIL."
 
-#: ../tools/main.vala:314
+#: ../tools/main.vala:295
+msgid ""
+"Use engine schema paths instead of ibus core, which can be comma-separated "
+"values."
+msgstr ""
+
+#: ../tools/main.vala:381
 msgid "Resetting…"
 msgstr "Nulstiller…"
 
-#: ../tools/main.vala:328
+#: ../tools/main.vala:399
 msgid "Done"
 msgstr "Færdig"
 
-#: ../tools/main.vala:373
+#: ../tools/main.vala:444
 msgid "Set or get engine"
 msgstr "Sæt eller hent motor"
 
-#: ../tools/main.vala:374
+#: ../tools/main.vala:445
 msgid "Exit ibus-daemon"
 msgstr "Forlad ibus-daemon"
 
-#: ../tools/main.vala:375
+#: ../tools/main.vala:446
 msgid "Show available engines"
 msgstr "Vis tilgængelige motorer"
 
-#: ../tools/main.vala:376
+#: ../tools/main.vala:447
 msgid "(Not implemented)"
 msgstr "(ikke implementeret)"
 
-#: ../tools/main.vala:377
+#: ../tools/main.vala:448
 msgid "Restart ibus-daemon"
 msgstr "Genstart ibus-daemon"
 
-#: ../tools/main.vala:378
+#: ../tools/main.vala:449
 msgid "Show version"
 msgstr "Vis version"
 
-#: ../tools/main.vala:379
+#: ../tools/main.vala:450
 msgid "Show the content of registry cache"
 msgstr "Vis indholdet af registreringsmellemlager"
 
-#: ../tools/main.vala:380
+#: ../tools/main.vala:451
 msgid "Create registry cache"
 msgstr "Opret registreringsmellemlager"
 
-#: ../tools/main.vala:381
+#: ../tools/main.vala:452
 msgid "Print the D-Bus address of ibus-daemon"
 msgstr "Print D-Bus-adressen af ibus-daemon"
 
-#: ../tools/main.vala:382
+#: ../tools/main.vala:453
 msgid "Show the configuration values"
 msgstr "Vis konfigurationsværdierne"
 
-#: ../tools/main.vala:383
+#: ../tools/main.vala:454
 msgid "Reset the configuration values"
 msgstr "Nulstil konfigurationsværdierne"
 
-#: ../tools/main.vala:385
+#: ../tools/main.vala:456
 msgid "Save emoji on dialog to clipboard "
 msgstr "Gem emoji i dialog til udklipsholder "
 
-#: ../tools/main.vala:387
+#: ../tools/main.vala:458
 msgid "Show this information"
 msgstr "Vis denne information"
 
-#: ../tools/main.vala:393
+#: ../tools/main.vala:464
 #, c-format
 msgid "Usage: %s COMMAND [OPTION...]\n"
 "\n"
 msgstr "Anvendelse: %s KOMMANDO [TILVALG...]\n"
 "\n"
 
-#: ../tools/main.vala:394
+#: ../tools/main.vala:465
 msgid "Commands:\n"
 msgstr "Kommandoer:\n"
 
-#: ../tools/main.vala:423
+#: ../tools/main.vala:494
 #, c-format
 msgid "%s is unknown command!\n"
 msgstr "%s er ukendt kommando!\n"
 
-#: ../ui/gtk3/emojier.vala:245
-msgid "Show emoji variants"
-msgstr "Vis emoji-varianter"
-
-#: ../ui/gtk3/emojier.vala:250
-msgid "Menu"
-msgstr "Menu"
-
-#: ../ui/gtk3/emojier.vala:273
+#: ../ui/gtk3/emojier.vala:244
 msgid "Favorites"
 msgstr "Farvoritter"
 
-#: ../ui/gtk3/emojier.vala:274
+#: ../ui/gtk3/emojier.vala:245
 msgid "Others"
 msgstr "Andre"
 
-#: ../ui/gtk3/emojier.vala:275
+#: ../ui/gtk3/emojier.vala:246
 msgid "Open Unicode choice"
-msgstr ""
+msgstr "Åbn valg af unicode"
 
-#: ../ui/gtk3/emojier.vala:445 ../ui/gtk3/emojier.vala:826
-#: ../ui/gtk3/panel.vala:1149
-msgid "Emoji Choice"
-msgstr "Valg af emoji"
-
-#: ../ui/gtk3/emojier.vala:451
+#: ../ui/gtk3/emojier.vala:371
 msgid "Type annotation or choose emoji"
 msgstr "Skriv annotering eller vælg emoji"
 
-#: ../ui/gtk3/emojier.vala:948
-msgid "Unicode Choice"
-msgstr ""
-
-#: ../ui/gtk3/emojier.vala:950
+#: ../ui/gtk3/emojier.vala:965
 msgid "Bring back emoji choice"
-msgstr ""
+msgstr "Bring valg af emoji tilbage"
 
-#: ../ui/gtk3/emojier.vala:1016
-msgid "Loading a Unicode dictionary:"
-msgstr ""
-
-#: ../ui/gtk3/emojier.vala:1071
+#: ../ui/gtk3/emojier.vala:1067
 msgid "Page Down"
 msgstr "Page Down"
 
-#: ../ui/gtk3/emojier.vala:1082
+#: ../ui/gtk3/emojier.vala:1078
 msgid "Page Up"
 msgstr "Page Up"
 
-#: ../ui/gtk3/emojier.vala:1236
+#: ../ui/gtk3/emojier.vala:1081
+msgid "Show emoji variants"
+msgstr "Vis emoji-varianter"
+
+#: ../ui/gtk3/emojier.vala:1082
+msgid "Close"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:1088
+msgid "Menu"
+msgstr "Menu"
+
+#: ../ui/gtk3/emojier.vala:1099
+msgid "Click to view a warning message"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:1143
+msgid "Loading a Unicode dictionary:"
+msgstr "Indlæser en unicode-ordbog:"
+
+#: ../ui/gtk3/emojier.vala:1383
 #, c-format
 msgid "Code point: %s"
 msgstr "Kodepunkt: %s"
 
-#: ../ui/gtk3/emojier.vala:1242
+#: ../ui/gtk3/emojier.vala:1389
 msgid "Has emoji variants"
 msgstr "Har emoji-varianter"
 
-#: ../ui/gtk3/emojier.vala:1377 ../ui/gtk3/emojier.vala:1391
+#: ../ui/gtk3/emojier.vala:1556 ../ui/gtk3/emojier.vala:1569
 #, c-format
 msgid "Description: %s"
 msgstr "Beskrivelse: %s"
 
-#: ../ui/gtk3/emojier.vala:1377
+#: ../ui/gtk3/emojier.vala:1556
 msgid "None"
 msgstr "Ingen"
 
-#: ../ui/gtk3/emojier.vala:1402
+#: ../ui/gtk3/emojier.vala:1580
 #, c-format
 msgid "Annotations: %s"
 msgstr "Annoteringer: %s"
 
-#: ../ui/gtk3/emojier.vala:1428
+#: ../ui/gtk3/emojier.vala:1606
 #, c-format
 msgid "Name: %s"
-msgstr ""
+msgstr "Navn: %s"
 
-#: ../ui/gtk3/emojier.vala:1436
+#: ../ui/gtk3/emojier.vala:1614
 #, c-format
 msgid "Alias: %s"
+msgstr "Alias: %s"
+
+#: ../ui/gtk3/emojier.vala:2164
+#: ../ui/gtk3/ibus-extension-gtk3.desktop.in.in.h:1
+#: ../ui/gtk3/ibus-ui-emojier.desktop.in.in.h:1 ../ui/gtk3/panel.vala:1149
+msgid "Emoji Choice"
+msgstr "Valg af emoji"
+
+#: ../ui/gtk3/emojier.vala:2166
+msgid "Unicode Choice"
+msgstr "Valg af unicode"
+
+#: ../ui/gtk3/emojier.vala:2526
+msgid ""
+"Failed to get the current text application. Please re-focus your application."
+" E.g. Press Esc key several times to release the emoji typing mode, click "
+"your desktop and click your text application again."
 msgstr ""
 
-#: ../ui/gtk3/emojierapp.vala:56
+#: ../ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."
 msgstr "Annulleret for at vælge en emoji."
 
-#: ../ui/gtk3/emojierapp.vala:77
+#: ../ui/gtk3/emojierapp.vala:93
 msgid "Copied an emoji to your clipboard."
 msgstr "Kopierede en emoji til dit skrivebord."
 
 #. TRANSLATORS: "FONT" should be capital and translatable.
 #. * It's used for an argument command --font=FONT
 #. 
-#: ../ui/gtk3/emojierapp.vala:97
+#: ../ui/gtk3/emojierapp.vala:114
 msgid "\"FONT\" for emoji characters on emoji dialog"
 msgstr "\"SKRIFTTYPE\" for emoji-tegn i emoji-dialog"
 
-#: ../ui/gtk3/emojierapp.vala:98
+#: ../ui/gtk3/emojierapp.vala:115
 msgid "FONT"
 msgstr "SKRIFTTYPE"
 
 #. TRANSLATORS: "LANG" should be capital and translatable.
 #. * It's used for an argument command --lang=LANG
 #. 
-#: ../ui/gtk3/emojierapp.vala:103
+#: ../ui/gtk3/emojierapp.vala:120
 msgid "\"LANG\" for annotations on emoji dialog. E.g. \"en\""
 msgstr "\"SPROG\" for annoteringer i emoji-dialog. F.eks. \"en\""
 
-#: ../ui/gtk3/emojierapp.vala:104
+#: ../ui/gtk3/emojierapp.vala:121
 msgid "LANG"
 msgstr "SPROG"
 
-#: ../ui/gtk3/emojierapp.vala:106
+#: ../ui/gtk3/emojierapp.vala:123
 msgid "Emoji annotations can be match partially"
 msgstr "Emoji-annoteringer kan matches delvist"
 
-#: ../ui/gtk3/emojierapp.vala:110
+#: ../ui/gtk3/emojierapp.vala:127
 msgid "Match with the length of the specified integer"
 msgstr "Match med længen af det angive heltal"
 
-#: ../ui/gtk3/emojierapp.vala:114
+#: ../ui/gtk3/emojierapp.vala:131
 msgid "Match with the condition of the specified integer"
 msgstr "Match med betingelsen af det angive heltal"
 
@@ -3061,11 +3125,11 @@ msgstr ""
 msgid "Preferences"
 msgstr "Præferencer"
 
-#: ../ui/gtk3/panel.vala:1181
+#: ../ui/gtk3/panel.vala:1170
 msgid "Restart"
 msgstr "Genstart"
 
-#: ../ui/gtk3/panel.vala:1185
+#: ../ui/gtk3/panel.vala:1174
 msgid "Quit"
 msgstr "Afslut"
 
