@@ -1730,6 +1730,15 @@ bus_input_context_hide_auxiliary_text (BusInputContext *context)
     }
 }
 
+/**
+ * bus_input_context_update_lookup_table:
+ * @context: #BusInputContext
+ * @table: #IBusLookupTable
+ * @visible: %TRUE if the lookup table is visible, otherwise %FALSE.
+ * @is_extension: %TRUE if the lookup table is called by a panel extension.
+ *                %FALSE if it's called by an engine.
+ * I.e. is_extension_lookup_table means the owner of the lookup table.
+ */
 void
 bus_input_context_update_lookup_table (BusInputContext *context,
                                        IBusLookupTable *table,

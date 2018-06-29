@@ -743,6 +743,16 @@ _context_update_preedit_text_cb (BusInputContext *context,
 
     g_return_if_fail (panel->focused_context == context);
 
+    /* The callback is called with X11 applications but
+     * the callback is not called for extensions and panel
+     * extensions are always calls by
+     * bus_panel_proxy_update_preedit_text() directly
+     * because panel extensions foward UpdatePreeditText to
+     * UpdatePreeditTextReceived and it can be an infinite
+     * loop.
+     */
+    if (panel->panel_type != PANEL_TYPE_PANEL)
+        return;
     bus_panel_proxy_update_preedit_text (panel,
                                          text,
                                          cursor_pos,
@@ -847,8 +857,31 @@ _context_set_content_type_cb (BusInputContext *context,
         bus_panel_proxy_##name (panel);                         \
     }
 
-DEFINE_FUNCTION (show_preedit_text)
-DEFINE_FUNCTION (hide_preedit_text)
+#define DEFINE_FUNCTION_NO_EXTENSION(name)                      \
+    static void _context_##name##_cb (BusInputContext *context, \
+                                      BusPanelProxy   *panel)   \
+    {                                                           \
+        g_assert (BUS_IS_INPUT_CONTEXT (context));              \
+        g_assert (BUS_IS_PANEL_PROXY (panel));                  \
+                                                                \
+        g_return_if_fail (panel->focused_context == context);   \
+                                                                \
+        /* The callback is called with X11 applications but     \
+         * the callback is not called for extensions and panel  \
+         * extensions are always calls by                       \
+         * bus_panel_proxy_update_preedit_text() directly       \
+         * because panel extensions foward UpdatePreeditText to \
+         * UpdatePreeditTextReceived and it can be an infinite  \
+         * loop.                                                \
+         */                                                     \
+        if (panel->panel_type != PANEL_TYPE_PANEL)              \
+            return;                                             \
+        bus_panel_proxy_##name (panel);                         \
+    }
+
+
+DEFINE_FUNCTION_NO_EXTENSION (show_preedit_text)
+DEFINE_FUNCTION_NO_EXTENSION (hide_preedit_text)
 DEFINE_FUNCTION (show_auxiliary_text)
 DEFINE_FUNCTION (hide_auxiliary_text)
 DEFINE_FUNCTION (show_lookup_table)
@@ -860,6 +893,7 @@ DEFINE_FUNCTION (cursor_down_lookup_table)
 DEFINE_FUNCTION (state_changed)
 
 #undef DEFINE_FUNCTION
+#undef DEFINE_FUNCTION_NO_EXTENSION
 
 static const struct {
     gchar *name;

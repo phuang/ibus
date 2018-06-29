@@ -227,6 +227,8 @@ class PanelBinding : IBus.PanelService {
     private bool m_enable_extension;
     private string m_extension_name = "";
     private Preedit m_preedit;
+    private IBus.ProcessKeyEventData m_key_event_data =
+            IBus.ProcessKeyEventData();
 
     public PanelBinding(IBus.Bus bus,
                         Gtk.Application application) {
@@ -311,24 +313,24 @@ class PanelBinding : IBus.PanelService {
     }
 
 
-    private unowned
-    IBus.ProcessKeyEventData? parse_accelerator(string accelerator) {
-        IBus.ProcessKeyEventData key = {};
+    // Returning unowned IBus.KeyEventData causes NULL with gcc optimization
+    // and use m_key_event_data.
+    private void parse_accelerator(string accelerator) {
+        m_key_event_data = {};
         uint keysym = 0;
         IBus.ModifierType modifiers = 0;
         IBus.accelerator_parse(accelerator,
                 out keysym, out modifiers);
         if (keysym == 0U && modifiers == 0) {
             warning("Failed to parse shortcut key '%s'".printf(accelerator));
-            return null;
+            return;
         }
         if ((modifiers & IBus.ModifierType.SUPER_MASK) != 0) {
             modifiers ^= IBus.ModifierType.SUPER_MASK;
             modifiers |= IBus.ModifierType.MOD4_MASK;
         }
-        key.keyval = keysym;
-        key.state = modifiers;
-        return key;
+        m_key_event_data.keyval = keysym;
+        m_key_event_data.state = modifiers;
     }
 
 
@@ -337,8 +339,8 @@ class PanelBinding : IBus.PanelService {
         IBus.ProcessKeyEventData key;
         string[] accelerators = m_settings_emoji.get_strv("hotkey");
         foreach (var accelerator in accelerators) {
-            key = parse_accelerator(accelerator);
-            emoji_keys += key;
+            parse_accelerator(accelerator);
+            emoji_keys += m_key_event_data;
         }
 
         /* Since {} is not allocated, parse_accelerator() should be unowned. */
@@ -348,8 +350,8 @@ class PanelBinding : IBus.PanelService {
         IBus.ProcessKeyEventData[] unicode_keys = {};
         accelerators = m_settings_emoji.get_strv("unicode-hotkey");
         foreach (var accelerator in accelerators) {
-            key = parse_accelerator(accelerator);
-            unicode_keys += key;
+            parse_accelerator(accelerator);
+            unicode_keys += m_key_event_data;
         }
         key = {};
         unicode_keys += key;
@@ -544,8 +546,10 @@ class PanelBinding : IBus.PanelService {
     private bool key_press_enter() {
         if (m_extension_name != "unicode" && is_emoji_lookup_table()) {
             // Check if variats exist
-            if (m_emojier.key_press_enter())
+            if (m_emojier.key_press_enter()) {
+                convert_preedit_text();
                 return true;
+            }
         }
         IBus.Text text = m_preedit.get_commit_text();
         commit_text_update_favorites(text);
