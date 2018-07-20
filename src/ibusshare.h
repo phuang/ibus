@@ -326,7 +326,7 @@ void             ibus_free_strv         (gchar          **strv)
  *
  * Returns: The name of a key symbol and modifier.
  */
-const gchar     *ibus_key_event_to_string
+gchar           *ibus_key_event_to_string
                                         (guint           keyval,
                                          guint           modifiers);
 

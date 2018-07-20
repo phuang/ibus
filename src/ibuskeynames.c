@@ -124,7 +124,7 @@ modifier_name[] = {
     NULL,        // 31
 };
 
-const gchar *
+gchar *
 ibus_key_event_to_string (guint keyval,
                           guint modifiers)
 {
