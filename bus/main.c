@@ -160,18 +160,6 @@ daemon (gint nochdir, gint noclose)
 }
 #endif
 
-/*
- * _sig_usr2_handler:
- * @sig: the signal number, which is usually SIGUSR2.
- *
- * A signal handler for SIGUSR2 signal. Dump a summary of memory usage to stderr.
- */
-static void
-_sig_usr2_handler (int sig)
-{
-    g_mem_profile ();
-}
-
 gint
 main (gint argc, gchar **argv)
 {
@@ -196,8 +184,7 @@ main (gint argc, gchar **argv)
     }
 
     if (g_mempro) {
-        g_mem_set_vtable (glib_mem_profiler_table);
-        signal (SIGUSR2, _sig_usr2_handler);
+        g_warning ("--mem-profile no longer works with the GLib 2.46 or later");
     }
 
     /* check uid */
