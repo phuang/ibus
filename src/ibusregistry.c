@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2015 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -472,7 +472,7 @@ ibus_registry_save_cache_file (IBusRegistry *registry,
     }
 
     if (g_str_has_prefix (filename, g_get_user_cache_dir ())) {
-        g_chmod (filename, 0644);
+        g_warn_if_fail (!g_chmod (filename, 0644));
     }
 
     return TRUE;

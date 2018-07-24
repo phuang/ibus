@@ -31,6 +31,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  
 ******************************************************************/
 
+#include <assert.h>
 #include <stddef.h>
 #include <limits.h>
 #include <X11/Xlib.h>
@@ -92,6 +93,7 @@ static unsigned char *ReadXIMMessage (XIMS ims,
         client = client->next;
     }
 
+    assert (client);
     if (ev->format == 8) {
         /* ClientMessage only */
         XimProtoHdr *hdr = (XimProtoHdr *) ev->data.b;
@@ -158,6 +160,7 @@ static unsigned char *ReadXIMMessage (XIMS ims,
         /* The property data is retrieved in 32-bit chunks */
         long_begin = offset / 4;
         long_end = (end + 3) / 4;
+        assert (x_client);
         return_code = XGetWindowProperty (i18n_core->address.dpy,
                                           x_client->accept_win,
                                           atom,
@@ -276,11 +279,11 @@ static Bool Xi18nXEnd(XIMS ims)
 static char *MakeNewAtom (CARD16 connect_id, char *atomName)
 {
     static int sequence = 0;
-    
     sprintf (atomName,
              "_server%d_%d",
              connect_id,
-             ((sequence > 20)  ?  (sequence = 0)  :  sequence++));
+             ((sequence > 20)  ?  (sequence = 0)  :  (0x1f & sequence)));
+    sequence++;
     return atomName;
 }
 
@@ -418,13 +421,16 @@ static Bool Xi18nXWait (XIMS ims,
                 &&
                 (hdr->minor_opcode == minor_opcode))
             {
+                XFree (packet);
                 return True;
             }
             else if (hdr->major_opcode == XIM_ERROR)
             {
+                XFree (packet);
                 return False;
             }
             /*endif*/
+            XFree (packet);
         }
         /*endif*/
     }

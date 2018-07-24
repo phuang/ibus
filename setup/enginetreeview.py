@@ -3,7 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2015 Red Hat, Inc.
+# Copyright (c) 2014-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -91,7 +92,6 @@ class EngineTreeView(Gtk.TreeView):
         renderer.set_property("text-column", 0)
         renderer.set_property("has-entry", False)
         renderer.set_property("editable", True)
-        renderer.connect("changed", self.__engine_layout_changed_cb)
 
         column = Gtk.TreeViewColumn(_("Kbd"))
         column.set_expand(False)
@@ -166,12 +166,6 @@ class EngineTreeView(Gtk.TreeView):
             layout = engine.layout
         renderer.set_property("text", layout)
         renderer.set_property("weight", Pango.Weight.NORMAL)
-
-    def __engine_layout_changed_cb(self, combo, path, it):
-        return
-        i = self.__model.get_iter(path)
-        layout = combo.get_property("model").get_value(it, 0)
-        self.__model.set_value(i, 1, layout)
 
     def do_get_property(self, prop):
         if prop.name == "active-engine":

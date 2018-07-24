@@ -192,8 +192,7 @@ ibus_key_event_from_string (const gchar *string,
     if (*keyval != IBUS_KEY_VoidSymbol)
         retval = TRUE;
 _out:
-    if (tokens)
-        g_strfreev (tokens);
+    g_strfreev (tokens);
     return retval;
 }
 

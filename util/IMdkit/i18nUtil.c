@@ -148,6 +148,7 @@ void _Xi18nSendMessage (XIMS ims,
     if (reply_hdr == NULL)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -163,7 +164,8 @@ void _Xi18nSendMessage (XIMS ims,
     replyp = reply;
     memmove (reply, reply_hdr, header_size);
     replyp += header_size;
-    memmove (replyp, data, length);
+    if (length > 0 && data != NULL)
+        memmove (replyp, data, length);
 
     i18n_core->methods.send (ims, connect_id, reply, reply_length);
 
@@ -202,8 +204,10 @@ void _Xi18nSendTriggerKey (XIMS ims, CARD16 connect_id)
     total_size = FrameMgrGetTotalSize (fm);
 
     reply = (unsigned char *) malloc (total_size);
-    if (!reply)
+    if (!reply) {
+        FrameMgrFree (fm);
         return;
+    }
     /*endif*/
     memset (reply, 0, total_size);
     FrameMgrSetBuffer (fm, reply);
@@ -257,8 +261,10 @@ void _Xi18nSetEventMask (XIMS ims,
 
     total_size = FrameMgrGetTotalSize (fm);
     reply = (unsigned char *) malloc (total_size);
-    if (!reply)
+    if (!reply) {
+        FrameMgrFree (fm);
         return;
+    }
     /*endif*/
     memset (reply, 0, total_size);
     FrameMgrSetBuffer (fm, reply);

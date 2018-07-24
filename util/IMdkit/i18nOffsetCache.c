@@ -27,8 +27,10 @@
  */
 
 #include <X11/Xlib.h>
+#include <assert.h>
 #include <stddef.h>
 #include "IMdkit.h"
+#include "Xi18n.h"
 #include "Xi18n.h"
 
 /*
@@ -52,9 +54,11 @@ void _Xi18nInitOffsetCache (Xi18nOffsetCache *offset_cache)
 unsigned long _Xi18nLookupPropertyOffset (Xi18nOffsetCache *offset_cache,
                                           Atom key)
 {
-    Xi18nAtomOffsetPair *data = offset_cache->data;
+    Xi18nAtomOffsetPair *data;
     size_t i;
 
+    assert (offset_cache);
+    data = offset_cache->data;
     for (i = 0; i < offset_cache->size; ++i) {
         if (data[i].key == key) {
             return data[i].offset;
@@ -70,6 +74,7 @@ void _Xi18nSetPropertyOffset (Xi18nOffsetCache *offset_cache, Atom key,
     Xi18nAtomOffsetPair *data = offset_cache->data;
     size_t i;
 
+    assert (data != NULL);
     for (i = 0; i < offset_cache->size; ++i) {
         if (data[i].key == key) {
             data[i].offset = offset;
@@ -79,11 +84,19 @@ void _Xi18nSetPropertyOffset (Xi18nOffsetCache *offset_cache, Atom key,
 
     if (++offset_cache->size > offset_cache->capacity) {
         offset_cache->capacity *= OFFSET_CACHE_GROWTH_FACTOR;
-        offset_cache->data = data = (Xi18nAtomOffsetPair *) realloc (data,
+        offset_cache->data = (Xi18nAtomOffsetPair *) realloc (data,
                 offset_cache->capacity * sizeof (Xi18nAtomOffsetPair));
+        if (offset_cache->data == NULL) {
+            offset_cache->data = data;
+            --offset_cache->size;
+        }
+        data = offset_cache->data;
     }
 
-    data[i].key = key;
-    data[i].offset = offset;
+    assert (data != NULL);
+    if (offset_cache->size > 0) {
+        data[i].key = key;
+        data[i].offset = offset;
+    }
 }
 

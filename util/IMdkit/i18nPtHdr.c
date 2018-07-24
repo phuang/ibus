@@ -110,6 +110,7 @@ static void ConnectMessageProc (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -230,6 +231,7 @@ static void OpenMessageProc(XIMS ims, IMProtocol *call_data, unsigned char *p)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -312,6 +314,7 @@ static void CloseMessageProc (XIMS ims,
                            0,
                            0,
                            0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -513,6 +516,10 @@ static void QueryExtensionMessageProc (XIMS ims,
                            0,
                            0,
                            0);
+        FrameMgrFree (fm);
+        for (i = 0;  i < reply_number;  i++)
+            XFree (ext_list[i].name);
+        XFree ((char *) ext_list);
         return;
     }
     /*endif*/
@@ -610,8 +617,10 @@ static void GetIMValueFromName (Xi18n i18n_core,
 
             total_size = FrameMgrGetTotalSize (fm);
             data = (unsigned char *) malloc (total_size);
-            if (!data)
+            if (!data) {
+                FrameMgrFree (fm);
                 return;
+            }
             /*endif*/
             memset (data, 0, total_size);
             FrameMgrSetBuffer (fm, data);
@@ -666,11 +675,12 @@ static XIMAttribute *MakeIMAttributeList (Xi18n i18n_core,
         /*endfor*/
     }
     /*endfor*/
-    attrib_list = (XIMAttribute *) malloc (sizeof (XIMAttribute)*list_num);
+    attrib_list =
+            (XIMAttribute *) malloc (sizeof (XIMAttribute)*(list_num + 1));
     if (!attrib_list)
         return NULL;
     /*endif*/
-    memset (attrib_list, 0, sizeof (XIMAttribute)*list_num);
+    memset (attrib_list, 0, sizeof (XIMAttribute)*(list_num + 1));
     number_ret = list_num;
     list_num = 0;
     for (i = 0;  i < *number;  i++)
@@ -805,6 +815,10 @@ static void GetIMValuesMessageProc (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
+        for (i = 0; i < iter_count; i++)
+            XFree(im_attribute_list[i].value);
+        XFree (im_attribute_list);
         return;
     }
     /*endif*/
@@ -961,6 +975,7 @@ static void DestroyICMessageProc (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -1026,6 +1041,7 @@ static void ResetICMessageProc (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -1072,7 +1088,7 @@ static int WireEventToEvent (Xi18n i18n_core,
     /* get & set serial */
     FrameMgrGetToken(fm, c16);
     ev->xany.serial = (unsigned long)c16;
-    ev->xany.serial |= serial << 16;
+    ev->xany.serial |= ((unsigned long)serial) << 16;
     ev->xany.send_event = False;
     ev->xany.display = i18n_core->address.dpy;
 
@@ -1308,6 +1324,7 @@ static void TriggerNotifyMessageProc (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -1443,7 +1460,7 @@ static void EncodingNegotiatonMessageProc (XIMS ims,
     if (byte_length > 0)
     {
         enc_nego->encodinginfo = (XIMStr *) malloc (sizeof (XIMStr)*10);
-        memset (enc_nego->encoding, 0, sizeof (XIMStr)*10);
+        memset (enc_nego->encodinginfo, 0, sizeof (XIMStr)*10);
         i = 0;
         while (FrameMgrIsIterLoopEnd (fm, &status) == False)
         {
@@ -1488,6 +1505,7 @@ static void EncodingNegotiatonMessageProc (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/

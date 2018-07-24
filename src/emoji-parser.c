@@ -466,7 +466,8 @@ unicode_annotations_parse_xml_file (const gchar  *filename,
     g_return_val_if_fail (list != NULL, FALSE);
 
     if (!g_file_get_contents (filename, &content, &length, &error)) {
-        g_warning ("Failed to load %s: %s", filename, error->message);
+        g_warning ("Failed to load %s: %s", filename,
+                   error ? error->message : "");
         goto failed_to_parse_unicode_annotations;
     }
 
@@ -611,7 +612,7 @@ unicode_emoji_test_parse_line (const gchar *line,
             int i;
             gchar *amp;
             segments = g_strsplit(data->subcategory, "-", -1);
-            for (i = 0; segments[i]; i++) {
+            for (i = 0; segments && segments[i]; i++) {
                 if ((amp = strchr (segments[i], '&')) != NULL) {
                     if (amp - segments[i] <= 1) {
                         g_warning ("Wrong ampersand");
@@ -665,7 +666,8 @@ unicode_emoji_test_parse_file (const gchar *filename,
     g_return_val_if_fail (list != NULL, FALSE);
 
     if (!g_file_get_contents (filename, &content, &length, &error)) {
-        g_warning ("Failed to load %s: %s", filename, error->message);
+        g_warning ("Failed to load %s: %s",
+                   filename, error ? error->message : "");
         goto failed_to_parse_unicode_emoji_test;
     }
     head = end = content;

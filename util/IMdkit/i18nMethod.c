@@ -895,6 +895,7 @@ static Status xi18n_forwardEvent (XIMS ims, XPointer xp)
                            0,
                            0,
                            0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -964,6 +965,7 @@ static Status xi18n_commit (XIMS ims, XPointer xp)
                                0,
                                0,
                                0);
+            FrameMgrFree (fm);
             return False;
         }
         /*endif*/
@@ -997,6 +999,7 @@ static Status xi18n_commit (XIMS ims, XPointer xp)
                                0,
                                0,
                                0);
+            FrameMgrFree (fm);
             return False;
         }
         /*endif*/
@@ -1132,6 +1135,7 @@ static int xi18n_syncXlib (XIMS ims, XPointer xp)
     reply = (unsigned char *) malloc (total_size);
     if (!reply) {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     memset (reply, 0, total_size);

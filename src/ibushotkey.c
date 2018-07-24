@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -453,7 +454,7 @@ ibus_hotkey_profile_remove_hotkey (IBusHotkeyProfile *profile,
             break;
     }
 
-    g_assert (p2->event == event);
+    g_assert (p2 && p2->event == event);
 
     p2->hotkeys = g_list_remove (p2->hotkeys, p1);
     if (p2->hotkeys == NULL) {

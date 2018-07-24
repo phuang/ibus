@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -500,11 +501,13 @@ ibus_service_register (IBusService     *service,
                        GDBusConnection *connection,
                        GError         **error)
 {
+    GArray *array = NULL;
+    GArray *interfaces;
+    GDBusInterfaceInfo **p;
+
     g_return_val_if_fail (IBUS_IS_SERVICE (service), FALSE);
     g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), FALSE);
     g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-    GArray *array = NULL;
 
     if (g_hash_table_lookup (service->priv->table, connection)) {
         if (error) {
@@ -515,7 +518,9 @@ ibus_service_register (IBusService     *service,
         goto error_out;
     }
 
-    GDBusInterfaceInfo **p = (GDBusInterfaceInfo **)IBUS_SERVICE_GET_CLASS (service)->interfaces->data;
+    interfaces = IBUS_SERVICE_GET_CLASS (service)->interfaces;
+    g_assert (interfaces);
+    p = (GDBusInterfaceInfo **)interfaces->data;
     if (*p == NULL) {
         if (error) {
             *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,

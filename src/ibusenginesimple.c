@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2014-2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -814,9 +814,21 @@ check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
         g_free (nfc_temp);
 
         if (n_compose > 2) {
-            temp_swap = combination_buffer_temp[i % (n_compose - 1) + 1];
-            combination_buffer_temp[i % (n_compose - 1) + 1] = combination_buffer_temp[(i+1) % (n_compose - 1) + 1];
-            combination_buffer_temp[(i+1) % (n_compose - 1) + 1] = temp_swap;
+            gint j = i % (n_compose - 1) + 1;
+            gint k = (i+1) % (n_compose - 1) + 1;
+            if (j >= IBUS_MAX_COMPOSE_LEN) {
+                g_warning ("j >= IBUS_MAX_COMPOSE_LEN for " \
+                           "combination_buffer_temp");
+                break;
+            }
+            if (k >= IBUS_MAX_COMPOSE_LEN) {
+                g_warning ("k >= IBUS_MAX_COMPOSE_LEN for " \
+                           "combination_buffer_temp");
+                break;
+            }
+            temp_swap = combination_buffer_temp[j];
+            combination_buffer_temp[j] = combination_buffer_temp[k];
+            combination_buffer_temp[k] = temp_swap;
         }
         else
             break;
@@ -1067,7 +1079,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     gboolean compose_finish;
     gunichar output_char;
 
-    while (priv->compose_buffer[n_compose] != 0 && n_compose < EMOJI_SOURCE_LEN)
+    while (n_compose < EMOJI_SOURCE_LEN && priv->compose_buffer[n_compose] != 0)
         n_compose++;
     if (n_compose >= EMOJI_SOURCE_LEN) {
         g_warning ("copmose table buffer is full.");

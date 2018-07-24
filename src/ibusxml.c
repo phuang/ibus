@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -240,8 +241,10 @@ ibus_xml_parse_file (const gchar *filename)
         return node;
     } while (0);
 
-    g_warning ("Parse %s failed: %s", filename, error->message);
-    g_error_free (error);
+    if (error) {
+        g_warning ("Parse %s failed: %s", filename, error->message);
+        g_error_free (error);
+    }
     g_markup_parse_context_free (context);
     return NULL;
 }

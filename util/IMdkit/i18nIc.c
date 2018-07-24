@@ -475,8 +475,10 @@ static XICAttribute *CreateNestedList (CARD16 attr_id,
     /*endif*/
     memset (nest_list, 0, sizeof (XICAttribute));
     nest_list->value = (void *) malloc (value_length);
-    if (nest_list->value == NULL)
+    if (nest_list->value == NULL) {
+        XFree (nest_list);
         return NULL;
+    }
     /*endif*/
     memset (nest_list->value, 0, value_length);
 
@@ -816,6 +818,7 @@ void _Xi18nChangeIC (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -973,8 +976,10 @@ void _Xi18nGetIC (XIMS ims, IMProtocol *call_data, unsigned char *p)
     getic->ic_attr = ic_attr;
     if (i18n_core->address.improto)
     {
-        if (!(i18n_core->address.improto (ims, call_data)))
+        if (!(i18n_core->address.improto (ims, call_data))) {
+            XFree (attrID_list);
             return;
+        }
         /*endif*/
 	if (_Xi18nNeedSwap (i18n_core, connect_id))
 	  SwapAttributes(getic->ic_attr, getic->ic_attr_num);
@@ -1020,6 +1025,8 @@ void _Xi18nGetIC (XIMS ims, IMProtocol *call_data, unsigned char *p)
     if (reply == NULL)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        XFree (attrID_list);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/

@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,6 +22,7 @@
  */
 
 #include "ibusbus.h"
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -565,7 +566,9 @@ ibus_bus_init (IBusBus *bus)
             return;
         }
         if (buf.st_mode != (S_IFDIR | S_IRWXU)) {
-            g_chmod (path, 0700);
+            errno = 0;
+            if (g_chmod (path, 0700))
+                g_warning ("chmod failed: %s", errno ? g_strerror (errno) : "");
         }
     }
 
@@ -673,7 +676,7 @@ ibus_bus_constructor (GType                  type,
             ibus_bus_connect (_bus);
     }
     else {
-        object = g_object_ref (_bus);
+        object = g_object_ref (G_OBJECT (_bus));
     }
 
     return object;

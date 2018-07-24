@@ -27,6 +27,7 @@ SOFTWARE.
 ******************************************************************/
 
 #include <X11/Xlibint.h>
+#include <assert.h>
 #include <stdlib.h>
 #include "FrameMgr.h"
 
@@ -989,6 +990,7 @@ static XimFrameType FrameInstGetNextType(FrameInst fi, XimFrameTypeInfo info)
             while (number > 0)
             {
                 i = _FrameInstDecrement (fi->template, i);
+                assert (i >= 0);
                 size += _FrameInstGetItemSize (fi, i);
                 number--;
             }
@@ -1138,6 +1140,7 @@ static XimFrameType FrameInstPeekNextType (FrameInst fi, XimFrameTypeInfo info)
             while (number > 0)
             {
                 i = _FrameInstDecrement (fi->template, i);
+                assert (i >= 0);
                 size += _FrameInstGetItemSize (fi, i);
                 number--;
             }
@@ -1356,6 +1359,7 @@ static FmStatus FrameInstSetSize (FrameInst fi, int num)
 	    break;
         }
         /*endswitch*/
+        assert (i >= 0);
         i = _FrameInstIncrement(fi->template, i);
     }
     /*endwhile*/
@@ -1457,6 +1461,7 @@ static FmStatus FrameInstSetIterCount (FrameInst fi, int num)
 	    break;
         }
         /*endswitch*/
+        assert (i >= 0);
         i = _FrameInstIncrement (fi->template, i);
     }
     /*endwhile*/
@@ -1474,6 +1479,7 @@ static int FrameInstGetTotalSize (FrameInst fi)
     while (fi->template[i].type != EOL)
     {
         size += _FrameInstGetItemSize (fi, i);
+        assert (i >= 0);
         i = _FrameInstIncrement (fi->template, i);
     }
     /*endwhile*/
@@ -2419,6 +2425,7 @@ static int _FrameInstGetItemSize (FrameInst fi, int cur_no)
             size = 0;
             while (number > 0)
             {
+                assert (i >= 0);
                 i = _FrameInstDecrement (fi->template, i);
                 size += _FrameInstGetItemSize (fi, i);
                 number--;

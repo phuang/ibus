@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -72,7 +73,7 @@ static gboolean
 ibus_keymap_parse_line (gchar  *str,
                         KEYMAP  keymap)
 {
-    gchar *p1, *p2;
+    gchar *p1, *p2, ch;
     gint i;
     guint keycode;
     guint keysym;
@@ -139,11 +140,12 @@ ibus_keymap_parse_line (gchar  *str,
     if (keysym == IBUS_KEY_VoidSymbol)
         return FALSE;
 
+    /* Do not assign *p1 to g_ascii_isalpha() directly for the syntax check */
     if (i == 0 &&
         strncmp (p2, "addupper", sizeof ("addupper") - 1) == 0 &&
-        g_ascii_isalpha (*p1)) {
+        (ch = *p1) && g_ascii_isalpha (ch)) {
         gchar buf[] = "a";
-        buf[0] = g_ascii_toupper(*p1);
+        buf[0] = g_ascii_toupper(ch);
         keymap[keycode][0] = keymap[keycode][3] = keysym;
         keymap[keycode][1] = keymap[keycode][2] = ibus_keyval_from_name (buf);
 

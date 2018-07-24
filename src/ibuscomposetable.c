@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus - The Input Bus
  * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -532,7 +532,7 @@ ibus_compose_table_serialize (IBusComposeTable *compose_table)
 
     variant_data = g_variant_new_fixed_array (G_VARIANT_TYPE_UINT16,
                                               compose_table->data,
-                                              index_stride * n_seqs,
+                                              (gsize)index_stride * n_seqs,
                                               sizeof (guint16));
     if (variant_data == NULL) {
         g_warning ("Could not change compose data to GVariant.");

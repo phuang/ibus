@@ -83,7 +83,7 @@ static char *_FindModifiers (XIMArg *args)
 {
     char *modifiers;
 
-    while (args->name)
+    while (args && args->name)
     {
 	if (strcmp (args->name, IMModifiers) == 0)
 	{
@@ -144,8 +144,10 @@ XIMS IMOpenIM (Display *display, ...)
     modifiers = _FindModifiers (args);
 
     ims = _GetIMS (modifiers);
-    if (ims == (XIMS) NULL)
+    if (ims == (XIMS) NULL) {
+        XFree (args);
         return (XIMS) NULL;
+    }
     /*endif*/
     
     ims->core.display = display;

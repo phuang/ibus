@@ -281,7 +281,8 @@ ucd_parse_file (const gchar *filename,
     g_return_val_if_fail (list != NULL, FALSE);
 
     if (!g_file_get_contents (filename, &content, &length, &error)) {
-        g_warning ("Failed to load %s: %s", filename, error->message);
+        g_warning ("Failed to load %s: %s",
+                   filename, error ? error->message : "");
         goto failed_to_parse_ucd_names_list;
     }
     head = end = content;
