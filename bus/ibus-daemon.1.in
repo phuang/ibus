@@ -62,9 +62,6 @@ auto, refresh, none is available.
 \fB\-o\fR, \fB\-\-timeout\fR=\fItimeout\fR [default is 2000]
 dbus reply timeout in milliseconds.
 .TP
-\fB\-m\fR, \fB\-\-mem\-profile\fR
-enable memory profile, send SIGUSR2 to print out the memory profile.
-.TP
 \fB\-v\fR, \fB\-\-verbose\fR
 verbose.
 
