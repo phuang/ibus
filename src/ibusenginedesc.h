@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2011-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -107,6 +108,10 @@ GType            ibus_engine_desc_get_type      (void);
  * @layout: Keyboard layout
  *
  * Creates a new #IBusEngineDesc.
+ * If layout is "default", the engine inherits the current layout and
+ * does not change the layout. The layouts "default" and "" are same.
+ * E.g. If you switch JP XKB engine and an input method engine (IME),
+ * the IME inherits the JP layout.
  *
  * Returns: A newly allocated IBusEngineDesc.
  */
@@ -128,6 +133,10 @@ IBusEngineDesc  *ibus_engine_desc_new           (const gchar    *name,
  * ibus_engine_desc_new_varargs() supports the va_list format.
  * name property is required. e.g.
  * ibus_engine_desc_new_varargs("name", "ibus-foo", "language", "us", NULL)
+ * If layout is "default", the engine inherits the current layout and
+ * does not change the layout. The layouts "default" and "" are same.
+ * E.g. If you switch JP XKB engine and an input method engine (IME),
+ * the IME inherits the JP layout.
  *
  * Returns: A newly allocated IBusEngineDesc.
  */
