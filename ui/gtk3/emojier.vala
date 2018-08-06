@@ -1294,8 +1294,14 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             return;
         }
         string? unicode_point = check_unicode_point(annotation);
-        GLib.SList<string>? total_emojis =
-            lookup_emojis_from_annotation(annotation);
+        GLib.SList<string>? total_emojis = null;
+        if (annotation.ascii_casecmp("history") == 0) {
+            for (int i = 0; i < m_favorites.length; i++) {
+                total_emojis.append(m_favorites[i].dup());
+            }
+        }
+        if (total_emojis == null)
+            total_emojis = lookup_emojis_from_annotation(annotation);
         if (total_emojis == null) {
             /* Users can type title strings against lower case.
              * E.g. "Smile" against "smile"
