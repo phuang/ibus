@@ -91,6 +91,9 @@ static guint    _key_snooper_id = 0;
 
 static gboolean _use_sync_mode = FALSE;
 
+static const gchar *_discard_password_apps  = "";
+static gboolean _use_discard_password = FALSE;
+
 static GtkIMContext *_focus_im_context = NULL;
 static IBusInputContext *_fake_context = NULL;
 static GdkWindow *_input_window = NULL;
@@ -157,7 +160,7 @@ static gboolean _slave_delete_surrounding_cb
                                              IBusIMContext      *context);
 static void     _request_surrounding_text   (IBusIMContext      *context);
 static void     _create_fake_input_context  (void);
-static void     _set_content_type           (IBusIMContext      *context);
+static gboolean _set_content_type           (IBusIMContext      *context);
 
 
 
@@ -383,7 +386,7 @@ _request_surrounding_text (IBusIMContext *context)
     }
 }
 
-static void
+static gboolean
 _set_content_type (IBusIMContext *context)
 {
 #if GTK_CHECK_VERSION (3, 6, 0)
@@ -396,11 +399,18 @@ _set_content_type (IBusIMContext *context)
                       "input-hints", &hints,
                       NULL);
 
+        if (_use_discard_password) {
+            if (purpose == GTK_INPUT_PURPOSE_PASSWORD ||
+                purpose == GTK_INPUT_PURPOSE_PIN) {
+                return FALSE;
+            }
+        }
         ibus_input_context_set_content_type (context->ibuscontext,
                                              purpose,
                                              hints);
     }
 #endif
+    return TRUE;
 }
 
 
@@ -608,24 +618,45 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     _use_key_snooper = !_get_boolean_env ("IBUS_DISABLE_SNOOPER",
                                           !(ENABLE_SNOOPER));
     _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", FALSE);
+    _use_discard_password = _get_boolean_env ("IBUS_DISCARD_PASSWORD", FALSE);
+
+#define CHECK_APP_IN_CSV_ENV_VARIABLES(retval,                          \
+                                       env_apps,                        \
+                                       fallback_apps,                   \
+                                       value_if_found)                  \
+{                                                                       \
+    const gchar * prgname = g_get_prgname ();                           \
+    gchar **p;                                                          \
+    gchar ** apps;                                                      \
+    if (g_getenv ((#env_apps))) {                                       \
+        fallback_apps = g_getenv (#env_apps);                           \
+    }                                                                   \
+    apps = g_strsplit ((fallback_apps), ",", 0);                        \
+    for (p = apps; *p != NULL; p++) {                                   \
+        if (g_regex_match_simple (*p, prgname, 0, 0)) {                 \
+            retval = (value_if_found);                                  \
+            break;                                                      \
+        }                                                               \
+    }                                                                   \
+    g_strfreev (apps);                                                  \
+}
 
     /* env IBUS_DISABLE_SNOOPER does not exist */
     if (_use_key_snooper) {
         /* disable snooper if app is in _no_snooper_apps */
-        const gchar * prgname = g_get_prgname ();
-        if (g_getenv ("IBUS_NO_SNOOPER_APPS")) {
-            _no_snooper_apps = g_getenv ("IBUS_NO_SNOOPER_APPS");
-        }
-        gchar **p;
-        gchar ** apps = g_strsplit (_no_snooper_apps, ",", 0);
-        for (p = apps; *p != NULL; p++) {
-            if (g_regex_match_simple (*p, prgname, 0, 0)) {
-                _use_key_snooper = FALSE;
-                break;
-            }
-        }
-        g_strfreev (apps);
+        CHECK_APP_IN_CSV_ENV_VARIABLES (_use_key_snooper,
+                                        IBUS_NO_SNOOPER_APPS,
+                                        _no_snooper_apps,
+                                        FALSE);
     }
+    if (!_use_discard_password) {
+        CHECK_APP_IN_CSV_ENV_VARIABLES (_use_discard_password,
+                                        IBUS_DISCARD_PASSWORD_APPS,
+                                        _discard_password_apps,
+                                        TRUE);
+    }
+
+#undef CHECK_APP_IN_CSV_ENV_VARIABLES
 
     /* init bus object */
     if (_bus == NULL) {
@@ -926,7 +957,10 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     ibusimcontext->has_focus = TRUE;
     if (ibusimcontext->ibuscontext) {
-        _set_content_type (ibusimcontext);
+        if (!_set_content_type (ibusimcontext)) {
+            ibusimcontext->has_focus = FALSE;
+            return;
+        }
         ibus_input_context_focus_in (ibusimcontext->ibuscontext);
     }
 
@@ -958,9 +992,14 @@ ibus_im_context_focus_out (GtkIMContext *context)
         return;
     }
 
-    g_object_remove_weak_pointer ((GObject *) context,
-                                  (gpointer *) &_focus_im_context);
-    _focus_im_context = NULL;
+    /* If _use_discard_password is TRUE or GtkEntry has no visibility,
+     * _focus_im_context is NULL.
+     */
+    if (_focus_im_context) {
+        g_object_remove_weak_pointer ((GObject *) context,
+                                      (gpointer *) &_focus_im_context);
+        _focus_im_context = NULL;
+    }
 
     ibusimcontext->has_focus = FALSE;
     if (ibusimcontext->ibuscontext) {
