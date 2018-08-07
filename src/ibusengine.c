@@ -185,7 +185,6 @@ static void      ibus_engine_dbus_property_changed
                                              (IBusEngine         *engine,
                                               const gchar        *property_name,
                                               GVariant           *value);
-static void      ibus_engine_keybinding_free (IBusEngine         *engine);
 
 
 G_DEFINE_TYPE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
@@ -387,7 +386,7 @@ ibus_engine_class_init (IBusEngineClass *class)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusEngineClass, process_key_event),
             g_signal_accumulator_true_handled, NULL,
-            _ibus_marshal_BOOL__UINT_UINT_UINT,
+            _ibus_marshal_BOOLEAN__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
             3,
             G_TYPE_UINT,
@@ -1583,16 +1582,6 @@ ibus_engine_dbus_property_changed (IBusEngine  *engine,
         g_error_free (error);
     }
     g_object_unref (message);
-}
-
-static void
-ibus_engine_keybinding_free (IBusEngine *engine)
-{
-    IBusEnginePrivate *priv;
-
-    g_return_if_fail (IBUS_IS_ENGINE (engine));
-
-    priv = engine->priv;
 }
 
 IBusEngine *

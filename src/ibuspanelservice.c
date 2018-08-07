@@ -991,7 +991,7 @@ ibus_panel_service_class_init (IBusPanelServiceClass *class)
             G_SIGNAL_RUN_LAST,
             G_STRUCT_OFFSET (IBusPanelServiceClass, process_key_event),
             g_signal_accumulator_true_handled, NULL,
-            _ibus_marshal_BOOL__UINT_UINT_UINT,
+            _ibus_marshal_BOOLEAN__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
             3,
             G_TYPE_UINT,

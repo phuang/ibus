@@ -431,26 +431,6 @@ _panel_update_auxiliary_text_received_cb (BusPanelProxy *panel,
 }
 
 static void
-_panel_show_lookup_table_received_cb (BusPanelProxy *panel,
-                                      BusIBusImpl   *ibus)
-{
-    g_return_if_fail (BUS_IS_IBUS_IMPL (ibus));
-
-    if (ibus->panel)
-        bus_panel_proxy_show_lookup_table (ibus->panel);
-}
-
-static void
-_panel_hide_lookup_table_received_cb (BusPanelProxy *panel,
-                                      BusIBusImpl   *ibus)
-{
-    g_return_if_fail (BUS_IS_IBUS_IMPL (ibus));
-
-    if (ibus->panel)
-        bus_panel_proxy_hide_lookup_table (ibus->panel);
-}
-
-static void
 _registry_changed_cb (IBusRegistry *registry,
                       BusIBusImpl  *ibus)
 {

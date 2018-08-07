@@ -353,7 +353,7 @@ bus_input_context_class_init (BusInputContextClass *class)
             G_SIGNAL_RUN_LAST,
             0,
             NULL, NULL,
-            bus_marshal_BOOL__UINT_UINT_UINT,
+            bus_marshal_BOOLEAN__UINT_UINT_UINT,
             G_TYPE_BOOLEAN,
             3,
             G_TYPE_UINT,
