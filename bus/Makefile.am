@@ -122,6 +122,7 @@ TESTS_ENVIRONMENT = \
     top_srcdir=$(top_srcdir) \
     builddir=$(builddir) \
     srcdir=$(srcdir) \
+    LD_LIBRARY_PATH="$(top_builddir)/src/.libs:$(top_builddir)/src" \
     DISABLE_GUI_TESTS="$(DISABLE_GUI_TESTS)" \
     $(NULL)
 

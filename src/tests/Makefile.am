@@ -23,43 +23,74 @@
 
 NULL =
 
-DEPS = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
+LIBIBUS = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
+GSCHEMA_XML = $(top_builddir)/data/dconf/org.freedesktop.ibus.gschema.xml
+IBUS_DAEMON = $(top_builddir)/bus/ibus-daemon
+ENGINE_XML = $(top_builddir)/engine/simple.xml
+CONFIG_XML = $(top_builddir)/conf/memconf/memconf.xml
+IM_IBUS = $(top_builddir)/client/gtk3/im-ibus.la
+
+BUILT_SOURCES = \
+    $(LIBIBUS) \
+    $(GSCHEMA_XML) \
+    $(IBUS_DAEMON) \
+    $(ENGINE_XML) \
+    $(CONFIG_XML) \
+    $(NULL)
+
+$(GSCHEMA_XML):
+	$(MAKE) -C $(top_builddir)/data
+
+$(IBUS_DAEMON):
+	$(MAKE) -C $(top_builddir)/bus
+
+$(ENGINE_XML):
+	$(MAKE) -C $(top_builddir)/engine
+
+# memconf.xml is not built with configure --disable-memconf
+$(CONFIG_XML):
+	$(MAKE) -C $(top_builddir)/conf/memconf
+	$(MAKE) -C $(top_builddir)/conf/memconf memconf.xml
+
+$(IM_IBUS):
+	$(MAKE) -C $(top_builddir)/client/gtk3
 
 AM_CPPFLAGS = \
-	-g                                      \
-	@GLIB2_CFLAGS@                          \
-	@GIO2_CFLAGS@                           \
-	-DIBUS_DISABLE_DEPRECATION_WARNINGS     \
-	-I$(top_srcdir)/src                     \
-	-I$(top_builddir)/src                   \
-	$(NULL)
+    -g                                      \
+    @GLIB2_CFLAGS@                          \
+    @GIO2_CFLAGS@                           \
+    -DIBUS_DISABLE_DEPRECATION_WARNINGS     \
+    -I$(top_srcdir)/src                     \
+    -I$(top_builddir)/src                   \
+    $(NULL)
 
-prog_ldadd = 			\
-	@GLIB2_LIBS@        \
-	@GIO2_LIBS@			\
-	$(top_builddir)/src/libibus-@IBUS_API_VERSION@.la	\
-	$(NULL)
+prog_ldadd =\
+    @GLIB2_LIBS@                                                        \
+    @GIO2_LIBS@                                                         \
+    $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la                   \
+    $(NULL)
 
 noinst_PROGRAMS = $(TESTS)
 TESTS = \
-	ibus-bus                        \
-	ibus-config                     \
-	ibus-configservice              \
-	ibus-factory                    \
-	ibus-inputcontext               \
-	ibus-inputcontext-create        \
-	ibus-keynames                   \
-	ibus-registry                   \
-	ibus-serializable               \
-	ibus-share                      \
-	ibus-util                       \
-	$(NULL)
+    ibus-bus                        \
+    ibus-config                     \
+    ibus-configservice              \
+    ibus-factory                    \
+    ibus-inputcontext               \
+    ibus-inputcontext-create        \
+    ibus-keynames                   \
+    ibus-registry                   \
+    ibus-serializable               \
+    ibus-share                      \
+    ibus-util                       \
+    $(NULL)
 
 if ENABLE_ENGINE
 TESTS += ibus-engine-switch
 endif
 
 if ENABLE_GTK3
+BUILT_SOURCES += $(IM_IBUS)
 TESTS += ibus-compose
 if ENABLE_XTEST
 TESTS += ibus-keypress
@@ -67,12 +98,13 @@ endif
 endif
 
 TESTS_ENVIRONMENT = \
-	top_builddir=$(top_builddir) \
-	top_srcdir=$(top_srcdir) \
-	builddir=$(builddir) \
-	srcdir=$(srcdir) \
-	DISABLE_GUI_TESTS="$(DISABLE_GUI_TESTS)" \
-	$(NULL)
+    top_builddir=$(top_builddir) \
+    top_srcdir=$(top_srcdir) \
+    builddir=$(builddir) \
+    srcdir=$(srcdir) \
+    LD_LIBRARY_PATH="$(top_builddir)/src/.libs:$(top_builddir)/src" \
+    DISABLE_GUI_TESTS="$(DISABLE_GUI_TESTS)" \
+    $(NULL)
 
 LOG_COMPILER = $(srcdir)/runtest
 

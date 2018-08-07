@@ -1086,7 +1086,6 @@ bus_panel_proxy_candidate_clicked_lookup_table (BusPanelProxy *panel,
                                                 guint          button,
                                                 guint          state)
 {
-    gboolean use_extension = TRUE;
     g_assert (BUS_IS_PANEL_PROXY (panel));
 
     g_dbus_proxy_call ((GDBusProxy *)panel,

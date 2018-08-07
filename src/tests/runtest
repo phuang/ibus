@@ -36,6 +36,12 @@ ibus-keypress
 test-stress
 "
 IBUS_SCHEMA_FILE='org.freedesktop.ibus.gschema.xml'
+GTK_QUERY_MODULE=gtk-query-immodules-3.0-32
+MACHINE=`uname -m`
+
+if test x"$MACHINE" = xx86_64 ; then
+    GTK_QUERY_MODULE=gtk-query-immodules-3.0-64
+fi
 
 retval=0
 
@@ -114,6 +120,7 @@ run_test_case()
     done
 
     if test $need_bus = yes; then
+        # func_copy_component replaces s/$top_srcdir/%top_builddir/
         func_copy_component "../$top_srcdir/engine/simple.xml"
         func_copy_component "../$top_srcdir/conf/memconf/memconf.xml"
 
@@ -122,6 +129,19 @@ run_test_case()
 
         IBUS_ADDRESS_FILE=$PWD/ibus-daemon.pid
         export IBUS_ADDRESS_FILE
+
+        if test -f "../$top_builddir/client/gtk3/.libs/im-ibus.so" ; then
+            IM_IBUS_SO="../$top_builddir/client/gtk3/.libs/im-ibus.so"
+        elif test -f "../$top_builddir/client/gtk3/im-ibus.so" ; then
+            IM_IBUS_SO="../$top_builddir/client/gtk3/im-ibus.so"
+        else
+            echo "NOT FOUND $top_builddir/client/gtk3/im-ibus.so"
+            exit -1
+        fi
+
+        GTK_IM_MODULE_FILE=$PWD/imcache
+        export GTK_IM_MODULE_FILE
+        $GTK_QUERY_MODULE "$IM_IBUS_SO" > $GTK_IM_MODULE_FILE
 
         cp "../$top_builddir/data/dconf/$IBUS_SCHEMA_FILE" $PWD
         glib-compile-schemas $PWD
