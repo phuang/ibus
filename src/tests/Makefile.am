@@ -23,37 +23,7 @@
 
 NULL =
 
-LIBIBUS = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
-GSCHEMA_XML = $(top_builddir)/data/dconf/org.freedesktop.ibus.gschema.xml
-IBUS_DAEMON = $(top_builddir)/bus/ibus-daemon
-ENGINE_XML = $(top_builddir)/engine/simple.xml
-CONFIG_XML = $(top_builddir)/conf/memconf/memconf.xml
-IM_IBUS = $(top_builddir)/client/gtk3/im-ibus.la
-
-BUILT_SOURCES = \
-    $(LIBIBUS) \
-    $(GSCHEMA_XML) \
-    $(IBUS_DAEMON) \
-    $(ENGINE_XML) \
-    $(CONFIG_XML) \
-    $(NULL)
-
-$(GSCHEMA_XML):
-	$(MAKE) -C $(top_builddir)/data
-
-$(IBUS_DAEMON):
-	$(MAKE) -C $(top_builddir)/bus
-
-$(ENGINE_XML):
-	$(MAKE) -C $(top_builddir)/engine
-
-# memconf.xml is not built with configure --disable-memconf
-$(CONFIG_XML):
-	$(MAKE) -C $(top_builddir)/conf/memconf
-	$(MAKE) -C $(top_builddir)/conf/memconf memconf.xml
-
-$(IM_IBUS):
-	$(MAKE) -C $(top_builddir)/client/gtk3
+DEPS = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
 AM_CPPFLAGS = \
     -g                                      \
@@ -90,7 +60,6 @@ TESTS += ibus-engine-switch
 endif
 
 if ENABLE_GTK3
-BUILT_SOURCES += $(IM_IBUS)
 TESTS += ibus-compose
 if ENABLE_XTEST
 TESTS += ibus-keypress

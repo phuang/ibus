@@ -92,6 +92,7 @@ install-data-hook:
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-gtk-doc \
 	--disable-schemas-install \
+	--enable-memconf \
 	$(NULL)
 
 dist-hook:

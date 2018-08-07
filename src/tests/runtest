@@ -120,6 +120,10 @@ run_test_case()
     done
 
     if test $need_bus = yes; then
+        if test ! -f "../$top_builddir/conf/memconf/ibus-memconf" ; then
+            echo "NOT FOUNND ibus-memconf. Need configure --enable-memconf"
+            exit -1
+        fi
         # func_copy_component replaces s/$top_srcdir/%top_builddir/
         func_copy_component "../$top_srcdir/engine/simple.xml"
         func_copy_component "../$top_srcdir/conf/memconf/memconf.xml"
