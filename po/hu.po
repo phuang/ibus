@@ -18,12 +18,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-03-17 10:41+0000\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"PO-Revision-Date: 2018-06-28 06:24+0000\n"
+"Last-Translator: Meskó Balázs <meskobalazs@gmail.com>\n"
 "Language-Team: Hungarian <trans-hu@lists.fedoraproject.org>\n"
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.4.5\n"
+"X-Generator: Zanata 4.5.0\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -243,26 +243,29 @@ msgid ""
 "The shortcut keys to enable conversions of emoji annotations or Unicode "
 "names"
 msgstr ""
+"Gyorsbillentyű az emodzsi annotációk vagy a Unicode nevek átalakításának "
+"engedélyezéséhez"
 
 #: ../setup/setup.ui.h:50
 msgid "Emoji annotation:"
-msgstr ""
+msgstr "Emodzsi annotáció:"
 
 #: ../setup/setup.ui.h:51
 msgid "The shortcut keys to enable Unicode code point conversions"
-msgstr ""
+msgstr "Gyorsbillentyű az Unicode kódpont-átalakítások engedélyezéséhez"
 
 #: ../setup/setup.ui.h:52
 msgid "Unicode code point:"
-msgstr ""
+msgstr "Unicode kódpont:"
 
 #: ../setup/setup.ui.h:53
 msgid "Set a font of Unicode candidates on the emoji dialog"
 msgstr ""
+"Unicode jelöltekből álló betűkészlet beállítása az emodzsi párbeszédablakon"
 
 #: ../setup/setup.ui.h:54
 msgid "Unicode font:"
-msgstr ""
+msgstr "Unicode betűkészlet:"
 
 #: ../setup/setup.ui.h:55
 msgid "Set a language of emoji annotations on the emoji dialog"
@@ -581,11 +584,11 @@ msgstr "Egyéni betűkészlet neve a nyelv panelhez"
 
 #: ../data/ibus.schemas.in.h:50
 msgid "Unicode shortcut keys for gtk_accelerator_parse"
-msgstr ""
+msgstr "Unicode gyorsbillentyű a  gtk_accelerator_parse részére"
 
 #: ../data/ibus.schemas.in.h:51
 msgid "The shortcut keys for turning Unicode typing on or off"
-msgstr ""
+msgstr "Gyorsbillentyű az Unicode bevitel ki- vagy bekapcsolásához"
 
 #: ../data/ibus.schemas.in.h:52
 msgid "Emoji shortcut keys for gtk_accelerator_parse"
@@ -670,7 +673,7 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:67
 msgid "Load the emoji data at the time of startup"
-msgstr ""
+msgstr "Emodzsi adatok betöltése indításkor"
 
 #: ../data/ibus.schemas.in.h:68
 msgid ""
@@ -678,10 +681,13 @@ msgid ""
 "needed to load the data. Load the emoji data when open the emoji dialog at "
 "the beginning if false."
 msgstr ""
+"Emodzsi adatok betöltése indításkor, ha igaz. Körülbelül 10 MB memória "
+"szükséges az adatok betöltéséhez. Ha hamis, akkor az emodzsi adatok a "
+"párbeszédablak megnyitásakor lesznek betöltve."
 
 #: ../data/ibus.schemas.in.h:69
 msgid "Load the Unicode data at the time of startup"
-msgstr ""
+msgstr "Unicode adatok betöltése indításkor"
 
 #: ../data/ibus.schemas.in.h:70
 msgid ""
@@ -690,6 +696,10 @@ msgid ""
 "the beginning if false. The Unicode data is always loaded after the emoji "
 "data is loaded even if true."
 msgstr ""
+"Unicode adatok betöltése indításkor, ha igaz. Körülbelül 15 MB memória "
+"szükséges az adatok betöltéséhez. Ha hamis, akkor a Unicode adatok a "
+"párbeszédablak megnyitásakor lesznek betöltve. A Unicode adatok mindenképpen "
+"az emodzsi adatok után lesznek betöltve, akkor is ha igaz."
 
 #: ../data/ibus.schemas.in.h:71
 msgid "Embed Preedit Text"
@@ -2899,6 +2909,8 @@ msgid ""
 "Use engine schema paths instead of ibus core, which can be comma-separated "
 "values."
 msgstr ""
+"A motor séma útvonalainak használata az ibus mag helyett, mely vesszővel "
+"elválasztott értékekből állhat."
 
 #: ../tools/main.vala:381
 msgid "Resetting…"
@@ -3010,7 +3022,7 @@ msgstr "Emodzsi változatok megjelenítése"
 
 #: ../ui/gtk3/emojier.vala:1082
 msgid "Close"
-msgstr ""
+msgstr "Bezárás"
 
 #: ../ui/gtk3/emojier.vala:1088
 msgid "Menu"
@@ -3018,7 +3030,7 @@ msgstr "Menü"
 
 #: ../ui/gtk3/emojier.vala:1099
 msgid "Click to view a warning message"
-msgstr ""
+msgstr "Kattintson a figyelmeztető üzenet megtekintéséhez."
 
 #: ../ui/gtk3/emojier.vala:1143
 msgid "Loading a Unicode dictionary:"
@@ -3073,6 +3085,10 @@ msgid ""
 " E.g. Press Esc key several times to release the emoji typing mode, click "
 "your desktop and click your text application again."
 msgstr ""
+"Nem sikerült lekérni a jelenlegi szöveges alkalmazást. Hozza újra fókuszba "
+"az alkalmazást. Például nyomja meg többször az Esc gombot az emodzsi beírási "
+"módból kilépéshez, kattintson az asztalra, majd újra a szöveges alkalmazásra."
+""
 
 #: ../ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."

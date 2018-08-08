@@ -19,12 +19,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-04-13 04:08+0000\n"
+"PO-Revision-Date: 2018-07-16 03:25+0000\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Dutch <trans-nl@lists.fedoraproject.org>\n"
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 4.4.5\n"
+"X-Generator: Zanata 4.5.0\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -244,26 +244,28 @@ msgid ""
 "The shortcut keys to enable conversions of emoji annotations or Unicode "
 "names"
 msgstr ""
+"De sneltoetsen voor het aanzetten van conversies van emoji annotaties of "
+"Unicode"
 
 #: ../setup/setup.ui.h:50
 msgid "Emoji annotation:"
-msgstr ""
+msgstr "Emoji annotatie:"
 
 #: ../setup/setup.ui.h:51
 msgid "The shortcut keys to enable Unicode code point conversions"
-msgstr ""
+msgstr "De sneltoetsen voor het aanzetten van Unicode code punt conversies"
 
 #: ../setup/setup.ui.h:52
 msgid "Unicode code point:"
-msgstr ""
+msgstr "Unicode code punt:"
 
 #: ../setup/setup.ui.h:53
 msgid "Set a font of Unicode candidates on the emoji dialog"
-msgstr ""
+msgstr "Stel een lettertype van Unicode kandidaten in op de emoji dialoog"
 
 #: ../setup/setup.ui.h:54
 msgid "Unicode font:"
-msgstr ""
+msgstr "Unicode lettertype:"
 
 #: ../setup/setup.ui.h:55
 msgid "Set a language of emoji annotations on the emoji dialog"
@@ -591,11 +593,11 @@ msgstr "Aangepaste lettertype naam voor taal-paneel"
 
 #: ../data/ibus.schemas.in.h:50
 msgid "Unicode shortcut keys for gtk_accelerator_parse"
-msgstr ""
+msgstr "Unicode sneltoetsen voor gtk_accelerator_parse"
 
 #: ../data/ibus.schemas.in.h:51
 msgid "The shortcut keys for turning Unicode typing on or off"
-msgstr ""
+msgstr "De sneltoetsen voor het aan of uit zetten van Unicode typen"
 
 #: ../data/ibus.schemas.in.h:52
 msgid "Emoji shortcut keys for gtk_accelerator_parse"
@@ -681,7 +683,7 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:67
 msgid "Load the emoji data at the time of startup"
-msgstr ""
+msgstr "Laad de emoji data tijdens het opstarten"
 
 #: ../data/ibus.schemas.in.h:68
 msgid ""
@@ -689,10 +691,13 @@ msgid ""
 "needed to load the data. Load the emoji data when open the emoji dialog at "
 "the beginning if false."
 msgstr ""
+"Laad de emoji data tijden het opstarten indien waar. Er is ongeveer 10MB "
+"geheugen nodig om de data te laden. Laad de emoji data bij het openen van "
+"het begin van de emoji dialoog indien onwaar."
 
 #: ../data/ibus.schemas.in.h:69
 msgid "Load the Unicode data at the time of startup"
-msgstr ""
+msgstr "Laad de Unicode data tijdens het opstarten"
 
 #: ../data/ibus.schemas.in.h:70
 msgid ""
@@ -701,6 +706,10 @@ msgid ""
 "the beginning if false. The Unicode data is always loaded after the emoji "
 "data is loaded even if true."
 msgstr ""
+"Laad de Unicode data tijden het opstarten indien waar. Er is ongeveer 15MB "
+"geheugen nodig om de data te laden. Laad de Unicode data bij het openen van "
+"het begin van de emoji dialoog indien onwaar. De Unicode data wordt altijd "
+"geladen na het laden van de emoji data zelfs bij waar. "
 
 #: ../data/ibus.schemas.in.h:71
 msgid "Embed Preedit Text"
@@ -2907,6 +2916,8 @@ msgid ""
 "Use engine schema paths instead of ibus core, which can be comma-separated "
 "values."
 msgstr ""
+"Gebruik engine schemapaden in plaats van ibus core, welde door komma's "
+"gescheiden waardes kunnen zijn."
 
 #: ../tools/main.vala:381
 msgid "Resetting…"
@@ -3018,7 +3029,7 @@ msgstr "Toon emoji varianten"
 
 #: ../ui/gtk3/emojier.vala:1082
 msgid "Close"
-msgstr ""
+msgstr "Sluiten"
 
 #: ../ui/gtk3/emojier.vala:1088
 msgid "Menu"
@@ -3026,7 +3037,7 @@ msgstr "Menu"
 
 #: ../ui/gtk3/emojier.vala:1099
 msgid "Click to view a warning message"
-msgstr ""
+msgstr "Klik om een waarschuwingsboodschap te bekijken"
 
 #: ../ui/gtk3/emojier.vala:1143
 msgid "Loading a Unicode dictionary:"
@@ -3081,6 +3092,10 @@ msgid ""
 " E.g. Press Esc key several times to release the emoji typing mode, click "
 "your desktop and click your text application again."
 msgstr ""
+"Het verkrijgen van de huidige teksttoepassing mislukte. Stel de focus op je "
+"toepassing opnieuw in. Bijvoorbeeld, druk meerdere keren op de Esc toets "
+"voor het vrijgeven van de emoji type modus, klik op je bureaublad en klik "
+"opnieuw op de teksttoepassing."
 
 #: ../ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."
