@@ -237,9 +237,14 @@ class PanelBinding : IBus.PanelService {
         GLib.Object(connection : bus.get_connection(),
                     object_path : IBus.PATH_PANEL_EXTENSION_EMOJI);
 
+#if USE_GDK_WAYLAND
         Type instance_type = Gdk.Display.get_default().get_type();
         Type wayland_type = typeof(GdkWayland.Display);
         m_is_wayland = instance_type.is_a(wayland_type);
+#else
+        m_is_wayland = false;
+        warning("Checking Wayland is disabled");
+#endif
 
         m_bus = bus;
         m_application = application;

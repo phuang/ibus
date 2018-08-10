@@ -237,12 +237,21 @@ if test x"$enable_gtk3" = x"yes"; then
     PKG_CHECK_MODULES(GTK3, [
         gtk+-3.0
     ])
+    PKG_CHECK_EXISTS([gdk-wayland-3.0],
+        [enable_gdk3_wayland=yes],
+        [enable_gdk3_wayland=no]
+    )
 
     gtk3_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-3.0`
     GTK3_IM_MODULEDIR="$libdir"/gtk-3.0/$gtk3_binary_version/immodules
 else
     enable_gtk3="no (disabled, use --enable-gtk3 to enable)"
+    enable_gdk3_wayland=no
 fi
+if test x"$enable_gdk3_wayland" != x"yes"; then
+    enable_gdk3_wayland="no (disabled, need to install gdk-wayland-3.0.pc)"
+fi
+AM_CONDITIONAL([ENABLE_GDK3_WAYLAND], [test x"$enable_gdk3_wayland" = x"yes"])
 
 if test x"$enable_xim" = x"yes"; then
     # Check for x11
@@ -785,6 +794,7 @@ Build options:
   Build gtk3 immodule           $enable_gtk3
   Build XIM agent server        $enable_xim
   Build wayland support         $enable_wayland
+  Build gdk3 wayland support    $enable_gdk3_wayland
   Build appindicator support    $enable_appindicator
   Build appindicator engine icon $enable_appindicator_engine_icon
   Build python library          $enable_python_library

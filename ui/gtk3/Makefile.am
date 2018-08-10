@@ -78,7 +78,6 @@ AM_VALAFLAGS = \
 	--pkg=ibus-1.0 \
 	--pkg=config \
 	--pkg=xi \
-	--pkg=gdk-wayland \
 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
 	$(NULL)
 
@@ -103,6 +102,10 @@ endif
 
 if ENABLE_APPINDICATOR_ENGINE_ICON
 AM_VALAFLAGS += --define=INDICATOR_ENGINE_ICON
+endif
+
+if ENABLE_GDK3_WAYLAND
+AM_VALAFLAGS += --pkg=gdk-wayland --define=USE_GDK_WAYLAND
 endif
 
 libexec_PROGRAMS = ibus-ui-gtk3
