@@ -440,13 +440,17 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         m_emoji_to_emoji_variants_dict =
                 new GLib.HashTable<string, GLib.SList<string>>(GLib.str_hash,
                                                                GLib.str_equal);
-        m_unicode_to_data_dict =
+        if (m_unicode_to_data_dict == null) {
+            m_unicode_to_data_dict =
                 new GLib.HashTable<unichar, IBus.UnicodeData>(
                         GLib.direct_hash,
                         GLib.direct_equal);
-        m_name_to_unicodes_dict =
+        }
+        if (m_name_to_unicodes_dict == null) {
+            m_name_to_unicodes_dict =
                 new GLib.HashTable<string, GLib.SList<unichar>>(GLib.str_hash,
                                                                 GLib.str_equal);
+        }
     }
 
 
