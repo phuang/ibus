@@ -1944,7 +1944,15 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             x = 0;
 
         bool changed = false;
-        if (window_right_bottom.y > monitor_bottom) {
+        // Do not up side down frequently.
+        // The first pos does not show the lookup table yet but the
+        // preedit only and the second pos shows the lookup table.
+        if (m_lookup_table.get_cursor_pos() != 1) {
+            if (m_is_up_side_down)
+                y = m_cursor_location.y - allocation.height;
+            else
+                y = cursor_right_bottom.y;
+        } else if (window_right_bottom.y > monitor_bottom) {
             y = m_cursor_location.y - allocation.height;
             // Do not up side down in Wayland
             if (m_input_context_path == "") {
