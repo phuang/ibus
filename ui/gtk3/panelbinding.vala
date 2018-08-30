@@ -548,6 +548,19 @@ class PanelBinding : IBus.PanelService {
     }
 
 
+    private bool key_press_keyval(uint keyval) {
+        unichar ch = IBus.keyval_to_unicode(keyval);
+        if (ch.iscntrl())
+                return false;
+        string str = ch.to_string();
+        m_preedit.append_text(str);
+        string annotation = m_preedit.get_text();
+        m_emojier.set_annotation(annotation);
+        m_preedit.set_emoji("");
+        return true;
+    }
+
+
     private bool key_press_enter() {
         if (m_extension_name != "unicode" && is_emoji_lookup_table()) {
             // Check if variats exist
@@ -899,6 +912,12 @@ class PanelBinding : IBus.PanelService {
             break;
         case Gdk.Key.space:
         case Gdk.Key.KP_Space:
+            if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
+                if (!key_press_keyval(keyval))
+                    return true;
+                show_candidate = is_emoji_lookup_table();
+                break;
+            }
             show_candidate = key_press_space();
             if (m_extension_name == "unicode") {
                 key_press_enter();
@@ -979,14 +998,8 @@ class PanelBinding : IBus.PanelService {
                 show_candidate = key_press_control_keyval(keyval, modifiers);
                 break;
             }
-            unichar ch = IBus.keyval_to_unicode(keyval);
-            if (ch.iscntrl())
+            if (!key_press_keyval(keyval))
                 return true;
-            string str = ch.to_string();
-            m_preedit.append_text(str);
-            string annotation = m_preedit.get_text();
-            m_emojier.set_annotation(annotation);
-            m_preedit.set_emoji("");
             show_candidate = is_emoji_lookup_table();
             break;
         }
