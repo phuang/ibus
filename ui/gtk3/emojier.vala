@@ -283,7 +283,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 
     private ThemedRGBA m_rgba;
     private Gtk.Box m_vbox;
-    private EEntry m_entry;
     /* If emojier is emoji category list or Unicode category list,
      * m_annotation is "" and preedit is also "".
      * If emojier is candidate mode, m_annotation is an annotation and
@@ -366,23 +365,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 
         m_vbox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         add(m_vbox);
-
-        m_entry = new EEntry();
-        m_entry.set_placeholder_text(_("Type annotation or choose emoji"));
-        //m_vbox.add(m_entry);
-        m_entry.changed.connect(() => {
-            update_candidate_window();
-        });
-        m_entry.icon_release.connect((icon_pos, event) => {
-            hide_candidate_panel();
-        });
-
-        /* Set the accessible role of the label to a status bar so it
-         * will emit name changed events that can be used by screen
-         * readers.
-         */
-        Atk.Object obj = m_entry.get_accessible();
-        obj.set_role (Atk.Role.STATUSBAR);
 
         // The constructor of IBus.LookupTable does not support more than
         // 16 pages.
@@ -1806,18 +1788,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 m_lookup_table.cursor_up();
             else if (keyval == Gdk.Key.Right)
                 m_lookup_table.cursor_down();
-        } else if (m_entry.get_text().length > 0) {
-            int step = 0;
-            if (keyval == Gdk.Key.Left)
-                step = -1;
-            else if (keyval == Gdk.Key.Right)
-                step = 1;
-            GLib.Signal.emit_by_name(
-                    m_entry, "move-cursor",
-                    Gtk.MovementStep.VISUAL_POSITIONS,
-                    step,
-                    (modifiers & Gdk.ModifierType.SHIFT_MASK) != 0
-                            ? true : false);
         } else {
             // For Gdk.Key.f and Gdk.Key.b
             if (keyval == Gdk.Key.Left)
@@ -1880,20 +1850,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             }
             return true;
         }
-        if (m_entry.get_text().length > 0) {
-            int step = 0;
-            if (keyval == Gdk.Key.Home)
-                step = -1;
-            else if (keyval == Gdk.Key.End)
-                step = 1;
-            GLib.Signal.emit_by_name(
-                    m_entry, "move-cursor",
-                    Gtk.MovementStep.DISPLAY_LINE_ENDS,
-                    step,
-                    (modifiers & Gdk.ModifierType.SHIFT_MASK) != 0
-                            ? true : false);
-            return true;
-        }
         return category_list_cursor_move(keyval);
     }
 
@@ -1938,28 +1894,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 show_emoji_for_category(row.text);
         }
         return true;
-    }
-
-
-    private void entry_enter_keyval(uint keyval) {
-        unichar ch = IBus.keyval_to_unicode(keyval);
-        if (ch.iscntrl())
-            return;
-        string str = ch.to_string();
-
-        // what gtk_entry_commit_cb() do
-        if (m_entry.get_selection_bounds(null, null)) {
-            m_entry.delete_selection();
-        } else {
-            if (m_entry.get_overwrite_mode()) {
-               uint text_length = m_entry.get_buffer().get_length();
-               if (m_entry.cursor_position < text_length)
-                   m_entry.delete_from_cursor(Gtk.DeleteType.CHARS, 1);
-            }
-        }
-        int pos = m_entry.get_position();
-        m_entry.insert_text(str, -1, ref pos);
-        m_entry.set_position(pos);
     }
 
 
@@ -2245,10 +2179,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         /* Let gtk recalculate the window size. */
         resize(1, 1);
 
-        m_entry.set_text("");
-
         show_category_list();
-        m_entry.set_activates_default(true);
         show_all();
 
         /* Some window managers, e.g. MATE, GNOME, Plasma desktops,
@@ -2288,13 +2219,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         m_loop = new GLib.MainLoop();
         m_loop.run();
         m_loop = null;
-
-        // Need focus-out on Gtk.Entry to send the emoji to applications.
-        Gdk.Event fevent = new Gdk.Event(Gdk.EventType.FOCUS_CHANGE);
-        fevent.focus_change.in = 0;
-        fevent.focus_change.window  = get_window();
-        m_entry.send_focus_change(fevent);
-        fevent.focus_change.window  = null;
 
         hide();
         // Make sure the switcher is hidden before returning from this function.
@@ -2357,36 +2281,9 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 hide();
             }
             return true;
-        case Gdk.Key.BackSpace:
-            if (m_entry.get_text().length > 0) {
-                if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
-                    GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
-                                             Gtk.DeleteType.WORD_ENDS, -1);
-                } else {
-                    GLib.Signal.emit_by_name(m_entry, "backspace");
-                }
-                return true;
-            }
-            break;
-        case Gdk.Key.Delete:
-        case Gdk.Key.KP_Delete:
-            if (m_entry.get_text().length > 0) {
-                if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
-                    GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
-                                             Gtk.DeleteType.WORD_ENDS, 1);
-                } else {
-                    GLib.Signal.emit_by_name(m_entry, "delete-from-cursor",
-                                             Gtk.DeleteType.CHARS, 1);
-                }
-                return true;
-            }
-            break;
         case Gdk.Key.space:
         case Gdk.Key.KP_Space:
-            if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
-                if (m_entry.get_text().length > 0)
-                    entry_enter_keyval(keyval);
-            } else if (m_candidate_panel_is_visible) {
+            if (m_candidate_panel_is_visible) {
                 enter_notify_disable_with_timer();
                 m_lookup_table.cursor_down();
                 show_candidate_panel();
@@ -2436,10 +2333,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             key_press_cursor_home_end(Gdk.Key.End, modifiers);
             show_all();
             return true;
-        case Gdk.Key.Insert:
-        case Gdk.Key.KP_Insert:
-            GLib.Signal.emit_by_name(m_entry, "toggle-overwrite");
-            return true;
         }
 
         if ((modifiers & Gdk.ModifierType.CONTROL_MASK) != 0) {
@@ -2470,27 +2363,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 key_press_cursor_home_end(Gdk.Key.End, modifiers);
                 show_all();
                 return true;
-            case Gdk.Key.u:
-                if (m_entry.get_text().length > 0) {
-                    GLib.Signal.emit_by_name(m_entry,
-                                             "delete-from-cursor",
-                                             Gtk.DeleteType.PARAGRAPH_ENDS,
-                                             -1);
-                    return true;
-                }
-                break;
-            case Gdk.Key.a:
-                if (m_entry.get_text().length > 0) {
-                    m_entry.select_region(0, -1);
-                    return true;
-                }
-                break;
-            case Gdk.Key.x:
-                if (m_entry.get_text().length > 0) {
-                    GLib.Signal.emit_by_name(m_entry, "cut-clipboard");
-                    return true;
-                }
-                break;
             case Gdk.Key.C:
             case Gdk.Key.c:
                 if ((modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
@@ -2503,19 +2375,11 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                         clipboard.store();
                         return true;
                     }
-                } else if (m_entry.get_text().length > 0) {
-                    GLib.Signal.emit_by_name(m_entry, "copy-clipboard");
-                    return true;
                 }
                 break;
-            case Gdk.Key.v:
-                GLib.Signal.emit_by_name(m_entry, "paste-clipboard");
-                return true;
             }
             return false;
         }
-
-        entry_enter_keyval(keyval);
         return true;
     }
 
@@ -2595,7 +2459,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 
         uint32 timestamp = event.get_time();
         present_with_time(timestamp);
-        m_entry.set_activates_default(true);
     }
 
 
