@@ -447,13 +447,19 @@ class PanelBinding : IBus.PanelService {
     }
 
 
-    private void commit_text_update_favorites(IBus.Text text) {
+    private void commit_text_update_favorites(IBus.Text text,
+                                              bool      disable_extension) {
         commit_text(text);
-        IBus.ExtensionEvent event = new IBus.ExtensionEvent(
+
+        // If disable_extension is false, the extension event is already
+        // sent before the focus-in is received.
+        if (disable_extension) {
+            IBus.ExtensionEvent event = new IBus.ExtensionEvent(
                     "name", m_extension_name,
                     "is-enabled", false,
                     "is-extension", true);
-        panel_extension(event);
+            panel_extension(event);
+        }
         string committed_string = text.text;
         string preedit_string = m_preedit.get_text();
         m_preedit.hide();
@@ -482,7 +488,7 @@ class PanelBinding : IBus.PanelService {
             prev_context_path != "" &&
             prev_context_path == m_current_context_path) {
             IBus.Text text = new IBus.Text.from_string(selected_string);
-            commit_text_update_favorites(text);
+            commit_text_update_favorites(text, false);
             m_emojier.reset();
             return true;
         }
@@ -564,13 +570,13 @@ class PanelBinding : IBus.PanelService {
     private bool key_press_enter() {
         if (m_extension_name != "unicode" && is_emoji_lookup_table()) {
             // Check if variats exist
-            if (m_emojier.key_press_enter()) {
+            if (m_emojier.key_press_enter(false)) {
                 convert_preedit_text();
                 return true;
             }
         }
         IBus.Text text = m_preedit.get_commit_text();
-        commit_text_update_favorites(text);
+        commit_text_update_favorites(text, true);
         return false;
     }
 
@@ -712,15 +718,10 @@ class PanelBinding : IBus.PanelService {
     }
 
 
-    private bool is_visible_wayland_lookup_table() {
-        return m_wayland_lookup_table_is_visible;
-    }
-
-
     private void hide_emoji_lookup_table() {
         if (m_emojier == null)
             return;
-        if (m_is_wayland)
+        if (m_wayland_lookup_table_is_visible)
             hide_wayland_lookup_table();
         else
             m_emojier.hide();
@@ -747,7 +748,7 @@ class PanelBinding : IBus.PanelService {
 
     private bool is_emoji_lookup_table() {
         if (m_is_wayland)
-            return is_visible_wayland_lookup_table();
+            return m_wayland_lookup_table_is_visible;
         else
             return m_emojier.get_visible();
     }
@@ -788,7 +789,8 @@ class PanelBinding : IBus.PanelService {
          */
         if (!input_context_path.has_suffix("InputContext_1")) {
             m_real_current_context_path = m_current_context_path;
-            this.emojier_focus_commit();
+            if (m_is_wayland)
+                this.emojier_focus_commit();
         }
     }
 
@@ -822,8 +824,18 @@ class PanelBinding : IBus.PanelService {
             // For title handling in gnome-shell
             m_application.add_window(m_emojier);
             m_emojier.candidate_clicked.connect((i, b, s) => {
+                candidate_clicked_lookup_table_real(i, b, s, true);
+            });
+            m_emojier.commit_text.connect((s) => {
                 if (!m_is_wayland)
-                    candidate_clicked_lookup_table(i, b, s);
+                    return;
+                // Currently emojier has a focus but the text input focus
+                // does not and commit the text later.
+                IBus.ExtensionEvent close_event = new IBus.ExtensionEvent(
+                        "name", m_extension_name,
+                        "is-enabled", false,
+                        "is-extension", true);
+                panel_extension(close_event);
             });
         }
         m_emojier.reset();
@@ -1041,9 +1053,10 @@ class PanelBinding : IBus.PanelService {
         show_preedit_and_candidate(show_candidate);
     }
 
-    public override void candidate_clicked_lookup_table(uint index,
-                                                        uint button,
-                                                        uint state) {
+    private void candidate_clicked_lookup_table_real(uint index,
+                                                     uint button,
+                                                     uint state,
+                                                     bool is_emojier) {
         if (button == IBusEmojier.BUTTON_CLOSE_BUTTON) {
             m_enable_extension = false;
             hide_emoji_lookup_table();
@@ -1061,17 +1074,26 @@ class PanelBinding : IBus.PanelService {
         uint ncandidates = m_emojier.get_number_of_candidates();
         if (ncandidates > 0 && ncandidates >= index) {
             m_emojier.set_cursor_pos(index);
-            show_candidate = m_emojier.has_variants(index);
-            m_preedit.set_emoji(m_emojier.get_current_candidate());
+            bool need_commit_signal = m_is_wayland && is_emojier;
+            show_candidate = m_emojier.has_variants(index, need_commit_signal);
+            if (!m_is_wayland)
+                m_preedit.set_emoji(m_emojier.get_current_candidate());
         } else {
             return;
         }
         if (!show_candidate) {
             IBus.Text text = m_preedit.get_commit_text();
-            commit_text_update_favorites(text);
             hide_emoji_lookup_table();
+            if (!is_emojier || !m_is_wayland)
+                commit_text_update_favorites(text, true);
             return;
         }
         show_preedit_and_candidate(show_candidate);
+    }
+
+    public override void candidate_clicked_lookup_table(uint index,
+                                                        uint button,
+                                                        uint state) {
+        candidate_clicked_lookup_table_real(index, button, state, false);
     }
 }

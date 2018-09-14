@@ -21,17 +21,6 @@
  */
 
 public class IBusEmojier : Gtk.ApplicationWindow {
-    private class EEntry : Gtk.SearchEntry {
-        public EEntry() {
-            GLib.Object(
-                name : "IBusEmojierEntry",
-                margin_start : 6,
-                margin_end : 6,
-                margin_top : 6,
-                margin_bottom : 6
-            );
-        }
-    }
     private class EListBox : Gtk.ListBox {
         public EListBox() {
             GLib.Object(
@@ -330,6 +319,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     private uint m_redraw_window_id;
 
     public signal void candidate_clicked(uint index, uint button, uint state);
+    public signal void commit_text(string text);
 
     public IBusEmojier() {
         GLib.Object(
@@ -379,12 +369,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         size_allocate.connect((w, a) => {
             adjust_window_position();
         });
-
-        candidate_clicked.connect((i, b, s) => {
-            if (m_input_context_path != "")
-                candidate_panel_select_index(i, b);
-        });
-
 
         if (m_annotation_to_emojis_dict == null) {
             reload_emoji_dict();
@@ -1641,34 +1625,6 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    private void candidate_panel_select_index(uint index,
-                                              uint button) {
-        if (button == BUTTON_CLOSE_BUTTON) {
-            hide();
-            if (m_candidate_panel_mode &&
-                m_lookup_table.get_number_of_candidates() > 0) {
-                // Call remove_all_children() instead of show_category_list()
-                // so that show_category_list do not remove children with
-                // PageUp/PageDown.
-                remove_all_children();
-            }
-            m_result = "";
-            return;
-        }
-        string text = m_lookup_table.get_candidate(index).text;
-        unowned GLib.SList<string>? emojis =
-                m_emoji_to_emoji_variants_dict.lookup(text);
-        if (m_show_emoji_variant && emojis != null &&
-            m_backward_index < 0) {
-            show_emoji_variants(emojis);
-            show_all();
-        } else {
-            m_result = text;
-            hide();
-        }
-    }
-
-
     private void candidate_panel_cursor_down() {
         enter_notify_disable_with_timer();
         uint ncandidates = m_lookup_table.get_number_of_candidates();
@@ -1762,7 +1718,8 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    public bool has_variants(uint index) {
+    public bool has_variants(uint index,
+                             bool need_commit_signal) {
         if (index >= m_lookup_table.get_number_of_candidates())
             return false;
         string text = m_lookup_table.get_candidate(index).text;
@@ -1773,6 +1730,10 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             show_emoji_variants(emojis);
             return true;
         }
+        if (m_input_context_path != "")
+            m_result = text;
+        if (need_commit_signal)
+            commit_text(text);
         return false;
     }
 
@@ -1881,10 +1842,10 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
-    public bool key_press_enter() {
+    public bool key_press_enter(bool need_commit_signal) {
         if (m_candidate_panel_is_visible) {
             uint index = m_lookup_table.get_cursor_pos();
-            return has_variants(index);
+            return has_variants(index, need_commit_signal);
         } else if (m_category_active_index >= 0) {
             Gtk.ListBoxRow gtkrow = m_list_box.get_selected_row();
             EBoxRow row = gtkrow as EBoxRow;
@@ -2282,12 +2243,10 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             return true;
         case Gdk.Key.Return:
         case Gdk.Key.KP_Enter:
-            if (key_press_enter()) {
+            if (key_press_enter(true))
                 show_all();
-            } else {
-                m_result = get_current_candidate();
+            else
                 hide();
-            }
             return true;
         case Gdk.Key.space:
         case Gdk.Key.KP_Space:

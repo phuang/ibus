@@ -65,7 +65,7 @@ public class EmojiApplication : Gtk.Application {
         uint ncandidates = m_emojier.get_number_of_candidates();
         if (ncandidates > 0 && ncandidates >= index) {
             m_emojier.set_cursor_pos(index);
-            show_candidate = m_emojier.has_variants(index);
+            show_candidate = m_emojier.has_variants(index, false);
         } else {
             return;
         }
