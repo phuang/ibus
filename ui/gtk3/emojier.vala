@@ -810,7 +810,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         row.get_allocation(out alloc);
         var adjustment = m_scrolled_window.get_vadjustment();
         adjustment.clamp_page(alloc.y, alloc.y + alloc.height);
-        return_val_if_fail(m_category_active_index >= 0, false);
+        return_if_fail(m_category_active_index >= 0);
         m_lookup_table.set_cursor_pos((uint)m_category_active_index);
     }
 
