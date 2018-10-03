@@ -339,33 +339,6 @@ PKG_CHECK_MODULES(DBUS, [
     dbus-1
 ])
 
-# --enable-gconf option.
-AC_ARG_ENABLE(gconf,
-    AS_HELP_STRING([--enable-gconf],
-                   [Use GConf code]),
-    [enable_gconf=$enableval],
-    [enable_gconf=no]
-)
-AM_CONDITIONAL([ENABLE_GCONF], [test x"$enable_gconf" = x"yes"])
-
-if test x"$enable_gconf" = x"yes"; then
-    # check gconf
-    PKG_CHECK_MODULES(GCONF,
-        [gconf-2.0 >= 2.12],
-    )
-
-    AC_PATH_PROG(GCONFTOOL, gconftool-2, no)
-    if test x"$GCONFTOOL" = xno; then
-        AC_MSG_ERROR([gconftool-2 executable not found in your path - should be installed with GConf])
-    fi
-
-    AM_GCONF_SOURCE_2
-    # GCONF_SCHEMAS_INSTALL should be set in macro AM_GCONF_SOURCE_2
-else
-    AM_CONDITIONAL([GCONF_SCHEMAS_INSTALL], [false])
-    enable_gconf="no (disabled, use --enable-gconf to enable)"
-fi
-
 # --enable-memconf option.
 AC_ARG_ENABLE(memconf,
     AS_HELP_STRING([--enable-memconf],
@@ -771,7 +744,6 @@ bindings/Makefile
 bindings/pygobject/Makefile
 bindings/vala/Makefile
 conf/Makefile
-conf/gconf/Makefile
 conf/dconf/Makefile
 conf/memconf/Makefile
 tools/Makefile
@@ -798,7 +770,6 @@ Build options:
   Build appindicator support    $enable_appindicator
   Build appindicator engine icon $enable_appindicator_engine_icon
   Build python library          $enable_python_library
-  Build gconf modules           $enable_gconf
   Build memconf modules         $enable_memconf
   Build dconf modules           $enable_dconf
   Build introspection           $found_introspection

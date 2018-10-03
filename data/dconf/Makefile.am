@@ -34,11 +34,6 @@ dconfprofile_DATA = profile/ibus
 dconfdbdir = $(sysconfdir)/dconf/db/ibus.d
 dconfdb_DATA = 00-upstream-settings
 
-org.freedesktop.ibus.gschema.xml.in: $(top_srcdir)/data/ibus.schemas.in
-	$(AM_V_GEN) gsettings-schema-convert --force --gconf --xml \
-		--schema-id "org.freedesktop.ibus" \
-		--output $@ $<
-
 00-upstream-settings: $(srcdir)/make-dconf-override-db.sh | $(gsettings_SCHEMAS)
 	@$(MKDIR_P) db
 	$(AM_V_GEN) $(srcdir)/make-dconf-override-db.sh > $@ || \
@@ -75,7 +70,6 @@ CLEANFILES = \
     $(NULL)
 
 MAINTAINERCLEANFILES = \
-    $(gsettings_schemas_in_files) \
     00-upstream-settings \
     $(NULL)
 

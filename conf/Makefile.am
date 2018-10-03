@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,12 +20,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-if ENABLE_GCONF
-GCONF_DIR = \
-	gconf \
-	$(NULL)
-endif
-
 MEMCONF_DIR = \
 	memconf \
 	$(NULL)
@@ -38,7 +32,6 @@ endif
 
 SUBDIRS = \
 	$(DCONF_DIR) \
-	$(GCONF_DIR) \
 	$(MEMCONF_DIR) \
 	$(NULL)
 
