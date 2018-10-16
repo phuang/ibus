@@ -1,11 +1,10 @@
 # Files with translatable strings.
 # Please keep this file in alphabetical order.
-[type: gettext/glade]setup/setup.ui
 bus/dbusimpl.c
 bus/engineproxy.c
 bus/inputcontext.c
 bus/panelproxy.c
-data/ibus.schemas.in
+data/dconf/org.freedesktop.ibus.gschema.xml
 ibus/__init__.py
 ibus/_config.py.in
 ibus/_gtk.py
@@ -36,9 +35,10 @@ setup/engineabout.py
 setup/enginecombobox.py
 setup/enginedialog.py
 setup/enginetreeview.py
-setup/ibus-setup.desktop.in
+setup/ibus-setup.desktop
 setup/keyboardshortcut.py
 setup/main.py
+setup/setup.ui
 src/ibusbus.c
 src/ibusconfig.c
 src/ibusemojigen.h
@@ -61,8 +61,8 @@ ui/gtk3/candidatepanel.vala
 ui/gtk3/emojier.vala
 ui/gtk3/emojierapp.vala
 ui/gtk3/handle.vala
-ui/gtk3/ibus-extension-gtk3.desktop.in.in
-ui/gtk3/ibus-ui-emojier.desktop.in.in
+ui/gtk3/ibus-extension-gtk3.desktop.in
+ui/gtk3/ibus-ui-emojier.desktop.in
 ui/gtk3/iconwidget.vala
 ui/gtk3/keybindingmanager.vala
 ui/gtk3/panel.vala

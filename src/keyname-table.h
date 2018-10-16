@@ -6830,6 +6830,9 @@ static const gdk_key gdk_keys_by_name[] = {
 #if 0
 
 /*
+ * xgettext extracts strings in '#if 0' against intltool and I deleted
+ * all the translatable strings here.
+ *
  * Translators, the strings in the “keyboard label” context are
  * display names for keyboard keys. Some of them have prefixes like
  * XF86 or ISO_ - these should be removed in the translation. Similarly,
@@ -6840,72 +6843,5 @@ static const gdk_key gdk_keys_by_name[] = {
  * Scroll_lock   - Scroll lock
  * KP_Space      - Space (keypad)
  */
-NC_("keyboard label", "BackSpace")
-NC_("keyboard label", "Tab")
-NC_("keyboard label", "Return")
-NC_("keyboard label", "Pause")
-NC_("keyboard label", "Scroll_Lock")
-NC_("keyboard label", "Sys_Req")
-NC_("keyboard label", "Escape")
-NC_("keyboard label", "Multi_key")
-NC_("keyboard label", "Home")
-NC_("keyboard label", "Left")
-NC_("keyboard label", "Up")
-NC_("keyboard label", "Right")
-NC_("keyboard label", "Down")
-NC_("keyboard label", "Page_Up")
-NC_("keyboard label", "Page_Down")
-NC_("keyboard label", "End")
-NC_("keyboard label", "Begin")
-NC_("keyboard label", "Print")
-NC_("keyboard label", "Insert")
-NC_("keyboard label", "Num_Lock")
-/* Translators: KP_ means 'key pad' here */
-NC_("keyboard label", "KP_Space")
-NC_("keyboard label", "KP_Tab")
-NC_("keyboard label", "KP_Enter")
-NC_("keyboard label", "KP_Home")
-NC_("keyboard label", "KP_Left")
-NC_("keyboard label", "KP_Up")
-NC_("keyboard label", "KP_Right")
-NC_("keyboard label", "KP_Down")
-NC_("keyboard label", "KP_Page_Up")
-NC_("keyboard label", "KP_Prior")
-NC_("keyboard label", "KP_Page_Down")
-NC_("keyboard label", "KP_Next")
-NC_("keyboard label", "KP_End")
-NC_("keyboard label", "KP_Begin")
-NC_("keyboard label", "KP_Insert")
-NC_("keyboard label", "KP_Delete")
-NC_("keyboard label", "Delete")
-NC_("keyboard label", "MonBrightnessUp")
-NC_("keyboard label", "MonBrightnessDown")
-NC_("keyboard label", "KbdBrightnessUp")
-NC_("keyboard label", "KbdBrightnessDown")
-NC_("keyboard label", "AudioMute")
-NC_("keyboard label", "AudioMicMute")
-NC_("keyboard label", "AudioLowerVolume")
-NC_("keyboard label", "AudioRaiseVolume")
-NC_("keyboard label", "AudioPlay")
-NC_("keyboard label", "AudioStop")
-NC_("keyboard label", "AudioNext")
-NC_("keyboard label", "AudioPrev")
-NC_("keyboard label", "AudioRecord")
-NC_("keyboard label", "AudioPause")
-NC_("keyboard label", "AudioRewind")
-NC_("keyboard label", "AudioMedia")
-NC_("keyboard label", "ScreenSaver")
-NC_("keyboard label", "Battery")
-NC_("keyboard label", "Launch1")
-NC_("keyboard label", "Forward")
-NC_("keyboard label", "Back")
-NC_("keyboard label", "Sleep")
-NC_("keyboard label", "Hibernate")
-NC_("keyboard label", "WLAN")
-NC_("keyboard label", "WebCam")
-NC_("keyboard label", "Display")
-NC_("keyboard label", "TouchpadToggle")
-NC_("keyboard label", "WakeUp")
-NC_("keyboard label", "Suspend")
 
 #endif

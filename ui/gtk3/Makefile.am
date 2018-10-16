@@ -165,8 +165,8 @@ EXTRA_DIST =                            \
     gtkpanel.xml.in                     \
     notification-item.xml               \
     notification-watcher.xml            \
-    ibus-ui-emojier.desktop.in.in       \
-    ibus-extension-gtk3.desktop.in.in   \
+    ibus-ui-emojier.desktop.in          \
+    ibus-extension-gtk3.desktop.in      \
     panelbinding.vala                   \
     $(NULL)
 
@@ -265,32 +265,32 @@ man_sevendir = $(mandir)/man7
 %.7.gz: %.7
 	$(AM_V_GEN) gzip -c $< > $@.tmp && mv $@.tmp $@
 
-desktop_in_in_files = \
-    ibus-ui-emojier.desktop.in.in \
-    ibus-extension-gtk3.desktop.in.in \
+desktop_in_files = \
+    ibus-ui-emojier.desktop.in \
+    ibus-extension-gtk3.desktop.in \
     $(NULL)
-desktop_in_files = $(desktop_in_in_files:.desktop.in.in=.desktop.in)
+desktop_notrans_files = $(desktop_in_files:.desktop.in=.desktop)
 desktop_DATA = \
     org.freedesktop.IBus.Panel.Emojier.desktop \
     org.freedesktop.IBus.Panel.Extension.Gtk3.desktop \
     $(NULL)
 desktopdir = $(datadir)/applications
-%.desktop.in: %.desktop.in.in
+%.desktop: %.desktop.in
 	$(AM_V_GEN) sed \
 		-e 's|^_Name=|Name=|g' \
 		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
                 mv $@.tmp $@
 	$(NULL)
-org.freedesktop.IBus.Panel.Emojier.desktop: ibus-ui-emojier.desktop.in
+org.freedesktop.IBus.Panel.Emojier.desktop: ibus-ui-emojier.desktop
 	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 	$(NULL)
-org.freedesktop.IBus.Panel.Extension.Gtk3.desktop: ibus-extension-gtk3.desktop.in
+org.freedesktop.IBus.Panel.Extension.Gtk3.desktop: ibus-extension-gtk3.desktop
 	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 	$(NULL)
 
 CLEANFILES += \
     $(desktop_DATA) \
-    $(desktop_in_files) \
+    $(desktop_notrans_files) \
     $(man_seven_DATA) \
     $(man_seven_files) \
     $(NULL)

@@ -111,9 +111,8 @@ GETTEXT_PACKAGE=ibus10
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The prefix for out gettext translation domains.])
-GLIB_DEFINE_LOCALEDIR(GLIB_LOCALE_DIR)
-GLIB_LOCALE_DIR=$localedir
-AC_SUBST(GLIB_LOCALE_DIR)
+AC_DEFINE_UNQUOTED(LOCALEDIR, "$localedir",
+                   [Define the location where the catalogs will be installed])
 
 # For dislpay date.
 m4_define(ibus_datedisplay,
@@ -131,14 +130,14 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 # i18n stuff
-AM_GLIB_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION([0.19.8])
+AM_GNU_GETTEXT([external])
 
 # Define PACKAGE_VERSION_* variables.
 AM_DISABLE_STATIC
 AC_ISC_POSIX
 AC_HEADER_STDC
 LT_INIT
-IT_PROG_INTLTOOL([0.35.0])
 
 # Check functions.
 AC_CHECK_FUNCS(daemon)

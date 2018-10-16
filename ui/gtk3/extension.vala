@@ -28,8 +28,7 @@ class ExtensionGtk : Gtk.Application {
     public ExtensionGtk(string[] args) {
         Object(application_id: "org.freedesktop.IBus.Panel.Extension.Gtk3",
                flags: ApplicationFlags.FLAGS_NONE);
-        GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE,
-                                 Config.GLIB_LOCALE_DIR);
+        GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
         GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
         IBus.init();
         Gtk.init(ref args);

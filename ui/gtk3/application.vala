@@ -26,8 +26,7 @@ class Application {
     private Panel m_panel;
 
     public Application(string[] argv) {
-        GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE,
-                                 Config.GLIB_LOCALE_DIR);
+        GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
         GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
         IBus.init();
         Gtk.init(ref argv);

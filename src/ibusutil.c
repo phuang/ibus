@@ -99,7 +99,7 @@ _load_lang()
     struct stat buf;
 
 #ifdef ENABLE_NLS
-    bindtextdomain ("iso_639", GLIB_LOCALE_DIR);
+    bindtextdomain ("iso_639", LOCALEDIR);
     bind_textdomain_codeset ("iso_639", "UTF-8");
 #endif
 

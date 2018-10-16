@@ -3,8 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2017 Red Hat, Inc.
+# Copyright (c) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -40,10 +40,8 @@ ibussetup_DATA = \
 bin_SCRIPTS = ibus-setup
 ibussetupdir = $(pkgdatadir)/setup
 
-desktop_in_files = ibus-setup.desktop.in
-desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+desktop_DATA = ibus-setup.desktop
 desktopdir = $(datadir)/applications
-@INTLTOOL_DESKTOP_RULE@
 
 man_one_in_files = ibus-setup.1.in
 man_one_files = $(man_one_in_files:.1.in=.1)
@@ -67,11 +65,7 @@ EXTRA_DIST = \
 	$(man_one_in_files) \
 	ibus-setup.in \
 	setup.ui \
-	ibus-setup.desktop.in \
-	$(NULL)
-
-DISTCLEANFILES = \
-	$(desktop_DATA) \
+	ibus-setup.desktop \
 	$(NULL)
 
 test:

@@ -472,7 +472,7 @@ void print_usage(FileStream stream) {
 
 public int main(string[] argv) {
     GLib.Intl.setlocale(GLib.LocaleCategory.ALL, "");
-    GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.GLIB_LOCALE_DIR);
+    GLib.Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
     GLib.Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
     GLib.Intl.textdomain(Config.GETTEXT_PACKAGE);
 
