@@ -21,12 +21,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-gsettings_schemas_in_files = org.freedesktop.ibus.gschema.xml.in
-gsettings_SCHEMAS = $(gsettings_schemas_in_files:.gschema.xml.in=.gschema.xml)
+gsettings_SCHEMAS = org.freedesktop.ibus.gschema.xml
 gsettingsconvertdir = $(datadir)/GConf/gsettings
 dist_gsettingsconvert_DATA = ibus.convert
 @GSETTINGS_RULES@
-@INTLTOOL_XML_NOMERGE_RULE@
 
 dconfprofiledir = $(sysconfdir)/dconf/profile
 dconfprofile_DATA = profile/ibus
@@ -56,7 +54,7 @@ install-data-hook:
 	fi
 
 EXTRA_DIST = \
-    $(gsettings_schemas_in_files) \
+    $(gsettings_SCHEMAS) \
     $(man_5_in_files) \
     make-dconf-override-db.sh \
     profile/ibus \
@@ -64,7 +62,6 @@ EXTRA_DIST = \
     $(NULL)
 
 CLEANFILES = \
-    $(gsettings_SCHEMAS) \
     $(man_5_DATA) \
     $(man_5_files) \
     $(NULL)
