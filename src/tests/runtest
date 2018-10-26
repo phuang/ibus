@@ -103,8 +103,8 @@ for t in $DISABLE_GUI_TESTS; do
 done
 
 # IBusEngine has GSettings
-if test ! -f "$top_builddir/data/dconf/$IBUS_SCHEMA_FILE" ; then
-    echo "NOT FOUND $top_builddir/data/dconf/$IBUS_SCHEMA_FILE"
+if test ! -f "$top_srcdir/data/dconf/$IBUS_SCHEMA_FILE" ; then
+    echo "NOT FOUND $top_srcdir/data/dconf/$IBUS_SCHEMA_FILE"
     exit -1
 fi
 
@@ -148,7 +148,7 @@ run_test_case()
         export GTK_IM_MODULE_FILE
         $GTK_QUERY_MODULE "$IM_IBUS_SO" > $GTK_IM_MODULE_FILE
 
-        cp "../$top_builddir/data/dconf/$IBUS_SCHEMA_FILE" $PWD
+        cp "../$top_srcdir/data/dconf/$IBUS_SCHEMA_FILE" $PWD
         glib-compile-schemas $PWD
         if test $? -ne 0 ; then
             echo "FAILED glib-compile-schemas"
