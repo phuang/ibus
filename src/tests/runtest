@@ -22,6 +22,7 @@
 : ${builddir:=.}
 : ${srcdir:=.}
 : ${DISABLE_GUI_TESTS:=''}
+: ${DISABLE_DAEMONIZE_IN_TESTS:=''}
 
 BUS_REQUIRED_TESTS="
 ibus-bus
@@ -162,16 +163,25 @@ run_test_case()
         export GSETTINGS_SCHEMA_DIR=$PWD
 
         # Start ibus-daemon.
-        ../$top_builddir/bus/ibus-daemon \
-        --daemonize \
-        --cache=none \
-        --panel=disable \
-        --emoji-extension=disable \
-        --config=default \
-        --verbose;
+        DAEMON_ARGS='
+            --cache=none
+            --panel=disable
+            --emoji-extension=disable
+            --config=default
+            --verbose
+        '
+        if test x"$DISABLE_DAEMONIZE_IN_TESTS" = x ; then
+            ../$top_builddir/bus/ibus-daemon \
+                $DAEMON_ARGS --daemonize;
+        else
+            ../$top_builddir/bus/ibus-daemon \
+                $DAEMON_ARGS &
+        fi
 
         # Wait until all necessary components are up.
         sleep 1
+
+        export GTK_IM_MODULE=ibus
     fi
 
     "../$tst" ${1+"$@"}

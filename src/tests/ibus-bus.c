@@ -820,6 +820,14 @@ finish_exit_async (GObject *source_object,
 static void
 start_exit_async (void)
 {
+    /* When `./runtest ibus-bus` runs, ibus-daemon sometimes failed to
+     * restart because closing a file descriptor was failed in
+     * bus/server.c:_restart_server() with a following error:
+     *     "inotify read(): Bad file descriptor"
+     * Now g_usleep() is added here to write down the buffer and not to
+     * fail to restart ibus-daemon.
+     */
+    g_usleep (G_USEC_PER_SEC);
     ibus_bus_exit_async (bus,
                          TRUE, /* restart */
                          -1, /* timeout */
@@ -831,6 +839,9 @@ start_exit_async (void)
 static gboolean
 test_async_apis_finish (gpointer user_data)
 {
+    /* INFO: g_warning() causes SEGV with runtest script */
+    if (ibus_get_address () == NULL)
+        g_warning ("ibus-daemon does not restart yet from start_exit_async().");
     ibus_quit ();
     return FALSE;
 }
@@ -906,7 +917,9 @@ call_next_async_function (void)
     };
     static guint index = 0;
 
-    // Use g_timeout_add to make sure test_async_apis finishes even if async_functions is empty.
+    /* Use g_timeout_add to make sure test_async_apis finishes even if
+     * async_functions is empty.
+     */
     if (index >= G_N_ELEMENTS (async_functions))
         g_timeout_add (1, test_async_apis_finish, NULL);
     else

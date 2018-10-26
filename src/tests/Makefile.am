@@ -73,6 +73,7 @@ TESTS_ENVIRONMENT = \
     srcdir=$(srcdir) \
     LD_LIBRARY_PATH="$(top_builddir)/src/.libs:$(top_builddir)/src" \
     DISABLE_GUI_TESTS="$(DISABLE_GUI_TESTS)" \
+    DISABLE_DAEMONIZE_IN_TESTS="$(DISABLE_DAEMONIZE_IN_TESTS)" \
     $(NULL)
 
 LOG_COMPILER = $(srcdir)/runtest
