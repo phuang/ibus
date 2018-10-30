@@ -7,7 +7,7 @@
   <schema id="org.freedesktop.ibus.general" path="/desktop/ibus/general/">
     <key name="preload-engines" type="as">
       <default>[]</default>
-      <!-- Translators: Here “Preload” is a verb" -->
+      <!-- Translators: Here “Preload” is a verb -->
       <summary>Preload engines</summary>
       <!-- Translators: Tooltip for the button “Preload Engines” -->
       <description>Preload engines during ibus starts up</description>
