@@ -143,7 +143,7 @@ ibus_keymap_parse_line (gchar  *str,
     /* Do not assign *p1 to g_ascii_isalpha() directly for the syntax check */
     if (i == 0 &&
         strncmp (p2, "addupper", sizeof ("addupper") - 1) == 0 &&
-        (ch = *p1) && g_ascii_isalpha (ch)) {
+        (ch = *p1) && (ch >= 0) && g_ascii_isalpha (ch)) {
         gchar buf[] = "a";
         buf[0] = g_ascii_toupper(ch);
         keymap[keycode][0] = keymap[keycode][3] = keysym;

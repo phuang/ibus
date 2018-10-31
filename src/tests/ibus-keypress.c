@@ -173,7 +173,7 @@ set_engine_cb (GObject      *object,
     IBusBus *bus = IBUS_BUS (object);
     GtkWidget *entry = GTK_WIDGET (data);
     GdkDisplay *display;
-    Display *xdisplay;
+    Display *xdisplay = NULL;
     GError *error = NULL;
     int i, j;
 

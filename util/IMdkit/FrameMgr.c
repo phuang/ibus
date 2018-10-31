@@ -1414,6 +1414,7 @@ static int FrameInstGetSize (FrameInst fi)
 	    break;
         }
         /*endswitch*/
+        assert (i >= 0);
         i = _FrameInstIncrement (fi->template, i);
     }
     /*endwhile*/

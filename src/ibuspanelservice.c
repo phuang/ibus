@@ -1615,7 +1615,11 @@ ibus_panel_service_panel_extension_register_keys (IBusPanelService   *panel,
     va_start (var_args, first_property_name);
     do {
         keys = va_arg (var_args, IBusProcessKeyEventData *);
-        g_return_if_fail (keys != NULL);
+        if (keys == NULL) {
+            va_end (var_args);
+            g_warning ("Failed to va_arg for IBusProcessKeyEventData");
+            return;
+        }
         g_variant_builder_init (&child, G_VARIANT_TYPE ("av"));
         for (; keys; keys++) {
             if (keys->keyval == 0 && keys->keycode == 0 && keys->state == 0)
