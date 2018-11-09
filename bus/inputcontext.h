@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2014 Red Hat, Inc.
+ * Copyright (C) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -377,5 +377,20 @@ void                 bus_input_context_update_lookup_table
 void                 bus_input_context_panel_extension_received
                                                 (BusInputContext    *context,
                                                  IBusExtensionEvent *event);
+
+/**
+ * bus_input_context_clear_preedit_text:
+ *
+ * Clear context->preedit_text. If the preedit mode is
+ * IBUS_ENGINE_PREEDIT_COMMIT and with_signal is %TRUE, commit it before
+ * clearing.
+ * If with_signal is %FALSE, this just clears the preedit coditions
+ * and the actual preedit is handled in ibus clients.
+ */
+void                 bus_input_context_clear_preedit_text
+                                                (BusInputContext    *context,
+                                                 gboolean
+                                                                   with_signal);
+
 G_END_DECLS
 #endif

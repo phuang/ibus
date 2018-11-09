@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2017 Red Hat, Inc.
+ * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,6 +61,7 @@ struct _IBusIMContext {
     PangoAttrList   *preedit_attrs;
     gint             preedit_cursor_pos;
     gboolean         preedit_visible;
+    guint            preedit_mode;
 
     GdkRectangle     cursor_area;
     gboolean         has_focus;
@@ -132,8 +133,14 @@ static void     ibus_im_context_set_surrounding
                                              gint           len,
                                              gint           cursor_index);
 
-
 /* static methods*/
+static void     _ibus_context_update_preedit_text_cb
+                                           (IBusInputContext   *ibuscontext,
+                                            IBusText           *text,
+                                            gint                cursor_pos,
+                                            gboolean            visible,
+                                            guint               mode,
+                                            IBusIMContext      *ibusimcontext);
 static void     _create_input_context       (IBusIMContext      *context);
 static gboolean _set_cursor_location_internal
                                             (IBusIMContext      *context);
@@ -744,6 +751,7 @@ ibus_im_context_init (GObject *obj)
     ibusimcontext->preedit_attrs = NULL;
     ibusimcontext->preedit_cursor_pos = 0;
     ibusimcontext->preedit_visible = FALSE;
+    ibusimcontext->preedit_mode = IBUS_ENGINE_PREEDIT_CLEAR;
 
     // Init cursor area
     ibusimcontext->cursor_area.x = -1;
@@ -852,6 +860,24 @@ ibus_im_context_finalize (GObject *obj)
                        (GDestroyNotify)gdk_event_free);
 
     G_OBJECT_CLASS(parent_class)->finalize (obj);
+}
+
+static void
+ibus_im_context_clear_preedit_text (IBusIMContext *ibusimcontext)
+{
+    g_assert (ibusimcontext->ibuscontext);
+    if (ibusimcontext->preedit_visible &&
+        ibusimcontext->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
+        gchar *preedit_string = g_strdup (ibusimcontext->preedit_string);
+        _ibus_context_update_preedit_text_cb (ibusimcontext->ibuscontext,
+                                              ibus_text_new_from_string (""),
+                                              0,
+                                              FALSE,
+                                              IBUS_ENGINE_PREEDIT_CLEAR,
+                                              ibusimcontext);
+        g_signal_emit (ibusimcontext, _signal_commit_id, 0, preedit_string);
+        g_free (preedit_string);
+    }
 }
 
 static gboolean
@@ -1003,6 +1029,7 @@ ibus_im_context_focus_out (GtkIMContext *context)
 
     ibusimcontext->has_focus = FALSE;
     if (ibusimcontext->ibuscontext) {
+        ibus_im_context_clear_preedit_text (ibusimcontext);
         ibus_input_context_focus_out (ibusimcontext->ibuscontext);
     }
 
@@ -1022,6 +1049,12 @@ ibus_im_context_reset (GtkIMContext *context)
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
     if (ibusimcontext->ibuscontext) {
+        /* Commented out ibus_im_context_clear_preedit_text().
+         * Hangul needs to receive the reset callback with button press
+         * but other IMEs should avoid to receive the reset callback
+         * so the signal would need to be customized with GtkSetting.
+         * IBus uses button-press-event instead.
+         */
         ibus_input_context_reset (ibusimcontext->ibuscontext);
     }
     gtk_im_context_reset (ibusimcontext->slave);
@@ -1068,21 +1101,67 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
 }
 
 
+static gboolean
+ibus_im_context_button_press_event_cb (GtkWidget      *widget,
+                                       GdkEventButton *event,
+                                       IBusIMContext  *ibusimcontext)
+{
+    if (event->button != 1)
+        return FALSE;
+
+    if (ibusimcontext->preedit_visible &&
+        ibusimcontext->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
+        ibus_im_context_clear_preedit_text (ibusimcontext);
+        if (ibusimcontext->ibuscontext)
+            ibus_input_context_reset (ibusimcontext->ibuscontext);
+    }
+    return FALSE;
+}
+
 static void
 ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
 {
+    IBusIMContext *ibusimcontext;
+#if !GTK_CHECK_VERSION (3, 93, 0)
+    GtkWidget *widget;
+#endif
+
     IDEBUG ("%s", __FUNCTION__);
 
-    IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
+    ibusimcontext = IBUS_IM_CONTEXT (context);
 
     if (ibusimcontext->client_window) {
+#if !GTK_CHECK_VERSION (3, 93, 0)
+        gdk_window_get_user_data (ibusimcontext->client_window,
+                                  (gpointer *)&widget);
+        /* firefox needs GtkWidget instead of GtkWindow */
+        if (GTK_IS_WIDGET (widget)) {
+            g_signal_handlers_disconnect_by_func (
+                    widget,
+                    (GCallback)ibus_im_context_button_press_event_cb,
+                    ibusimcontext);
+        }
+#endif
         g_object_unref (ibusimcontext->client_window);
         ibusimcontext->client_window = NULL;
     }
 
-    if (client != NULL)
+    if (client != NULL) {
         ibusimcontext->client_window = g_object_ref (client);
+#if !GTK_CHECK_VERSION (3, 93, 0)
+        gdk_window_get_user_data (ibusimcontext->client_window,
+                                  (gpointer *)&widget);
 
+        /* firefox needs GtkWidget instead of GtkWindow */
+        if (GTK_IS_WIDGET (widget)) {
+            g_signal_connect (
+                    widget,
+                    "button-press-event",
+                    G_CALLBACK (ibus_im_context_button_press_event_cb),
+                    ibusimcontext);
+        }
+#endif
+    }
     if (ibusimcontext->slave)
         gtk_im_context_set_client_window (ibusimcontext->slave, client);
 }
@@ -1530,6 +1609,7 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
                                       IBusText          *text,
                                       gint               cursor_pos,
                                       gboolean           visible,
+                                      guint              mode,
                                       IBusIMContext     *ibusimcontext)
 {
     IDEBUG ("%s", __FUNCTION__);
@@ -1586,6 +1666,7 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
 
     flag = ibusimcontext->preedit_visible != visible;
     ibusimcontext->preedit_visible = visible;
+    ibusimcontext->preedit_mode = mode;
 
     if (ibusimcontext->preedit_visible) {
         if (flag) {
@@ -1676,7 +1757,7 @@ _create_input_context_done (IBusBus       *bus,
         g_error_free (error);
     }
     else {
-
+        ibus_input_context_set_client_commit_preedit (context, TRUE);
         ibusimcontext->ibuscontext = context;
 
         g_signal_connect (ibusimcontext->ibuscontext,
@@ -1692,7 +1773,7 @@ _create_input_context_done (IBusBus       *bus,
                           G_CALLBACK (_ibus_context_delete_surrounding_text_cb),
                           ibusimcontext);
         g_signal_connect (ibusimcontext->ibuscontext,
-                          "update-preedit-text",
+                          "update-preedit-text-with-mode",
                           G_CALLBACK (_ibus_context_update_preedit_text_cb),
                           ibusimcontext);
         g_signal_connect (ibusimcontext->ibuscontext,

@@ -73,6 +73,7 @@ struct _BusInputContext {
     guint     preedit_cursor_pos;
     gboolean  preedit_visible;
     guint     preedit_mode;
+    gboolean  client_commit_preedit;
 
     /* auxiliary text */
     IBusText *auxiliary_text;
@@ -212,6 +213,9 @@ static IBusPropList    *props_empty = NULL;
 static const gchar introspection_xml[] =
     "<node>"
     "  <interface name='org.freedesktop.IBus.InputContext'>"
+    /* properties */
+    "    <property name='ContentType' type='(uu)' access='write' />"
+    "    <property name='ClientCommitPreedit' type='(b)' access='write' />\n"
     /* methods */
     "    <method name='ProcessKeyEvent'>"
     "      <arg direction='in'  type='u' name='keyval' />"
@@ -273,6 +277,12 @@ static const gchar introspection_xml[] =
     "      <arg type='u' name='cursor_pos' />"
     "      <arg type='b' name='visible' />"
     "    </signal>"
+    "    <signal name='UpdatePreeditTextWithMode'>"
+    "      <arg type='v' name='text' />"
+    "      <arg type='u' name='cursor_pos' />"
+    "      <arg type='b' name='visible' />"
+    "      <arg type='u' name='mode' />"
+    "    </signal>"
     "    <signal name='ShowPreeditText'/>"
     "    <signal name='HidePreeditText'/>"
     "    <signal name='UpdateAuxiliaryText'>"
@@ -297,9 +307,6 @@ static const gchar introspection_xml[] =
     "    <signal name='UpdateProperty'>"
     "      <arg type='v' name='prop' />"
     "    </signal>"
-
-    /* properties */
-    "    <property name='ContentType' type='(uu)' access='write' />"
     "  </interface>"
     "</node>";
 
@@ -1069,6 +1076,12 @@ _ic_reset (BusInputContext       *context,
            GDBusMethodInvocation *invocation)
 {
     if (context->engine) {
+        if (context->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
+            if (context->client_commit_preedit)
+               bus_input_context_clear_preedit_text (context, FALSE);
+            else
+               bus_input_context_clear_preedit_text (context, TRUE);
+        }
         bus_engine_proxy_reset (context->engine);
     }
     g_dbus_method_invocation_return_value (invocation, NULL);
@@ -1354,6 +1367,13 @@ _ic_set_content_type (BusInputContext *context,
     }
 }
 
+static void
+_ic_set_client_commit_preedit (BusInputContext *context,
+                               GVariant        *value)
+{
+    g_variant_get (value, "(b)", &context->client_commit_preedit);
+}
+
 static gboolean
 bus_input_context_service_set_property (IBusService     *service,
                                         GDBusConnection *connection,
@@ -1379,9 +1399,14 @@ bus_input_context_service_set_property (IBusService     *service,
     if (!bus_input_context_service_authorized_method (service, connection))
         return FALSE;
 
+    g_return_val_if_fail (BUS_IS_INPUT_CONTEXT (service), FALSE);
+
     if (g_strcmp0 (property_name, "ContentType") == 0) {
-        BusInputContext *context = (BusInputContext *) service;
-        _ic_set_content_type (context, value);
+        _ic_set_content_type (BUS_INPUT_CONTEXT (service), value);
+        return TRUE;
+    }
+    if (g_strcmp0 (property_name, "ClientCommitPreedit") == 0) {
+        _ic_set_client_commit_preedit (BUS_INPUT_CONTEXT (service), value);
         return TRUE;
     }
 
@@ -1453,22 +1478,44 @@ bus_input_context_focus_in (BusInputContext *context)
 
 /**
  * bus_input_context_clear_preedit_text:
+ * @context: A #BusInputContext
+ * @with_signal: %FALSE if the preedit is already updated in ibus clients
+ *               likes ibus-im.so. Otherwise %TRUE.
  *
- * Clear context->preedit_text. If the preedit mode is IBUS_ENGINE_PREEDIT_COMMIT, commit it before clearing.
+ * Clear context->preedit_text. If the preedit mode is
+ * IBUS_ENGINE_PREEDIT_COMMIT, commit it before clearing.
  */
-static void
-bus_input_context_clear_preedit_text (BusInputContext *context)
+void
+bus_input_context_clear_preedit_text (BusInputContext *context,
+                                      gboolean         with_signal)
 {
+    IBusText *preedit_text;
+    guint     preedit_mode;
+    gboolean  preedit_visible;
+
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    if (context->preedit_visible &&
-        context->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
-        bus_input_context_commit_text (context, context->preedit_text);
+    if (!with_signal) {
+        g_object_unref (context->preedit_text);
+        context->preedit_mode = IBUS_ENGINE_PREEDIT_CLEAR;
+        context->preedit_text = (IBusText *) g_object_ref_sink (text_empty);
+        context->preedit_cursor_pos = 0;
+        context->preedit_visible = FALSE;
+        return;
     }
 
-    /* always clear preedit text */
+    /* always clear preedit text to reset the cursor position in the
+     * client application before commit the preeit text. */
+    preedit_text = g_object_ref (context->preedit_text);
+    preedit_mode = context->preedit_mode;
+    preedit_visible = context->preedit_visible;
     bus_input_context_update_preedit_text (context,
         text_empty, 0, FALSE, IBUS_ENGINE_PREEDIT_CLEAR, TRUE);
+
+    if (preedit_visible && preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
+        bus_input_context_commit_text (context, preedit_text);
+    }
+    g_object_unref (preedit_text);
 }
 
 void
@@ -1479,7 +1526,10 @@ bus_input_context_focus_out (BusInputContext *context)
     if (!context->has_focus)
         return;
 
-    bus_input_context_clear_preedit_text (context);
+    if (context->client_commit_preedit)
+        bus_input_context_clear_preedit_text (context, FALSE);
+    else
+        bus_input_context_clear_preedit_text (context, TRUE);
     bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
     bus_input_context_update_lookup_table (context,
                                            lookup_table_empty,
@@ -2338,7 +2388,7 @@ bus_input_context_disable (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    bus_input_context_clear_preedit_text (context);
+    bus_input_context_clear_preedit_text (context, TRUE);
     bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
     bus_input_context_update_lookup_table (context,
                                            lookup_table_empty,
@@ -2385,7 +2435,7 @@ bus_input_context_unset_engine (BusInputContext *context)
 {
     g_assert (BUS_IS_INPUT_CONTEXT (context));
 
-    bus_input_context_clear_preedit_text (context);
+    bus_input_context_clear_preedit_text (context, TRUE);
     bus_input_context_update_auxiliary_text (context, text_empty, FALSE);
     bus_input_context_update_lookup_table (context,
                                            lookup_table_empty,
@@ -2807,14 +2857,26 @@ bus_input_context_update_preedit_text (BusInputContext *context,
     } else if (PREEDIT_CONDITION) {
         GVariant *variant = ibus_serializable_serialize (
                 (IBusSerializable *)context->preedit_text);
-        bus_input_context_emit_signal (context,
-                                       "UpdatePreeditText",
-                                       g_variant_new (
-                                               "(vub)",
-                                               variant,
-                                               context->preedit_cursor_pos,
-                                               extension_visible),
-                                       NULL);
+        if (context->client_commit_preedit) {
+            bus_input_context_emit_signal (
+                    context,
+                    "UpdatePreeditTextWithMode",
+                    g_variant_new ("(vubu)",
+                                   variant,
+                                   context->preedit_cursor_pos,
+                                   extension_visible,
+                                   context->preedit_mode),
+                    NULL);
+        } else {
+            bus_input_context_emit_signal (
+                    context,
+                    "UpdatePreeditText",
+                    g_variant_new ("(vub)",
+                                   variant,
+                                   context->preedit_cursor_pos,
+                                   extension_visible),
+                    NULL);
+        }
     } else {
         g_signal_emit (context,
                        context_signals[UPDATE_PREEDIT_TEXT],

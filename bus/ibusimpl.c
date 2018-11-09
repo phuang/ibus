@@ -815,6 +815,17 @@ bus_ibus_impl_set_focused_context (BusIBusImpl     *ibus,
             engine = bus_input_context_get_engine (ibus->focused_context);
             if (engine) {
                 g_object_ref (engine);
+                /* _ic_focus_in() can be called before _ic_focus_out() is
+                 * called under the async processes of two ibus clients.
+                 * E.g. gedit is a little slower v.s. a simple GtkTextView
+                 * application is the fastest when you click a Hangul
+                 * preedit text between the applications.
+                 * preedit will be committed with focus-out in the ibus client
+                 * likes ibus-im.so
+                 * so do not commit preedit here in focus-in event.
+                 */
+                bus_input_context_clear_preedit_text (ibus->focused_context,
+                                                      FALSE);
                 bus_input_context_set_engine (ibus->focused_context, NULL);
                 bus_input_context_set_emoji_extension (ibus->focused_context,
                                                        NULL);

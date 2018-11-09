@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -497,6 +498,30 @@ void         ibus_input_context_set_content_type
                                             (IBusInputContext   *context,
                                              guint               purpose,
                                              guint               hints);
+
+/**
+ * ibus_input_context_set_client_commit_preedit:
+ * @context: An #IBusInputContext.
+ * @client_commit: %TRUE if your input context commits pre-edit texts
+ *     with Space or Enter key events or mouse click events. %FALSE if
+ *     ibus-daemon commits pre-edit texts with those events.
+ *     The default is %FALSE. The behavior is decided with
+ *     ibus_engine_update_preedit_text_with_mode() to commit, clear or
+ *     keep the pre-edit text and this API is important in ibus-hangul.
+ *
+ * Set whether #IBusInputContext commits pre-edit texts or not.
+ * If %TRUE, 'update-preedit-text-with-mode' signal is emitted
+ * instead of 'update-preedit-text' signal.
+ * If your client receives the 'update-preedit-text-with-mode' signal,
+ * the client needs to implement commit_text() of pre-edit text when
+ * GtkIMContextClass.focus_out() is called in case an IME desires that
+ * behavior but it depends on each IME.
+ *
+ * See also ibus_engine_update_preedit_text_with_mode().
+ */
+void         ibus_input_context_set_client_commit_preedit (
+                                             IBusInputContext   *context,
+                                             gboolean            client_commit);
 
 G_END_DECLS
 #endif
