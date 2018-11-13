@@ -298,6 +298,7 @@ ibus_im_context_commit_event (IBusIMContext *ibusimcontext,
         IBusText *text = ibus_text_new_from_unichar (ch);
         g_signal_emit (ibusimcontext, _signal_commit_id, 0, text->text);
         g_object_unref (text);
+        _request_surrounding_text (ibusimcontext);
         return TRUE;
     }
    return FALSE;
@@ -386,9 +387,12 @@ _request_surrounding_text (IBusIMContext *context)
         g_signal_emit (context, _signal_retrieve_surrounding_id, 0,
                        &return_value);
         if (!return_value) {
-            context->caps &= ~IBUS_CAP_SURROUNDING_TEXT;
-            ibus_input_context_set_capabilities (context->ibuscontext,
-                                                 context->caps);
+            /* #2054 firefox::IMContextWrapper::GetCurrentParagraph() could
+             * fail with the first typing on firefox but it succeeds with
+             * the second typing.
+             */
+            g_warning ("%s has no capability of surrounding-text feature",
+                       g_get_prgname ());
         }
     }
 }
@@ -877,6 +881,7 @@ ibus_im_context_clear_preedit_text (IBusIMContext *ibusimcontext)
                                               ibusimcontext);
         g_signal_emit (ibusimcontext, _signal_commit_id, 0, preedit_string);
         g_free (preedit_string);
+        _request_surrounding_text (ibusimcontext);
     }
 }
 
