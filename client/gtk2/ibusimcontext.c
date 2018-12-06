@@ -869,16 +869,19 @@ ibus_im_context_finalize (GObject *obj)
 static void
 ibus_im_context_clear_preedit_text (IBusIMContext *ibusimcontext)
 {
+    gchar *preedit_string = NULL;
     g_assert (ibusimcontext->ibuscontext);
     if (ibusimcontext->preedit_visible &&
         ibusimcontext->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
-        gchar *preedit_string = g_strdup (ibusimcontext->preedit_string);
-        _ibus_context_update_preedit_text_cb (ibusimcontext->ibuscontext,
-                                              ibus_text_new_from_string (""),
-                                              0,
-                                              FALSE,
-                                              IBUS_ENGINE_PREEDIT_CLEAR,
-                                              ibusimcontext);
+        preedit_string = g_strdup (ibusimcontext->preedit_string);
+    }
+    _ibus_context_update_preedit_text_cb (ibusimcontext->ibuscontext,
+                                          ibus_text_new_from_string (""),
+                                          0,
+                                          FALSE,
+                                          IBUS_ENGINE_PREEDIT_CLEAR,
+                                          ibusimcontext);
+    if (preedit_string) {
         g_signal_emit (ibusimcontext, _signal_commit_id, 0, preedit_string);
         g_free (preedit_string);
         _request_surrounding_text (ibusimcontext);
@@ -1114,12 +1117,9 @@ ibus_im_context_button_press_event_cb (GtkWidget      *widget,
     if (event->button != 1)
         return FALSE;
 
-    if (ibusimcontext->preedit_visible &&
-        ibusimcontext->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
-        ibus_im_context_clear_preedit_text (ibusimcontext);
-        if (ibusimcontext->ibuscontext)
-            ibus_input_context_reset (ibusimcontext->ibuscontext);
-    }
+    ibus_im_context_clear_preedit_text (ibusimcontext);
+    if (ibusimcontext->ibuscontext)
+        ibus_input_context_reset (ibusimcontext->ibuscontext);
     return FALSE;
 }
 
