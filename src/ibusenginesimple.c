@@ -357,7 +357,7 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
     } else {
         int hexchars = 0;
         while (priv->compose_buffer[hexchars] != 0) {
-            guint16 keysym= priv->compose_buffer[hexchars];
+            guint16 keysym = priv->compose_buffer[hexchars];
             gunichar unichar = ibus_keysym_to_unicode (keysym, FALSE);
             if (unichar > 0)
                 outbuf[len] = unichar;
@@ -620,6 +620,8 @@ check_table (IBusEngineSimple       *simple,
 
     guint16 *prev_seq;
 
+    priv->tentative_match = 0;
+    priv->tentative_match_len = 0;
     /* Back up to the first sequence that matches to make sure
      * we find the exact match if their is one.
      */
@@ -654,9 +656,9 @@ check_table (IBusEngineSimple       *simple,
 
         ibus_engine_simple_commit_char (simple, value);
         priv->compose_buffer[0] = 0;
-        ibus_engine_simple_update_preedit_text (simple);
         // g_debug ("U+%04X\n", value);
     }
+    ibus_engine_simple_update_preedit_text (simple);
     return TRUE;
 }
 
@@ -1058,6 +1060,51 @@ ibus_engine_simple_set_number_on_lookup_table (IBusEngineSimple *simple,
 }
 
 static gboolean
+ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
+                                            gint              n_compose)
+{
+    IBusEngineSimplePrivate *priv = simple->priv;
+    gboolean compose_finish;
+    gunichar output_char;
+    GSList *list = global_tables;
+
+    while (list) {
+        if (check_table (simple,
+            (IBusComposeTable *)list->data,
+            n_compose)) {
+            return TRUE;
+        }
+        list = list->next;
+    }
+
+    if (ibus_check_compact_table (&ibus_compose_table_compact,
+                                  priv->compose_buffer,
+                                  n_compose,
+                                  &compose_finish,
+                                  &output_char)) {
+        if (compose_finish) {
+            ibus_engine_simple_commit_char (simple, output_char);
+            priv->compose_buffer[0] = 0;
+        }
+        ibus_engine_simple_update_preedit_text (simple);
+        return TRUE;
+    }
+
+    if (ibus_check_algorithmically (priv->compose_buffer,
+                                    n_compose,
+                                    &output_char)) {
+        if (output_char) {
+            ibus_engine_simple_commit_char (simple, output_char);
+            priv->compose_buffer[0] = 0;
+        }
+        ibus_engine_simple_update_preedit_text (simple);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+static gboolean
 ibus_engine_simple_process_key_event (IBusEngine *engine,
                                       guint       keyval,
                                       guint       keycode,
@@ -1076,8 +1123,6 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     guint hex_keyval;
     guint printable_keyval;
     gint i;
-    gboolean compose_finish;
-    gunichar output_char;
 
     while (n_compose < EMOJI_SOURCE_LEN && priv->compose_buffer[n_compose] != 0)
         n_compose++;
@@ -1247,7 +1292,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         if (n_compose > 0) {
             n_compose--;
             priv->compose_buffer[n_compose] = 0;
-            ibus_engine_simple_update_preedit_text (simple);
+            priv->tentative_match = 0;
+            ibus_engine_simple_check_all_compose_table (simple, n_compose);
             return TRUE;
         }
     }
@@ -1479,42 +1525,9 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
             return TRUE;
         }
-    }
-    else {
-        GSList *list = global_tables;
-        while (list) {
-            if (check_table (simple,
-                             (IBusComposeTable *)list->data,
-                             n_compose)) {
-                // g_debug("check_table returns true");
-                return TRUE;
-            }
-            list = list->next;
-        }
-
-        if (ibus_check_compact_table (&ibus_compose_table_compact,
-                                      priv->compose_buffer,
-                                      n_compose,
-                                      &compose_finish,
-                                      &output_char)) {
-            if (compose_finish) {
-                ibus_engine_simple_commit_char (simple, output_char);
-                priv->compose_buffer[0] = 0;
-            }
-            ibus_engine_simple_update_preedit_text (simple);
+    } else {
+        if (ibus_engine_simple_check_all_compose_table (simple, n_compose))
             return TRUE;
-        }
-
-        if (ibus_check_algorithmically (priv->compose_buffer,
-                                        n_compose,
-                                        &output_char)) {
-            if (output_char) {
-                ibus_engine_simple_commit_char (simple, output_char);
-                priv->compose_buffer[0] = 0;
-            }
-            ibus_engine_simple_update_preedit_text (simple);
-            return TRUE;
-        }
     }
 
     /* The current compose_buffer doesn't match anything */
