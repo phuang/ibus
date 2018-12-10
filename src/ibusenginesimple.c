@@ -105,6 +105,8 @@ static GSList *global_tables;
 
 /* functions prototype */
 static void     ibus_engine_simple_destroy      (IBusEngineSimple   *simple);
+static void     ibus_engine_simple_focus_in     (IBusEngine         *engine);
+static void     ibus_engine_simple_focus_out    (IBusEngine         *engine);
 static void     ibus_engine_simple_reset        (IBusEngine         *engine);
 static gboolean ibus_engine_simple_process_key_event
                                                 (IBusEngine         *engine,
@@ -136,6 +138,8 @@ ibus_engine_simple_class_init (IBusEngineSimpleClass *class)
     ibus_object_class->destroy =
         (IBusObjectDestroyFunc) ibus_engine_simple_destroy;
 
+    engine_class->focus_in  = ibus_engine_simple_focus_in;
+    engine_class->focus_out = ibus_engine_simple_focus_out;
     engine_class->reset     = ibus_engine_simple_reset;
     engine_class->process_key_event
                             = ibus_engine_simple_process_key_event;
@@ -177,6 +181,19 @@ ibus_engine_simple_destroy (IBusEngineSimple *simple)
 }
 
 static void
+ibus_engine_simple_focus_in (IBusEngine *engine)
+{
+    IBUS_ENGINE_CLASS (ibus_engine_simple_parent_class)->focus_in (engine);
+}
+
+static void
+ibus_engine_simple_focus_out (IBusEngine *engine)
+{
+    ibus_engine_simple_reset (engine);
+    IBUS_ENGINE_CLASS (ibus_engine_simple_parent_class)->focus_out (engine);
+}
+
+static void
 ibus_engine_simple_reset (IBusEngine *engine)
 {
     IBusEngineSimple *simple = (IBusEngineSimple *)engine;
@@ -188,14 +205,14 @@ ibus_engine_simple_reset (IBusEngine *engine)
         priv->in_hex_sequence = FALSE;
         priv->tentative_match = 0;
         priv->tentative_match_len = 0;
-        ibus_engine_hide_preedit_text ((IBusEngine *)simple);
     } else if (priv->tentative_emoji || priv->in_emoji_sequence) {
         priv->in_emoji_sequence = FALSE;
         g_clear_pointer (&priv->tentative_emoji, g_free);
-        ibus_engine_hide_preedit_text ((IBusEngine *)simple);
     } else if (!priv->in_hex_sequence && !priv->in_emoji_sequence) {
-        ibus_engine_hide_preedit_text ((IBusEngine *)simple);
+        priv->tentative_match = 0;
+        priv->tentative_match_len = 0;
     }
+    ibus_engine_hide_preedit_text ((IBusEngine *)simple);
 }
 
 static void
