@@ -1117,9 +1117,10 @@ ibus_im_context_button_press_event_cb (GtkWidget      *widget,
     if (event->button != 1)
         return FALSE;
 
-    ibus_im_context_clear_preedit_text (ibusimcontext);
-    if (ibusimcontext->ibuscontext)
+    if (ibusimcontext->ibuscontext) {
+        ibus_im_context_clear_preedit_text (ibusimcontext);
         ibus_input_context_reset (ibusimcontext->ibuscontext);
+    }
     return FALSE;
 }
 
