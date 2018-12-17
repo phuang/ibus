@@ -111,7 +111,8 @@ GETTEXT_PACKAGE=ibus10
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The prefix for out gettext translation domains.])
-AC_DEFINE_UNQUOTED(LOCALEDIR, "$localedir",
+DEFINE_IBUS_LOCALEDIR
+AC_DEFINE_UNQUOTED(LOCALEDIR, "$ibus_localedir",
                    [Define the location where the catalogs will be installed])
 
 # For dislpay date.
