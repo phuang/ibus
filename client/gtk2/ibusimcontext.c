@@ -565,6 +565,10 @@ daemon_name_appeared (GDBusConnection *connection,
                       const gchar     *owner,
                       gpointer         data)
 {
+    if (!g_strcmp0 (ibus_bus_get_service_name (_bus), IBUS_SERVICE_PORTAL)) {
+        _daemon_is_running = TRUE;
+        return;
+    }
     /* If ibus-daemon is running and run ssh -X localhost,
      * daemon_name_appeared() is called but ibus_get_address() == NULL
      * because the hostname and display number are different between
