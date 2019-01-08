@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
- Copyright (C) 2017 Red Hat, Inc.
+ Copyright (C) 2017-2019 Red Hat, Inc.
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -97,6 +97,12 @@
       <arg type='u' name='cursor_pos' />
       <arg type='b' name='visible' />
     </signal>
+    <signal name='UpdatePreeditTextWithMode'>
+      <arg type='v' name='text' />
+      <arg type='u' name='cursor_pos' />
+      <arg type='b' name='visible' />
+      <arg type='u' name='mode' />
+    </signal>
     <signal name='ShowPreeditText'/>
     <signal name='HidePreeditText'/>
     <signal name='UpdateAuxiliaryText'>
@@ -123,6 +129,7 @@
     </signal>
 
     <property name='ContentType' type='(uu)' access='write' />
+    <property name='ClientCommitPreedit' type='(b)' access='write' />
   </interface>
 
   <interface name='org.freedesktop.IBus.Service'>

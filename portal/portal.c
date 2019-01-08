@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2017 Red Hat, Inc.
+ * Copyright (C) 2017-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,6 +67,7 @@ struct _IBusPortalClass
 enum
 {
     PROP_CONTENT_TYPE = 1,
+    PROP_CLIENT_COMMIT_PREEDIT,
     N_PROPERTIES
 };
 
@@ -315,6 +316,20 @@ ibus_portal_context_set_property (IBusPortalContext *portal_context,
                            NULL  /* user_data */
                            );
         break;
+    case PROP_CLIENT_COMMIT_PREEDIT:
+        g_dbus_proxy_call (G_DBUS_PROXY (portal_context->context),
+                           "org.freedesktop.DBus.Properties.Set",
+                           g_variant_new ("(ssv)",
+                                          IBUS_INTERFACE_INPUT_CONTEXT,
+                                          "ClientCommitPreedit",
+                                          g_value_get_variant (value)),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL, /* cancellable */
+                           NULL, /* callback */
+                           NULL  /* user_data */
+                           );
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (portal_context, prop_id, pspec);
     }
@@ -328,6 +343,7 @@ ibus_portal_context_get_property (IBusPortalContext *portal_context,
 {
     switch (prop_id) {
     case PROP_CONTENT_TYPE:
+    case PROP_CLIENT_COMMIT_PREEDIT:
         g_warning ("No support for setting content type");
         break;
     default:
