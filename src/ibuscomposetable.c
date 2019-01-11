@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus - The Input Bus
  * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -98,14 +98,16 @@ parse_compose_value (IBusComposeData  *compose_data,
         uch = words[1][1];
 
         /* The escaped string "\"" is separated with '\\' and '"'. */
-        if (uch == '\0' && words[2][0] == '"')
+        if (uch == '\0' && words[2][0] == '"') {
             uch = '"';
         /* The escaped octal */
-        else if (uch >= '0' && uch <= '8')
+        } else if (uch >= '0' && uch <= '8') {
             uch = g_ascii_strtoll(words[1] + 1, NULL, 8);
         /* If we need to handle other escape sequences. */
-        else if (uch != '\\')
-            g_assert_not_reached ();
+        } else if (uch != '\\') {
+            g_warning ("Invalid backslash: %s: %s", val, line);
+            goto fail;
+        }
     }
 
     if (g_utf8_get_char (g_utf8_next_char (words[1])) > 0) {
