@@ -680,32 +680,67 @@
 			<longname>Ukrainian</longname>
 			<description>Ukrainian</description>
                         <icon>ibus-keyboard</icon>
-			<rank>99</rank>
-		</engine>
-		<engine>
-			<name>xkb:gb:extd:eng</name>
-			<language>en</language>
-			<license>GPL</license>
-			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>gb</layout>
-			<layout_variant>extd</layout_variant>
-			<longname>English (UK, extended WinKeys)</longname>
-			<description>English (UK, extended WinKeys)</description>
+                        <rank>99</rank>
+                </engine>
+                <engine>
+                        <name>xkb:uz::uzb</name>
+                        <language>uz</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>uz</layout>
+                        <longname>Uzbek</longname>
+                        <description>Uzbek</description>
                         <icon>ibus-keyboard</icon>
-			<rank>1</rank>
-		</engine>
-		<engine>
-			<name>xkb:gb:dvorak:eng</name>
-			<language>en</language>
-			<license>GPL</license>
-			<author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-			<layout>gb</layout>
-			<layout_variant>dvorak</layout_variant>
-			<longname>English (UK, Dvorak)</longname>
-			<description>English (UK, Dvorak)</description>
+                        <rank>99</rank>
+                </engine>
+                <engine>
+                        <name>xkb:uz:cyrillic:uzb</name>
+                        <language>uz</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>uz</layout>
+                        <layout_variant>cyrillic</layout_variant>
+                        <longname>Uzbek Cyrillic</longname>
+                        <description>Uzbek Cyrillic</description>
                         <icon>ibus-keyboard</icon>
-			<rank>1</rank>
-		</engine>
+                        <rank>1</rank>
+                </engine>
+                <engine>
+                        <name>xkb:uz:latin:uzb</name>
+                        <language>uz</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>uz</layout>
+                        <layout_variant>latin</layout_variant>
+                        <longname>Uzbek Latin</longname>
+                        <description>Uzbek Latin</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>1</rank>
+                </engine>
+                <engine>
+                        <name>xkb:gb:extd:eng</name>
+                        <language>en</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>gb</layout>
+                        <layout_variant>extd</layout_variant>
+                        <longname>English (UK, extended WinKeys)</longname>
+                        <description>English (UK, extended WinKeys)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>1</rank>
+                </engine>
+                <engine>
+                        <name>xkb:gb:dvorak:eng</name>
+                        <language>en</language>
+                        <license>GPL</license>
+                        <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+                        <layout>gb</layout>
+                        <layout_variant>dvorak</layout_variant>
+                        <longname>English (UK, Dvorak)</longname>
+                        <description>English (UK, Dvorak)</description>
+                        <icon>ibus-keyboard</icon>
+                        <rank>1</rank>
+                </engine>
                 <engine>
                         <name>xkb:my::msa</name>
                         <language>ms</language>
