@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2018 Red Hat, Inc.
+ * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2018-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -201,7 +201,7 @@ void              ibus_unicode_data_save      (const gchar        *path,
  *    #IBusUnicodeData, * the total number of #IBusUnicodeData) of uint values
  *    with that signal by 100 times. Otherwise %NULL.
  *
- * Returns: (element-type IBusUnicodeData) (transfer container):
+ * Returns: (element-type IBusUnicodeData) (transfer full):
  * An #IBusUnicodeData list loaded from the saved cache file.
  */
 GSList *          ibus_unicode_data_load      (const gchar        *path,
@@ -290,7 +290,7 @@ void              ibus_unicode_block_save     (const gchar        *path,
  * ibus_unicode_block_load:
  * @path: A path of the saved dictionary file.
  *
- * Returns: (element-type IBusUnicodeBlock) (transfer container):
+ * Returns: (element-type IBusUnicodeBlock) (transfer full):
  * An #IBusUnicodeBlock list loaded from the saved cache file.
  */
 GSList *          ibus_unicode_block_load     (const gchar        *path);

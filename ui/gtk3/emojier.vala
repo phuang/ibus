@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright (c) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (c) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -882,8 +882,13 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             update_unicode_blocks();
             return;
         } else {
-            unowned GLib.SList<unowned string> emojis =
-                    m_category_to_emojis_dict.lookup(category);
+            // Use copy_deep() since vala 0.43.4 does not allow to assign
+            // a weak pointer to the full one in SList:
+            // emojier.vala:885.48-886.62: error: Assignment: Cannot convert
+            // from `GLib.SList<string>' to `GLib.SList<weak string>?'
+            GLib.SList<string> emojis =
+                    m_category_to_emojis_dict.lookup(category).copy_deep(
+                            GLib.strdup);
             m_lookup_table.clear();
             m_candidate_panel_mode = true;
             foreach (unowned string emoji in emojis) {
@@ -1547,8 +1552,8 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             m_vbox.add(widget);
             widget.show_all();
         }
-        unowned GLib.SList<unowned string>? annotations =
-                data.get_annotations();
+        GLib.SList<string> annotations =
+                data.get_annotations().copy_deep(GLib.strdup);
         var buff = new GLib.StringBuilder();
         int i = 0;
         foreach (unowned string annotation in annotations) {
@@ -2001,17 +2006,20 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                     ) as IBus.EmojiData;
                 m_emoji_to_data_dict.insert(favorite, new_data);
             } else {
-                unowned GLib.SList<string> annotations = data.get_annotations();
+                GLib.SList<string> annotations =
+                        data.get_annotations().copy_deep(GLib.strdup);
                 if (annotations.find_custom(annotation, GLib.strcmp) == null) {
                     annotations.append(annotation);
-                    data.set_annotations(annotations.copy());
+                    data.set_annotations(annotations.copy_deep(GLib.strdup));
                 }
             }
             unowned GLib.SList<string> emojis =
                     m_annotation_to_emojis_dict.lookup(annotation);
             if (emojis.find_custom(favorite, GLib.strcmp) == null) {
                 emojis.append(favorite);
-                m_annotation_to_emojis_dict.replace(annotation, emojis.copy());
+                m_annotation_to_emojis_dict.replace(
+                        annotation,
+                        emojis.copy_deep(GLib.strdup));
             }
         }
     }

@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2017 Red Hat, Inc.
+ * Copyright (C) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2017-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -209,7 +209,7 @@ void            ibus_emoji_data_save            (const gchar    *path,
  * ibus_emoji_data_load:
  * @path: A path of the saved dictionary file.
  *
- * Returns: (element-type IBusEmojiData) (transfer container):
+ * Returns: (element-type IBusEmojiData) (transfer full):
  * An #IBusEmojiData list loaded from the saved cache file.
  */
 GSList *        ibus_emoji_data_load            (const gchar    *path);
