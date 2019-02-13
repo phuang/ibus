@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2018 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2019 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -700,29 +700,6 @@ class Panel : IBus.PanelService {
         return -1;
     }
 
-    private void update_version_1_5_3() {
-#if ENABLE_LIBNOTIFY
-        if (!Notify.is_initted()) {
-            Notify.init ("ibus");
-        }
-
-        var notification = new Notify.Notification(
-                _("IBus Update"),
-                _("Super+space is now the default hotkey."),
-                "ibus");
-        notification.set_timeout(30 * 1000);
-        notification.set_category("hotkey");
-
-        try {
-            notification.show();
-        } catch (GLib.Error e){
-            warning ("Notification is failed for IBus 1.5.3: %s", e.message);
-        }
-#else
-        warning(_("Super+space is now the default hotkey."));
-#endif
-    }
-
     private void update_version_1_5_8() {
         inited_engines_order = false;
     }
@@ -730,9 +707,6 @@ class Panel : IBus.PanelService {
     private void set_version() {
         string prev_version = m_settings_general.get_string("version");
         string current_version = null;
-
-        if (compare_versions(prev_version, "1.5.3") < 0)
-            update_version_1_5_3();
 
         if (compare_versions(prev_version, "1.5.8") < 0)
             update_version_1_5_8();
