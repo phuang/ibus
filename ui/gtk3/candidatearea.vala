@@ -109,7 +109,7 @@ class CandidateArea : Gtk.Box {
         m_focus_candidate = focus_candidate;
         m_show_cursor = show_cursor;
 
-        assert(candidates.length < 16);
+        assert(candidates.length <= 16);
         for (int i = 0 ; i < 16 ; i++) {
             Gtk.Label label = m_candidates[i];
             bool visible = false;
