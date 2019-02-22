@@ -1,6 +1,6 @@
 [Desktop Entry]
-_Name=IBus Preferences
-_Comment=Set IBus Preferences
+Name=IBus Preferences
+Comment=Set IBus Preferences
 Exec=ibus-setup
 Icon=ibus-setup
 Terminal=false

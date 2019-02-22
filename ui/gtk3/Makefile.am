@@ -262,7 +262,6 @@ desktop_DATA = \
 desktopdir = $(datadir)/applications
 %.desktop: %.desktop.in
 	$(AM_V_GEN) sed \
-		-e 's|^_Name=|Name=|g' \
 		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
                 mv $@.tmp $@
 	$(NULL)

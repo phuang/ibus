@@ -40,8 +40,11 @@ ibussetup_DATA = \
 bin_SCRIPTS = ibus-setup
 ibussetupdir = $(pkgdatadir)/setup
 
-desktop_DATA = ibus-setup.desktop
+desktop_notrans_files = ibus-setup.desktop
+desktop_DATA = org.freedesktop.IBus.Setup.desktop
 desktopdir = $(datadir)/applications
+org.freedesktop.IBus.Setup.desktop: ibus-setup.desktop
+	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 man_one_in_files = ibus-setup.1.in
 man_one_files = $(man_one_in_files:.1.in=.1)
@@ -55,18 +58,19 @@ man_onedir = $(mandir)/man1
 	$(AM_V_GEN) gzip -c $< > $@.tmp && mv $@.tmp $@
 
 CLEANFILES = \
-	$(man_one_DATA) \
-	$(man_one_files) \
-	*.pyc \
-	ibus-setup \
-	$(NULL)
+    $(desktop_DATA) \
+    $(man_one_DATA) \
+    $(man_one_files) \
+    *.pyc \
+    ibus-setup \
+    $(NULL)
 
 EXTRA_DIST = \
-	$(man_one_in_files) \
-	ibus-setup.in \
-	setup.ui \
-	ibus-setup.desktop \
-	$(NULL)
+    $(desktop_notrans_files) \
+    $(man_one_in_files) \
+    ibus-setup.in \
+    setup.ui \
+    $(NULL)
 
 test:
 	$(ENV_IBUS_TEST) \
