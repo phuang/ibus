@@ -29,10 +29,12 @@ include <glib/gi18n.h>
 const static char *unicode_emoji_categories[] = {
     N_("Activities"),
     N_("Animals & Nature"),
+    N_("Component"),
     N_("Flags"),
     N_("Food & Drink"),
     N_("Objects"),
-    N_("Smileys & People"),
+    N_("People & Body"),
+    N_("Smileys & Emotion"),
     N_("Symbols"),
     N_("Travel & Places"),
 };
