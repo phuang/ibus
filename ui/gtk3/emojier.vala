@@ -389,6 +389,14 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             }
             make_emoji_dict(m_current_lang_id);
         }
+        add_variants_to_component();
+
+        GLib.List<unowned string> annotations =
+                m_annotation_to_emojis_dict.get_keys();
+        foreach (unowned string annotation in annotations) {
+            if (m_emoji_max_seq_len < annotation.length)
+                m_emoji_max_seq_len = annotation.length;
+        }
         update_favorite_emoji_dict();
     }
 
@@ -430,11 +438,54 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             update_annotation_to_emojis_dict(data);
             update_category_to_emojis_dict(data, lang);
         }
-        GLib.List<unowned string> annotations =
-                m_annotation_to_emojis_dict.get_keys();
-        foreach (unowned string annotation in annotations) {
-            if (m_emoji_max_seq_len < annotation.length)
-                m_emoji_max_seq_len = annotation.length;
+    }
+
+
+    private static void add_variants_to_component() {
+        string category = "Component";
+        unowned GLib.SList<string> hits =
+                m_category_to_emojis_dict.lookup(category);
+        if (hits == null) {
+            category = "component";
+            hits = m_category_to_emojis_dict.lookup(category);
+        }
+        if (hits == null)
+            return;
+        GLib.SList<IBus.EmojiData> emoji_list =
+                new GLib.SList<IBus.EmojiData>();
+        GLib.SList<string> annotations = new GLib.SList<string>();
+        annotations.append("zero");
+        IBus.EmojiData _data;
+        _data = new IBus.EmojiData("emoji", "\u200d",
+                                   "annotations", annotations,
+                                   "description",
+                                   "ZERO WIDTH JOINER",
+                                   "category", category);
+        emoji_list.append(_data);
+        annotations = null;
+        annotations.append("text");
+        annotations.append("variation");
+        annotations.append("selector");
+        _data = new IBus.EmojiData("emoji", "\ufe0e",
+                                   "annotations", annotations,
+                                   "description",
+                                   "VARIATION SELECTOR-15",
+                                   "category", category);
+        emoji_list.append(_data);
+        annotations = null;
+        annotations.append("emoji");
+        annotations.append("variation");
+        annotations.append("selector");
+        _data = new IBus.EmojiData("emoji", "\ufe0f",
+                                   "annotations", annotations,
+                                   "description",
+                                   "VARIATION SELECTOR-16",
+                                   "category", category);
+        emoji_list.append(_data);
+        foreach (IBus.EmojiData data in emoji_list) {
+            update_emoji_to_data_dict(data, "en");
+            update_annotation_to_emojis_dict(data);
+            update_category_to_emojis_dict(data, "en");
         }
     }
 
@@ -583,10 +634,12 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             category = EMOJI_CATEGORY_OTHERS;
         if (lang == "en") {
             bool has_variant = false;
-            foreach (unichar ch in EMOJI_VARIANT_LIST) {
-                if (emoji.index_of_char(ch) >= 0) {
-                    has_variant = true;
-                    break;
+            if (category.ascii_casecmp("component") != 0) {
+                foreach (unichar ch in EMOJI_VARIANT_LIST) {
+                    if (emoji.index_of_char(ch) >= 0) {
+                        has_variant = true;
+                        break;
+                    }
                 }
             }
             // If emoji includes variants (skin colors and items),
@@ -606,7 +659,8 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 if (variants.find_custom(emoji, GLib.strcmp) == null) {
                     if (variants == null)
                         variants.append(base_emoji);
-                    variants.append(emoji);
+                    if (base_emoji != emoji)
+                        variants.append(emoji);
                     m_emoji_to_emoji_variants_dict.replace(
                             base_emoji,
                             variants.copy_deep(GLib.strdup));

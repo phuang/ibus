@@ -17,4 +17,8 @@ namespace IBus {
 	public class PanelService : IBus.Service {
                 public void panel_extension_register_keys(string first_property_name, ...);
 	}
+        public class EmojiData : IBus.Serializable {
+		[CCode (cname = "ibus_emoji_data_new", has_construct_function = true)]
+		public EmojiData (string first_property_name, ...);
+	}
 }
