@@ -1,6 +1,6 @@
 # Traditional Chinese translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -22,12 +22,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-06-08 02:11+0000\n"
-"Last-Translator: Peter Pan <pan93412@gmail.com>\n"
+"PO-Revision-Date: 2018-10-08 01:50+0000\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Chinese (Taiwan) <trans-zh_TW@lists.fedoraproject.org>\n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 4.4.5\n"
+"X-Generator: Zanata 4.6.2\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -232,27 +232,27 @@ msgstr "輸入法"
 msgid ""
 "The shortcut keys to enable conversions of emoji annotations or Unicode "
 "names"
-msgstr ""
+msgstr "啟用 Emoji 符號或 Unicode 名稱轉換的快捷鍵"
 
 #: ../setup/setup.ui.h:50
 msgid "Emoji annotation:"
-msgstr ""
+msgstr "Emoji 符號："
 
 #: ../setup/setup.ui.h:51
 msgid "The shortcut keys to enable Unicode code point conversions"
-msgstr ""
+msgstr "啟用 Unicode 碼位轉換的快捷鍵"
 
 #: ../setup/setup.ui.h:52
 msgid "Unicode code point:"
-msgstr ""
+msgstr "Unicode 碼位："
 
 #: ../setup/setup.ui.h:53
 msgid "Set a font of Unicode candidates on the emoji dialog"
-msgstr ""
+msgstr "設定 Emoji 對話框上的 Unicode 候選字型"
 
 #: ../setup/setup.ui.h:54
 msgid "Unicode font:"
-msgstr ""
+msgstr "Unicode 字體："
 
 #: ../setup/setup.ui.h:55
 msgid "Set a language of emoji annotations on the emoji dialog"
@@ -548,11 +548,11 @@ msgstr "為語言面板自訂字型"
 
 #: ../data/ibus.schemas.in.h:50
 msgid "Unicode shortcut keys for gtk_accelerator_parse"
-msgstr ""
+msgstr "gtk_accelerator_parse 的 Unicode 快捷鍵"
 
 #: ../data/ibus.schemas.in.h:51
 msgid "The shortcut keys for turning Unicode typing on or off"
-msgstr ""
+msgstr "開啟或關閉 Unicode 輸入的快捷鍵"
 
 #: ../data/ibus.schemas.in.h:52
 msgid "Emoji shortcut keys for gtk_accelerator_parse"
@@ -627,7 +627,7 @@ msgstr "選擇下列部分符合繪文字註解的條件之一：0 == 前綴符�
 
 #: ../data/ibus.schemas.in.h:67
 msgid "Load the emoji data at the time of startup"
-msgstr ""
+msgstr "每次開啟時載入 Emoji 資料"
 
 #: ../data/ibus.schemas.in.h:68
 msgid ""
@@ -635,10 +635,12 @@ msgid ""
 "needed to load the data. Load the emoji data when open the emoji dialog at "
 "the beginning if false."
 msgstr ""
+"如果為 True 則在每次開啟時載入 Emoji 資料，載入資料大約需要 10MB 的記憶體大小。當設定為 False 時則在第一次開啟 Emoji "
+"對話框時載入 Emoji 資料。"
 
 #: ../data/ibus.schemas.in.h:69
 msgid "Load the Unicode data at the time of startup"
-msgstr ""
+msgstr "每次開啟時載入 Unicode 資料"
 
 #: ../data/ibus.schemas.in.h:70
 msgid ""
@@ -647,6 +649,8 @@ msgid ""
 "the beginning if false. The Unicode data is always loaded after the emoji "
 "data is loaded even if true."
 msgstr ""
+"如果為 True 則在每次開啟時載入 Unicode 資料。載入資料需要大約 15MB 大小的記憶體。如果設定為 False 則在第一次開啟 Emoji "
+"對話框時載入 Unicode 資料，就算設定為 True，Unicode 資料永遠都會在 Emoji 資料載入後才載入。"
 
 #: ../data/ibus.schemas.in.h:71
 msgid "Embed Preedit Text"
@@ -680,8 +684,8 @@ msgstr "DConf 鍵的前綴，用來停止名稱轉換"
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr "版權所有 (c) 2007-2010 黃鵬\n"
-"版權所有 (c) 2007-2010 Red Hat, Inc."
+msgstr "著作權所有 (c) 2007-2010 黃鵬\n"
+"著作權所有 (c) 2007-2010 Red Hat, Inc."
 
 #: ../ibus/lang.py:41 ../src/ibusutil.c:158
 msgid "Other"
@@ -1004,7 +1008,7 @@ msgstr "孟加拉文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:125
 msgid "Gurmukhi"
-msgstr "果魯穆其語"
+msgstr "古爾穆基文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1018,7 +1022,7 @@ msgstr "古吉拉特文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:133
 msgid "Oriya"
-msgstr "Oriya"
+msgstr "歐利亞文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1039,7 +1043,7 @@ msgstr "泰盧固文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:145
 msgid "Kannada"
-msgstr "Kannada"
+msgstr "卡納達文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1144,7 +1148,7 @@ msgstr "盧恩文字"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:205
 msgid "Tagalog"
-msgstr "Tagalog"
+msgstr "他加祿文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2215,7 +2219,7 @@ msgstr "摩尼教文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:817
 msgid "Avestan"
-msgstr "Avestan"
+msgstr "阿維斯陀文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2847,7 +2851,7 @@ msgstr "寫入註冊快取 FILE。"
 msgid ""
 "Use engine schema paths instead of ibus core, which can be comma-separated "
 "values."
-msgstr ""
+msgstr "使用引擎基模位置取代 ibus 核心，可以透過逗號分割字串。"
 
 #: ../tools/main.vala:381
 msgid "Resetting…"
@@ -2959,7 +2963,7 @@ msgstr "顯示繪文字變化"
 
 #: ../ui/gtk3/emojier.vala:1082
 msgid "Close"
-msgstr ""
+msgstr "關閉"
 
 #: ../ui/gtk3/emojier.vala:1088
 msgid "Menu"
@@ -2967,7 +2971,7 @@ msgstr "選單"
 
 #: ../ui/gtk3/emojier.vala:1099
 msgid "Click to view a warning message"
-msgstr ""
+msgstr "點擊顯示警告訊息"
 
 #: ../ui/gtk3/emojier.vala:1143
 msgid "Loading a Unicode dictionary:"
@@ -3022,6 +3026,7 @@ msgid ""
 " E.g. Press Esc key several times to release the emoji typing mode, click "
 "your desktop and click your text application again."
 msgstr ""
+"無法取得目前的文字應用程式，請重新取回您應用程式的焦點。例如按幾次 Esc 退出 Emoji 輸入模式後，按一下桌面再重按您的文字應用程式一次。"
 
 #: ../ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."

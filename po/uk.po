@@ -1,6 +1,6 @@
 # Ukrainian translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -11,397 +11,61 @@
 # Yuri Chornoivan <yurchor@ukr.net>, 2017. #zanata
 # fujiwara <takao.fujiwara1@gmail.com>, 2017. #zanata
 # Yuri Chornoivan <yurchor@ukr.net>, 2018. #zanata
+# Yuri Chornoivan <yurchor@ukr.net>, 2019. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: IBus\n"
+"Project-Id-Version: ibus 1.5.19\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2018-06-21 16:24+0900\n"
+"POT-Creation-Date: 2019-02-27 12:10+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-06-21 12:54+0000\n"
+"PO-Revision-Date: 2019-02-27 03:02+0000\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 4.4.5\n"
-
-#: ../setup/setup.ui.h:1
-msgid "Horizontal"
-msgstr "Горизонтально"
-
-#: ../setup/setup.ui.h:2
-msgid "Vertical"
-msgstr "Вертикально"
-
-#: ../setup/setup.ui.h:3
-msgid "Top left corner"
-msgstr "У верхньому лівому куті"
-
-#: ../setup/setup.ui.h:4
-msgid "Top right corner"
-msgstr "У верхньому правому куті"
-
-#: ../setup/setup.ui.h:5
-msgid "Bottom left corner"
-msgstr "У нижньому лівому куті"
-
-#: ../setup/setup.ui.h:6
-msgid "Bottom right corner"
-msgstr "У нижньому правому куті"
-
-#: ../setup/setup.ui.h:7
-msgid "Custom"
-msgstr "Нетиповий"
-
-#: ../setup/setup.ui.h:8
-msgid "Do not show"
-msgstr "Не показувати"
-
-#: ../setup/setup.ui.h:9
-msgid "Hide automatically"
-msgstr "Автоматично ховати"
-
-#: ../setup/setup.ui.h:10
-msgid "Always"
-msgstr "Завжди"
-
-#: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
-msgid "IBus Preferences"
-msgstr "Налаштування IBus"
-
-#: ../setup/setup.ui.h:12
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr ""
-"Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
-
-#: ../setup/setup.ui.h:13
-msgid "Next input method:"
-msgstr "Наступний спосіб введення:"
-
-#: ../setup/setup.ui.h:14
-msgid "The shortcut keys for switching to previous input method in the list"
-msgstr ""
-"Клавіатурне скорочення для перемикання на попередній спосіб введення у "
-"списку"
-
-#: ../setup/setup.ui.h:15
-msgid "Previous input method:"
-msgstr "Попередній спосіб введення:"
-
-#: ../setup/setup.ui.h:16
-msgid "..."
-msgstr "…"
-
-#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:16
-msgid "The shortcut keys for turning input method on or off"
-msgstr "Клавіатурне скорочення для вмикання і вимикання способів введення"
-
-#: ../setup/setup.ui.h:18
-msgid "Enable or disable:"
-msgstr "Увімкнення або вимикання:"
-
-#: ../setup/setup.ui.h:19
-msgid "Enable:"
-msgstr "Увімкнути:"
-
-#: ../setup/setup.ui.h:20
-msgid "Disable:"
-msgstr "Вимкнути:"
-
-#: ../setup/setup.ui.h:21
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>Клавіатурні скорочення</b>"
-
-#: ../setup/setup.ui.h:22
-msgid "Set the orientation of candidates in lookup table"
-msgstr "Встановити орієнтацію варіантів у таблиці пошуку"
-
-#: ../setup/setup.ui.h:23
-msgid "Candidates orientation:"
-msgstr "Орієнтація варіантів:"
-
-#: ../setup/setup.ui.h:24
-msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "Визначає поведінку ibus: спосіб показу або приховування мовної панелі"
-
-#: ../setup/setup.ui.h:25
-msgid "Show property panel:"
-msgstr "Показ панелі властивостей:"
-
-#: ../setup/setup.ui.h:26
-msgid "Language panel position:"
-msgstr "Розташування мовної панелі:"
-
-#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:36
-msgid "Show icon on system tray"
-msgstr "Показувати піктограму у системному лотку"
-
-#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:38
-msgid "Show input method name on language bar"
-msgstr "Показувати назву способу введення на мовній панелі"
-
-#: ../setup/setup.ui.h:29
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr ""
-"Показати назву способу введення на мовній панелі, якщо позначено цей пункт"
-
-#: ../setup/setup.ui.h:30
-msgid "Embed preedit text in application window"
-msgstr "Вбудувати попередньо створений текст у вікно програми"
-
-#: ../setup/setup.ui.h:31
-msgid "Embed the preedit text of input method in the application window"
-msgstr ""
-"Вбудувати попередньо створений текст способу введення у вікно програми"
-
-#: ../setup/setup.ui.h:32
-msgid "Use custom font:"
-msgstr "Нетиповий шрифт:"
-
-#: ../setup/setup.ui.h:33
-msgid "<b>Font and Style</b>"
-msgstr "<b>Шрифт і стиль</b>"
-
-#: ../setup/setup.ui.h:34
-msgid "General"
-msgstr "Загальне"
-
-#. add button
-#: ../setup/setup.ui.h:35 ../setup/enginedialog.py:61
-#: ../setup/keyboardshortcut.py:124
-msgid "_Add"
-msgstr "_Додати"
-
-#: ../setup/setup.ui.h:36
-msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-"Додати позначений спосіб введення до списку увімкнених способів введення"
-
-#: ../setup/setup.ui.h:37
-msgid "_Remove"
-msgstr "В_илучити"
-
-#: ../setup/setup.ui.h:38
-msgid "Remove the selected input method from the enabled input methods"
-msgstr ""
-"Вилучити позначений спосіб введення зі списку увімкнених способів введення"
-
-#: ../setup/setup.ui.h:39
-msgid "_Up"
-msgstr "В_гору"
-
-#: ../setup/setup.ui.h:40
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-"Пересунути вгору позначений спосіб введення у списку увімкнених способів "
-"введення"
-
-#: ../setup/setup.ui.h:41
-msgid "_Down"
-msgstr "В_низ"
-
-#: ../setup/setup.ui.h:42
-msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-"Пересунути нижче позначений спосіб введення у списку увімкнених способів "
-"введення"
-
-#: ../setup/setup.ui.h:43
-msgid "_About"
-msgstr "_Про програму"
-
-#: ../setup/setup.ui.h:44
-msgid "Show information of the selected input method"
-msgstr "Показати відомості щодо вибраного способу введення"
-
-#: ../setup/setup.ui.h:45
-msgid "_Preferences"
-msgstr "_Параметри"
-
-#: ../setup/setup.ui.h:46
-msgid "Show setup of the selected input method"
-msgstr "Показати панель налаштовування позначеного способу введення"
-
-#: ../setup/setup.ui.h:47
-msgid ""
-"<small><i>The active input method can be switched around from the selected "
-"ones in the above list by pressing the keyboard shortcut keys or clicking "
-"the panel icon.</i></small>"
-msgstr ""
-"<small><i>Активний спосіб введення можна перемкнути у межах визначеного вище "
-"списку натисканням клавіатурного скорочення або піктограми на панелі.</i></"
-"small>"
-
-#. create im name & icon column
-#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:68
-msgid "Input Method"
-msgstr "Спосіб введення"
-
-#: ../setup/setup.ui.h:49
-msgid ""
-"The shortcut keys to enable conversions of emoji annotations or Unicode "
-"names"
-msgstr ""
-"Клавіатурне скорочення для вмикання перетворень анотацій емодзі або назв "
-"символів Unicode"
-
-#: ../setup/setup.ui.h:50
-msgid "Emoji annotation:"
-msgstr "Анотація емодзі:"
-
-#: ../setup/setup.ui.h:51
-msgid "The shortcut keys to enable Unicode code point conversions"
-msgstr ""
-"Клавіатурне скорочення для вмикання перетворень позицій у таблиці Unicode"
-
-#: ../setup/setup.ui.h:52
-msgid "Unicode code point:"
-msgstr "Позиція у таблиці Unicode:"
-
-#: ../setup/setup.ui.h:53
-msgid "Set a font of Unicode candidates on the emoji dialog"
-msgstr "Встановити шрифт варіантів емодзі у Unicode у вікні емодзі"
-
-#: ../setup/setup.ui.h:54
-msgid "Unicode font:"
-msgstr "Шрифт Unicode:"
-
-#: ../setup/setup.ui.h:55
-msgid "Set a language of emoji annotations on the emoji dialog"
-msgstr "Встановити мову анотацій емодзі у вікні емодзі"
-
-#: ../setup/setup.ui.h:56
-msgid "Emoji annotation language:"
-msgstr "Мова анотацій емодзі:"
-
-#: ../setup/setup.ui.h:57
-msgid ""
-"Match emoji annotations partially with the following condition and more than "
-"the number of characters:"
-msgstr ""
-"Встановлювати відповідність емодзі за анотаціями з вказаною умовою та збігом "
-"понад таку кількість символів:"
-
-#: ../setup/setup.ui.h:58
-msgid ""
-"If emoji annotations can be matched with a partial string instead of the "
-"exact match"
-msgstr ""
-"Визначає, чи може бути встановлено відповідність емодзі за частиною рядка, а "
-"не повним збігом"
-
-#: ../setup/setup.ui.h:59
-msgid "Prefix match"
-msgstr "Відповідність за префіксом"
-
-#: ../setup/setup.ui.h:60
-msgid "Suffix match"
-msgstr "Відповідність за суфіксом"
-
-#: ../setup/setup.ui.h:61
-msgid "Containing match"
-msgstr "Відповідність за вмістом"
-
-#: ../setup/setup.ui.h:62
-msgid "Emoji"
-msgstr "Емодзі"
-
-#: ../setup/setup.ui.h:63 ../data/ibus.schemas.in.h:44
-msgid "Use system keyboard layout"
-msgstr "Використовувати розкладку клавіатури системи"
-
-#: ../setup/setup.ui.h:64 ../data/ibus.schemas.in.h:45
-msgid "Use system keyboard (XKB) layout"
-msgstr "Використовувати розкладку клавіатури системи (XKB)"
-
-#: ../setup/setup.ui.h:65
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>Розкладка клавіатури</b>"
-
-#: ../setup/setup.ui.h:66 ../data/ibus.schemas.in.h:74
-msgid "Share the same input method among all applications"
-msgstr "Використовувати один спосіб введення для всіх програм"
-
-#: ../setup/setup.ui.h:67
-msgid "<b>Global input method settings</b>"
-msgstr "<b>Загальні параметри способів введення</b>"
-
-#: ../setup/setup.ui.h:68
-msgid "Advanced"
-msgstr "Додатково"
-
-#: ../setup/setup.ui.h:69
-msgid ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"Homepage: https://github.com/ibus/ibus/wiki\n"
-"\n"
-"\n"
-"\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>Інтелектуальний канал введення</small>\n"
-"Домашня сторінка: https://github.com/ibus/ibus/wiki\n"
-"\n"
-"\n"
-"\n"
-
-#: ../setup/setup.ui.h:76
-msgid "Start ibus on login"
-msgstr "Запускати ibus при вході"
-
-#: ../setup/setup.ui.h:77
-msgid "<b>Startup</b>"
-msgstr "<b>Запуск</b>"
-
-#: ../setup/setup.ui.h:78 ../setup/engineabout.py:37 ../ui/gtk3/panel.vala:1164
-msgid "About"
-msgstr "Інформація"
-
-#: ../setup/setup.ui.h:79 ../setup/engineabout.py:40
-msgid "_Close"
-msgstr "_Закрити"
+"X-Generator: Zanata 4.6.2\n"
 
 #. Translators: Here “Preload” is a verb
-#: ../data/ibus.schemas.in.h:2
+#: data/dconf/org.freedesktop.ibus.gschema.xml:11
 msgid "Preload engines"
 msgstr "Попередньо завантажувати рушії"
 
 #. Translators: Tooltip for the button “Preload Engines”
-#: ../data/ibus.schemas.in.h:4
+#: data/dconf/org.freedesktop.ibus.gschema.xml:13
 msgid "Preload engines during ibus starts up"
 msgstr "Попередньо завантажувати рушії під час запуску ibus"
 
-#: ../data/ibus.schemas.in.h:5
+#: data/dconf/org.freedesktop.ibus.gschema.xml:17
 msgid "Engines order"
 msgstr "Порядок рушіїв"
 
-#: ../data/ibus.schemas.in.h:6
+#: data/dconf/org.freedesktop.ibus.gschema.xml:18
 msgid "Saved engines order in input method list"
 msgstr "Збережений порядок рушіїв у списку способів введення"
 
-#: ../data/ibus.schemas.in.h:7
+#: data/dconf/org.freedesktop.ibus.gschema.xml:22
 msgid "Popup delay milliseconds for IME switcher window"
 msgstr "Затримка появи контекстного вікна для перемикача способів введення"
 
-#: ../data/ibus.schemas.in.h:8
+#: data/dconf/org.freedesktop.ibus.gschema.xml:23
 msgid ""
 "Set popup delay milliseconds to show IME switcher window. The default is 400."
-" 0 = Show the window immediately. 0 &lt; Delay milliseconds. 0 &gt; Do not "
-"show the window and switch prev/next engines."
+" 0 = Show the window immediately. 0 < Delay milliseconds. 0 > Do not show "
+"the window and switch prev/next engines."
 msgstr ""
 "Встановити затримку появи контекстного вікна перемикача способів введення у "
-"мілісекундах. Типовою є 400. 0 = показувати вікно негайно. 0 &lt; — затримка "
-"у мілісекундах. 0 &gt; — не показувати вікно і перемикатися на попередній "
-"або наступний рушій."
+"мілісекундах. Типовою є 400. 0 = показувати вікно негайно. 0 < — затримка у "
+"мілісекундах. 0 > — не показувати вікно і перемикатися на попередній або "
+"наступний рушій."
 
-#: ../data/ibus.schemas.in.h:9
+#: data/dconf/org.freedesktop.ibus.gschema.xml:27
 msgid "Saved version number"
 msgstr "Збережений номер версії"
 
-#: ../data/ibus.schemas.in.h:10
+#: data/dconf/org.freedesktop.ibus.gschema.xml:28
 msgid ""
 "The saved version number will be used to check the difference between the "
 "version of the previous installed ibus and one of the current ibus."
@@ -409,73 +73,123 @@ msgstr ""
 "Збережений номер версії буде використано для визначення відмінностей між "
 "попередньою встановленою версією ibus та поточною версією ibus."
 
-#: ../data/ibus.schemas.in.h:11
+#: data/dconf/org.freedesktop.ibus.gschema.xml:32
 msgid "Latin layouts which have no ASCII"
 msgstr "Розкладки латиниці, у яких немає символів ASCII"
 
-#: ../data/ibus.schemas.in.h:12
+#: data/dconf/org.freedesktop.ibus.gschema.xml:33
 msgid "US layout is appended to the Latin layouts. variant can be omitted."
 msgstr ""
 "Американська розкладка додається до латинських розкладок, варіант можна "
 "пропустити."
 
-#: ../data/ibus.schemas.in.h:13
+#: data/dconf/org.freedesktop.ibus.gschema.xml:37
 msgid "Use xmodmap"
 msgstr "Використовувати xmodmap"
 
-#: ../data/ibus.schemas.in.h:14
+#: data/dconf/org.freedesktop.ibus.gschema.xml:38
 msgid ""
 "Run xmodmap if .xmodmap or .Xmodmap exists when ibus engines are switched."
 msgstr ""
 "Запускати xmodmap, якщо є .xmodmap або .Xmodmap під час перемикання рушіїв "
 "ibus."
 
-#: ../data/ibus.schemas.in.h:15
+#: data/dconf/org.freedesktop.ibus.gschema.xml:42 setup/setup.ui:1208
+msgid "Use system keyboard layout"
+msgstr "Використовувати розкладку клавіатури системи"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:43 setup/setup.ui:1213
+msgid "Use system keyboard (XKB) layout"
+msgstr "Використовувати розкладку клавіатури системи (XKB)"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:47
+msgid "Embed Preedit Text"
+msgstr "Вбудувати попередньо створений текст"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:48
+msgid "Embed Preedit Text in Application Window"
+msgstr "Вбудувати попередньо створений текст у вікно програми"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:52
+msgid "Use global input method"
+msgstr "Використовувати загальний спосіб введення"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:53 setup/setup.ui:1257
+msgid "Share the same input method among all applications"
+msgstr "Використовувати один спосіб введення для всіх програм"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:57
+msgid "Enable input method by default"
+msgstr "Типово увімкнути спосіб введення"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:58
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
+"Типово увімкнути спосіб введення, коли програма отримує фокус введення"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:62
+msgid "DConf preserve name prefixes"
+msgstr "Збереження DConf префіксів назв"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:63
+msgid "Prefixes of DConf keys to stop name conversion"
+msgstr "Префікси ключів DConf для припинення перетворення назв"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:70
 msgid "Trigger shortcut keys"
 msgstr "Клавіатурні скорочення-перемикачі"
 
-#: ../data/ibus.schemas.in.h:17
+#: data/dconf/org.freedesktop.ibus.gschema.xml:71
+#: data/dconf/org.freedesktop.ibus.gschema.xml:76 setup/setup.ui:224
+msgid "The shortcut keys for turning input method on or off"
+msgstr "Клавіатурне скорочення для вмикання і вимикання способів введення"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:75
 msgid "Trigger shortcut keys for gtk_accelerator_parse"
 msgstr "Комбінації клавіш для перемикання gtk_accelerator_parse"
 
-#: ../data/ibus.schemas.in.h:18
+#: data/dconf/org.freedesktop.ibus.gschema.xml:80
 msgid "Enable shortcut keys"
 msgstr "Увімкнути клавіатурні скорочення"
 
-#: ../data/ibus.schemas.in.h:19
+#: data/dconf/org.freedesktop.ibus.gschema.xml:81
 msgid "The shortcut keys for turning input method on"
 msgstr "Клавіатурне скорочення для вмикання способів введення"
 
-#: ../data/ibus.schemas.in.h:20
+#: data/dconf/org.freedesktop.ibus.gschema.xml:85
 msgid "Disable shortcut keys"
 msgstr "Вимкнути клавіатурні скорочення"
 
-#: ../data/ibus.schemas.in.h:21
+#: data/dconf/org.freedesktop.ibus.gschema.xml:86
 msgid "The shortcut keys for turning input method off"
 msgstr "Клавіатурне скорочення для вимикання способів введення"
 
-#: ../data/ibus.schemas.in.h:22
+#: data/dconf/org.freedesktop.ibus.gschema.xml:90
+#: data/dconf/org.freedesktop.ibus.gschema.xml:95
 msgid "Next engine shortcut keys"
 msgstr "Скорочення для наступного рушія"
 
-#: ../data/ibus.schemas.in.h:23
+#: data/dconf/org.freedesktop.ibus.gschema.xml:91
+#: data/dconf/org.freedesktop.ibus.gschema.xml:96
 msgid "The shortcut keys for switching to the next input method in the list"
 msgstr ""
 "Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
 
-#: ../data/ibus.schemas.in.h:24
+#: data/dconf/org.freedesktop.ibus.gschema.xml:100
+#: data/dconf/org.freedesktop.ibus.gschema.xml:105
 msgid "Prev engine shortcut keys"
 msgstr "Скорочення для попереднього рушія"
 
-#: ../data/ibus.schemas.in.h:25
+#: data/dconf/org.freedesktop.ibus.gschema.xml:101
+#: data/dconf/org.freedesktop.ibus.gschema.xml:106
 msgid "The shortcut keys for switching to the previous input method"
 msgstr "Клавіатурне скорочення для перемикання на попередній спосіб введення"
 
-#: ../data/ibus.schemas.in.h:26
+#: data/dconf/org.freedesktop.ibus.gschema.xml:112
 msgid "Auto hide"
 msgstr "Автоматично ховати"
 
-#: ../data/ibus.schemas.in.h:27
+#: data/dconf/org.freedesktop.ibus.gschema.xml:113
 msgid ""
 "The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always "
 "show"
@@ -483,24 +197,16 @@ msgstr ""
 "Поведінка панелі властивостей. 0 = не показувати, 1 = автоматично ховати, 2 ="
 " завжди показувати"
 
-#: ../data/ibus.schemas.in.h:28
+#: data/dconf/org.freedesktop.ibus.gschema.xml:117
+#: data/dconf/org.freedesktop.ibus.gschema.xml:121
 msgid "Language panel position"
 msgstr "Розташування мовної панелі"
 
-#: ../data/ibus.schemas.in.h:29
-msgid ""
-"The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-"Розташування мовної панелі. 0 = у верхньому лівому куті, 1 = у верхньому "
-"правому куті, 2 = у нижньому лівому куті, 3 = у нижньому правому куті, 4 = "
-"нетипове"
-
-#: ../data/ibus.schemas.in.h:30
+#: data/dconf/org.freedesktop.ibus.gschema.xml:125
 msgid "Follow the input cursor in case the panel is always shown"
 msgstr "Слідувати за курсором введення, якщо панель показано завжди"
 
-#: ../data/ibus.schemas.in.h:31
+#: data/dconf/org.freedesktop.ibus.gschema.xml:126
 msgid ""
 "If true, the panel follows the input cursor in case the panel is always "
 "shown. If false, the panel is shown at a fixed location."
@@ -509,11 +215,11 @@ msgstr ""
 "панель працює у режимі безумовного показу. Якщо має значення «false», панель "
 "буде показано у фіксованій позиції."
 
-#: ../data/ibus.schemas.in.h:32
+#: data/dconf/org.freedesktop.ibus.gschema.xml:130
 msgid "The milliseconds to show property panel"
 msgstr "Тривалість показу панелі властивостей у мілісекундах"
 
-#: ../data/ibus.schemas.in.h:33
+#: data/dconf/org.freedesktop.ibus.gschema.xml:131
 msgid ""
 "The milliseconds to show property panel after focus-in or properties are "
 "changed."
@@ -521,24 +227,33 @@ msgstr ""
 "Тривалість показу панелі властивостей (у мілісекундах) після фокусування або "
 "зміни властивостей."
 
-#: ../data/ibus.schemas.in.h:34
+#: data/dconf/org.freedesktop.ibus.gschema.xml:135
 msgid "Orientation of lookup table"
 msgstr "Орієнтація таблиці пошуку"
 
-#: ../data/ibus.schemas.in.h:35
+#: data/dconf/org.freedesktop.ibus.gschema.xml:136
 msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
 msgstr "Орієнтація таблиці пошуку. 0 = горизонтально, 1 = вертикально"
 
-#: ../data/ibus.schemas.in.h:37
+#: data/dconf/org.freedesktop.ibus.gschema.xml:140
+#: data/dconf/org.freedesktop.ibus.gschema.xml:141 setup/setup.ui:470
+#: setup/setup.ui:475
+msgid "Show icon on system tray"
+msgstr "Показувати піктограму у системному лотку"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:145
 msgid "Show input method name"
 msgstr "Показувати назву способу введення"
 
-#: ../data/ibus.schemas.in.h:39
+#: data/dconf/org.freedesktop.ibus.gschema.xml:146 setup/setup.ui:489
+msgid "Show input method name on language bar"
+msgstr "Показувати назву способу введення на мовній панелі"
+
+#: data/dconf/org.freedesktop.ibus.gschema.xml:150
 msgid "RGBA value of XKB icon"
 msgstr "Значення RGBA для піктограми XKB"
 
-#: ../data/ibus.schemas.in.h:41
-#, no-c-format
+#: data/dconf/org.freedesktop.ibus.gschema.xml:151
 msgid ""
 "XKB icon shows the layout string and the string is rendered with the RGBA "
 "value. The RGBA value can be 1. a color name from X11, 2. a hex value in "
@@ -557,12 +272,12 @@ msgstr ""
 "значеннями від 0% до 100%, а «п» є значенням з рухомою крапкою для "
 "прозорості у діапазоні від 0 до 1."
 
-#: ../data/ibus.schemas.in.h:42
+#: data/dconf/org.freedesktop.ibus.gschema.xml:155
 msgid "The milliseconds to show the panel icon for a property"
 msgstr ""
 "Час у мілісекундах для приготування показу піктограми панелі для властивості"
 
-#: ../data/ibus.schemas.in.h:43
+#: data/dconf/org.freedesktop.ibus.gschema.xml:156
 msgid ""
 "The milliseconds to show the panel icon from the engine icon to a property "
 "icon whenever engines are switched if the property is specified by the value "
@@ -574,48 +289,49 @@ msgstr ""
 "властивість задається значенням icon-prop-key у IBusEngineDesc. Якщо вказано "
 "значення 0, затримки не буде і піктограму властивості буде показано негайно."
 
-#: ../data/ibus.schemas.in.h:46
+#: data/dconf/org.freedesktop.ibus.gschema.xml:160
 msgid "Use custom font"
 msgstr "Використовувати нетиповий шрифт"
 
-#: ../data/ibus.schemas.in.h:47
+#: data/dconf/org.freedesktop.ibus.gschema.xml:161
 msgid "Use custom font name for language panel"
 msgstr "Використовувати нетиповий шрифт для мовної панелі"
 
-#: ../data/ibus.schemas.in.h:48
+#: data/dconf/org.freedesktop.ibus.gschema.xml:165
+#: data/dconf/org.freedesktop.ibus.gschema.xml:183
 msgid "Custom font"
 msgstr "Нетиповий шрифт"
 
-#: ../data/ibus.schemas.in.h:49
+#: data/dconf/org.freedesktop.ibus.gschema.xml:166
 msgid "Custom font name for language panel"
 msgstr "Назва нетипового шрифту для мовної панелі"
 
-#: ../data/ibus.schemas.in.h:50
+#: data/dconf/org.freedesktop.ibus.gschema.xml:173
 msgid "Unicode shortcut keys for gtk_accelerator_parse"
 msgstr "Клавіатурне скорочення Unicode для gtk_accelerator_parse"
 
-#: ../data/ibus.schemas.in.h:51
+#: data/dconf/org.freedesktop.ibus.gschema.xml:174
 msgid "The shortcut keys for turning Unicode typing on or off"
 msgstr ""
 "Клавіатурне скорочення для вмикання і вимикання введення символів Unicode"
 
-#: ../data/ibus.schemas.in.h:52
+#: data/dconf/org.freedesktop.ibus.gschema.xml:178
 msgid "Emoji shortcut keys for gtk_accelerator_parse"
 msgstr "Клавіатурне скорочення емодзі для gtk_accelerator_parse"
 
-#: ../data/ibus.schemas.in.h:53
+#: data/dconf/org.freedesktop.ibus.gschema.xml:179
 msgid "The shortcut keys for turning emoji typing on or off"
 msgstr "Клавіатурне скорочення для вмикання і вимикання введення емодзі"
 
-#: ../data/ibus.schemas.in.h:54
+#: data/dconf/org.freedesktop.ibus.gschema.xml:184
 msgid "Custom font name for emoji characters on emoji dialog"
 msgstr "Назва нетипового шрифту для символів емодзі у вікні емодзі"
 
-#: ../data/ibus.schemas.in.h:55
+#: data/dconf/org.freedesktop.ibus.gschema.xml:188
 msgid "Default language for emoji dictionary"
 msgstr "Типова мова словника емодзі"
 
-#: ../data/ibus.schemas.in.h:56
+#: data/dconf/org.freedesktop.ibus.gschema.xml:189
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
 "value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
@@ -623,11 +339,11 @@ msgstr ""
 "Виберіть типову мову словників емодзі у вікні емодзі. Значення $lang "
 "застосовується до /usr/share/ibus/dicts/emoji-$lang.dict"
 
-#: ../data/ibus.schemas.in.h:57
+#: data/dconf/org.freedesktop.ibus.gschema.xml:193
 msgid "favorite emoji list on emoji dialog"
 msgstr "Список улюблених емодзі у вікні емодзі"
 
-#: ../data/ibus.schemas.in.h:58
+#: data/dconf/org.freedesktop.ibus.gschema.xml:194
 msgid ""
 "You can show the favorite emojis on emoji list if this list has any "
 "characters."
@@ -635,19 +351,19 @@ msgstr ""
 "Ви зможете переглянути улюблені емодзі у списку емодзі, якщо у цьому списку "
 "є якісь символи."
 
-#: ../data/ibus.schemas.in.h:59
+#: data/dconf/org.freedesktop.ibus.gschema.xml:198
 msgid "favorite emoji annotation list on emoji dialog"
 msgstr "список анотацій до улюблених емодзі у вікні емодзі"
 
-#: ../data/ibus.schemas.in.h:60
+#: data/dconf/org.freedesktop.ibus.gschema.xml:199
 msgid "You can assign an annotation for a favorite emoji in this list."
 msgstr "Ви можете додавати анотації до улюблених емодзі у цьому списку."
 
-#: ../data/ibus.schemas.in.h:61
+#: data/dconf/org.freedesktop.ibus.gschema.xml:203
 msgid "Whether emoji annotations can be match partially or not"
 msgstr "Визначає, чи може бути встановлено часткову відповідність"
 
-#: ../data/ibus.schemas.in.h:62
+#: data/dconf/org.freedesktop.ibus.gschema.xml:204
 msgid ""
 "Whether emoji annotations can be matched with a partial string instead of "
 "the exact match or not."
@@ -655,11 +371,11 @@ msgstr ""
 "Визначає, чи може бути встановлено відповідність емодзі за частиною рядка, а "
 "не повним збігом"
 
-#: ../data/ibus.schemas.in.h:63
+#: data/dconf/org.freedesktop.ibus.gschema.xml:208
 msgid "Match emoji annotations with the specified length"
 msgstr "Відповідність анотацій до емодзі за вказаною довжиною рядка"
 
-#: ../data/ibus.schemas.in.h:64
+#: data/dconf/org.freedesktop.ibus.gschema.xml:209
 msgid ""
 "Match emoji annotations partially with more than the specified number of "
 "characters instead of the exact match."
@@ -667,11 +383,11 @@ msgstr ""
 "Встановлювати часткову відповідність анотацій до емодзі, якщо збігається "
 "вказана кількість символів, але відповідність не є повною."
 
-#: ../data/ibus.schemas.in.h:65
+#: data/dconf/org.freedesktop.ibus.gschema.xml:213
 msgid "Choose a condition to match emoji annotations partially"
 msgstr "Вибрати умову часткової відповідності анотацій до емодзі"
 
-#: ../data/ibus.schemas.in.h:66
+#: data/dconf/org.freedesktop.ibus.gschema.xml:214
 msgid ""
 "Choose one of the following conditions to match emoji annotations partially: "
 "0 == Prefix match, 1 == Suffix match, 2 == Containing match"
@@ -680,11 +396,11 @@ msgstr ""
 "анотаціями до емодзі: 0 == відповідність за префіксом, 1 == відповідність за "
 "суфіксом, 2 == відповідність за вмістом"
 
-#: ../data/ibus.schemas.in.h:67
+#: data/dconf/org.freedesktop.ibus.gschema.xml:218
 msgid "Load the emoji data at the time of startup"
 msgstr "Завантажувати дані емодзі під час запуску програми"
 
-#: ../data/ibus.schemas.in.h:68
+#: data/dconf/org.freedesktop.ibus.gschema.xml:219
 msgid ""
 "Load the emoji data at the time of startup if true. About 10MB memory is "
 "needed to load the data. Load the emoji data when open the emoji dialog at "
@@ -694,11 +410,11 @@ msgstr ""
 "завантаження даних потрібно приблизно 10 МБ пам'яті. Якщо false, дані емодзі "
 "буде завантажено під час відкриття діалогового вікна емодзі на початку."
 
-#: ../data/ibus.schemas.in.h:69
+#: data/dconf/org.freedesktop.ibus.gschema.xml:223
 msgid "Load the Unicode data at the time of startup"
 msgstr "Завантажувати дані Unicode під час запуску"
 
-#: ../data/ibus.schemas.in.h:70
+#: data/dconf/org.freedesktop.ibus.gschema.xml:224
 msgid ""
 "Load the Unicode data at the time of startup if true. About 15MB memory is "
 "needed to load the data. Load the Unicode data when open the emoji dialog at "
@@ -711,118 +427,110 @@ msgstr ""
 "початку. Дані Unicode завжди завантажуватимуться після даних емодзі, навіть "
 "якщо встановлено значення true."
 
-#: ../data/ibus.schemas.in.h:71
-msgid "Embed Preedit Text"
-msgstr "Вбудувати попередньо створений текст"
-
-#: ../data/ibus.schemas.in.h:72
-msgid "Embed Preedit Text in Application Window"
-msgstr "Вбудувати попередньо створений текст у вікно програми"
-
-#: ../data/ibus.schemas.in.h:73
-msgid "Use global input method"
-msgstr "Використовувати загальний спосіб введення"
-
-#: ../data/ibus.schemas.in.h:75
-msgid "Enable input method by default"
-msgstr "Типово увімкнути спосіб введення"
-
-#: ../data/ibus.schemas.in.h:76
-msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-"Типово увімкнути спосіб введення, коли програма отримує фокус введення"
-
-#: ../data/ibus.schemas.in.h:77
-msgid "DConf preserve name prefixes"
-msgstr "Збереження DConf префіксів назв"
-
-#: ../data/ibus.schemas.in.h:78
-msgid "Prefixes of DConf keys to stop name conversion"
-msgstr "Префікси ключів DConf для припинення перетворення назв"
-
-#: ../ibus/_config.py.in:41
+#: ibus/_config.py.in:41
 msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr "© Peng Huang, 2007–2010\n"
 "© Red Hat, Inc., 2007–2010"
 
-#: ../ibus/lang.py:41 ../src/ibusutil.c:158
+#: ibus/lang.py:41 src/ibusutil.c:158
 msgid "Other"
 msgstr "Інше"
 
-#: ../setup/emojilang.py:67
+#: setup/emojilang.py:67
 msgid "Select a language"
 msgstr "Виберіть мову"
 
-#: ../setup/emojilang.py:70 ../setup/enginedialog.py:60
-#: ../setup/keyboardshortcut.py:339 ../setup/main.py:560
+#: setup/emojilang.py:70 setup/enginedialog.py:60 setup/keyboardshortcut.py:339
+#: setup/main.py:560
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: ../setup/emojilang.py:71 ../setup/keyboardshortcut.py:340
-#: ../setup/main.py:561
+#: setup/emojilang.py:71 setup/keyboardshortcut.py:340 setup/main.py:561
 msgid "_OK"
 msgstr "_Гаразд"
 
-#: ../setup/emojilang.py:235 ../setup/enginedialog.py:205
+#: setup/emojilang.py:235 setup/enginedialog.py:205
 msgid "More…"
 msgstr "Більше…"
 
-#: ../setup/engineabout.py:72
+#: setup/engineabout.py:37 setup/setup.ui:1378 ui/gtk3/panel.vala:1138
+msgid "About"
+msgstr "Інформація"
+
+#: setup/engineabout.py:40 setup/setup.ui:1401
+msgid "_Close"
+msgstr "_Закрити"
+
+#: setup/engineabout.py:72
 #, python-format
 msgid "Language: %s\n"
 msgstr "Мова: %s\n"
 
-#: ../setup/engineabout.py:75
+#: setup/engineabout.py:75
 #, python-format
 msgid "Keyboard layout: %s\n"
 msgstr "Розкладка клавіатури: %s\n"
 
-#: ../setup/engineabout.py:78
+#: setup/engineabout.py:78
 #, python-format
 msgid "Author: %s\n"
 msgstr "Автор: %s\n"
 
-#: ../setup/engineabout.py:81
+#: setup/engineabout.py:81
 msgid "Description:\n"
 msgstr "Опис:\n"
 
-#: ../setup/enginecombobox.py:139 ../setup/enginedialog.py:57
+#: setup/enginecombobox.py:139 setup/enginedialog.py:57
 msgid "Select an input method"
 msgstr "Виберіть спосіб введення"
 
-#: ../setup/enginetreeview.py:96
+#. add button
+#: setup/enginedialog.py:61 setup/keyboardshortcut.py:124 setup/setup.ui:664
+msgid "_Add"
+msgstr "_Додати"
+
+#. create im name & icon column
+#: setup/enginetreeview.py:69 setup/setup.ui:838
+msgid "Input Method"
+msgstr "Спосіб введення"
+
+#: setup/enginetreeview.py:96
 msgid "Kbd"
 msgstr "Kbd"
 
-#: ../setup/ibus-setup.desktop.in.h:2
+#: setup/ibus-setup.desktop:3 setup/setup.ui:69
+msgid "IBus Preferences"
+msgstr "Налаштування IBus"
+
+#: setup/ibus-setup.desktop:4
 msgid "Set IBus Preferences"
 msgstr "Налаштувати IBus"
 
-#: ../setup/keyboardshortcut.py:55
+#: setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
 msgstr "Клавіатурні скорочення"
 
-#: ../setup/keyboardshortcut.py:67
+#: setup/keyboardshortcut.py:67
 msgid "Key code:"
 msgstr "Код клавіші:"
 
-#: ../setup/keyboardshortcut.py:82
+#: setup/keyboardshortcut.py:82
 msgid "Modifiers:"
 msgstr "Модифікатори:"
 
 #. apply button
-#: ../setup/keyboardshortcut.py:130
+#: setup/keyboardshortcut.py:130
 msgid "_Apply"
 msgstr "Заст_осувати"
 
 #. delete button
-#: ../setup/keyboardshortcut.py:136
+#: setup/keyboardshortcut.py:136
 msgid "_Delete"
 msgstr "В_илучити"
 
-#: ../setup/keyboardshortcut.py:252
+#: setup/keyboardshortcut.py:252
 msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
@@ -830,21 +538,21 @@ msgstr ""
 "Будь ласка, натисніть клавішу (або комбінацію клавіш).\n"
 "Діалогове вікно буде закрито після відпускання клавіші."
 
-#: ../setup/keyboardshortcut.py:255
+#: setup/keyboardshortcut.py:255
 msgid "Please press a key (or a key combination)"
 msgstr "Будь ласка, натисніть клавішу (або комбінацію клавіш)"
 
-#: ../setup/main.py:121 ../setup/main.py:588
+#: setup/main.py:121 setup/main.py:588
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr ""
 "Використовувати комбінацію з Shift для перемикання на попередній спосіб "
 "введення"
 
-#: ../setup/main.py:515
+#: setup/main.py:515
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "Фонову службу IBus не запущено. Хочете її запустити?"
 
-#: ../setup/main.py:536
+#: setup/main.py:536
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to "
 "your $HOME/.bashrc; then relog into your desktop.\n"
@@ -860,2059 +568,2435 @@ msgstr ""
 "  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:550
+#: setup/main.py:550
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "Не вдалося запустити фонову службу IBus протягом %d секунд"
 
-#: ../setup/main.py:562
+#: setup/main.py:562
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "Виберіть клавіатурне скорочення для дії %s"
 
 #. Translators: Title of the window
-#: ../setup/main.py:564
+#: setup/main.py:564
 msgid "switching input methods"
 msgstr "перемикання способів введення"
 
-#: ../src/ibusemojigen.h:30
+#: setup/setup.ui:11
+msgid "Horizontal"
+msgstr "Горизонтально"
+
+#: setup/setup.ui:14
+msgid "Vertical"
+msgstr "Вертикально"
+
+#: setup/setup.ui:25
+msgid "Top left corner"
+msgstr "У верхньому лівому куті"
+
+#: setup/setup.ui:28
+msgid "Top right corner"
+msgstr "У верхньому правому куті"
+
+#: setup/setup.ui:31
+msgid "Bottom left corner"
+msgstr "У нижньому лівому куті"
+
+#: setup/setup.ui:34
+msgid "Bottom right corner"
+msgstr "У нижньому правому куті"
+
+#: setup/setup.ui:37
+msgid "Custom"
+msgstr "Нетиповий"
+
+#: setup/setup.ui:48
+msgid "Do not show"
+msgstr "Не показувати"
+
+#: setup/setup.ui:51
+msgid "Hide automatically"
+msgstr "Автоматично ховати"
+
+#: setup/setup.ui:54
+msgid "Always"
+msgstr "Завжди"
+
+#: setup/setup.ui:113
+msgid "The shortcut keys for switching to next input method in the list"
+msgstr ""
+"Клавіатурні скорочення для перемикання на наступний спосіб введення у списку"
+
+#: setup/setup.ui:115
+msgid "Next input method:"
+msgstr "Наступний спосіб введення:"
+
+#: setup/setup.ui:127
+msgid "The shortcut keys for switching to previous input method in the list"
+msgstr ""
+"Клавіатурне скорочення для перемикання на попередній спосіб введення у "
+"списку"
+
+#: setup/setup.ui:129
+msgid "Previous input method:"
+msgstr "Попередній спосіб введення:"
+
+#: setup/setup.ui:157 setup/setup.ui:199 setup/setup.ui:266 setup/setup.ui:319
+#: setup/setup.ui:903 setup/setup.ui:957
+msgid "..."
+msgstr "…"
+
+#: setup/setup.ui:226
+msgid "Enable or disable:"
+msgstr "Увімкнення або вимикання:"
+
+#: setup/setup.ui:238
+msgid "Enable:"
+msgstr "Увімкнути:"
+
+#: setup/setup.ui:291
+msgid "Disable:"
+msgstr "Вимкнути:"
+
+#: setup/setup.ui:345 setup/setup.ui:983
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Клавіатурні скорочення</b>"
+
+#: setup/setup.ui:374
+msgid "Set the orientation of candidates in lookup table"
+msgstr "Встановити орієнтацію варіантів у таблиці пошуку"
+
+#: setup/setup.ui:376
+msgid "Candidates orientation:"
+msgstr "Орієнтація варіантів:"
+
+#: setup/setup.ui:407
+msgid "Set the behavior of ibus how to show or hide language bar"
+msgstr "Визначає поведінку ibus: спосіб показу або приховування мовної панелі"
+
+#: setup/setup.ui:409
+msgid "Show property panel:"
+msgstr "Показ панелі властивостей:"
+
+#: setup/setup.ui:423
+msgid "Language panel position:"
+msgstr "Розташування мовної панелі:"
+
+#: setup/setup.ui:494
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+"Показати назву способу введення на мовній панелі, якщо позначено цей пункт"
+
+#: setup/setup.ui:508
+msgid "Embed preedit text in application window"
+msgstr "Вбудувати попередньо створений текст у вікно програми"
+
+#: setup/setup.ui:513
+msgid "Embed the preedit text of input method in the application window"
+msgstr ""
+"Вбудувати попередньо створений текст способу введення у вікно програми"
+
+#: setup/setup.ui:527
+msgid "Use custom font:"
+msgstr "Нетиповий шрифт:"
+
+#: setup/setup.ui:562 setup/setup.ui:1156
+msgid "<b>Font and Style</b>"
+msgstr "<b>Шрифт і стиль</b>"
+
+#: setup/setup.ui:579
+msgid "General"
+msgstr "Загальне"
+
+#: setup/setup.ui:671
+msgid "Add the selected input method into the enabled input methods"
+msgstr ""
+"Додати позначений спосіб введення до списку увімкнених способів введення"
+
+#: setup/setup.ui:682
+msgid "_Remove"
+msgstr "В_илучити"
+
+#: setup/setup.ui:689
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+"Вилучити позначений спосіб введення зі списку увімкнених способів введення"
+
+#: setup/setup.ui:700
+msgid "_Up"
+msgstr "В_гору"
+
+#: setup/setup.ui:707
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+"Пересунути вгору позначений спосіб введення у списку увімкнених способів "
+"введення"
+
+#: setup/setup.ui:718
+msgid "_Down"
+msgstr "В_низ"
+
+#: setup/setup.ui:725
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
+"Пересунути нижче позначений спосіб введення у списку увімкнених способів "
+"введення"
+
+#: setup/setup.ui:736
+msgid "_About"
+msgstr "_Про програму"
+
+#: setup/setup.ui:743
+msgid "Show information of the selected input method"
+msgstr "Показати відомості щодо вибраного способу введення"
+
+#: setup/setup.ui:754
+msgid "_Preferences"
+msgstr "_Параметри"
+
+#: setup/setup.ui:761
+msgid "Show setup of the selected input method"
+msgstr "Показати панель налаштовування позначеного способу введення"
+
+#: setup/setup.ui:812
+msgid ""
+"<small><i>The active input method can be switched around from the selected "
+"ones in the above list by pressing the keyboard shortcut keys or clicking "
+"the panel icon.</i></small>"
+msgstr ""
+"<small><i>Активний спосіб введення можна перемкнути у межах визначеного вище "
+"списку натисканням клавіатурного скорочення або піктограми на панелі.</i></"
+"small>"
+
+#: setup/setup.ui:873
+msgid ""
+"The shortcut keys to enable conversions of emoji annotations or Unicode "
+"names"
+msgstr ""
+"Клавіатурне скорочення для вмикання перетворень анотацій емодзі або назв "
+"символів Unicode"
+
+#: setup/setup.ui:875
+msgid "Emoji annotation:"
+msgstr "Анотація емодзі:"
+
+#: setup/setup.ui:927
+msgid "The shortcut keys to enable Unicode code point conversions"
+msgstr ""
+"Клавіатурне скорочення для вмикання перетворень позицій у таблиці Unicode"
+
+#: setup/setup.ui:929
+msgid "Unicode code point:"
+msgstr "Позиція у таблиці Unicode:"
+
+#: setup/setup.ui:1013
+msgid "Set a font of Unicode candidates on the emoji dialog"
+msgstr "Встановити шрифт варіантів емодзі у Unicode у вікні емодзі"
+
+#: setup/setup.ui:1015
+msgid "Unicode font:"
+msgstr "Шрифт Unicode:"
+
+#: setup/setup.ui:1038
+msgid "Set a language of emoji annotations on the emoji dialog"
+msgstr "Встановити мову анотацій емодзі у вікні емодзі"
+
+#: setup/setup.ui:1040
+msgid "Emoji annotation language:"
+msgstr "Мова анотацій емодзі:"
+
+#: setup/setup.ui:1062
+msgid ""
+"Match emoji annotations partially with the following condition and more than "
+"the number of characters:"
+msgstr ""
+"Встановлювати відповідність емодзі за анотаціями з вказаною умовою та збігом "
+"понад таку кількість символів:"
+
+#: setup/setup.ui:1067
+msgid ""
+"If emoji annotations can be matched with a partial string instead of the "
+"exact match"
+msgstr ""
+"Визначає, чи може бути встановлено відповідність емодзі за частиною рядка, а "
+"не повним збігом"
+
+#: setup/setup.ui:1101
+msgid "Prefix match"
+msgstr "Відповідність за префіксом"
+
+#: setup/setup.ui:1115
+msgid "Suffix match"
+msgstr "Відповідність за суфіксом"
+
+#: setup/setup.ui:1130
+msgid "Containing match"
+msgstr "Відповідність за вмістом"
+
+#: setup/setup.ui:1176
+msgid "Emoji"
+msgstr "Емодзі"
+
+#: setup/setup.ui:1230
+msgid "<b>Keyboard Layout</b>"
+msgstr "<b>Розкладка клавіатури</b>"
+
+#: setup/setup.ui:1278
+msgid "<b>Global input method settings</b>"
+msgstr "<b>Загальні параметри способів введення</b>"
+
+#: setup/setup.ui:1298
+msgid "Advanced"
+msgstr "Додатково"
+
+#: setup/setup.ui:1317
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: https://github.com/ibus/ibus/wiki\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+"<big><b>IBus</b></big>\n"
+"<small>Інтелектуальний канал введення</small>\n"
+"Домашня сторінка: https://github.com/ibus/ibus/wiki\n"
+"\n"
+"\n"
+"\n"
+
+#: setup/setup.ui:1341
+msgid "Start ibus on login"
+msgstr "Запускати ibus при вході"
+
+#: setup/setup.ui:1358
+msgid "<b>Startup</b>"
+msgstr "<b>Запуск</b>"
+
+#: src/ibusemojigen.h:30
 msgid "Activities"
 msgstr "Діяльність"
 
-#: ../src/ibusemojigen.h:31
+#: src/ibusemojigen.h:31
 msgid "Animals & Nature"
 msgstr "Тварини і природа"
 
-#: ../src/ibusemojigen.h:32
+#: src/ibusemojigen.h:32
+msgid "Component"
+msgstr "Компонент"
+
+#: src/ibusemojigen.h:33
 msgid "Flags"
 msgstr "Прапори"
 
-#: ../src/ibusemojigen.h:33
+#: src/ibusemojigen.h:34
 msgid "Food & Drink"
 msgstr "Їжа і питво"
 
-#: ../src/ibusemojigen.h:34
+#: src/ibusemojigen.h:35
 msgid "Objects"
 msgstr "Об’єкти"
 
-#: ../src/ibusemojigen.h:35
-msgid "Smileys & People"
-msgstr "Емоційки і люди"
+#: src/ibusemojigen.h:36
+msgid "People & Body"
+msgstr "Люди і тіло"
 
-#: ../src/ibusemojigen.h:36
+#: src/ibusemojigen.h:37
+msgid "Smileys & Emotion"
+msgstr "Смайлики та емоції"
+
+#: src/ibusemojigen.h:38
 msgid "Symbols"
 msgstr "Символи"
 
-#: ../src/ibusemojigen.h:37
+#: src/ibusemojigen.h:39
 msgid "Travel & Places"
 msgstr "Подорожі і місця"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:33
+#: src/ibusunicodegen.h:33
 msgid "Basic Latin"
 msgstr "Основні латинські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:37
+#: src/ibusunicodegen.h:37
 msgid "Latin-1 Supplement"
 msgstr "Додаткові Latin-1"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:41
+#: src/ibusunicodegen.h:41
 msgid "Latin Extended-A"
 msgstr "Латинь розширена-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:45
+#: src/ibusunicodegen.h:45
 msgid "Latin Extended-B"
 msgstr "Латинь розширена-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:49
+#: src/ibusunicodegen.h:49
 msgid "IPA Extensions"
 msgstr "Розширена IPA"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:53
+#: src/ibusunicodegen.h:53
 msgid "Spacing Modifier Letters"
 msgstr "Знаки інтервалів"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:57
+#: src/ibusunicodegen.h:57
 msgid "Combining Diacritical Marks"
 msgstr "Об’єднання діакритичних знаків"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:61
+#: src/ibusunicodegen.h:61
 msgid "Greek and Coptic"
 msgstr "Грецькі і коптські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:65
+#: src/ibusunicodegen.h:65
 msgid "Cyrillic"
 msgstr "Кирилиця"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:69
+#: src/ibusunicodegen.h:69
 msgid "Cyrillic Supplement"
 msgstr "Додаткова кирилиця"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:73
+#: src/ibusunicodegen.h:73
 msgid "Armenian"
 msgstr "Вірменська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:77
+#: src/ibusunicodegen.h:77
 msgid "Hebrew"
 msgstr "Іврит"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:81
+#: src/ibusunicodegen.h:81
 msgid "Arabic"
 msgstr "Арабська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:85
+#: src/ibusunicodegen.h:85
 msgid "Syriac"
 msgstr "Сирійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:89
+#: src/ibusunicodegen.h:89
 msgid "Arabic Supplement"
 msgstr "Додаткові арабські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:93
+#: src/ibusunicodegen.h:93
 msgid "Thaana"
 msgstr "Таана"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:97
+#: src/ibusunicodegen.h:97
 msgid "NKo"
 msgstr "Н’Ко"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:101
+#: src/ibusunicodegen.h:101
 msgid "Samaritan"
 msgstr "Самаритянська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:105
+#: src/ibusunicodegen.h:105
 msgid "Mandaic"
 msgstr "Мандейська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:109
+#: src/ibusunicodegen.h:109
 msgid "Syriac Supplement"
 msgstr "Додаткові сирійські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:113
+#: src/ibusunicodegen.h:113
 msgid "Arabic Extended-A"
 msgstr "Арабська розширена-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:117
+#: src/ibusunicodegen.h:117
 msgid "Devanagari"
 msgstr "Деванагарі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:121
+#: src/ibusunicodegen.h:121
 msgid "Bengali"
 msgstr "Бенгальська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:125
+#: src/ibusunicodegen.h:125
 msgid "Gurmukhi"
 msgstr "Гурмухі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:129
+#: src/ibusunicodegen.h:129
 msgid "Gujarati"
 msgstr "Гуджараті"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:133
+#: src/ibusunicodegen.h:133
 msgid "Oriya"
 msgstr "Орія"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:137
+#: src/ibusunicodegen.h:137
 msgid "Tamil"
 msgstr "Тамільська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:141
+#: src/ibusunicodegen.h:141
 msgid "Telugu"
 msgstr "Телугу"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:145
+#: src/ibusunicodegen.h:145
 msgid "Kannada"
 msgstr "Каннада"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:149
+#: src/ibusunicodegen.h:149
 msgid "Malayalam"
 msgstr "Малаялам"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:153
+#: src/ibusunicodegen.h:153
 msgid "Sinhala"
 msgstr "Сингальська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:157
+#: src/ibusunicodegen.h:157
 msgid "Thai"
 msgstr "Тайська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:161
+#: src/ibusunicodegen.h:161
 msgid "Lao"
 msgstr "Лаоська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:165
+#: src/ibusunicodegen.h:165
 msgid "Tibetan"
 msgstr "Тибетська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:169
+#: src/ibusunicodegen.h:169
 msgid "Myanmar"
 msgstr "М’янмська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:173
+#: src/ibusunicodegen.h:173
 msgid "Georgian"
 msgstr "Грузинська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:177
+#: src/ibusunicodegen.h:177
 msgid "Hangul Jamo"
 msgstr "Хангиль-чжамо"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:181
+#: src/ibusunicodegen.h:181
 msgid "Ethiopic"
 msgstr "Ефіопська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:185
+#: src/ibusunicodegen.h:185
 msgid "Ethiopic Supplement"
 msgstr "Додаткові ефіопські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:189
+#: src/ibusunicodegen.h:189
 msgid "Cherokee"
 msgstr "Черокі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:193
+#: src/ibusunicodegen.h:193
 msgid "Unified Canadian Aboriginal Syllabics"
 msgstr "Уніфіковані силабічні канадських аборигенів"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:197
+#: src/ibusunicodegen.h:197
 msgid "Ogham"
 msgstr "Огам"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:201
+#: src/ibusunicodegen.h:201
 msgid "Runic"
 msgstr "Рунічна"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:205
+#: src/ibusunicodegen.h:205
 msgid "Tagalog"
 msgstr "Тагалог"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:209
+#: src/ibusunicodegen.h:209
 msgid "Hanunoo"
 msgstr "Хануну"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:213
+#: src/ibusunicodegen.h:213
 msgid "Buhid"
 msgstr "Бухід"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:217
+#: src/ibusunicodegen.h:217
 msgid "Tagbanwa"
 msgstr "Таґбанва"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:221
+#: src/ibusunicodegen.h:221
 msgid "Khmer"
 msgstr "Кхмерська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:225
+#: src/ibusunicodegen.h:225
 msgid "Mongolian"
 msgstr "Монгольська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:229
+#: src/ibusunicodegen.h:229
 msgid "Unified Canadian Aboriginal Syllabics Extended"
 msgstr "Уніфіковані силабічні канадських аборигенів (додаткові)"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:233
+#: src/ibusunicodegen.h:233
 msgid "Limbu"
 msgstr "Лімбу"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:237
+#: src/ibusunicodegen.h:237
 msgid "Tai Le"
 msgstr "Тай лі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:241
+#: src/ibusunicodegen.h:241
 msgid "New Tai Lue"
 msgstr "Нова тай лі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:245
+#: src/ibusunicodegen.h:245
 msgid "Khmer Symbols"
 msgstr "Кхмерські символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:249
+#: src/ibusunicodegen.h:249
 msgid "Buginese"
 msgstr "Бугійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:253
+#: src/ibusunicodegen.h:253
 msgid "Tai Tham"
 msgstr "Тай-тхем"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:257
+#: src/ibusunicodegen.h:257
 msgid "Combining Diacritical Marks Extended"
 msgstr "Розширення об’єднання діакритичних знаків"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:261
+#: src/ibusunicodegen.h:261
 msgid "Balinese"
 msgstr "Балійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:265
+#: src/ibusunicodegen.h:265
 msgid "Sundanese"
 msgstr "Сунданська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:269
+#: src/ibusunicodegen.h:269
 msgid "Batak"
 msgstr "Батак"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:273
+#: src/ibusunicodegen.h:273
 msgid "Lepcha"
 msgstr "Лепча"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:277
+#: src/ibusunicodegen.h:277
 msgid "Ol Chiki"
 msgstr "Ол-чикі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:281
+#: src/ibusunicodegen.h:281
 msgid "Cyrillic Extended-C"
 msgstr "Кирилиця розширена-C"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:285
+#: src/ibusunicodegen.h:285
+msgid "Georgian Extended"
+msgstr "Грузинська розширена"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:289
 msgid "Sundanese Supplement"
 msgstr "Розширена суданська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:289
+#: src/ibusunicodegen.h:293
 msgid "Vedic Extensions"
 msgstr "Ведичні розширення"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:293
+#: src/ibusunicodegen.h:297
 msgid "Phonetic Extensions"
 msgstr "Фонетичні розширення"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:297
+#: src/ibusunicodegen.h:301
 msgid "Phonetic Extensions Supplement"
 msgstr "Додаткові фонетичні розширення"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:301
+#: src/ibusunicodegen.h:305
 msgid "Combining Diacritical Marks Supplement"
 msgstr "Додаткові об’єднання діакритичних знаків"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:305
+#: src/ibusunicodegen.h:309
 msgid "Latin Extended Additional"
 msgstr "Латинські додаткові розширені"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:309
+#: src/ibusunicodegen.h:313
 msgid "Greek Extended"
 msgstr "Розширена грецька"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:313
+#: src/ibusunicodegen.h:317
 msgid "General Punctuation"
 msgstr "Загальна пунктуація"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:317
+#: src/ibusunicodegen.h:321
 msgid "Superscripts and Subscripts"
 msgstr "Верхні і нижні індекси"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:321
+#: src/ibusunicodegen.h:325
 msgid "Currency Symbols"
 msgstr "Символи грошових одиниць"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:325
+#: src/ibusunicodegen.h:329
 msgid "Combining Diacritical Marks for Symbols"
 msgstr "Об’єднання діакритичних знаків і символів"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:329
+#: src/ibusunicodegen.h:333
 msgid "Letterlike Symbols"
 msgstr "Схожі на літери символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:333
+#: src/ibusunicodegen.h:337
 msgid "Number Forms"
 msgstr "Форми чисел"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:337
+#: src/ibusunicodegen.h:341
 msgid "Arrows"
 msgstr "Стрілки"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:341
+#: src/ibusunicodegen.h:345
 msgid "Mathematical Operators"
 msgstr "Математичні оператори"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:345
+#: src/ibusunicodegen.h:349
 msgid "Miscellaneous Technical"
 msgstr "Різні технічні"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:349
+#: src/ibusunicodegen.h:353
 msgid "Control Pictures"
 msgstr "Малюнки керування"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:353
+#: src/ibusunicodegen.h:357
 msgid "Optical Character Recognition"
 msgstr "Оптичне розпізнавання знаків"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:357
+#: src/ibusunicodegen.h:361
 msgid "Enclosed Alphanumerics"
 msgstr "Буквено-цифрові у рамках"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:361
+#: src/ibusunicodegen.h:365
 msgid "Box Drawing"
 msgstr "Для малювання рамок"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:365
+#: src/ibusunicodegen.h:369
 msgid "Block Elements"
 msgstr "Блокові елементи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:369
+#: src/ibusunicodegen.h:373
 msgid "Geometric Shapes"
 msgstr "Геометричні форми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:373
+#: src/ibusunicodegen.h:377
 msgid "Miscellaneous Symbols"
 msgstr "Різні символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:377
+#: src/ibusunicodegen.h:381
 msgid "Dingbats"
 msgstr "Декоративні"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:381
+#: src/ibusunicodegen.h:385
 msgid "Miscellaneous Mathematical Symbols-A"
 msgstr "Різні математичні символи-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:385
+#: src/ibusunicodegen.h:389
 msgid "Supplemental Arrows-A"
 msgstr "Додаткові стрілки-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:389
+#: src/ibusunicodegen.h:393
 msgid "Braille Patterns"
 msgstr "Шаблони Брайля"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:393
+#: src/ibusunicodegen.h:397
 msgid "Supplemental Arrows-B"
 msgstr "Додаткові стрілки-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:397
+#: src/ibusunicodegen.h:401
 msgid "Miscellaneous Mathematical Symbols-B"
 msgstr "Різні математичні символи-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:401
+#: src/ibusunicodegen.h:405
 msgid "Supplemental Mathematical Operators"
 msgstr "Додаткові математичні дії"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:405
+#: src/ibusunicodegen.h:409
 msgid "Miscellaneous Symbols and Arrows"
 msgstr "Різні символи і стрілки"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:409
+#: src/ibusunicodegen.h:413
 msgid "Glagolitic"
 msgstr "Глаголиця"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:413
+#: src/ibusunicodegen.h:417
 msgid "Latin Extended-C"
 msgstr "Латинь розширена-C"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:417
+#: src/ibusunicodegen.h:421
 msgid "Coptic"
 msgstr "Коптська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:421
+#: src/ibusunicodegen.h:425
 msgid "Georgian Supplement"
 msgstr "Додаткові грузинські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:425
+#: src/ibusunicodegen.h:429
 msgid "Tifinagh"
 msgstr "Тіфінаг"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:429
+#: src/ibusunicodegen.h:433
 msgid "Ethiopic Extended"
 msgstr "Розширена ефіопська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:433
+#: src/ibusunicodegen.h:437
 msgid "Cyrillic Extended-A"
 msgstr "Розширена кирилиця-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:437
+#: src/ibusunicodegen.h:441
 msgid "Supplemental Punctuation"
 msgstr "Додаткова пунктуація"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:441
+#: src/ibusunicodegen.h:445
 msgid "CJK Radicals Supplement"
 msgstr "Додатки радикалів ієрогліфів"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:445
+#: src/ibusunicodegen.h:449
 msgid "Kangxi Radicals"
 msgstr "Радикали кандзі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:449
+#: src/ibusunicodegen.h:453
 msgid "Ideographic Description Characters"
 msgstr "Символи-ідеограми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:453
+#: src/ibusunicodegen.h:457
 msgid "CJK Symbols and Punctuation"
 msgstr "Ієрогліфічні символи і пунктуація"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:457
+#: src/ibusunicodegen.h:461
 msgid "Hiragana"
 msgstr "Хірагана"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:461
+#: src/ibusunicodegen.h:465
 msgid "Katakana"
 msgstr "Катакана"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:465
+#: src/ibusunicodegen.h:469
 msgid "Bopomofo"
 msgstr "Бопомофо"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:469
+#: src/ibusunicodegen.h:473
 msgid "Hangul Compatibility Jamo"
 msgstr "Сумісні корейські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:473
+#: src/ibusunicodegen.h:477
 msgid "Kanbun"
 msgstr "Канбун"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:477
+#: src/ibusunicodegen.h:481
 msgid "Bopomofo Extended"
 msgstr "Додаткові бопомофо"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:481
+#: src/ibusunicodegen.h:485
 msgid "CJK Strokes"
 msgstr "Ієрогліфічні штрихи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:485
+#: src/ibusunicodegen.h:489
 msgid "Katakana Phonetic Extensions"
 msgstr "Фонетичні розширення катакани"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:489
+#: src/ibusunicodegen.h:493
 msgid "Enclosed CJK Letters and Months"
 msgstr "Вкладені ієрогліфи і назви місяців"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:493
+#: src/ibusunicodegen.h:497
 msgid "CJK Compatibility"
 msgstr "Сумісність з ієрогліфами"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:497
+#: src/ibusunicodegen.h:501
 msgid "CJK Unified Ideographs Extension A"
 msgstr "Ієрогліфічні ідеограми, додаток A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:501
+#: src/ibusunicodegen.h:505
 msgid "Yijing Hexagram Symbols"
 msgstr "Символи гексаграм «Книги перетворень»"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:505
+#: src/ibusunicodegen.h:509
 msgid "CJK Unified Ideographs"
 msgstr "Універсальні ідеографічні ієрогліфи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:509
+#: src/ibusunicodegen.h:513
 msgid "Yi Syllables"
 msgstr "Склади Ї"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:513
+#: src/ibusunicodegen.h:517
 msgid "Yi Radicals"
 msgstr "Радикалі Ї"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:517
+#: src/ibusunicodegen.h:521
 msgid "Lisu"
 msgstr "Лісу"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:521
+#: src/ibusunicodegen.h:525
 msgid "Vai"
 msgstr "Вай"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:525
+#: src/ibusunicodegen.h:529
 msgid "Cyrillic Extended-B"
 msgstr "Кирилиця розширена-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:529
+#: src/ibusunicodegen.h:533
 msgid "Bamum"
 msgstr "Бамум"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:533
+#: src/ibusunicodegen.h:537
 msgid "Modifier Tone Letters"
 msgstr "Символи зміни тону"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:537
+#: src/ibusunicodegen.h:541
 msgid "Latin Extended-D"
 msgstr "Латинь розширена-D"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:541
+#: src/ibusunicodegen.h:545
 msgid "Syloti Nagri"
 msgstr "Силоті нагрі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:545
+#: src/ibusunicodegen.h:549
 msgid "Common Indic Number Forms"
 msgstr "Загальні індійські форми чисел"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:549
+#: src/ibusunicodegen.h:553
 msgid "Phags-pa"
 msgstr "Фагс-па"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:553
+#: src/ibusunicodegen.h:557
 msgid "Saurashtra"
 msgstr "Саураштра"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:557
+#: src/ibusunicodegen.h:561
 msgid "Devanagari Extended"
 msgstr "Розширена деванагарі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:561
+#: src/ibusunicodegen.h:565
 msgid "Kayah Li"
 msgstr "Кая-лі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:565
+#: src/ibusunicodegen.h:569
 msgid "Rejang"
 msgstr "Реджан"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:569
+#: src/ibusunicodegen.h:573
 msgid "Hangul Jamo Extended-A"
 msgstr "Корейска розширена-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:573
+#: src/ibusunicodegen.h:577
 msgid "Javanese"
 msgstr "Яванська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:577
+#: src/ibusunicodegen.h:581
 msgid "Myanmar Extended-B"
 msgstr "М’янмська розширена-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:581
+#: src/ibusunicodegen.h:585
 msgid "Cham"
 msgstr "Тьям"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:585
+#: src/ibusunicodegen.h:589
 msgid "Myanmar Extended-A"
 msgstr "М’янмська розширена-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:589
+#: src/ibusunicodegen.h:593
 msgid "Tai Viet"
 msgstr "Тай-в’єт"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:593
+#: src/ibusunicodegen.h:597
 msgid "Meetei Mayek Extensions"
 msgstr "Маніпурі розширена"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:597
+#: src/ibusunicodegen.h:601
 msgid "Ethiopic Extended-A"
 msgstr "Ефіопська розширена-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:601
+#: src/ibusunicodegen.h:605
 msgid "Latin Extended-E"
 msgstr "Латинь розширена-E"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:605
+#: src/ibusunicodegen.h:609
 msgid "Cherokee Supplement"
 msgstr "Додаткові черокі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:609
+#: src/ibusunicodegen.h:613
 msgid "Meetei Mayek"
 msgstr "Маніпурі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:613
+#: src/ibusunicodegen.h:617
 msgid "Hangul Syllables"
 msgstr "Склади хангиля"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:617
+#: src/ibusunicodegen.h:621
 msgid "Hangul Jamo Extended-B"
 msgstr "Корейська розширена-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:621
+#: src/ibusunicodegen.h:625
 msgid "High Surrogates"
 msgstr "Верхні замінники"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:625
+#: src/ibusunicodegen.h:629
 msgid "High Private Use Surrogates"
 msgstr "Верхні приватні замінники"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:629
+#: src/ibusunicodegen.h:633
 msgid "Low Surrogates"
 msgstr "Нижні замінники"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:633
+#: src/ibusunicodegen.h:637
 msgid "Private Use Area"
 msgstr "Область приватного використання"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:637
+#: src/ibusunicodegen.h:641
 msgid "CJK Compatibility Ideographs"
 msgstr "Сумісні ієрогліфічні ідеограми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:641
+#: src/ibusunicodegen.h:645
 msgid "Alphabetic Presentation Forms"
 msgstr "Форми відтворення абеток"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:645
+#: src/ibusunicodegen.h:649
 msgid "Arabic Presentation Forms-A"
 msgstr "Форми відображення арабської A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:649
+#: src/ibusunicodegen.h:653
 msgid "Variation Selectors"
 msgstr "Вибір варіантів"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:653
+#: src/ibusunicodegen.h:657
 msgid "Vertical Forms"
 msgstr "Вертикальні форми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:657
+#: src/ibusunicodegen.h:661
 msgid "Combining Half Marks"
 msgstr "Комбіновані позначки половинок"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:661
+#: src/ibusunicodegen.h:665
 msgid "CJK Compatibility Forms"
 msgstr "Сумісні ієрогліфічні форми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:665
+#: src/ibusunicodegen.h:669
 msgid "Small Form Variants"
 msgstr "Варіанти малих форм"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:669
+#: src/ibusunicodegen.h:673
 msgid "Arabic Presentation Forms-B"
 msgstr "Форми відображення арабської B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:673
+#: src/ibusunicodegen.h:677
 msgid "Halfwidth and Fullwidth Forms"
 msgstr "Форми півширини та повної ширини"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:677
+#: src/ibusunicodegen.h:681
 msgid "Specials"
 msgstr "Спеціальні"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:681
+#: src/ibusunicodegen.h:685
 msgid "Linear B Syllabary"
 msgstr "Лінійна писемність B, склади"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:685
+#: src/ibusunicodegen.h:689
 msgid "Linear B Ideograms"
 msgstr "Лінійна писемність B, ідеограми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:689
+#: src/ibusunicodegen.h:693
 msgid "Aegean Numbers"
 msgstr "Егейські числа"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:693
+#: src/ibusunicodegen.h:697
 msgid "Ancient Greek Numbers"
 msgstr "Давньогрецькі числа"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:697
+#: src/ibusunicodegen.h:701
 msgid "Ancient Symbols"
 msgstr "Давні символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:701
+#: src/ibusunicodegen.h:705
 msgid "Phaistos Disc"
 msgstr "Фестський диск"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:705
+#: src/ibusunicodegen.h:709
 msgid "Lycian"
 msgstr "Лікійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:709
+#: src/ibusunicodegen.h:713
 msgid "Carian"
 msgstr "Карійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:713
+#: src/ibusunicodegen.h:717
 msgid "Coptic Epact Numbers"
 msgstr "Коптські місячні числа"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:717
+#: src/ibusunicodegen.h:721
 msgid "Old Italic"
 msgstr "Давня італійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:721
+#: src/ibusunicodegen.h:725
 msgid "Gothic"
 msgstr "Готичні"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:725
+#: src/ibusunicodegen.h:729
 msgid "Old Permic"
 msgstr "Давня пермська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:729
+#: src/ibusunicodegen.h:733
 msgid "Ugaritic"
 msgstr "Угаритська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:733
+#: src/ibusunicodegen.h:737
 msgid "Old Persian"
 msgstr "Давня перська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:737
+#: src/ibusunicodegen.h:741
 msgid "Deseret"
 msgstr "Дезерет"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:741
+#: src/ibusunicodegen.h:745
 msgid "Shavian"
 msgstr "Шавіан"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:745
+#: src/ibusunicodegen.h:749
 msgid "Osmanya"
 msgstr "Османья"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:749
+#: src/ibusunicodegen.h:753
 msgid "Osage"
 msgstr "Осейдж"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:753
+#: src/ibusunicodegen.h:757
 msgid "Elbasan"
 msgstr "Ельбасан"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:757
+#: src/ibusunicodegen.h:761
 msgid "Caucasian Albanian"
 msgstr "Кавказька албанська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:761
+#: src/ibusunicodegen.h:765
 msgid "Linear A"
 msgstr "Лінійна писемність A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:765
+#: src/ibusunicodegen.h:769
 msgid "Cypriot Syllabary"
 msgstr "Кіпріотська складова"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:769
+#: src/ibusunicodegen.h:773
 msgid "Imperial Aramaic"
 msgstr "імперська арамейська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:773
+#: src/ibusunicodegen.h:777
 msgid "Palmyrene"
 msgstr "Пальмірська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:777
+#: src/ibusunicodegen.h:781
 msgid "Nabataean"
 msgstr "Набатейська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:781
+#: src/ibusunicodegen.h:785
 msgid "Hatran"
 msgstr "Хатран"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:785
+#: src/ibusunicodegen.h:789
 msgid "Phoenician"
 msgstr "Фінікійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:789
+#: src/ibusunicodegen.h:793
 msgid "Lydian"
 msgstr "Лідійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:793
+#: src/ibusunicodegen.h:797
 msgid "Meroitic Hieroglyphs"
 msgstr "Мероїтська ієрогліфічна"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:797
+#: src/ibusunicodegen.h:801
 msgid "Meroitic Cursive"
 msgstr "Мероїтська, скоропис"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:801
+#: src/ibusunicodegen.h:805
 msgid "Kharoshthi"
 msgstr "Кхароштхі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:805
+#: src/ibusunicodegen.h:809
 msgid "Old South Arabian"
 msgstr "Давня південноарабська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:809
+#: src/ibusunicodegen.h:813
 msgid "Old North Arabian"
 msgstr "Давня північноарабська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:813
+#: src/ibusunicodegen.h:817
 msgid "Manichaean"
 msgstr "Маніхейська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:817
+#: src/ibusunicodegen.h:821
 msgid "Avestan"
 msgstr "Авестанська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:821
+#: src/ibusunicodegen.h:825
 msgid "Inscriptional Parthian"
 msgstr "Інскрипційна парфянська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:825
+#: src/ibusunicodegen.h:829
 msgid "Inscriptional Pahlavi"
 msgstr "Інскрипційна пехлеві"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:829
+#: src/ibusunicodegen.h:833
 msgid "Psalter Pahlavi"
 msgstr "Псалтирська пехлеві"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:833
+#: src/ibusunicodegen.h:837
 msgid "Old Turkic"
 msgstr "Давня турецька"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:837
+#: src/ibusunicodegen.h:841
 msgid "Old Hungarian"
 msgstr "Давня угорська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:841
+#: src/ibusunicodegen.h:845
+msgid "Hanifi Rohingya"
+msgstr "Ганіфі рохінджа"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:849
 msgid "Rumi Numeral Symbols"
 msgstr "Числові символи румі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:845
+#: src/ibusunicodegen.h:853
+msgid "Old Sogdian"
+msgstr "Давня согдійська"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:857
+msgid "Sogdian"
+msgstr "Согдійська"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:861
 msgid "Brahmi"
 msgstr "Брахмійська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:849
+#: src/ibusunicodegen.h:865
 msgid "Kaithi"
 msgstr "Кайтхі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:853
+#: src/ibusunicodegen.h:869
 msgid "Sora Sompeng"
 msgstr "Соранг сомпенг"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:857
+#: src/ibusunicodegen.h:873
 msgid "Chakma"
 msgstr "Чакма"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:861
+#: src/ibusunicodegen.h:877
 msgid "Mahajani"
 msgstr "Махаджані"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:865
+#: src/ibusunicodegen.h:881
 msgid "Sharada"
 msgstr "Шарада"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:869
+#: src/ibusunicodegen.h:885
 msgid "Sinhala Archaic Numbers"
 msgstr "Сингальські архаїчні числа"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:873
+#: src/ibusunicodegen.h:889
 msgid "Khojki"
 msgstr "Ходжкі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:877
+#: src/ibusunicodegen.h:893
 msgid "Multani"
 msgstr "Мултанська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:881
+#: src/ibusunicodegen.h:897
 msgid "Khudawadi"
 msgstr "Худабадська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:885
+#: src/ibusunicodegen.h:901
 msgid "Grantha"
 msgstr "Грантха"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:889
+#: src/ibusunicodegen.h:905
 msgid "Newa"
 msgstr "Неварська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:893
+#: src/ibusunicodegen.h:909
 msgid "Tirhuta"
 msgstr "Тірхута"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:897
+#: src/ibusunicodegen.h:913
 msgid "Siddham"
 msgstr "Сіддхам"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:901
+#: src/ibusunicodegen.h:917
 msgid "Modi"
 msgstr "Моді"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:905
+#: src/ibusunicodegen.h:921
 msgid "Mongolian Supplement"
 msgstr "Додаткові монгольські"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:909
+#: src/ibusunicodegen.h:925
 msgid "Takri"
 msgstr "Такрі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:913
+#: src/ibusunicodegen.h:929
 msgid "Ahom"
 msgstr "Ахом"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:917
+#: src/ibusunicodegen.h:933
+msgid "Dogra"
+msgstr "Доґра"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:937
 msgid "Warang Citi"
 msgstr "Варанг-кшиті"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:921
+#: src/ibusunicodegen.h:941
 msgid "Zanabazar Square"
 msgstr "Квадратний Занабазара"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:925
+#: src/ibusunicodegen.h:945
 msgid "Soyombo"
 msgstr "Сойомбо"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:929
+#: src/ibusunicodegen.h:949
 msgid "Pau Cin Hau"
 msgstr "Пау Цин Хау"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:933
+#: src/ibusunicodegen.h:953
 msgid "Bhaiksuki"
 msgstr "Бхайксукі"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:937
+#: src/ibusunicodegen.h:957
 msgid "Marchen"
 msgstr "Марчен"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:941
+#: src/ibusunicodegen.h:961
 msgid "Masaram Gondi"
 msgstr "Масарам гонді"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:945
+#: src/ibusunicodegen.h:965
+msgid "Gunjala Gondi"
+msgstr "Гунджала гонді"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:969
+msgid "Makasar"
+msgstr "Макасар"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:973
 msgid "Cuneiform"
 msgstr "Клинопис"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:949
+#: src/ibusunicodegen.h:977
 msgid "Cuneiform Numbers and Punctuation"
 msgstr "Клинописні числа і пунктуація"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:953
+#: src/ibusunicodegen.h:981
 msgid "Early Dynastic Cuneiform"
 msgstr "Клинопис ранньої династії"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:957
+#: src/ibusunicodegen.h:985
 msgid "Egyptian Hieroglyphs"
 msgstr "Єгипетська ієрогліфічна"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:961
+#: src/ibusunicodegen.h:989
 msgid "Anatolian Hieroglyphs"
 msgstr "Анатолійьска ієрогліфічна"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:965
+#: src/ibusunicodegen.h:993
 msgid "Bamum Supplement"
 msgstr "Розширений бамум"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:969
+#: src/ibusunicodegen.h:997
 msgid "Mro"
 msgstr "Мро"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:973
+#: src/ibusunicodegen.h:1001
 msgid "Bassa Vah"
 msgstr "Басса-вах"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:977
+#: src/ibusunicodegen.h:1005
 msgid "Pahawh Hmong"
 msgstr "Пахау-хмонг"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:981
+#: src/ibusunicodegen.h:1009
+msgid "Medefaidrin"
+msgstr "Медефайдрін"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:1013
 msgid "Miao"
 msgstr "Мяо"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:985
+#: src/ibusunicodegen.h:1017
 msgid "Ideographic Symbols and Punctuation"
 msgstr "Ідеографічні символи і пунктуація"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:989
+#: src/ibusunicodegen.h:1021
 msgid "Tangut"
 msgstr "Тангутська"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:993
+#: src/ibusunicodegen.h:1025
 msgid "Tangut Components"
 msgstr "Компоненти тангутської"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:997
+#: src/ibusunicodegen.h:1029
 msgid "Kana Supplement"
 msgstr "Додаткова кана"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1001
+#: src/ibusunicodegen.h:1033
 msgid "Kana Extended-A"
 msgstr "Кана розширена-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1005
+#: src/ibusunicodegen.h:1037
 msgid "Nushu"
 msgstr "Нюй-шу"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1009
+#: src/ibusunicodegen.h:1041
 msgid "Duployan"
 msgstr "Система Дюполоє"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1013
+#: src/ibusunicodegen.h:1045
 msgid "Shorthand Format Controls"
 msgstr "Керування форматами скоропису"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1017
+#: src/ibusunicodegen.h:1049
 msgid "Byzantine Musical Symbols"
 msgstr "Візантійські музичні символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1021
+#: src/ibusunicodegen.h:1053
 msgid "Musical Symbols"
 msgstr "Музичні символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1025
+#: src/ibusunicodegen.h:1057
 msgid "Ancient Greek Musical Notation"
 msgstr "Давньогрецькі символи запису музики"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1029
+#: src/ibusunicodegen.h:1061
+msgid "Mayan Numerals"
+msgstr "Цифри майя"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:1065
 msgid "Tai Xuan Jing Symbols"
 msgstr "Символи Тай Хуан Жинь"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1033
+#: src/ibusunicodegen.h:1069
 msgid "Counting Rod Numerals"
 msgstr "Числа з паличок для лічби"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1037
+#: src/ibusunicodegen.h:1073
 msgid "Mathematical Alphanumeric Symbols"
 msgstr "Математичні буквено-цифрові символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1041
+#: src/ibusunicodegen.h:1077
 msgid "Sutton SignWriting"
 msgstr "Жестова писемність Саттон"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1045
+#: src/ibusunicodegen.h:1081
 msgid "Glagolitic Supplement"
 msgstr "Додаткові глаголиці"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1049
+#: src/ibusunicodegen.h:1085
 msgid "Mende Kikakui"
 msgstr "Менде кікауї"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1053
+#: src/ibusunicodegen.h:1089
 msgid "Adlam"
 msgstr "Адлам"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1057
+#: src/ibusunicodegen.h:1093
+msgid "Indic Siyaq Numbers"
+msgstr "Індійські числа сіяк"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:1097
 msgid "Arabic Mathematical Alphabetic Symbols"
 msgstr "Арабські математичні символи абетки"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1061
+#: src/ibusunicodegen.h:1101
 msgid "Mahjong Tiles"
 msgstr "Плитки маджонґ"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1065
+#: src/ibusunicodegen.h:1105
 msgid "Domino Tiles"
 msgstr "Плитки доміно"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1069
+#: src/ibusunicodegen.h:1109
 msgid "Playing Cards"
 msgstr "Ігрові карти"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1073
+#: src/ibusunicodegen.h:1113
 msgid "Enclosed Alphanumeric Supplement"
 msgstr "Додаткові буквенно-цифрові у рамках"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1077
+#: src/ibusunicodegen.h:1117
 msgid "Enclosed Ideographic Supplement"
 msgstr "Додаткові ідеографічні у рамках"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1081
+#: src/ibusunicodegen.h:1121
 msgid "Miscellaneous Symbols and Pictographs"
 msgstr "Різні символи і піктограми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1085
+#: src/ibusunicodegen.h:1125
 msgid "Emoticons"
 msgstr "Емоційки"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1089
+#: src/ibusunicodegen.h:1129
 msgid "Ornamental Dingbats"
 msgstr "Орнаментальні декоративні"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1093
+#: src/ibusunicodegen.h:1133
 msgid "Transport and Map Symbols"
 msgstr "Транспортні і картографічні символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1097
+#: src/ibusunicodegen.h:1137
 msgid "Alchemical Symbols"
 msgstr "Алхімічні символи"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1101
+#: src/ibusunicodegen.h:1141
 msgid "Geometric Shapes Extended"
 msgstr "Розширені геометричні форми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1105
+#: src/ibusunicodegen.h:1145
 msgid "Supplemental Arrows-C"
 msgstr "Додаткові стрілки-C"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1109
+#: src/ibusunicodegen.h:1149
 msgid "Supplemental Symbols and Pictographs"
 msgstr "Додаткові символи і піктограми"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1113
+#: src/ibusunicodegen.h:1153
+msgid "Chess Symbols"
+msgstr "Шахові символи"
+
+#. TRANSLATORS: You might refer the translations from gucharmap with
+#. the following command:
+#. msgmerge -C gucharmap.po ibus.po ibus.pot
+#: src/ibusunicodegen.h:1157
 msgid "CJK Unified Ideographs Extension B"
 msgstr "Уніфіковані ієрогліфічні ідеограми, додаток B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1117
+#: src/ibusunicodegen.h:1161
 msgid "CJK Unified Ideographs Extension C"
 msgstr "Ієрогліфічні ідеограми, додаток C"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1121
+#: src/ibusunicodegen.h:1165
 msgid "CJK Unified Ideographs Extension D"
 msgstr "Ієрогліфічні ідеограми, додаток D"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1125
+#: src/ibusunicodegen.h:1169
 msgid "CJK Unified Ideographs Extension E"
 msgstr "Ієрогліфічні ідеограми, додаток E"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1129
+#: src/ibusunicodegen.h:1173
 msgid "CJK Unified Ideographs Extension F"
 msgstr "Ієрогліфічні ідеограми, додаток F"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1133
+#: src/ibusunicodegen.h:1177
 msgid "CJK Compatibility Ideographs Supplement"
 msgstr "Додаткові ієрогліфічні ідеограми для сумісності"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1137
+#: src/ibusunicodegen.h:1181
 msgid "Tags"
 msgstr "Мітки"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1141
+#: src/ibusunicodegen.h:1185
 msgid "Variation Selectors Supplement"
 msgstr "Додаткові символи зміни"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1145
+#: src/ibusunicodegen.h:1189
 msgid "Supplementary Private Use Area-A"
 msgstr "Додаткова область приватного використання A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
-#: ../src/ibusunicodegen.h:1149
+#: src/ibusunicodegen.h:1193
 msgid "Supplementary Private Use Area-B"
 msgstr "Додаткова область приватного використання B"
 
-#: ../tools/main.vala:51
+#: tools/main.vala:51
 msgid "List engine name only"
 msgstr "Показати лише список рушіїв"
 
-#: ../tools/main.vala:67 ../tools/main.vala:192 ../tools/main.vala:202
+#: tools/main.vala:67 tools/main.vala:192 tools/main.vala:202
 msgid "Can't connect to IBus.\n"
 msgstr "Не вдалося встановити зв’язок з IBus.\n"
 
-#: ../tools/main.vala:93
+#: tools/main.vala:93
 #, c-format
 msgid "language: %s\n"
 msgstr "мова: %s\n"
 
-#: ../tools/main.vala:161
+#: tools/main.vala:161
 msgid "No engine is set.\n"
 msgstr "Рушій не встановлено.\n"
 
-#: ../tools/main.vala:169
+#: tools/main.vala:169
 msgid "Set global engine failed.\n"
 msgstr "Спроба встановлення загального рушія зазнала невдачі.\n"
 
-#: ../tools/main.vala:174
+#: tools/main.vala:174
 msgid "Get global engine failed.\n"
 msgstr "Спроба отримання назви загального рушія зазнала невдачі.\n"
 
-#: ../tools/main.vala:217
+#: tools/main.vala:217
 msgid "Read the system registry cache."
 msgstr "Читати дані з загальносистемного кешу регістру."
 
-#: ../tools/main.vala:219
+#: tools/main.vala:219
 msgid "Read the registry cache FILE."
 msgstr "Читати дані з кешу регістру у файлі ФАЙЛ."
 
-#: ../tools/main.vala:237 ../tools/main.vala:242
+#: tools/main.vala:237 tools/main.vala:242
 msgid "The registry cache is invalid.\n"
 msgstr "Кеш регістру є некоректним.\n"
 
-#: ../tools/main.vala:257
+#: tools/main.vala:257
 msgid "Write the system registry cache."
 msgstr "Записати дані до загальносистемного кешу регістру."
 
-#: ../tools/main.vala:259
+#: tools/main.vala:259
 msgid "Write the registry cache FILE."
 msgstr "Записати дані до кешу регістру у файлі ФАЙЛ."
 
-#: ../tools/main.vala:295
+#: tools/main.vala:295
 msgid ""
 "Use engine schema paths instead of ibus core, which can be comma-separated "
 "values."
@@ -2920,174 +3004,169 @@ msgstr ""
 "Використовувати шляхи бази даних рушія замість ядра ibus. Шляхи слід "
 "вказувати у форматі списку значень, відокремлених комами."
 
-#: ../tools/main.vala:381
+#: tools/main.vala:381
 msgid "Resetting…"
 msgstr "Скидаємо…"
 
-#: ../tools/main.vala:399
+#: tools/main.vala:399
 msgid "Done"
 msgstr "Виконано"
 
-#: ../tools/main.vala:444
+#: tools/main.vala:444
 msgid "Set or get engine"
 msgstr "Встановити рушій або отримати дані щодо встановленого рушія"
 
-#: ../tools/main.vala:445
+#: tools/main.vala:445
 msgid "Exit ibus-daemon"
 msgstr "Завершити роботу фонової служби ibus"
 
-#: ../tools/main.vala:446
+#: tools/main.vala:446
 msgid "Show available engines"
 msgstr "Показати список доступних рушіїв"
 
-#: ../tools/main.vala:447
+#: tools/main.vala:447
 msgid "(Not implemented)"
 msgstr "(не реалізовано)"
 
-#: ../tools/main.vala:448
+#: tools/main.vala:448
 msgid "Restart ibus-daemon"
 msgstr "Перезапустити фонову службу ibus"
 
-#: ../tools/main.vala:449
+#: tools/main.vala:449
 msgid "Show version"
 msgstr "Показати дані щодо версії"
 
-#: ../tools/main.vala:450
+#: tools/main.vala:450
 msgid "Show the content of registry cache"
 msgstr "Показати вміст кешу регістру"
 
-#: ../tools/main.vala:451
+#: tools/main.vala:451
 msgid "Create registry cache"
 msgstr "Створити кеш регістру"
 
-#: ../tools/main.vala:452
+#: tools/main.vala:452
 msgid "Print the D-Bus address of ibus-daemon"
 msgstr "Вивести адресу D-Bus фонової служби ibus"
 
-#: ../tools/main.vala:453
+#: tools/main.vala:453
 msgid "Show the configuration values"
 msgstr "Показати значення налаштувань"
 
-#: ../tools/main.vala:454
+#: tools/main.vala:454
 msgid "Reset the configuration values"
 msgstr "Скинути значення налаштувань до початкових"
 
-#: ../tools/main.vala:456
+#: tools/main.vala:456
 msgid "Save emoji on dialog to clipboard "
 msgstr "Зберегти емодзі з вікна до буфера обміну даними"
 
-#: ../tools/main.vala:458
+#: tools/main.vala:458
 msgid "Show this information"
 msgstr "Показати цю довідкову інформацію"
 
-#: ../tools/main.vala:464
+#: tools/main.vala:464
 #, c-format
 msgid "Usage: %s COMMAND [OPTION...]\n"
 "\n"
 msgstr "Користування: %s КОМАНДА [ПАРАМЕТР...]\n"
 "\n"
 
-#: ../tools/main.vala:465
+#: tools/main.vala:465
 msgid "Commands:\n"
 msgstr "Команди:\n"
 
-#: ../tools/main.vala:494
+#: tools/main.vala:494
 #, c-format
 msgid "%s is unknown command!\n"
 msgstr "Команда %s є невідомою програмі!\n"
 
-#: ../ui/gtk3/emojier.vala:244
+#: ui/gtk3/emojier.vala:233
 msgid "Favorites"
 msgstr "Улюблені"
 
-#: ../ui/gtk3/emojier.vala:245
+#: ui/gtk3/emojier.vala:234
 msgid "Others"
 msgstr "Інше"
 
-#: ../ui/gtk3/emojier.vala:246
+#: ui/gtk3/emojier.vala:235
 msgid "Open Unicode choice"
 msgstr "Відкрити вибір Unicode"
 
-#: ../ui/gtk3/emojier.vala:371
-msgid "Type annotation or choose emoji"
-msgstr "Введіть анотацію або виберіть емодзі"
-
-#: ../ui/gtk3/emojier.vala:965
+#: ui/gtk3/emojier.vala:940
 msgid "Bring back emoji choice"
 msgstr "Повернути вибір емоційок"
 
-#: ../ui/gtk3/emojier.vala:1067
+#: ui/gtk3/emojier.vala:1042
 msgid "Page Down"
 msgstr "На сторінку вниз"
 
-#: ../ui/gtk3/emojier.vala:1078
+#: ui/gtk3/emojier.vala:1053
 msgid "Page Up"
 msgstr "На сторінку вгору"
 
-#: ../ui/gtk3/emojier.vala:1081
+#: ui/gtk3/emojier.vala:1056
 msgid "Show emoji variants"
 msgstr "Показувати варіанти емодзі"
 
-#: ../ui/gtk3/emojier.vala:1082
+#: ui/gtk3/emojier.vala:1057
 msgid "Close"
 msgstr "Закрити"
 
-#: ../ui/gtk3/emojier.vala:1088
+#: ui/gtk3/emojier.vala:1063
 msgid "Menu"
 msgstr "Меню"
 
-#: ../ui/gtk3/emojier.vala:1099
+#: ui/gtk3/emojier.vala:1074
 msgid "Click to view a warning message"
 msgstr "Натисніть, щоб переглянути попередження"
 
-#: ../ui/gtk3/emojier.vala:1143
+#: ui/gtk3/emojier.vala:1118
 msgid "Loading a Unicode dictionary:"
 msgstr "Завантаження словника Unicode:"
 
-#: ../ui/gtk3/emojier.vala:1383
+#: ui/gtk3/emojier.vala:1364
 #, c-format
 msgid "Code point: %s"
 msgstr "Точка кодування: %s"
 
-#: ../ui/gtk3/emojier.vala:1389
+#: ui/gtk3/emojier.vala:1370
 msgid "Has emoji variants"
 msgstr "Має варіанти емодзі"
 
-#: ../ui/gtk3/emojier.vala:1556 ../ui/gtk3/emojier.vala:1569
+#: ui/gtk3/emojier.vala:1537 ui/gtk3/emojier.vala:1550
 #, c-format
 msgid "Description: %s"
 msgstr "Опис: %s"
 
-#: ../ui/gtk3/emojier.vala:1556
+#: ui/gtk3/emojier.vala:1537
 msgid "None"
 msgstr "Немає"
 
-#: ../ui/gtk3/emojier.vala:1580
+#: ui/gtk3/emojier.vala:1561
 #, c-format
 msgid "Annotations: %s"
 msgstr "Анотації: %s"
 
-#: ../ui/gtk3/emojier.vala:1606
+#: ui/gtk3/emojier.vala:1587
 #, c-format
 msgid "Name: %s"
 msgstr "Назва: %s"
 
-#: ../ui/gtk3/emojier.vala:1614
+#: ui/gtk3/emojier.vala:1595
 #, c-format
 msgid "Alias: %s"
 msgstr "Альтернативна назва: %s"
 
-#: ../ui/gtk3/emojier.vala:2164
-#: ../ui/gtk3/ibus-extension-gtk3.desktop.in.in.h:1
-#: ../ui/gtk3/ibus-ui-emojier.desktop.in.in.h:1 ../ui/gtk3/panel.vala:1149
+#: ui/gtk3/emojier.vala:2085 ui/gtk3/ibus-extension-gtk3.desktop.in:3
+#: ui/gtk3/ibus-ui-emojier.desktop.in:3 ui/gtk3/panel.vala:1123
 msgid "Emoji Choice"
 msgstr "Вибір емодзі"
 
-#: ../ui/gtk3/emojier.vala:2166
+#: ui/gtk3/emojier.vala:2087
 msgid "Unicode Choice"
 msgstr "Вибір Unicode"
 
-#: ../ui/gtk3/emojier.vala:2526
+#: ui/gtk3/emojier.vala:2375
 msgid ""
 "Failed to get the current text application. Please re-focus your application."
 " E.g. Press Esc key several times to release the emoji typing mode, click "
@@ -3098,83 +3177,75 @@ msgstr ""
 "Esc декілька разів, щоб вимкнути режим введення емодзі, клацніть на "
 "стільниці, а потім клацніть у вікні вашої програми для роботи з текстом."
 
-#: ../ui/gtk3/emojierapp.vala:58
+#: ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."
 msgstr "Скасовано вибір емодзі."
 
-#: ../ui/gtk3/emojierapp.vala:93
+#: ui/gtk3/emojierapp.vala:93
 msgid "Copied an emoji to your clipboard."
 msgstr "Скопійовано емодзі до вашого буфера обміну даними."
 
 #. TRANSLATORS: "FONT" should be capital and translatable.
 #. * It's used for an argument command --font=FONT
 #. 
-#: ../ui/gtk3/emojierapp.vala:114
+#: ui/gtk3/emojierapp.vala:114
 msgid "\"FONT\" for emoji characters on emoji dialog"
 msgstr "«ШРИФТ» для символів емодзі у діалоговому вікні емодзі"
 
-#: ../ui/gtk3/emojierapp.vala:115
+#: ui/gtk3/emojierapp.vala:115
 msgid "FONT"
 msgstr "ШРИФТ"
 
 #. TRANSLATORS: "LANG" should be capital and translatable.
 #. * It's used for an argument command --lang=LANG
 #. 
-#: ../ui/gtk3/emojierapp.vala:120
+#: ui/gtk3/emojierapp.vala:120
 msgid "\"LANG\" for annotations on emoji dialog. E.g. \"en\""
 msgstr "«МОВА» для анотацій у діалоговому вікні емодзі. Приклад: en"
 
-#: ../ui/gtk3/emojierapp.vala:121
+#: ui/gtk3/emojierapp.vala:121
 msgid "LANG"
 msgstr "МОВА"
 
-#: ../ui/gtk3/emojierapp.vala:123
+#: ui/gtk3/emojierapp.vala:123
 msgid "Emoji annotations can be match partially"
 msgstr ""
 "Встановлення відповідності за анотаціями до емодзі може бути частковим"
 
-#: ../ui/gtk3/emojierapp.vala:127
+#: ui/gtk3/emojierapp.vala:127
 msgid "Match with the length of the specified integer"
 msgstr "Відповідність за вказаною довжиною рядка"
 
-#: ../ui/gtk3/emojierapp.vala:131
+#: ui/gtk3/emojierapp.vala:131
 msgid "Match with the condition of the specified integer"
 msgstr "Відповідність з умовою на вказану довжину рядка"
 
-#: ../ui/gtk3/panel.vala:282 ../ui/gtk3/panel.vala:313
+#: ui/gtk3/panel.vala:282 ui/gtk3/panel.vala:313
 msgid "IBus Panel"
 msgstr "Панель IBus"
 
-#: ../ui/gtk3/panel.vala:710
-msgid "IBus Update"
-msgstr "Оновлення IBus"
-
-#: ../ui/gtk3/panel.vala:711 ../ui/gtk3/panel.vala:722
-msgid "Super+space is now the default hotkey."
-msgstr "Тепер типовим клавіатурним скороченням є Super+Пробіл."
-
-#: ../ui/gtk3/panel.vala:1121
+#: ui/gtk3/panel.vala:1095
 msgid "IBus is an intelligent input bus for Linux/Unix."
 msgstr "IBus — інтелектуальний канал введення даних у Linux/Unix."
 
-#: ../ui/gtk3/panel.vala:1125
+#: ui/gtk3/panel.vala:1099
 msgid "translator-credits"
 msgstr "Юрій Чорноіван <yurchor@ukr.net>"
 
-#: ../ui/gtk3/panel.vala:1144
+#: ui/gtk3/panel.vala:1118
 msgid "Preferences"
 msgstr "Параметри"
 
-#: ../ui/gtk3/panel.vala:1170
+#: ui/gtk3/panel.vala:1144
 msgid "Restart"
 msgstr "Перезапустити"
 
-#: ../ui/gtk3/panel.vala:1174
+#: ui/gtk3/panel.vala:1148
 msgid "Quit"
 msgstr "Вийти"
 
 #. Translators: If your locale is RTL, the msgstr is "default:RTL".
 #. * Otherwise the msgstr is "default:LTR".
-#: ../ui/gtk3/propertypanel.vala:368 ../ui/gtk3/propertypanel.vala:376
+#: ui/gtk3/propertypanel.vala:368 ui/gtk3/propertypanel.vala:376
 msgid "default:LTR"
 msgstr "default:LTR"

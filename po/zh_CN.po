@@ -1,6 +1,6 @@
 # Simplified Chinese Translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -14,21 +14,22 @@
 # fujiwara <takao.fujiwara1@gmail.com>, 2015. #zanata
 # Jerry Lee <lchopn@gmail.com>, 2017. #zanata
 # fujiwara <takao.fujiwara1@gmail.com>, 2017. #zanata
+# Tian Shixiong <tiansworld@fedoraproject.org>, 2018. #zanata
 # fujiwara <takao.fujiwara1@gmail.com>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2018-02-20 17:31+0900\n"
+"POT-Creation-Date: 2018-06-21 16:24+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-02-20 04:23-0500\n"
-"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
+"PO-Revision-Date: 2018-09-12 02:51+0000\n"
+"Last-Translator: Tian Shixiong <tiansworld@fedoraproject.org>\n"
 "Language-Team: Chinese (China) <trans-zh_cn@lists.fedoraproject.org>\n"
-"Language: zh-CN\n"
+"Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 3.9.6\n"
+"X-Generator: Zanata 4.6.2\n"
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
@@ -229,82 +230,93 @@ msgid "Input Method"
 msgstr "输入法"
 
 #: ../setup/setup.ui.h:49
-msgid "The shortcut keys for showing emoji dialog"
-msgstr "用于显示 emoji 面板的快捷键"
+#, fuzzy
+msgid ""
+"The shortcut keys to enable conversions of emoji annotations or Unicode "
+"names"
+msgstr "启用在表情符号注释或 Unicode 名称间转换的快捷键"
 
 #: ../setup/setup.ui.h:50
-msgid "Emoji choice:"
-msgstr ""
+msgid "Emoji annotation:"
+msgstr "表情符号注释"
 
 #: ../setup/setup.ui.h:51
-msgid "Set a font of emoji candidates on the emoji dialog"
-msgstr "设置 emoji 面板中 emoji 候选字的字体"
+msgid "The shortcut keys to enable Unicode code point conversions"
+msgstr ""
 
 #: ../setup/setup.ui.h:52
-msgid "Emoji font:"
-msgstr "Emoji 字体："
+msgid "Unicode code point:"
+msgstr ""
 
 #: ../setup/setup.ui.h:53
+msgid "Set a font of Unicode candidates on the emoji dialog"
+msgstr "设置表情符号对话框中 Unicode 候选字的字体"
+
+#: ../setup/setup.ui.h:54
+msgid "Unicode font:"
+msgstr "Unicode 字体"
+
+#: ../setup/setup.ui.h:55
 msgid "Set a language of emoji annotations on the emoji dialog"
 msgstr "设置 emoji 面板中 emoji 释文的语言"
 
-#: ../setup/setup.ui.h:54
+#: ../setup/setup.ui.h:56
 msgid "Emoji annotation language:"
 msgstr "Emoji 释文语言："
 
-#: ../setup/setup.ui.h:55
+#: ../setup/setup.ui.h:57
 msgid ""
 "Match emoji annotations partially with the following condition and more than "
 "the number of characters:"
 msgstr ""
 
-#: ../setup/setup.ui.h:56
+#: ../setup/setup.ui.h:58
 msgid ""
 "If emoji annotations can be matched with a partial string instead of the "
 "exact match"
 msgstr ""
 
-#: ../setup/setup.ui.h:57
-msgid "Prefix match"
-msgstr ""
-
-#: ../setup/setup.ui.h:58
-msgid "Suffix match"
-msgstr ""
-
 #: ../setup/setup.ui.h:59
+msgid "Prefix match"
+msgstr "字首匹配"
+
+#: ../setup/setup.ui.h:60
+msgid "Suffix match"
+msgstr "字尾匹配"
+
+#: ../setup/setup.ui.h:61
 msgid "Containing match"
 msgstr ""
 
-#: ../setup/setup.ui.h:60
+#: ../setup/setup.ui.h:62
 msgid "Emoji"
-msgstr ""
+msgstr "表情符号"
 
-#: ../setup/setup.ui.h:61 ../data/ibus.schemas.in.h:44
+#: ../setup/setup.ui.h:63 ../data/ibus.schemas.in.h:44
 msgid "Use system keyboard layout"
 msgstr "使用系统键盘布局"
 
-#: ../setup/setup.ui.h:62 ../data/ibus.schemas.in.h:45
+#: ../setup/setup.ui.h:64 ../data/ibus.schemas.in.h:45
 msgid "Use system keyboard (XKB) layout"
 msgstr "使用系统键盘（XKB）布局"
 
-#: ../setup/setup.ui.h:63
+#: ../setup/setup.ui.h:65
 msgid "<b>Keyboard Layout</b>"
 msgstr "<b>键盘布局</b>"
 
-#: ../setup/setup.ui.h:64 ../data/ibus.schemas.in.h:68
+#: ../setup/setup.ui.h:66 ../data/ibus.schemas.in.h:74
 msgid "Share the same input method among all applications"
 msgstr "在所有应用程序中共享同一个输入法"
 
-#: ../setup/setup.ui.h:65
+#: ../setup/setup.ui.h:67
 msgid "<b>Global input method settings</b>"
 msgstr "<b>全局输入法设置</b>"
 
-#: ../setup/setup.ui.h:66
+#: ../setup/setup.ui.h:68
 msgid "Advanced"
 msgstr "高级"
 
-#: ../setup/setup.ui.h:67
+#: ../setup/setup.ui.h:69
 msgid ""
 "<big><b>IBus</b></big>\n"
 "<small>The intelligent input bus</small>\n"
@@ -320,19 +332,19 @@ msgstr ""
 "\n"
 "\n"
 
-#: ../setup/setup.ui.h:74
+#: ../setup/setup.ui.h:76
 msgid "Start ibus on login"
 msgstr "登录时运行 IBus"
 
-#: ../setup/setup.ui.h:75
+#: ../setup/setup.ui.h:77
 msgid "<b>Startup</b>"
 msgstr "<b>启动</b>"
 
-#: ../setup/setup.ui.h:76 ../setup/engineabout.py:37 ../ui/gtk3/panel.vala:1175
+#: ../setup/setup.ui.h:78 ../setup/engineabout.py:37 ../ui/gtk3/panel.vala:1164
 msgid "About"
 msgstr "关于"
 
-#: ../setup/setup.ui.h:77 ../setup/engineabout.py:40
+#: ../setup/setup.ui.h:79 ../setup/engineabout.py:40
 msgid "_Close"
 msgstr "关闭(_C)"
 
@@ -378,8 +390,9 @@ msgid ""
 msgstr "已保存的版本号将被用作检查之前安装的 ibus 版本和当前版本间的区别。"
 
 #: ../data/ibus.schemas.in.h:11
+#, fuzzy
 msgid "Latin layouts which have no ASCII"
-msgstr ""
+msgstr "无 ASCII 码的拉丁字符布局"
 
 #: ../data/ibus.schemas.in.h:12
 msgid "US layout is appended to the Latin layouts. variant can be omitted."
@@ -535,100 +548,133 @@ msgid "Custom font name for language panel"
 msgstr "自定义语言栏字体"
 
 #: ../data/ibus.schemas.in.h:50
+msgid "Unicode shortcut keys for gtk_accelerator_parse"
+msgstr "用于 gtk_accelerator_parse 的 Unicode 快捷键"
+
+#: ../data/ibus.schemas.in.h:51
+msgid "The shortcut keys for turning Unicode typing on or off"
+msgstr "开启或关闭 Unicode 输入的快捷键"
+
+#: ../data/ibus.schemas.in.h:52
 msgid "Emoji shortcut keys for gtk_accelerator_parse"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:51
+#: ../data/ibus.schemas.in.h:53
 msgid "The shortcut keys for turning emoji typing on or off"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:52
+#: ../data/ibus.schemas.in.h:54
 msgid "Custom font name for emoji characters on emoji dialog"
-msgstr ""
+msgstr "表情符号对话框中用于表情符号的自定义字体名称"
 
-#: ../data/ibus.schemas.in.h:53
+#: ../data/ibus.schemas.in.h:55
 msgid "Default language for emoji dictionary"
 msgstr "emoji 字典的默认语言"
 
-#: ../data/ibus.schemas.in.h:54
+#: ../data/ibus.schemas.in.h:56
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
 "value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:55
+#: ../data/ibus.schemas.in.h:57
 msgid "favorite emoji list on emoji dialog"
 msgstr "emoji 面板中的最喜爱的 emoji 列表"
 
-#: ../data/ibus.schemas.in.h:56
+#: ../data/ibus.schemas.in.h:58
 msgid ""
 "You can show the favorite emojis on emoji list if this list has any "
 "characters."
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:57
-msgid "favorite emoji annotation list on emoji dialog"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:58
-msgid "You can assign an annotation for a favorite emoji in this list."
-msgstr ""
-
 #: ../data/ibus.schemas.in.h:59
+msgid "favorite emoji annotation list on emoji dialog"
+msgstr "表情符号对话框中的最喜爱表情符号注释列表"
+
+#: ../data/ibus.schemas.in.h:60
+msgid "You can assign an annotation for a favorite emoji in this list."
+msgstr "您可在此列表中为喜欢的表情符号添加注释。"
+
+#: ../data/ibus.schemas.in.h:61
 msgid "Whether emoji annotations can be match partially or not"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:60
+#: ../data/ibus.schemas.in.h:62
 msgid ""
 "Whether emoji annotations can be matched with a partial string instead of "
 "the exact match or not."
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:61
+#: ../data/ibus.schemas.in.h:63
 msgid "Match emoji annotations with the specified length"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:62
+#: ../data/ibus.schemas.in.h:64
 msgid ""
 "Match emoji annotations partially with more than the specified number of "
 "characters instead of the exact match."
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:63
+#: ../data/ibus.schemas.in.h:65
 msgid "Choose a condition to match emoji annotations partially"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:64
+#: ../data/ibus.schemas.in.h:66
 msgid ""
 "Choose one of the following conditions to match emoji annotations partially: "
 "0 == Prefix match, 1 == Suffix match, 2 == Containing match"
 msgstr ""
 
-#: ../data/ibus.schemas.in.h:65
+#: ../data/ibus.schemas.in.h:67
+msgid "Load the emoji data at the time of startup"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:68
+msgid ""
+"Load the emoji data at the time of startup if true. About 10MB memory is "
+"needed to load the data. Load the emoji data when open the emoji dialog at "
+"the beginning if false."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:69
+msgid "Load the Unicode data at the time of startup"
+msgstr "在启动时加载 Unicode 数据"
+
+#: ../data/ibus.schemas.in.h:70
+msgid ""
+"Load the Unicode data at the time of startup if true. About 15MB memory is "
+"needed to load the data. Load the Unicode data when open the emoji dialog at "
+"the beginning if false. The Unicode data is always loaded after the emoji "
+"data is loaded even if true."
+msgstr ""
+"如果设为“True”，则在启动时加载 Unicode 数据。加载数据大约需要 15MB 内存。如果设为“False”，则当打开表情符号对话框时加载 "
+"Unicode 数据。Unicode 数据总是会在表情符号数据加载之后加载，即使设置为“True”也是如此。"
+
+#: ../data/ibus.schemas.in.h:71
 msgid "Embed Preedit Text"
 msgstr "内嵌编辑模式"
 
-#: ../data/ibus.schemas.in.h:66
+#: ../data/ibus.schemas.in.h:72
 msgid "Embed Preedit Text in Application Window"
 msgstr "在应用程序窗口中启用内嵌编辑模式"
 
-#: ../data/ibus.schemas.in.h:67
+#: ../data/ibus.schemas.in.h:73
 msgid "Use global input method"
 msgstr "使用全局输入法"
 
-#: ../data/ibus.schemas.in.h:69
+#: ../data/ibus.schemas.in.h:75
 msgid "Enable input method by default"
 msgstr "默认启动输入法"
 
-#: ../data/ibus.schemas.in.h:70
+#: ../data/ibus.schemas.in.h:76
 msgid "Enable input method by default when the application gets input focus"
 msgstr "当应用程序需要使用输入时自动启用输入法"
 
-#: ../data/ibus.schemas.in.h:71
+#: ../data/ibus.schemas.in.h:77
 msgid "DConf preserve name prefixes"
 msgstr "DConf 保留名称前缀"
 
-#: ../data/ibus.schemas.in.h:72
+#: ../data/ibus.schemas.in.h:78
 msgid "Prefixes of DConf keys to stop name conversion"
 msgstr "用来停止名称转换的 DConf 键前缀"
 
@@ -645,15 +691,15 @@ msgstr "其他"
 
 #: ../setup/emojilang.py:67
 msgid "Select a language"
-msgstr ""
+msgstr "选择语言"
 
 #: ../setup/emojilang.py:70 ../setup/enginedialog.py:60
-#: ../setup/keyboardshortcut.py:339 ../setup/main.py:552
+#: ../setup/keyboardshortcut.py:339 ../setup/main.py:560
 msgid "_Cancel"
 msgstr "取消(_C)"
 
 #: ../setup/emojilang.py:71 ../setup/keyboardshortcut.py:340
-#: ../setup/main.py:553
+#: ../setup/main.py:561
 msgid "_OK"
 msgstr "确定(_O)"
 
@@ -725,15 +771,15 @@ msgstr "请按一个键盘按键（或者一个组合按键）\n"
 msgid "Please press a key (or a key combination)"
 msgstr "请按一个键盘按键（或者一个组合按键）"
 
-#: ../setup/main.py:121 ../setup/main.py:580
+#: ../setup/main.py:121 ../setup/main.py:588
 msgid "Use shortcut with shift to switch to the previous input method"
 msgstr "和 SHIFT 一起使用快捷键来切换到先前的输入法"
 
-#: ../setup/main.py:507
+#: ../setup/main.py:515
 msgid "The IBus daemon is not running. Do you wish to start it?"
 msgstr "IBus 守护进程尚未运行。您希望启动它吗？"
 
-#: ../setup/main.py:528
+#: ../setup/main.py:536
 msgid ""
 "IBus has been started! If you cannot use IBus, add the following lines to "
 "your $HOME/.bashrc; then relog into your desktop.\n"
@@ -747,87 +793,87 @@ msgstr ""
 "  export QT_IM_MODULE=ibus"
 
 #. Translators: %d == 5 currently
-#: ../setup/main.py:542
+#: ../setup/main.py:550
 #, python-format
 msgid "IBus daemon could not be started in %d seconds"
 msgstr "IBus 守护在 %d 秒内无法启动"
 
-#: ../setup/main.py:554
+#: ../setup/main.py:562
 #, python-format
 msgid "Select keyboard shortcut for %s"
 msgstr "选择 %s 的快捷键"
 
 #. Translators: Title of the window
-#: ../setup/main.py:556
+#: ../setup/main.py:564
 msgid "switching input methods"
 msgstr "切换输入法"
 
 #: ../src/ibusemojigen.h:30
 msgid "Activities"
-msgstr ""
+msgstr "活动"
 
 #: ../src/ibusemojigen.h:31
 msgid "Animals & Nature"
-msgstr ""
+msgstr "动物和自然"
 
 #: ../src/ibusemojigen.h:32
 msgid "Flags"
-msgstr ""
+msgstr "旗帜"
 
 #: ../src/ibusemojigen.h:33
 msgid "Food & Drink"
-msgstr ""
+msgstr "食物饮料"
 
 #: ../src/ibusemojigen.h:34
 msgid "Objects"
-msgstr ""
+msgstr "实体"
 
 #: ../src/ibusemojigen.h:35
 msgid "Smileys & People"
-msgstr ""
+msgstr "笑脸和人物"
 
 #: ../src/ibusemojigen.h:36
 msgid "Symbols"
-msgstr ""
+msgstr "符号"
 
 #: ../src/ibusemojigen.h:37
 msgid "Travel & Places"
-msgstr ""
+msgstr "交通工具和场所"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:33
 msgid "Basic Latin"
-msgstr ""
+msgstr "基本拉丁语"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:37
 msgid "Latin-1 Supplement"
-msgstr ""
+msgstr "拉丁-1 补充"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:41
 msgid "Latin Extended-A"
-msgstr ""
+msgstr "拉丁语扩展-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:45
 msgid "Latin Extended-B"
-msgstr ""
+msgstr "拉丁语扩展-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:49
 msgid "IPA Extensions"
-msgstr ""
+msgstr "IPA 扩展"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -848,42 +894,42 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:61
 msgid "Greek and Coptic"
-msgstr ""
+msgstr "希腊和古埃及语"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:65
 msgid "Cyrillic"
-msgstr ""
+msgstr "西里尔语"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:69
 msgid "Cyrillic Supplement"
-msgstr ""
+msgstr "西里尔语补充"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:73
 msgid "Armenian"
-msgstr ""
+msgstr "亚美尼亚语"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:77
 msgid "Hebrew"
-msgstr ""
+msgstr "希伯来语"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:81
 msgid "Arabic"
-msgstr ""
+msgstr "阿拉伯语"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1135,7 +1181,7 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:225
 msgid "Mongolian"
-msgstr ""
+msgstr "蒙语"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1275,35 +1321,35 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:305
 msgid "Latin Extended Additional"
-msgstr ""
+msgstr "拉丁语扩展附加"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:309
 msgid "Greek Extended"
-msgstr ""
+msgstr "希腊语扩展"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:313
 msgid "General Punctuation"
-msgstr ""
+msgstr "通用标点"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:317
 msgid "Superscripts and Subscripts"
-msgstr ""
+msgstr "上标和下标"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:321
 msgid "Currency Symbols"
-msgstr ""
+msgstr "货币符号"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1317,42 +1363,42 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:329
 msgid "Letterlike Symbols"
-msgstr ""
+msgstr "类似字母的符号"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:333
 msgid "Number Forms"
-msgstr ""
+msgstr "数字形式"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:337
 msgid "Arrows"
-msgstr ""
+msgstr "箭头"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:341
 msgid "Mathematical Operators"
-msgstr ""
+msgstr "数学运算符"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:345
 msgid "Miscellaneous Technical"
-msgstr ""
+msgstr "各种技术类符号"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:349
 msgid "Control Pictures"
-msgstr ""
+msgstr "控制图"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1387,14 +1433,14 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:369
 msgid "Geometric Shapes"
-msgstr ""
+msgstr "几何形状"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:373
 msgid "Miscellaneous Symbols"
-msgstr ""
+msgstr "其它各种符号"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1534,7 +1580,7 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:453
 msgid "CJK Symbols and Punctuation"
-msgstr ""
+msgstr "汉、日、韩语符号和标点"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1583,7 +1629,7 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: ../src/ibusunicodegen.h:481
 msgid "CJK Strokes"
-msgstr ""
+msgstr "汉、日、韩语笔画"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2754,248 +2800,270 @@ msgstr ""
 msgid "Supplementary Private Use Area-B"
 msgstr ""
 
-#: ../tools/main.vala:54
+#: ../tools/main.vala:51
 msgid "List engine name only"
 msgstr "仅列出引擎名称"
 
-#: ../tools/main.vala:70 ../tools/main.vala:195 ../tools/main.vala:205
+#: ../tools/main.vala:67 ../tools/main.vala:192 ../tools/main.vala:202
 msgid "Can't connect to IBus.\n"
 msgstr "无法连接 IBus。\n"
 
-#: ../tools/main.vala:96
+#: ../tools/main.vala:93
 #, c-format
 msgid "language: %s\n"
 msgstr "语言： %s\n"
 
-#: ../tools/main.vala:164
+#: ../tools/main.vala:161
 msgid "No engine is set.\n"
 msgstr "尚未设置引擎。\n"
 
-#: ../tools/main.vala:172
+#: ../tools/main.vala:169
 msgid "Set global engine failed.\n"
 msgstr "设定全局引擎失败。\n"
 
-#: ../tools/main.vala:177
+#: ../tools/main.vala:174
 msgid "Get global engine failed.\n"
 msgstr "获取全局引擎失败。\n"
 
-#: ../tools/main.vala:220
+#: ../tools/main.vala:217
 msgid "Read the system registry cache."
 msgstr "读取系统注册缓存。"
 
-#: ../tools/main.vala:222
+#: ../tools/main.vala:219
 msgid "Read the registry cache FILE."
 msgstr "读取注册缓存 FILE。"
 
-#: ../tools/main.vala:240 ../tools/main.vala:245
+#: ../tools/main.vala:237 ../tools/main.vala:242
 msgid "The registry cache is invalid.\n"
 msgstr "注册缓存无效。\n"
 
-#: ../tools/main.vala:260
+#: ../tools/main.vala:257
 msgid "Write the system registry cache."
 msgstr "写入系统注册缓存。"
 
-#: ../tools/main.vala:262
+#: ../tools/main.vala:259
 msgid "Write the registry cache FILE."
 msgstr "写入注册缓存 FILE。"
 
-#: ../tools/main.vala:314
+#: ../tools/main.vala:295
+msgid ""
+"Use engine schema paths instead of ibus core, which can be comma-separated "
+"values."
+msgstr ""
+
+#: ../tools/main.vala:381
 msgid "Resetting…"
 msgstr "正在重置"
 
-#: ../tools/main.vala:328
+#: ../tools/main.vala:399
 msgid "Done"
 msgstr "完成"
 
-#: ../tools/main.vala:373
+#: ../tools/main.vala:444
 msgid "Set or get engine"
 msgstr "设定或获取引擎"
 
-#: ../tools/main.vala:374
+#: ../tools/main.vala:445
 msgid "Exit ibus-daemon"
 msgstr "退出 ibus-daemon"
 
-#: ../tools/main.vala:375
+#: ../tools/main.vala:446
 msgid "Show available engines"
 msgstr "显示可用引擎"
 
-#: ../tools/main.vala:376
+#: ../tools/main.vala:447
 msgid "(Not implemented)"
 msgstr "(暂不可用)"
 
-#: ../tools/main.vala:377
+#: ../tools/main.vala:448
 msgid "Restart ibus-daemon"
 msgstr "重启 ibus-daemon"
 
-#: ../tools/main.vala:378
+#: ../tools/main.vala:449
 msgid "Show version"
 msgstr "显示版本号"
 
-#: ../tools/main.vala:379
+#: ../tools/main.vala:450
 msgid "Show the content of registry cache"
 msgstr "显示注册缓存内容。"
 
-#: ../tools/main.vala:380
+#: ../tools/main.vala:451
 msgid "Create registry cache"
 msgstr "创建注册缓存"
 
-#: ../tools/main.vala:381
+#: ../tools/main.vala:452
 msgid "Print the D-Bus address of ibus-daemon"
 msgstr "输出 ibus-daemon 位于 D-Bus 中的地址"
 
-#: ../tools/main.vala:382
+#: ../tools/main.vala:453
 msgid "Show the configuration values"
 msgstr "显示配置值"
 
-#: ../tools/main.vala:383
+#: ../tools/main.vala:454
 msgid "Reset the configuration values"
 msgstr "重置配置"
 
-#: ../tools/main.vala:385
+#: ../tools/main.vala:456
 msgid "Save emoji on dialog to clipboard "
 msgstr "将面板中的 emoji 保存到剪贴板"
 
-#: ../tools/main.vala:387
+#: ../tools/main.vala:458
 msgid "Show this information"
 msgstr "显示本信息"
 
-#: ../tools/main.vala:393
+#: ../tools/main.vala:464
 #, c-format
 msgid "Usage: %s COMMAND [OPTION...]\n"
 "\n"
 msgstr "用法：%s 命令 [选项...]\n"
 "\n"
 
-#: ../tools/main.vala:394
+#: ../tools/main.vala:465
 msgid "Commands:\n"
 msgstr "命令：\n"
 
-#: ../tools/main.vala:423
+#: ../tools/main.vala:494
 #, c-format
 msgid "%s is unknown command!\n"
 msgstr "%s 是未知命令！\n"
 
-#: ../ui/gtk3/emojier.vala:245
-msgid "Show emoji variants"
-msgstr ""
-
-#: ../ui/gtk3/emojier.vala:250
-msgid "Menu"
-msgstr ""
-
-#: ../ui/gtk3/emojier.vala:273
+#: ../ui/gtk3/emojier.vala:244
 msgid "Favorites"
 msgstr "最爱"
 
-#: ../ui/gtk3/emojier.vala:274
+#: ../ui/gtk3/emojier.vala:245
 msgid "Others"
 msgstr ""
 
-#: ../ui/gtk3/emojier.vala:275
+#: ../ui/gtk3/emojier.vala:246
 msgid "Open Unicode choice"
 msgstr ""
 
-#: ../ui/gtk3/emojier.vala:445 ../ui/gtk3/emojier.vala:826
-#: ../ui/gtk3/panel.vala:1149
-msgid "Emoji Choice"
-msgstr ""
-
-#: ../ui/gtk3/emojier.vala:451
+#: ../ui/gtk3/emojier.vala:371
 msgid "Type annotation or choose emoji"
 msgstr "键入释文或是选择 emoji"
 
-#: ../ui/gtk3/emojier.vala:948
-msgid "Unicode Choice"
-msgstr ""
-
-#: ../ui/gtk3/emojier.vala:950
+#: ../ui/gtk3/emojier.vala:965
 msgid "Bring back emoji choice"
 msgstr ""
 
-#: ../ui/gtk3/emojier.vala:1016
-msgid "Loading a Unicode dictionary:"
-msgstr ""
-
-#: ../ui/gtk3/emojier.vala:1071
+#: ../ui/gtk3/emojier.vala:1067
 msgid "Page Down"
 msgstr "下一页"
 
-#: ../ui/gtk3/emojier.vala:1082
+#: ../ui/gtk3/emojier.vala:1078
 msgid "Page Up"
 msgstr "上一页"
 
-#: ../ui/gtk3/emojier.vala:1236
+#: ../ui/gtk3/emojier.vala:1081
+msgid "Show emoji variants"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:1082
+msgid "Close"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:1088
+msgid "Menu"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:1099
+msgid "Click to view a warning message"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:1143
+msgid "Loading a Unicode dictionary:"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:1383
 #, c-format
 msgid "Code point: %s"
 msgstr ""
 
-#: ../ui/gtk3/emojier.vala:1242
+#: ../ui/gtk3/emojier.vala:1389
 msgid "Has emoji variants"
 msgstr ""
 
-#: ../ui/gtk3/emojier.vala:1377 ../ui/gtk3/emojier.vala:1391
+#: ../ui/gtk3/emojier.vala:1556 ../ui/gtk3/emojier.vala:1569
 #, c-format
 msgid "Description: %s"
 msgstr "描述：%s"
 
-#: ../ui/gtk3/emojier.vala:1377
+#: ../ui/gtk3/emojier.vala:1556
 msgid "None"
 msgstr "无"
 
-#: ../ui/gtk3/emojier.vala:1402
+#: ../ui/gtk3/emojier.vala:1580
 #, c-format
 msgid "Annotations: %s"
 msgstr "释义：%s"
 
-#: ../ui/gtk3/emojier.vala:1428
+#: ../ui/gtk3/emojier.vala:1606
 #, c-format
 msgid "Name: %s"
 msgstr ""
 
-#: ../ui/gtk3/emojier.vala:1436
+#: ../ui/gtk3/emojier.vala:1614
 #, c-format
 msgid "Alias: %s"
 msgstr ""
 
-#: ../ui/gtk3/emojierapp.vala:56
+#: ../ui/gtk3/emojier.vala:2164
+#: ../ui/gtk3/ibus-extension-gtk3.desktop.in.in.h:1
+#: ../ui/gtk3/ibus-ui-emojier.desktop.in.in.h:1 ../ui/gtk3/panel.vala:1149
+msgid "Emoji Choice"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:2166
+msgid "Unicode Choice"
+msgstr ""
+
+#: ../ui/gtk3/emojier.vala:2526
+msgid ""
+"Failed to get the current text application. Please re-focus your application."
+" E.g. Press Esc key several times to release the emoji typing mode, click "
+"your desktop and click your text application again."
+msgstr ""
+
+#: ../ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."
 msgstr "已取消选择一个 emoji"
 
-#: ../ui/gtk3/emojierapp.vala:77
+#: ../ui/gtk3/emojierapp.vala:93
 msgid "Copied an emoji to your clipboard."
 msgstr "已将 emoji 复制到你的剪贴板"
 
 #. TRANSLATORS: "FONT" should be capital and translatable.
 #. * It's used for an argument command --font=FONT
 #. 
-#: ../ui/gtk3/emojierapp.vala:97
+#: ../ui/gtk3/emojierapp.vala:114
 msgid "\"FONT\" for emoji characters on emoji dialog"
 msgstr ""
 
-#: ../ui/gtk3/emojierapp.vala:98
+#: ../ui/gtk3/emojierapp.vala:115
 msgid "FONT"
 msgstr ""
 
 #. TRANSLATORS: "LANG" should be capital and translatable.
 #. * It's used for an argument command --lang=LANG
 #. 
-#: ../ui/gtk3/emojierapp.vala:103
+#: ../ui/gtk3/emojierapp.vala:120
 msgid "\"LANG\" for annotations on emoji dialog. E.g. \"en\""
 msgstr ""
 
-#: ../ui/gtk3/emojierapp.vala:104
+#: ../ui/gtk3/emojierapp.vala:121
 msgid "LANG"
 msgstr ""
 
-#: ../ui/gtk3/emojierapp.vala:106
+#: ../ui/gtk3/emojierapp.vala:123
 msgid "Emoji annotations can be match partially"
 msgstr ""
 
-#: ../ui/gtk3/emojierapp.vala:110
+#: ../ui/gtk3/emojierapp.vala:127
 msgid "Match with the length of the specified integer"
 msgstr ""
 
-#: ../ui/gtk3/emojierapp.vala:114
+#: ../ui/gtk3/emojierapp.vala:131
 msgid "Match with the condition of the specified integer"
 msgstr ""
 
@@ -3025,11 +3093,11 @@ msgstr ""
 msgid "Preferences"
 msgstr "首选项"
 
-#: ../ui/gtk3/panel.vala:1181
+#: ../ui/gtk3/panel.vala:1170
 msgid "Restart"
 msgstr "重新启动"
 
-#: ../ui/gtk3/panel.vala:1185
+#: ../ui/gtk3/panel.vala:1174
 msgid "Quit"
 msgstr "退出"
 

@@ -16,11 +16,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-05-10 10:16+0000\n"
+"PO-Revision-Date: 2018-08-17 06:36+0000\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
-"X-Generator: Zanata 4.4.5\n"
+"X-Generator: Zanata 4.6.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: ../setup/setup.ui.h:1
@@ -234,27 +234,27 @@ msgstr "Inmatningsmetod"
 msgid ""
 "The shortcut keys to enable conversions of emoji annotations or Unicode "
 "names"
-msgstr ""
+msgstr "Kortkommandot för att aktivera emoji-annoteringar eller Unicode-namn"
 
 #: ../setup/setup.ui.h:50
 msgid "Emoji annotation:"
-msgstr ""
+msgstr "Emoji-annoteringar:"
 
 #: ../setup/setup.ui.h:51
 msgid "The shortcut keys to enable Unicode code point conversions"
-msgstr ""
+msgstr "Kortkommandon för att aktivera konverteringar av Unicode-kodpunkter"
 
 #: ../setup/setup.ui.h:52
 msgid "Unicode code point:"
-msgstr ""
+msgstr "Unicode-kodpunkter:"
 
 #: ../setup/setup.ui.h:53
 msgid "Set a font of Unicode candidates on the emoji dialog"
-msgstr ""
+msgstr "Ange ett typsnitt för Unicode-kandidater i emoji-dialogen"
 
 #: ../setup/setup.ui.h:54
 msgid "Unicode font:"
-msgstr ""
+msgstr "Unicode-typsnitt:"
 
 #: ../setup/setup.ui.h:55
 msgid "Set a language of emoji annotations on the emoji dialog"
@@ -572,11 +572,11 @@ msgstr "Anpassat typsnittsnamn till språkpanelen"
 
 #: ../data/ibus.schemas.in.h:50
 msgid "Unicode shortcut keys for gtk_accelerator_parse"
-msgstr ""
+msgstr "Unicode-kortkommandon för gtk_accelerator_parse"
 
 #: ../data/ibus.schemas.in.h:51
 msgid "The shortcut keys for turning Unicode typing on or off"
-msgstr ""
+msgstr "Kortkommandot för att slå på och av Unicode-inmatning"
 
 #: ../data/ibus.schemas.in.h:52
 msgid "Emoji shortcut keys for gtk_accelerator_parse"
@@ -660,7 +660,7 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:67
 msgid "Load the emoji data at the time of startup"
-msgstr ""
+msgstr "Läs in emoji-data vid uppstartstillfället"
 
 #: ../data/ibus.schemas.in.h:68
 msgid ""
@@ -668,10 +668,13 @@ msgid ""
 "needed to load the data. Load the emoji data when open the emoji dialog at "
 "the beginning if false."
 msgstr ""
+"Läs in emoji-data vid uppstartstillfället om sant.  Ungefär 10 MB minne "
+"behövs för att läsa in datan.  Läs emoji-datan när emoji-dialogen öppnas i "
+"början om falskt."
 
 #: ../data/ibus.schemas.in.h:69
 msgid "Load the Unicode data at the time of startup"
-msgstr ""
+msgstr "Läs in Unicode-data vid uppstartstillfället"
 
 #: ../data/ibus.schemas.in.h:70
 msgid ""
@@ -680,6 +683,10 @@ msgid ""
 "the beginning if false. The Unicode data is always loaded after the emoji "
 "data is loaded even if true."
 msgstr ""
+"Läs in Unicode-data vid uppstartstillfället om sant.  Ungefär 15 MB minne "
+"behövs för att läsa in datan.  Läs Unicode-datan när emoji-dialogen öppnas i "
+"början om falskt.  Unicode-datan läses alltid in efter emoji-datan läses in "
+"även om sant."
 
 #: ../data/ibus.schemas.in.h:71
 msgid "Embed Preedit Text"
@@ -2885,6 +2892,8 @@ msgid ""
 "Use engine schema paths instead of ibus core, which can be comma-separated "
 "values."
 msgstr ""
+"Använd motorschemasökvägar istället för ibus-kärnan, vilket kan vara "
+"kommaseparerade värden."
 
 #: ../tools/main.vala:381
 msgid "Resetting…"
@@ -2996,7 +3005,7 @@ msgstr "Visa emoji-varianter"
 
 #: ../ui/gtk3/emojier.vala:1082
 msgid "Close"
-msgstr ""
+msgstr "Stäng"
 
 #: ../ui/gtk3/emojier.vala:1088
 msgid "Menu"
@@ -3004,7 +3013,7 @@ msgstr "Meny"
 
 #: ../ui/gtk3/emojier.vala:1099
 msgid "Click to view a warning message"
-msgstr ""
+msgstr "Klicka för att visa ett varningsmeddelande"
 
 #: ../ui/gtk3/emojier.vala:1143
 msgid "Loading a Unicode dictionary:"
@@ -3059,6 +3068,10 @@ msgid ""
 " E.g. Press Esc key several times to release the emoji typing mode, click "
 "your desktop and click your text application again."
 msgstr ""
+"Misslyckades att få det aktuella textprogrammet.  Fokusera om ditt program.  "
+"T.ex. tryck Esc-tangenten flera gånger för att släppa emoji-"
+"inskrivningsläget, klicka på ditt skrivbord och klicka på ditt textprogram "
+"igen."
 
 #: ../ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."
