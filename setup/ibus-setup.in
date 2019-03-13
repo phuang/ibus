@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -27,5 +27,5 @@ export IBUS_PREFIX=@prefix@
 export IBUS_DATAROOTDIR=@datarootdir@
 export IBUS_LOCALEDIR=@localedir@
 export IBUS_LIBEXECDIR=${libexecdir}
-exec @PYTHON@ @prefix@/share/ibus/setup/main.py $@
+exec ${PYTHON:-@PYTHON@} @prefix@/share/ibus/setup/main.py $@
 
