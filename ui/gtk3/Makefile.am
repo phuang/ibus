@@ -130,6 +130,8 @@ CLEANFILES =            \
     gtkpanel.xml        \
     $(NULL)
 
+MAINTAINERCLEANFILES =
+
 emoji_headers =         \
     ibusemojidialog.h   \
     $(NULL)
@@ -192,6 +194,8 @@ emojierapp.o: $(srcdir)/emojierapp.c
 	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
 	$(NULL)
 
+MAINTAINERCLEANFILES += emojierapp.c
+
 component_DATA += gtkextension.xml
 CLEANFILES += gtkextension.xml
 libexec_PROGRAMS += ibus-extension-gtk3
@@ -239,6 +243,8 @@ panelbinding.o: $(srcdir)/panelbinding.c
 	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
 	$(AM_V_CC_no)$(COMPILE) -c -o $@ $<
 	$(NULL)
+
+MAINTAINERCLEANFILES += extension.c panelbinding.c
 
 man_seven_files = $(man_seven_in_files:.7.in=.7)
 man_seven_DATA =$(man_seven_files:.7=.7.gz)
