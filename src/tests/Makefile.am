@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -78,7 +78,7 @@ TESTS_ENVIRONMENT = \
 
 LOG_COMPILER = $(srcdir)/runtest
 
-EXTRA_DIST = runtest
+EXTRA_DIST = runtest ibus-compose.env
 
 ibus_bus_SOURCES = ibus-bus.c
 ibus_bus_LDADD = $(prog_ldadd)

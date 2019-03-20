@@ -100,6 +100,17 @@ _EOF
         mkdir -p $HOME/.config
         touch $HOME/.config/gnome-initial-setup-done
     fi
+
+    # Prevent from launching a XDG dialog
+    XDG_LOCALE_FILE="$HOME/.config/user-dirs.locale"
+    if test -f $XDG_LOCALE_FILE ; then
+        XDG_LANG_ORIG=`cat $XDG_LOCALE_FILE`
+        XDG_LANG_NEW=`echo $LANG | sed -e 's/\(.*\)\..*/\1/'`
+        if [ "$XDG_LANG_ORIG" != "$XDG_LANG_NEW" ] ; then
+            echo "Overriding XDG locale $XDG_LANG_ORIG with $XDG_LANG_NEW"
+            echo "$XDG_LANG_NEW" > $XDG_LOCALE_FILE
+        fi
+    fi
 }
 
 run_dbus_daemon()
@@ -177,6 +188,7 @@ run_test_suite()
     pass=0
     fail=0
 
+    export GTK_IM_MODULE=ibus
     if test -f $TEST_LOG ; then
         rm $TEST_LOG
     fi
