@@ -711,6 +711,7 @@ util/IMdkit/Makefile
 data/Makefile
 data/annotations/Makefile
 data/icons/Makefile
+data/its/Makefile
 data/keymaps/Makefile
 data/dconf/Makefile
 docs/Makefile

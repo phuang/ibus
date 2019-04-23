@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2019 Red Hat, Inc.
+# Copyright (c) 2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2019 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,15 +20,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-SUBDIRS = \
-	annotations \
-	icons \
-	its \
-	keymaps \
-	$(NULL)
-
-if ENABLE_DCONF
-SUBDIRS += dconf
-endif
+itsdir = $(datadir)/gettext/its
+its_DATA = \
+    ibus.its \
+    ibus.loc \
+    $(NULL)
 
 -include $(top_srcdir)/git.mk
