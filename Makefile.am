@@ -3,8 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2017 Red Hat, Inc.
+# Copyright (c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2019 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -102,6 +102,9 @@ dist-hook:
 		IBUS_PREV_VERSION=\
 "$(IBUS_MAJOR_VERSION).$(IBUS_MINOR_VERSION).$$IBUS_PREV_MICRO_VERSION"; \
 		echo "Changes in IBus $(IBUS_VERSION)" > $(distdir)/NEWS; \
+		echo "" >> $(distdir)/NEWS; \
+		git shortlog $$IBUS_PREV_VERSION...$(IBUS_VERSION) \
+		        >> $(distdir)/NEWS; \
 		echo "" >> $(distdir)/NEWS; \
 		git log $$IBUS_PREV_VERSION...$(IBUS_VERSION) --reverse \
 		        --pretty=format:'%s (%an) %h' >> $(distdir)/NEWS; \
