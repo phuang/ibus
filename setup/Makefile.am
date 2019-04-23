@@ -3,8 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2018 Red Hat, Inc.
+# Copyright (c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2019 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -39,6 +39,15 @@ ibussetup_DATA = \
 
 bin_SCRIPTS = ibus-setup
 ibussetupdir = $(pkgdatadir)/setup
+
+ibus-setup: ibus-setup.in
+	$(AM_V_GEN) sed -e "s|\@datarootdir\@|$(datarootdir)|g" \
+	                -e "s|\@localedir\@|$(localedir)|g" \
+	                -e "s|\@libexecdir\@|$(libexecdir)|g" \
+	                -e "s|\@prefix\@|$(prefix)|g" \
+	                -e "s|\@PYTHON\@|$(PYTHON)|g" \
+	$< > $@.tmp && \
+	mv $@.tmp $@
 
 desktop_notrans_files = ibus-setup.desktop
 desktop_DATA = org.freedesktop.IBus.Setup.desktop

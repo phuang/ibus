@@ -724,7 +724,6 @@ ibus/interface/Makefile
 ui/Makefile
 ui/gtk3/Makefile
 setup/Makefile
-setup/ibus-setup
 bindings/Makefile
 bindings/pygobject/Makefile
 bindings/vala/Makefile
