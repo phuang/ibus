@@ -776,11 +776,11 @@ def addprefix_GDK(arg):
                         keysym = k
                         break
                 if keysym != '':
-		    return 'GDK_KEY_%(arg)s, ' % { 'arg': keysym }
+		    return 'IBUS_KEY_%(arg)s, ' % { 'arg': keysym }
                 else:
 		    return '0x%(arg)04X, ' % { 'arg': keysymvalue(arg) }
 	else:
-		return 'GDK_KEY_%(arg)s, ' % { 'arg': arg }
+		return 'IBUS_KEY_%(arg)s, ' % { 'arg': arg }
 
 if opt_gtk:
 	first_keysym = ""
@@ -824,7 +824,7 @@ if opt_gtk:
 			print "0x%(ks)04X," % { "ks": keysymvalue(i[0]) },
 			print '%(str)s' % { 'str': "".join(map(lambda x : str(x) + ", ", i[1:])) }
 		elif not match('^0x', i[0]):
-			print 'GDK_KEY_%(str)s' % { 'str': "".join(map(lambda x : str(x) + ", ", i)) }
+			print 'IBUS_KEY_%(str)s' % { 'str': "".join(map(lambda x : str(x) + ", ", i)) }
 		else:
 			print '%(str)s' % { 'str': "".join(map(lambda x : str(x) + ", ", i)) }
 	for i in ct_second_part:
