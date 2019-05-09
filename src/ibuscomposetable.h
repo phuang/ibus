@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013-2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,8 @@ G_BEGIN_DECLS
 
 typedef struct _IBusComposeTable IBusComposeTable;
 typedef struct _IBusComposeTableCompact IBusComposeTableCompact;
+typedef struct _IBusComposeTableCompactEx IBusComposeTableCompactEx;
+typedef struct _IBusComposeTableCompactPrivate IBusComposeTableCompactPrivate;
 
 struct _IBusComposeTable
 {
@@ -45,6 +47,15 @@ struct _IBusComposeTableCompact
     gint max_seq_len;
     gint n_index_size;
     gint n_index_stride;
+};
+
+struct _IBusComposeTableCompactEx
+{
+    const guint16 *data;
+    gint max_seq_len;
+    gint n_index_size;
+    gint n_index_stride;
+    IBusComposeTableCompactPrivate *priv;
 };
 
 IBusComposeTable *ibus_compose_table_new_with_file (const gchar *compose_file);

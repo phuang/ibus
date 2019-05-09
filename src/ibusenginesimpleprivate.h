@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2016 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2016-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -26,17 +26,17 @@
 
 G_BEGIN_DECLS
 
-extern const IBusComposeTableCompact ibus_compose_table_compact;
+extern const IBusComposeTableCompactEx ibus_compose_table_compact;
 
 gboolean ibus_check_algorithmically (const guint16              *compose_buffer,
                                      gint                        n_compose,
                                      gunichar                   *output);
-gboolean ibus_check_compact_table   (const IBusComposeTableCompact
+gboolean ibus_check_compact_table   (const IBusComposeTableCompactEx
                                                                 *table,
                                      guint16                    *compose_buffer,
                                      gint                        n_compose,
                                      gboolean                   *compose_finish,
-                                     gunichar                   *output_char);
+                                     gunichar                  **output_chars);
 
 G_END_DECLS
 
