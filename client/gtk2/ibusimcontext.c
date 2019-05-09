@@ -881,10 +881,18 @@ ibus_im_context_clear_preedit_text (IBusIMContext *ibusimcontext)
         ibusimcontext->preedit_mode == IBUS_ENGINE_PREEDIT_COMMIT) {
         preedit_string = g_strdup (ibusimcontext->preedit_string);
     }
+
+    /* Clear the preedit_string but keep the preedit_cursor_pos and
+     * preedit_visible because a time lag could happen, firefox commit
+     * the preedit text before the preedit text is cleared and it cause
+     * a double commits of the Hangul preedit in firefox if the preedit
+     * would be located on the URL bar and click on anywhere of firefox
+     * out of the URL bar.
+     */
     _ibus_context_update_preedit_text_cb (ibusimcontext->ibuscontext,
                                           ibus_text_new_from_string (""),
-                                          0,
-                                          FALSE,
+                                          ibusimcontext->preedit_cursor_pos,
+                                          ibusimcontext->preedit_visible,
                                           IBUS_ENGINE_PREEDIT_CLEAR,
                                           ibusimcontext);
     if (preedit_string) {
