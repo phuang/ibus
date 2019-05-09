@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -125,8 +125,8 @@ _load_lang()
     ibus_xml_free (node);
 }
 
-const gchar *
-ibus_get_untranslated_language_name (const gchar *_locale)
+const static gchar *
+ibus_get_untranslated_raw_language_name (const gchar *_locale)
 {
     const gchar *retval;
     gchar *p = NULL;
@@ -148,19 +148,64 @@ ibus_get_untranslated_language_name (const gchar *_locale)
         return "Other";
 }
 
-const gchar *
+static char *
+get_first_item_in_semicolon_list (const char *list)
+{
+        char **items;
+        char  *item;
+
+        items = g_strsplit (list, "; ", 2);
+
+        item = g_strdup (items[0]);
+        g_strfreev (items);
+
+        return item;
+}
+
+static char *
+capitalize_utf8_string (const char *str)
+{
+    char first[8] = { 0 };
+
+    if (!str)
+        return NULL;
+
+    g_unichar_to_utf8 (g_unichar_totitle (g_utf8_get_char (str)), first);
+
+    return g_strconcat (first, g_utf8_offset_to_pointer (str, 1), NULL);
+}
+
+gchar *
+ibus_get_untranslated_language_name (const gchar *_locale)
+{
+    const gchar *raw = ibus_get_untranslated_raw_language_name (_locale);
+    gchar *tmp = get_first_item_in_semicolon_list (raw);
+    gchar *retval = capitalize_utf8_string (tmp);
+    g_free (tmp);
+    return retval;
+}
+
+gchar *
 ibus_get_language_name (const gchar *_locale)
 {
-    const gchar *retval = ibus_get_untranslated_language_name (_locale);
+    const gchar *raw = ibus_get_untranslated_raw_language_name (_locale);
+    const gchar *translation = NULL;
+    gchar *tmp;
+    gchar *retval;
 
 #ifdef ENABLE_NLS
-    if (g_strcmp0 (retval, "Other") == 0)
-        return dgettext (GETTEXT_PACKAGE, N_("Other"));
+    if (g_strcmp0 (raw, "Other") == 0)
+        return g_strdup (dgettext (GETTEXT_PACKAGE, N_("Other")));
     else
-        return dgettext ("iso_639-3", retval);
+        translation = dgettext ("iso_639-3", raw);
 #else
-    return retval;
+    translation = raw;
 #endif
+
+    tmp = get_first_item_in_semicolon_list (translation);
+    retval = capitalize_utf8_string (tmp);
+    g_free (tmp);
+    return retval;
 }
 
 void

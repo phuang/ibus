@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2010-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2016 Red Hat, Inc.
+ * Copyright (C) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,7 @@
  *
  * Returns: untranslated language name
  */
-const gchar *    ibus_get_untranslated_language_name
+gchar *          ibus_get_untranslated_language_name
                                                 (const gchar    *_locale);
 
 /**
@@ -51,6 +51,6 @@ const gchar *    ibus_get_untranslated_language_name
  *
  * Returns: translated language name
  */
-const gchar *    ibus_get_language_name         (const gchar    *_locale);
+gchar *          ibus_get_language_name         (const gchar    *_locale);
 
 #endif
