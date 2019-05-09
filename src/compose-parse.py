@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# compose-parse.py, version 1.4
+# compose-parse.py, version 1.5
 #
 # multifunction script that helps manage the compose sequence table in GTK+ (gtk/gtkimcontextsimple.c)
 # the script produces statistics and information about the whole process, run with --help for more.
@@ -110,6 +110,14 @@ headerfile_end = """};
 
 #endif /* __GTK_IM_CONTEXT_SIMPLE_SEQS_H__ */
 """
+
+declare_compose_sequence_32bit_first = """};
+
+static const guint16 gtk_compose_seqs_compact_32bit_first[] = {"""
+
+declare_compose_sequence_32bit_second = """};
+
+static const guint32 gtk_compose_seqs_compact_32bit_second[] = {"""
 
 def stringtohex(str): return atoi(str, 16)
 
@@ -462,6 +470,7 @@ except:
 
 """ Parse the compose file in  xorg_compose_sequences"""
 xorg_compose_sequences = []
+xorg_compose_sequences_32bit = []
 xorg_compose_sequences_algorithmic = []
 linenum_compose = 0
 comment_nest_depth = 0
@@ -514,24 +523,32 @@ for line in xorg_compose_sequences_raw:
 	values = split('\s+', val)
 	unichar_temp = split('"', values[0])
 	unichar_utf8 = unichar_temp[1]
-	if len(values) == 1:
-		continue
-	codepointstr = values[1]
-	if values[1] == '#':
-		# No codepoints that are >1 characters yet.
-		continue
+	# The line of "U17ff" in Compose.pre includes a unichar only
+	codepointstr = values[1] if len(values) > 1 else ''
+	codepoint = 0
+	codepoints = []
+	enable_32bit = False
 	if raw_sequence[0][0] == 'U' and match('[0-9a-fA-F]+$', raw_sequence[0][1:]):
 		raw_sequence[0] = '0x' + raw_sequence[0][1:]
 	if  match('^U[0-9a-fA-F]+$', codepointstr):
 		codepoint = long(codepointstr[1:], 16)
+		if codepoint > 0xFFFF:
+			codepoints.append(codepoint)
+			codepoint = 0
+			enable_32bit = True
 	elif keysymunicodedatabase.has_key(codepointstr):
 		#if keysymdatabase[codepointstr] != keysymunicodedatabase[codepointstr]:
 			#print "DIFFERENCE: 0x%(a)X 0x%(b)X" % { "a": keysymdatabase[codepointstr], "b": keysymunicodedatabase[codepointstr]},
 			#print raw_sequence, codepointstr
 		codepoint = keysymunicodedatabase[codepointstr]
 	else:
-		unichar = unicode(unichar_utf8, 'utf-8')
-		codepoint = ord(unichar)
+		unichars = unicode(unichar_utf8, 'utf-8')
+		if len(unichars) > 1 or ord(unichars[0]) > 0xFFFF:
+			enable_32bit = True
+			for unichar in unichars:
+				codepoints.append(ord(unichar))
+		else:
+			codepoint = ord(unichars[0]);
 	sequence = rename_combining(raw_sequence)
 	reject_this = False
 	for i in sequence:
@@ -552,16 +569,8 @@ for line in xorg_compose_sequences_raw:
 		"0x0342" in sequence or \
 		"0x0314" in sequence:
 		continue
-	if codepoint > 0xFFFF:
-                if opt_verbose:
-		    print "Ignore the line greater than guint16:\n%s" % line
-		continue
-	#for i in range(len(sequence)):
-	#	if sequence[i] == "0x0342":
-	#		sequence[i] = "dead_tilde"
 	if "Multi_key" not in sequence:
-		""" Ignore for now >0xFFFF keysyms """
-		if codepoint < 0xFFFF:
+		if True:
 			original_sequence = copy(sequence)
 			stats_sequence = copy(sequence)
 			base = sequence.pop()
@@ -610,88 +619,75 @@ for line in xorg_compose_sequences_raw:
 						break;
 					counter += 1
 				if not_normalised:
-					original_sequence.append(codepoint)
-					xorg_compose_sequences.append(original_sequence)
-					""" print xorg_compose_sequences[-1] """
+					if enable_32bit:
+						for cp in codepoints:
+							original_sequence.append(cp)
+						length = len(codepoints)
+						original_sequence.append(length)
+						xorg_compose_sequences_32bit.append(original_sequence)
+					else:
+						original_sequence.append(codepoint)
+						original_sequence.append(1)
+						xorg_compose_sequences.append(original_sequence)
 					
 			else:
 				print "Error in base char !?!"
 				exit(-2)
-		else:
-			print "OVER", sequence
-			exit(-1)
 	else:
-		sequence.append(codepoint)
-		xorg_compose_sequences.append(sequence)
-		""" print xorg_compose_sequences[-1] """
+		if enable_32bit:
+			for cp in codepoints:
+				sequence.append(cp)
+			length = len(codepoints)
+			sequence.append(length)
+			xorg_compose_sequences_32bit.append(sequence)
+		else:
+			sequence.append(codepoint)
+			sequence.append(1)
+			xorg_compose_sequences.append(sequence)
 
 def sequence_cmp(x, y):
+	length_x = len(x) - x[-1] - 1
+	length_y = len(y) - y[-1] - 1
 	if keysymvalue(x[0]) > keysymvalue(y[0]):
 		return 1
 	elif keysymvalue(x[0]) < keysymvalue(y[0]):
 		return -1
-	elif len(x) > len(y):
+	elif length_x > length_y:
 		return 1
-	elif len(x) < len(y):
+	elif length_x < length_y:
 		return -1
 	elif keysymvalue(x[1]) > keysymvalue(y[1]):
 		return 1
 	elif keysymvalue(x[1]) < keysymvalue(y[1]):
 		return -1
-	elif len(x) < 4:
-		return 0
-	elif keysymvalue(x[2]) > keysymvalue(y[2]):
-		return 1
-	elif keysymvalue(x[2]) < keysymvalue(y[2]):
-		return -1
-	elif len(x) < 5:
-		return 0
-	elif keysymvalue(x[3]) > keysymvalue(y[3]):
-		return 1
-	elif keysymvalue(x[3]) < keysymvalue(y[3]):
-		return -1
-	elif len(x) < 6:
-		return 0
-	elif keysymvalue(x[4]) > keysymvalue(y[4]):
-		return 1
-	elif keysymvalue(x[4]) < keysymvalue(y[4]):
-		return -1
-	else:
-		return 0
+        for i in range(2, length_x):
+		if keysymvalue(x[i]) > keysymvalue(y[i]):
+			return 1
+		elif keysymvalue(x[i]) < keysymvalue(y[i]):
+			return -1
+	return 0
 
 def sequence_unicode_cmp(x, y):
+	length_x = len(x) - x[-1] - 1
+	length_y = len(y) - y[-1] - 1
 	if keysymunicodevalue(x[0]) > keysymunicodevalue(y[0]):
 		return 1
 	elif keysymunicodevalue(x[0]) < keysymunicodevalue(y[0]):
 		return -1
-	elif len(x) > len(y):
+	elif length_x > length_y:
 		return 1
-	elif len(x) < len(y):
+	elif length_x < length_y:
 		return -1
 	elif keysymunicodevalue(x[1]) > keysymunicodevalue(y[1]):
 		return 1
 	elif keysymunicodevalue(x[1]) < keysymunicodevalue(y[1]):
 		return -1
-	elif len(x) < 4:
-		return 0
-	elif keysymunicodevalue(x[2]) > keysymunicodevalue(y[2]):
-		return 1
-	elif keysymunicodevalue(x[2]) < keysymunicodevalue(y[2]):
-		return -1
-	elif len(x) < 5:
-		return 0
-	elif keysymunicodevalue(x[3]) > keysymunicodevalue(y[3]):
-		return 1
-	elif keysymunicodevalue(x[3]) < keysymunicodevalue(y[3]):
-		return -1
-	elif len(x) < 6:
-		return 0
-	elif keysymunicodevalue(x[4]) > keysymunicodevalue(y[4]):
-		return 1
-	elif keysymunicodevalue(x[4]) < keysymunicodevalue(y[4]):
-		return -1
-	else:
-		return 0
+        for i in range(2, length_x):
+		if keysymunicodevalue(x[i]) > keysymunicodevalue(y[i]):
+			return 1
+		elif keysymunicodevalue(x[i]) < keysymunicodevalue(y[i]):
+			return -1
+	return 0
 
 def sequence_algorithmic_cmp(x, y):
 	if len(x) < len(y):
@@ -708,23 +704,46 @@ def sequence_algorithmic_cmp(x, y):
 
 
 xorg_compose_sequences.sort(sequence_cmp)
+xorg_compose_sequences_32bit.sort(sequence_cmp)
 
-xorg_compose_sequences_uniqued = []
-first_time = True
-item = None
-for next_item in xorg_compose_sequences:
-	if first_time:
-		first_time = False
+def num_of_keysyms(seq):
+	value_length = seq[-1]
+	return len(seq) - value_length - 1
+
+
+def check_max_width_of_compose_table(compose_sequences):
+	for sequence in xorg_compose_sequences:
+		num = num_of_keysyms(sequence)
+		global WIDTHOFCOMPOSETABLE
+		if num > WIDTHOFCOMPOSETABLE:
+			print("Extend the sequence length: %s" % num)
+			WIDTHOFCOMPOSETABLE = num
+
+def make_compose_sequences_unique(compose_sequences):
+	xorg_compose_sequences_uniqued = []
+	first_time = True
+	item = None
+	for next_item in compose_sequences:
+		if first_time:
+			first_time = False
+			item = next_item
+			xorg_compose_sequences_uniqued.append(next_item)
+		if sequence_unicode_cmp(item, next_item) != 0:
+			xorg_compose_sequences_uniqued.append(next_item)
 		item = next_item
-	if sequence_unicode_cmp(item, next_item) != 0:
-		xorg_compose_sequences_uniqued.append(item)
-	item = next_item
 
-xorg_compose_sequences = copy(xorg_compose_sequences_uniqued)
+	return copy(xorg_compose_sequences_uniqued)
+
+check_max_width_of_compose_table(xorg_compose_sequences)
+check_max_width_of_compose_table(xorg_compose_sequences_32bit)
+
+xorg_compose_sequences = make_compose_sequences_unique(xorg_compose_sequences)
+xorg_compose_sequences_32bit = make_compose_sequences_unique(xorg_compose_sequences_32bit)
 
 counter_multikey = 0
-for item in xorg_compose_sequences:
-	if findall('Multi_key', "".join(item[:-1])) != []:
+for item in xorg_compose_sequences + xorg_compose_sequences_32bit:
+	length = item[-1]
+	if findall('Multi_key', "".join(item[:len(item) - length - 1])) != []:
 		counter_multikey += 1
 
 xorg_compose_sequences_algorithmic.sort(sequence_algorithmic_cmp)
@@ -732,15 +751,24 @@ xorg_compose_sequences_algorithmic_uniqued = uniq(xorg_compose_sequences_algorit
 
 firstitem = ""
 num_first_keysyms = 0
+num_first_keysyms_32bit = 0
 zeroes = 0
 num_entries = 0
 num_algorithmic_greek = 0
 for sequence in xorg_compose_sequences:
-	if keysymvalue(firstitem) != keysymvalue(sequence[0]): 
+	if keysymvalue(firstitem) != keysymvalue(sequence[0]):
 		firstitem = sequence[0]
 		num_first_keysyms += 1
-	zeroes += 6 - len(sequence) + 1
+	# max length of sequences + length of unichar(== 1) - length of the
+        # current sequence + common offset (== 1)
+	zeroes += WIDTHOFCOMPOSETABLE - num_of_keysyms(sequence)
 	num_entries += 1
+
+firstitem = ""
+for sequence in xorg_compose_sequences_32bit:
+	if keysymvalue(firstitem) != keysymvalue(sequence[0]):
+		firstitem = sequence[0]
+		num_first_keysyms_32bit += 1
 
 for sequence in xorg_compose_sequences_algorithmic_uniqued:
 	ch = ord(sequence[-1:][0])
@@ -756,9 +784,6 @@ if opt_algorithmic:
 			print "<0x%(keysym)04X>," % { 'keysym': elem },
 		""" Yeah, verified... We just want to keep the output similar to -u, so we can compare/sort easily """
 		print "], recomposed as", letter.encode('utf-8'), "verified"
-
-def num_of_keysyms(seq):
-	return len(seq) - 1
 
 def convert_UnotationToHex(arg):
 	if isinstance(arg, str):
@@ -782,21 +807,23 @@ def addprefix_GDK(arg):
 	else:
 		return 'IBUS_KEY_%(arg)s, ' % { 'arg': arg }
 
-if opt_gtk:
+def make_compose_table(compose_sequences,
+                       compose_table,
+                       ct_second_part,
+                       start_offset,
+                       is_32bit):
 	first_keysym = ""
 	sequence = []
-	compose_table = []
-	ct_second_part = []
-	ct_sequence_width = 2
-	start_offset = num_first_keysyms * (WIDTHOFCOMPOSETABLE+1)
 	we_finished = False
 	counter = 0
 
-	sequence_iterator = iter(xorg_compose_sequences)
+	sequence_iterator = iter(compose_sequences)
 	sequence = sequence_iterator.next()
 	while True:
 		first_keysym = sequence[0]					# Set the first keysym
-		compose_table.append([first_keysym, 0, 0, 0, 0, 0])
+		compose_table_sequence = [first_keysym] + \
+			map(lambda x: 0, range(WIDTHOFCOMPOSETABLE))
+		compose_table.append(compose_table_sequence)
 		while sequence[0] == first_keysym:
 			compose_table[counter][num_of_keysyms(sequence)-1] += 1
 			try:
@@ -813,12 +840,21 @@ if opt_gtk:
 		for i in range(WIDTHOFCOMPOSETABLE):
 			occurrences = compose_table[line_num][i+1]
 			compose_table[line_num][i+1] = ct_index
-			ct_index += occurrences * (i+2)
+			# If not 32bit, i + 1 is the next index in for loop
+			# and i + 2 is the next index + unichar size (== 1)
+			# If 32bit, i + 1 is the next index in for loop
+			# and i + 3 is the next index + unichar index size
+			# (== 1) + unichar length size (== 1)
+			if is_32bit:
+				ct_index += occurrences * (i+3)
+			else:
+				ct_index += occurrences * (i+2)
 
-	for sequence in xorg_compose_sequences:
+	for sequence in compose_sequences:
 		ct_second_part.append(map(convert_UnotationToHex, sequence))
 
-	print headerfile_start
+
+def print_compose_table_keysyms(compose_table):
 	for i in compose_table:
 		if opt_gtkexpanded:
 			print "0x%(ks)04X," % { "ks": keysymvalue(i[0]) },
@@ -827,21 +863,79 @@ if opt_gtk:
 			print 'IBUS_KEY_%(str)s' % { 'str': "".join(map(lambda x : str(x) + ", ", i)) }
 		else:
 			print '%(str)s' % { 'str': "".join(map(lambda x : str(x) + ", ", i)) }
-	for i in ct_second_part:
+
+
+def print_compose_table_values(ct_second_part, is_32bit, is_second):
+	i = 0
+	for s in ct_second_part:
+		length = s[-1]
+		seq_length = len(s) - length - 1
 		if opt_numeric:
-			for ks in i[1:][:-1]:
-				print '0x%(seq)04X, ' % { 'seq': keysymvalue(ks) },
-			print '0x%(cp)04X, ' % { 'cp':i[-1] }
-			"""
-			for ks in i[:-1]:
-				print '0x%(seq)04X, ' % { 'seq': keysymvalue(ks) },
-			print '0x%(cp)04X, ' % { 'cp':i[-1] }
-			"""
+			if not is_32bit or not is_second:
+				for ks in s[:seq_length][1:]:
+					print '0x%(seq)04X,' % { 'seq': keysymvalue(ks) },
+			if is_32bit and not is_second:
+				print '%(i)d, %(l)d,' % { 'i':i, 'l':length }
+			if not is_32bit or is_second:
+				for v in range(seq_length, seq_length + length):
+					print '0x%(cp)04X,' % { 'cp':s[v] },
+				print ''
 		elif opt_gtkexpanded:
-			print '%(seq)s0x%(cp)04X, ' % { 'seq': "".join(map(addprefix_GDK, i[:-1])), 'cp':i[-1] }
+			if not is_32bit or not is_second:
+				print '%(seq)s' % { 'seq': "".join(map(addprefix_GDK, s[:seq_length][1:])) },
+			if is_32bit and not is_second:
+				print '%(i)d, %(l)d,' % { 'i':i, 'l':length }
+			if not is_32bit or is_second:
+				for v in range(seq_length, seq_length + length):
+					print '0x%(cp)04X,' % { 'cp':s[v] },
+				print ''
 		else:
-			print '%(seq)s0x%(cp)04X, ' % { 'seq': "".join(map(addprefix_GDK, i[:-1][1:])), 'cp':i[-1] }
+			if not is_32bit or not is_second:
+				print '%(seq)s' % { 'seq': "".join(map(addprefix_GDK, s[:seq_length][1:])) },
+			if is_32bit and not is_second:
+				print '%(i)d, %(l)d,' % { 'i':i, 'l':length }
+			if not is_32bit or is_second:
+				for v in range(seq_length, seq_length + length):
+					print '0x%(cp)04X,' % { 'cp':s[v] },
+				print ''
+		i += length
+
+
+def compose_gtk():
+	compose_table = []
+	compose_table_32bit = []
+	ct_second_part = []
+	ct_second_part_32bit = []
+	start_offset = num_first_keysyms * (WIDTHOFCOMPOSETABLE+1)
+
+	make_compose_table(xorg_compose_sequences,
+	                   compose_table,
+	                   ct_second_part,
+	                   start_offset,
+	                   False)
+	print headerfile_start
+	print_compose_table_keysyms(compose_table)
+	print_compose_table_values(ct_second_part, False, False)
+	if len(xorg_compose_sequences_32bit) == 0:
+		print headerfile_end
+		return
+	print declare_compose_sequence_32bit_first
+	start_offset = num_first_keysyms_32bit * (WIDTHOFCOMPOSETABLE+1)
+	make_compose_table(xorg_compose_sequences_32bit,
+	                   compose_table_32bit,
+	                   ct_second_part_32bit,
+	                   start_offset,
+	                   True)
+	print_compose_table_keysyms(compose_table_32bit)
+	print_compose_table_values(ct_second_part_32bit, True, False)
+	print declare_compose_sequence_32bit_second
+	print_compose_table_values(ct_second_part_32bit, True, True)
 	print headerfile_end 
+
+
+if opt_gtk:
+	compose_gtk()
+
 
 def redecompose(codepoint):
 	(name, decomposition, combiningclass) = unicodedatabase[codepoint]
@@ -960,6 +1054,8 @@ if opt_statistics:
 	print "Number of items in flat array                              :", len(xorg_compose_sequences) * 6
 	print "  of which are zeroes                                      :", zeroes, "or ", (100 * zeroes) / (len(xorg_compose_sequences) * 6), " per cent"
 	print "Number of different first items                            :", num_first_keysyms
+	print "Number of different first items 32bit                      :", num_first_keysyms_32bit
+	print "Number of max keysym sequences                             :", WIDTHOFCOMPOSETABLE
 	print "Number of max bytes (if using flat array)                  :", num_entries * 2 * 6
 	print "Number of savings                                          :", zeroes * 2 - num_first_keysyms * 2 * 5
 	print 
