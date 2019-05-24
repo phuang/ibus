@@ -101,24 +101,24 @@ struct _IBusComposeTableCompactPrivate
  * Assign the value of "Number of different first items" of compose-parse.py
  * to n_seqs in IBusComposeTableCompact
  */
-const IBusComposeTableCompactPrivate ibus_compose_table_compact_32bit_priv = {
+IBusComposeTableCompactPrivate ibus_compose_table_compact_32bit_priv = {
     gtk_compose_seqs_compact_32bit_second
 };
 
 const IBusComposeTableCompactEx ibus_compose_table_compact = {
+    NULL,
     gtk_compose_seqs_compact,
     5,
     30,
-    6,
-    NULL
+    6
 };
 
 const IBusComposeTableCompactEx ibus_compose_table_compact_32bit = {
+    &ibus_compose_table_compact_32bit_priv,
     gtk_compose_seqs_compact_32bit_first,
     5,
     9,
-    6,
-    &ibus_compose_table_compact_32bit_priv 
+    6
 };
 
 static GSList *global_tables;
@@ -630,13 +630,15 @@ compare_seq (const void *key, const void *value)
 
 
 static gboolean
-check_table (IBusEngineSimple       *simple,
-             const IBusComposeTable *table,
-             gint                    n_compose)
+check_table (IBusEngineSimple         *simple,
+             const IBusComposeTableEx *table,
+             gint                      n_compose,
+             gboolean                  is_32bit)
 {
-    // g_debug("check_table");
     IBusEngineSimplePrivate *priv = simple->priv;
     gint row_stride = table->max_seq_len + 2;
+    guint16 *data_first;
+    int n_seqs;
     guint16 *seq;
 
     g_assert (IBUS_IS_ENGINE_SIMPLE (simple));
@@ -645,8 +647,17 @@ check_table (IBusEngineSimple       *simple,
     if (n_compose > table->max_seq_len)
         return FALSE;
 
+    if (is_32bit) {
+        if (!table->priv)
+            return FALSE;
+        data_first = table->priv->data_first;
+        n_seqs = table->priv->first_n_seqs;
+    } else {
+        data_first = table->data;
+        n_seqs = table->n_seqs;
+    }
     seq = bsearch (priv->compose_buffer,
-                   table->data, table->n_seqs,
+                   data_first, n_seqs,
                    sizeof (guint16) * row_stride,
                    compare_seq);
 
@@ -660,7 +671,7 @@ check_table (IBusEngineSimple       *simple,
     /* Back up to the first sequence that matches to make sure
      * we find the exact match if their is one.
      */
-    while (seq > table->data) {
+    while (seq > data_first) {
         prev_seq = seq - row_stride;
         if (compare_seq (priv->compose_buffer, prev_seq) != 0) {
             break;
@@ -671,14 +682,25 @@ check_table (IBusEngineSimple       *simple,
     /* complete sequence */
     if (n_compose == table->max_seq_len || seq[n_compose] == 0) {
         guint16 *next_seq;
-        gunichar value =
-            0x10000 * seq[table->max_seq_len] + seq[table->max_seq_len + 1];
+        gunichar value = 0;
+        int num = 0;
+        int index = 0;
+        gchar *output_str = NULL;
+        GError *error = NULL;
+
+        if (is_32bit) {
+            num = seq[table->max_seq_len];
+            index = seq[table->max_seq_len + 1];
+            value =  table->priv->data_second[index];
+        } else {
+            value = seq[table->max_seq_len];
+        }
 
         /* We found a tentative match. See if there are any longer
          * sequences containing this subsequence
          */
         next_seq = seq + row_stride;
-        if (next_seq < table->data + row_stride * table->n_seqs) {
+        if (next_seq < data_first + row_stride * n_seqs) {
             if (compare_seq (priv->compose_buffer, next_seq) == 0) {
                 priv->tentative_match = value;
                 priv->tentative_match_len = n_compose;
@@ -689,9 +711,21 @@ check_table (IBusEngineSimple       *simple,
             }
         }
 
-        ibus_engine_simple_commit_char (simple, value);
+        if (is_32bit) {
+            output_str = g_ucs4_to_utf8 (table->priv->data_second + index,
+                                         num, NULL, NULL, &error);
+            if (output_str) {
+                ibus_engine_simple_commit_str(simple, output_str);
+                g_free (output_str);
+            } else {
+                g_warning ("Failed to output multiple characters: %s",
+                           error->message);
+                g_error_free (error);
+            }
+        } else {
+            ibus_engine_simple_commit_char (simple, value);
+        }
         priv->compose_buffer[0] = 0;
-        // g_debug ("U+%04X\n", value);
     }
     ibus_engine_simple_update_preedit_text (simple);
     return TRUE;
@@ -754,10 +788,10 @@ ibus_check_compact_table (const IBusComposeTableCompactEx *table,
 
             if (seq_index[i + 1] - seq_index[i] > 0) {
                 seq = bsearch (compose_buffer + 1,
-                           table->data + seq_index[i],
-                           (seq_index[i + 1] - seq_index[i]) / row_stride,
-                           sizeof (guint16) * row_stride,
-                           compare_seq);
+                               table->data + seq_index[i],
+                               (seq_index[i + 1] - seq_index[i]) / row_stride,
+                               sizeof (guint16) * row_stride,
+                               compare_seq);
                 if (seq) {
                     if (i == n_compose - 1)
                         break;
@@ -1148,8 +1182,15 @@ ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
 
     while (list) {
         if (check_table (simple,
-            (IBusComposeTable *)list->data,
-            n_compose)) {
+            (IBusComposeTableEx *)list->data,
+            n_compose,
+            FALSE)) {
+            return TRUE;
+        }
+        if (check_table (simple,
+            (IBusComposeTableEx *)list->data,
+            n_compose,
+            TRUE)) {
             return TRUE;
         }
         list = list->next;
@@ -1178,12 +1219,12 @@ ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
             if (output_str) {
                 ibus_engine_simple_commit_str (simple, output_str);
                 g_free (output_str);
-                g_free (output_chars);
             } else {
                 g_warning ("Failed to output multiple characters: %s",
                            error->message);
                 g_error_free (error);
             }
+            g_free (output_chars);
             priv->compose_buffer[0] = 0;
         }
         

@@ -27,6 +27,15 @@
 G_BEGIN_DECLS
 
 extern const IBusComposeTableCompactEx ibus_compose_table_compact;
+extern const IBusComposeTableCompactEx ibus_compose_table_compact_32bit;
+
+struct _IBusComposeTablePrivate
+{
+    guint16 *data_first;
+    guint32 *data_second;
+    gsize first_n_seqs;
+    gsize second_size;
+};
 
 gboolean ibus_check_algorithmically (const guint16              *compose_buffer,
                                      gint                        n_compose,

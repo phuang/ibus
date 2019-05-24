@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -44,7 +44,7 @@
 
 G_BEGIN_DECLS
 
-#define IBUS_MAX_COMPOSE_LEN 7
+#define IBUS_MAX_COMPOSE_LEN 0xFF
 
 /*
  * Type macros.

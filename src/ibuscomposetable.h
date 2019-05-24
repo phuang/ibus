@@ -29,12 +29,23 @@
 G_BEGIN_DECLS
 
 typedef struct _IBusComposeTable IBusComposeTable;
+typedef struct _IBusComposeTableEx IBusComposeTableEx;
+typedef struct _IBusComposeTablePrivate IBusComposeTablePrivate;
 typedef struct _IBusComposeTableCompact IBusComposeTableCompact;
 typedef struct _IBusComposeTableCompactEx IBusComposeTableCompactEx;
 typedef struct _IBusComposeTableCompactPrivate IBusComposeTableCompactPrivate;
 
 struct _IBusComposeTable
 {
+    guint16 *data;
+    gint max_seq_len;
+    gint n_seqs;
+    guint32 id;
+};
+
+struct _IBusComposeTableEx
+{
+    IBusComposeTablePrivate *priv;
     guint16 *data;
     gint max_seq_len;
     gint n_seqs;
@@ -51,22 +62,23 @@ struct _IBusComposeTableCompact
 
 struct _IBusComposeTableCompactEx
 {
+    IBusComposeTableCompactPrivate *priv;
     const guint16 *data;
     gint max_seq_len;
     gint n_index_size;
     gint n_index_stride;
-    IBusComposeTableCompactPrivate *priv;
 };
 
-IBusComposeTable *ibus_compose_table_new_with_file (const gchar *compose_file);
-GSList           *ibus_compose_table_list_add_array
+IBusComposeTableEx *
+                  ibus_compose_table_new_with_file (const gchar *compose_file);
+GSList *          ibus_compose_table_list_add_array
                                                    (GSList
                                                                 *compose_tables,
                                                     const guint16
                                                                 *data,
                                                     gint         max_seq_len,
                                                     gint         n_seqs);
-GSList           *ibus_compose_table_list_add_file (GSList
+GSList *          ibus_compose_table_list_add_file (GSList
                                                                 *compose_tables,
                                                     const gchar *compose_file);
 
