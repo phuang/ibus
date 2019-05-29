@@ -44,29 +44,31 @@
 #include <stdlib.h>
 
 #define X11_DATADIR X11_DATA_PREFIX "/share/X11/locale"
-#define EMOJI_SOURCE_LEN 100
 #define IBUS_ENGINE_SIMPLE_GET_PRIVATE(o)  \
    (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimplePrivate))
 
 #define SET_COMPOSE_BUFFER_ELEMENT_NEXT(buffer, index, value) {         \
-    if ((index) < EMOJI_SOURCE_LEN) {                                   \
+    if ((index) >= COMPOSE_BUFFER_SIZE &&                               \
+        COMPOSE_BUFFER_SIZE < IBUS_MAX_COMPOSE_LEN) {                   \
+        COMPOSE_BUFFER_SIZE = ((index) + 10) < IBUS_MAX_COMPOSE_LEN     \
+                              ? ((index) + 10) : IBUS_MAX_COMPOSE_LEN;  \
+        (buffer) = g_renew (guint16, (buffer), COMPOSE_BUFFER_SIZE + 1);\
+    }                                                                   \
+    if ((index) < COMPOSE_BUFFER_SIZE) {                                \
         (buffer)[(index)] = (value);                                    \
         (index) += 1;                                                   \
     }                                                                   \
 }
 
 #define SET_COMPOSE_BUFFER_ELEMENT_END(buffer, index, value) {          \
-    if ((index) >= EMOJI_SOURCE_LEN) {                                  \
-        (index) = EMOJI_SOURCE_LEN;                                     \
-        (buffer)[EMOJI_SOURCE_LEN - 1] = (value);                       \
-    } else {                                                            \
-        (buffer)[(index)] = (value);                                    \
-    }                                                                   \
+    if ((index) > COMPOSE_BUFFER_SIZE)                                  \
+        (index) = COMPOSE_BUFFER_SIZE;                                  \
+    (buffer)[(index)] = (value);                                        \
 }
 
 #define CHECK_COMPOSE_BUFFER_LENGTH(index) {                            \
-    if ((index) > EMOJI_SOURCE_LEN)                                     \
-        (index) = EMOJI_SOURCE_LEN;                                     \
+    if ((index) > COMPOSE_BUFFER_SIZE)                                  \
+        (index) = COMPOSE_BUFFER_SIZE;                                  \
 }
 
 typedef struct {
@@ -75,7 +77,7 @@ typedef struct {
 } IBusEngineDict;
 
 struct _IBusEngineSimplePrivate {
-    guint16             compose_buffer[EMOJI_SOURCE_LEN];
+    guint16            *compose_buffer;
     gunichar            tentative_match;
     gchar              *tentative_emoji;
     gint                tentative_match_len;
@@ -121,6 +123,7 @@ const IBusComposeTableCompactEx ibus_compose_table_compact_32bit = {
     6
 };
 
+guint COMPOSE_BUFFER_SIZE = 20;
 static GSList *global_tables;
 
 /* functions prototype */
@@ -175,6 +178,7 @@ static void
 ibus_engine_simple_init (IBusEngineSimple *simple)
 {
     simple->priv = IBUS_ENGINE_SIMPLE_GET_PRIVATE (simple);
+    simple->priv->compose_buffer = g_new (guint16, COMPOSE_BUFFER_SIZE + 1);
     simple->priv->hex_mode_enabled =
         g_getenv("IBUS_ENABLE_CTRL_SHIFT_U") != NULL ||
         g_getenv("IBUS_ENABLE_CONTROL_SHIFT_U") != NULL;
@@ -193,7 +197,8 @@ ibus_engine_simple_destroy (IBusEngineSimple *simple)
         priv->emoji_dict = NULL;
     }
 
-    g_clear_pointer (&priv->lookup_table, g_object_unref);
+    g_clear_object (&priv->lookup_table);
+    g_clear_pointer (&priv->compose_buffer, g_free);
     g_clear_pointer (&priv->tentative_emoji, g_free);
 
     IBUS_OBJECT_CLASS(ibus_engine_simple_parent_class)->destroy (
@@ -356,7 +361,7 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
 
-    gunichar outbuf[EMOJI_SOURCE_LEN + 1];
+    gunichar outbuf[COMPOSE_BUFFER_SIZE + 1];
     int len = 0;
 
     if (priv->in_hex_sequence || priv->in_emoji_sequence) {
@@ -376,10 +381,7 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
             ++hexchars;
         }
 
-        if (priv->in_hex_sequence)
-            g_assert (len <= IBUS_MAX_COMPOSE_LEN + 1);
-        else
-            g_assert (len <= EMOJI_SOURCE_LEN + 1);
+        g_assert (len <= COMPOSE_BUFFER_SIZE);
     } else if (priv->tentative_match) {
         outbuf[len++] = priv->tentative_match;
     } else if (priv->tentative_emoji && *priv->tentative_emoji) {
@@ -406,7 +408,7 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
             ++len;
             ++hexchars;
         }
-        g_assert (len <= IBUS_MAX_COMPOSE_LEN + 1);
+        g_assert (len <= IBUS_MAX_COMPOSE_LEN);
     }
 
     outbuf[len] = L'\0';
@@ -1265,11 +1267,11 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     guint printable_keyval;
     gint i;
 
-    while (n_compose < EMOJI_SOURCE_LEN && priv->compose_buffer[n_compose] != 0)
+    while (n_compose <= COMPOSE_BUFFER_SIZE && priv->compose_buffer[n_compose] != 0)
         n_compose++;
-    if (n_compose >= EMOJI_SOURCE_LEN) {
+    if (n_compose > COMPOSE_BUFFER_SIZE) {
         g_warning ("copmose table buffer is full.");
-        n_compose = EMOJI_SOURCE_LEN - 1;
+        n_compose = COMPOSE_BUFFER_SIZE;
     }
 
     if (modifiers & IBUS_RELEASE_MASK) {
@@ -1348,8 +1350,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     /* gtkimcontextsimple causes a buffer overflow in priv->compose_buffer.
      * Add the check code here.
      */
-    if ((n_compose >= IBUS_MAX_COMPOSE_LEN && priv->in_hex_sequence) ||
-        (n_compose >= EMOJI_SOURCE_LEN && priv->in_emoji_sequence)) {
+    if (n_compose > COMPOSE_BUFFER_SIZE &&
+        (priv->in_hex_sequence || priv->in_emoji_sequence)) {
         if (is_backspace) {
             priv->compose_buffer[--n_compose] = 0;
         }
