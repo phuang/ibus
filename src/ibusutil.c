@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2010-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -99,14 +99,14 @@ _load_lang()
     struct stat buf;
 
 #ifdef ENABLE_NLS
-    bindtextdomain ("iso_639-3", LOCALEDIR);
-    bind_textdomain_codeset ("iso_639-3", "UTF-8");
+    bindtextdomain ("iso_639_3", LOCALEDIR);
+    bind_textdomain_codeset ("iso_639_3", "UTF-8");
 #endif
 
     __languages_dict = g_hash_table_new_full (g_str_hash,
             g_str_equal, g_free, g_free);
     filename = g_build_filename (ISOCODES_PREFIX,
-                                 "share/xml/iso-codes/iso_639-3.xml",
+                                 "share/xml/iso-codes/iso_639_3.xml",
                                  NULL);
     if (g_stat (filename, &buf) != 0) {
         g_warning ("Can not get stat of file %s", filename);
@@ -197,7 +197,7 @@ ibus_get_language_name (const gchar *_locale)
     if (g_strcmp0 (raw, "Other") == 0)
         return g_strdup (dgettext (GETTEXT_PACKAGE, N_("Other")));
     else
-        translation = dgettext ("iso_639-3", raw);
+        translation = dgettext ("iso_639_3", raw);
 #else
     translation = raw;
 #endif

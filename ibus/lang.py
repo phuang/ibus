@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2019 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -36,7 +36,7 @@ def get_language_name(_locale):
     lang = lang.lower()
     if lang in __languages_dict:
         lang = __languages_dict[lang]
-        lang = gettext.dgettext("iso_639-3", lang)
+        lang = gettext.dgettext("iso_639_3", lang)
     else:
         lang = _(u"Other")
         lang = gettext.dgettext("ibus", lang)
@@ -62,7 +62,7 @@ def __char_data(data):
 def __load_lang():
     import os
     import _config
-    iso_639_3_xml = os.path.join(_config.ISOCODES_PREFIX, "share/xml/iso-codes/iso_639-3.xml")
+    iso_639_3_xml = os.path.join(_config.ISOCODES_PREFIX, "share/xml/iso-codes/iso_639_3.xml")
     p = xml.parsers.expat.ParserCreate()
     p.StartElementHandler = __start_element
     p.EndElementHandler = __end_element
