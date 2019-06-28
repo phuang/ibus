@@ -178,7 +178,7 @@ static void
 ibus_engine_simple_init (IBusEngineSimple *simple)
 {
     simple->priv = IBUS_ENGINE_SIMPLE_GET_PRIVATE (simple);
-    simple->priv->compose_buffer = g_new (guint16, COMPOSE_BUFFER_SIZE + 1);
+    simple->priv->compose_buffer = g_new0(guint16, COMPOSE_BUFFER_SIZE + 1);
     simple->priv->hex_mode_enabled =
         g_getenv("IBUS_ENABLE_CTRL_SHIFT_U") != NULL ||
         g_getenv("IBUS_ENABLE_CONTROL_SHIFT_U") != NULL;
@@ -1747,9 +1747,14 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
     gboolean retval = TRUE;
     gchar *path = NULL;
     const gchar *home;
+#if GLIB_CHECK_VERSION (2, 58, 0)
+    const gchar * const *langs;
+    const gchar * const *lang = NULL;
+#else
     const gchar *_locale;
     gchar **langs = NULL;
     gchar **lang = NULL;
+#endif
     gchar * const sys_langs[] = { "el_gr", "fi_fi", "pt_br", NULL };
     gchar * const *sys_lang = NULL;
 
@@ -1787,6 +1792,9 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
         g_free (path);
         path = NULL;
 
+#if GLIB_CHECK_VERSION (2, 58, 0)
+        langs = g_get_language_names_with_category ("LC_CTYPE");
+#else
         _locale = g_getenv ("LC_CTYPE");
         if (_locale == NULL)
             _locale = g_getenv ("LANG");
@@ -1795,6 +1803,7 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
 
         /* FIXME: https://bugzilla.gnome.org/show_bug.cgi?id=751826 */
         langs = g_get_locale_variants (_locale);
+#endif
 
         for (lang = langs; *lang; lang++) {
             if (g_str_has_prefix (*lang, "en_US"))
@@ -1821,7 +1830,9 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
             path = NULL;
         }
 
+#if !GLIB_CHECK_VERSION (2, 58, 0)
         g_strfreev (langs);
+#endif
 
         if (path != NULL)
             ibus_engine_simple_add_compose_file (simple, path);
@@ -1853,3 +1864,4 @@ ibus_engine_simple_add_compose_file (IBusEngineSimple *simple,
                                                       compose_file);
     return TRUE;
 }
+

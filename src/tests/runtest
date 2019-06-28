@@ -184,7 +184,9 @@ run_test_case()
         export GTK_IM_MODULE=ibus
     fi
 
-    "../$tst" ${1+"$@"}
+    export IBUS_COMPOSE_CACHE_DIR=$PWD
+
+    "../$tst" ../$top_srcdir/src/tests ${1+"$@"}
 
     retval=`expr $retval \| $?`
 

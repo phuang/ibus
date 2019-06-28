@@ -497,13 +497,18 @@ static gchar *
 ibus_compose_hash_get_cache_path (guint32 hash)
 {
     gchar *basename = NULL;
+    const gchar *cache_dir;
     gchar *dir = NULL;
     gchar *path = NULL;
 
     basename = g_strdup_printf ("%08x.cache", hash);
 
-    dir = g_build_filename (g_get_user_cache_dir (),
-                            "ibus", "compose", NULL);
+    if ((cache_dir = g_getenv ("IBUS_COMPOSE_CACHE_DIR"))) {
+        dir = g_strdup (cache_dir);
+    } else {
+        dir = g_build_filename (g_get_user_cache_dir (),
+                                "ibus", "compose", NULL);
+    }
     path = g_build_filename (dir, basename, NULL);
     if (g_mkdir_with_parents (dir, 0755) != 0) {
         g_warning ("Failed to mkdir %s", dir);
@@ -817,7 +822,7 @@ out_load_cache:
 }
 
 
-static IBusComposeTableEx *
+IBusComposeTableEx *
 ibus_compose_table_load_cache (const gchar *compose_file)
 {
     IBusComposeTableEx *retval = NULL;
@@ -862,7 +867,7 @@ ibus_compose_table_load_cache (const gchar *compose_file)
 }
 
 
-static void
+void
 ibus_compose_table_save_cache (IBusComposeTableEx *compose_table)
 {
     gchar *path = NULL;
@@ -1068,7 +1073,7 @@ ibus_compose_table_list_add_array (GSList        *compose_tables,
     for (i = 0; i < length; i++)
         ibus_compose_seqs[i] = data[i];
 
-    compose_table = g_new (IBusComposeTableEx, 1);
+    compose_table = g_new0 (IBusComposeTableEx, 1);
     compose_table->data = ibus_compose_seqs;
     compose_table->max_seq_len = max_seq_len;
     compose_table->n_seqs = n_seqs;

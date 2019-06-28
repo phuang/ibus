@@ -71,6 +71,10 @@ struct _IBusComposeTableCompactEx
 
 IBusComposeTableEx *
                   ibus_compose_table_new_with_file (const gchar *compose_file);
+IBusComposeTableEx *
+                  ibus_compose_table_load_cache    (const gchar *compose_file);
+void              ibus_compose_table_save_cache    (IBusComposeTableEx
+                                                                *compose_table);
 GSList *          ibus_compose_table_list_add_array
                                                    (GSList
                                                                 *compose_tables,

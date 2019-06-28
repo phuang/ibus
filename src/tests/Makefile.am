@@ -78,7 +78,7 @@ TESTS_ENVIRONMENT = \
 
 LOG_COMPILER = $(srcdir)/runtest
 
-EXTRA_DIST = runtest ibus-compose.env
+EXTRA_DIST = runtest ibus-compose.emoji ibus-compose.env
 
 ibus_bus_SOURCES = ibus-bus.c
 ibus_bus_LDADD = $(prog_ldadd)

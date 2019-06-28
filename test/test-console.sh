@@ -4,7 +4,7 @@
 #
 # ibus-anthy - The Anthy engine for IBus
 #
-# Copyright (c) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -189,6 +189,7 @@ run_test_suite()
     fail=0
 
     export GTK_IM_MODULE=ibus
+    export IBUS_COMPOSE_CACHE_DIR=$PWD
     if test -f $TEST_LOG ; then
         rm $TEST_LOG
     fi
@@ -198,7 +199,7 @@ run_test_suite()
             ENVS="`cat $SRCDIR/${tst}.env`"
         fi
         if test x"$ENVS" = x ; then
-            $BUILDDIR/$tst >&${tst}.log
+            $BUILDDIR/$tst $SRCDIR >&${tst}.log
             retval=$?
             read pass fail << EOF
             `count_case_result $retval $pass $fail`
@@ -213,7 +214,7 @@ EOF
                     continue
                 fi
                 export $e
-                $BUILDDIR/$tst >&${tst}.${i}.log
+                $BUILDDIR/$tst $SRCDIR >&${tst}.${i}.log
                 retval=$?
                 read pass fail << EOF
                 `count_case_result $retval $pass $fail`
