@@ -12,7 +12,6 @@ gchar *m_compose_file;
 IBusComposeTableEx *m_compose_table;
 IBusEngine *m_engine;
 gchar *m_srcdir;
-int m_retval;
 
 static gboolean window_focus_in_event_cb (GtkWidget     *entry,
                                           GdkEventFocus *event,
@@ -124,8 +123,7 @@ register_ibus_engine ()
 static gboolean
 finit (gpointer data)
 {
-    m_retval = -1;
-    g_warning ("time out");
+    g_test_incomplete ("time out");
     gtk_main_quit ();
     return FALSE;
 }
@@ -141,7 +139,9 @@ set_engine_cb (GObject *object, GAsyncResult *res, gpointer data)
     IBusComposeTablePrivate *priv;
 
     if (!ibus_bus_set_global_engine_async_finish (bus, res, &error)) {
-        g_warning ("set engine failed: %s", error->message);
+        gchar *msg = g_strdup_printf ("set engine failed: %s", error->message);
+        g_test_incomplete (msg);
+        g_free (msg);
         g_error_free (error);
         return;
     }
@@ -250,7 +250,7 @@ window_inserted_text_cb (GtkEntryBuffer *buffer,
             test = GREEN "PASS" NC;
         } else {
             test = RED "FAIL" NC;
-            m_retval = -1;
+            g_test_fail ();
         }
         g_print ("%05d/%05d %s expected: %04X typed: %04X\n",
                  seq,
@@ -278,7 +278,7 @@ window_inserted_text_cb (GtkEntryBuffer *buffer,
             test = GREEN "PASS" NC;
         } else {
             test = RED "FAIL" NC;
-            m_retval = -1;
+            g_test_fail ();
         }
         g_print ("%05d/%05ld %s expected: %04X[%d] typed: %04X\n",
                  seq,
@@ -330,20 +330,39 @@ create_window ()
     gtk_widget_show_all (window);
 }
 
-int
-main (int argc, char *argv[])
+static void
+test_compose (void)
 {
-    ibus_init ();
-    gtk_init (&argc, &argv);
-
-    m_srcdir = argc > 1 ? g_strdup (argv[1]) : g_strdup (".");
-    m_compose_file = g_strdup (g_getenv ("COMPOSE_FILE"));
-
-    if (!register_ibus_engine ())
-        return -1;
+    if (!register_ibus_engine ()) {
+        g_test_fail ();
+        return;
+    }
 
     create_window ();
     gtk_main ();
 
-    return m_retval;
+}
+
+int
+main (int argc, char *argv[])
+{
+    const gchar *test_name;
+    gchar *test_path;
+
+    ibus_init ();
+    g_test_init (&argc, &argv, NULL);
+    gtk_init (&argc, &argv);
+
+    m_srcdir = argc > 1 ? g_strdup (argv[1]) : g_strdup (".");
+    m_compose_file = g_strdup (g_getenv ("COMPOSE_FILE"));
+#if GLIB_CHECK_VERSION (2, 58, 0)
+    test_name = g_get_language_names_with_category ("LC_CTYPE")[0];
+#else
+    test_name = g_getenv ("LANG");
+#endif
+    test_path = g_build_filename ("/ibus-compose", test_name, NULL);
+    g_test_add_func (test_path, test_compose);
+    g_free (test_path);
+
+    return g_test_run ();
 }
