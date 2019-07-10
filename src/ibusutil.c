@@ -53,6 +53,7 @@ _iso_codes_parse_xml_node (XMLNode          *node)
         XMLNode *sub_node = (XMLNode *)p->data;
         gchar **attributes = NULL;
         int i, j;
+        gboolean has_common_name = FALSE;
         struct {
             const gchar *key;
             gchar *value;
@@ -68,14 +69,24 @@ _iso_codes_parse_xml_node (XMLNode          *node)
 
         attributes = sub_node->attributes;
         for (i = 0; attributes[i]; i += 2) {
-            if (g_strcmp0 (attributes[i], "name") == 0) {
+            if (!g_strcmp0 (attributes[i], "common_name")) {
                 for (j = 0; j < G_N_ELEMENTS (entries); j++) {
                     if (entries[j].value == NULL)
                         continue;
-                    g_hash_table_insert (__languages_dict,
-                                         (gpointer) g_strdup (entries[j].value),
-                                         (gpointer) g_strdup (attributes[i + 1]));
-                    entries[j].value = NULL;
+                    g_hash_table_replace (__languages_dict,
+                                          g_strdup (entries[j].value),
+                                          g_strdup (attributes[i + 1]));
+                }
+                has_common_name = TRUE;
+            } else if (!g_strcmp0 (attributes[i], "name")) {
+                if (has_common_name)
+                    continue;
+                for (j = 0; j < G_N_ELEMENTS (entries); j++) {
+                    if (entries[j].value == NULL)
+                        continue;
+                    g_hash_table_replace (__languages_dict,
+                                          g_strdup (entries[j].value),
+                                          g_strdup (attributes[i + 1]));
                 }
             } else {
                 for (j = 0; j < G_N_ELEMENTS (entries); j++) {
