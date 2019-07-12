@@ -78,7 +78,44 @@ TESTS_ENVIRONMENT = \
 
 LOG_COMPILER = $(srcdir)/runtest
 
-EXTRA_DIST = runtest ibus-compose.emoji ibus-compose.env
+if ENABLE_INSTALL_TESTS
+test_metas_in = meta.test.in
+test_execs = $(TESTS:ibus-compose=ibus-compose-locales)
+test_metas = $(addsuffix .test, $(test_execs))
+test_sources_DATA = \
+    $(test_metas) \
+    ibus-compose.emoji \
+    ibus-compose.env \
+    $(NULL)
+test_sourcesdir = $(datadir)/installed-tests/ibus
+
+test_execs_PROGRAMS = $(TESTS)
+if ENABLE_GTK3
+test_execs_SCRIPTS = ibus-compose-locales
+endif
+test_execsdir = $(libexecdir)/installed-tests/ibus
+endif
+
+$(test_metas): $(test_metas_in) $(test_programs)
+	f=`echo $@ | sed -e 's/\.test//'`; \
+	TEST_EXEC=$(test_execsdir)/$$f; \
+	sed -e "s|@TEST_EXEC[@]|$$TEST_EXEC|g" $(test_metas_in) > $@.tmp; \
+	mv $@.tmp $@; \
+	$(NULL)
+
+ibus-compose-locales: ibus-compose-locales.in
+	SRCDIR=$(test_sourcesdir); \
+	sed -e "s|@SRCDIR[@]|$$SRCDIR|g" $< > $@.tmp; \
+	mv $@.tmp $@; \
+	$(NULL)
+
+EXTRA_DIST = \
+    $(test_metas_in) \
+    runtest \
+    ibus-compose.emoji \
+    ibus-compose.env \
+    ibus-compose-locales.in \
+    $(NULL)
 
 ibus_bus_SOURCES = ibus-bus.c
 ibus_bus_LDADD = $(prog_ldadd)

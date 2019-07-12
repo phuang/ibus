@@ -1,0 +1,23 @@
+#!/bin/sh
+
+SRCDIR=@SRCDIR@
+BUILDDIR=`dirname $0`
+
+
+export IBUS_COMPOSE_CACHE_DIR=$PWD
+
+for var in `cat $SRCDIR/ibus-compose.env`
+do
+    IS_COMMENT=`echo "$var" | grep "^#"`
+    if [ "x$IS_COMMENT" != x ] ; then
+        continue
+    fi
+    env $var $BUILDDIR/ibus-compose $SRCDIR $@
+
+    CACHE_FILES=`ls *.cache`
+    if [ x"$CACHE_FILES" != x ] ; then
+        echo "Clean $CACHE_FILES"
+        rm $CACHE_FILES
+    fi
+done
+

@@ -264,8 +264,6 @@ window_inserted_text_cb (GtkEntryBuffer *buffer,
         guint index = priv->data_first[i + 1];
         guint j = 0;
         gboolean valid_output = TRUE;
-        if (seq == 2)
-            g_print ("test\n");
         for (j = 0; j < num; j++) {
             if (priv->data_second[index + j] != code) {
                 valid_output = FALSE;
@@ -351,6 +349,14 @@ main (int argc, char *argv[])
 
     ibus_init ();
     g_test_init (&argc, &argv, NULL);
+    /* FIXME:
+     * IBusIMContext opens GtkIMContextSimple as the slave and
+     * GtkIMContextSimple opens the compose table on el_GR.UTF-8, and the
+     * multiple outputs in el_GR's compose causes a warning in gtkcomposetable 
+     * and the warning always causes a fatal in GTest:
+     " "GTK+ supports to output one char only: "
+     */
+    g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
     gtk_init (&argc, &argv);
 
     m_srcdir = argc > 1 ? g_strdup (argv[1]) : g_strdup (".");

@@ -595,6 +595,18 @@ PKG_CHECK_MODULES(XTEST,
 )
 AM_CONDITIONAL([ENABLE_XTEST], [test x"$enable_xtest" = x"yes"])
 
+# --enable-install-tests
+AC_ARG_ENABLE(install-tests,
+    AS_HELP_STRING([--enable-install-tests],
+                   [Enable to install tests]),
+    [enable_install_tests=$enableval],
+    [enable_install_tests=no]
+)
+AM_CONDITIONAL([ENABLE_INSTALL_TESTS], [test x"$enable_install_tests" = x"yes"])
+if test x"$enable_install_tests" = x"no"; then
+    enable_install_tests="no (disabled, use --enable-install-tests to enable)"
+fi
+
 
 # --disable-emoji-dict option.
 AC_ARG_ENABLE(emoji-dict,
@@ -773,5 +785,6 @@ Build options:
   Enable Unicode dict           $enable_unicode_dict
   UCD directory                 $UCD_DIR
   Run test cases                $enable_tests
+  Install tests                 $enable_install_tests
 ])
 

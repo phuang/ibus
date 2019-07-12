@@ -200,7 +200,7 @@ if test -f $envfile ; then
     ENVS="`cat $envfile`"
 fi;
 if test x"$ENVS" = x ; then
-    run_test_case
+    run_test_case $@
 else
     LANG_backup=$LANG
     i=1
@@ -212,7 +212,7 @@ else
         export $e
         echo "Run `func_basename $tst` on $e"
         echo "======================="
-        run_test_case
+        run_test_case $@
         echo ""
         i=`expr $i + 1`
     done
