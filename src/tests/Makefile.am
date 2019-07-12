@@ -79,6 +79,7 @@ TESTS_ENVIRONMENT = \
 LOG_COMPILER = $(srcdir)/runtest
 
 if ENABLE_INSTALL_TESTS
+bin_SCRIPTS = ibus-desktop-testing-runner
 test_metas_in = meta.test.in
 test_execs = $(TESTS:ibus-compose=ibus-compose-locales)
 test_metas = $(addsuffix .test, $(test_execs))
@@ -109,12 +110,20 @@ ibus-compose-locales: ibus-compose-locales.in
 	mv $@.tmp $@; \
 	$(NULL)
 
+    ibus-desktop-testing-runner.in \
+ibus-desktop-testing-runner: ibus-desktop-testing-runner.in
+	SRCDIR=$(test_sourcesdir); \
+	sed -e "s|@SRCDIR[@]|$$SRCDIR|g" $< > $@.tmp; \
+	mv $@.tmp $@; \
+	$(NULL)
+
 EXTRA_DIST = \
     $(test_metas_in) \
     runtest \
     ibus-compose.emoji \
     ibus-compose.env \
     ibus-compose-locales.in \
+    ibus-desktop-testing-runner.in \
     $(NULL)
 
 ibus_bus_SOURCES = ibus-bus.c
