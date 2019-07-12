@@ -105,8 +105,8 @@ $(test_metas): $(test_metas_in) $(test_programs)
 	$(NULL)
 
 ibus-compose-locales: ibus-compose-locales.in
-	SRCDIR=$(test_sourcesdir); \
-	sed -e "s|@SRCDIR[@]|$$SRCDIR|g" $< > $@.tmp; \
+	INSTALLEDDIR=$(datadir)/installed-tests; \
+	sed -e "s|@INSTALLEDDIR[@]|$$INSTALLEDDIR|g" $< > $@.tmp; \
 	mv $@.tmp $@; \
 	$(NULL)
 

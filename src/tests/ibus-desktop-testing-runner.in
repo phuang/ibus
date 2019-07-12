@@ -2,7 +2,7 @@
 # -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*-
 # vim:set noet ts=4:
 #
-# ibus-anthy - The Anthy engine for IBus
+# ibus - The Input Bus
 #
 # Copyright (c) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2018 Red Hat, Inc.
@@ -33,15 +33,31 @@ VERSION=0.1
 DISPLAY=:99.0
 BUILDDIR="."
 SRCDIR="."
-TEST_LOG=test-suite.log
+TEST_LOG="test-suite.log"
+RESULT_LOG=""
 HAVE_GRAPHICS=1
 DESKTOP_COMMAND="gnome-session"
 PID_XORG=0
 PID_GNOME_SESSION=0
+TESTING_RUNNER="default"
 TESTS=""
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
+
+print_log()
+{
+    if [ x"$RESULT_LOG" != x ] ; then
+        # avoid 'echo -e' before call 'sed'.
+        if [ x"$1" = x'-e' ] ; then
+            shift
+        fi
+        NO_ESCAPE=`echo $@ | sed -e 's/\\\033\\[0;3.m//g' -e 's/\\\033\\[0m//g'`
+        echo $NO_ESCAPE >> $RESULT_LOG
+    else
+        echo $@
+    fi
+}
 
 usage()
 {
@@ -57,13 +73,19 @@ usage()
 "-c, --no-graphics                Use Xvfb instead of Xorg\n"                  \
 "-d, --desktop=DESKTOP            Run DESTKTOP. The default is gnome-session\n" \
 "-t, --tests=\"TESTS...\"           Run TESTS programs which is separated by space\n" \
+"-r, --runner=RUNNER              Run TESTS programs with a test RUNNER.\n"    \
+"                                 RUNNDER = gnome or default.\n"               \
+"                                 default is an embedded runner.\n"            \
+"-o, --output=OUTPUT_FILE         OUtput the log to OUTPUT_FILE\n"             \
+"-O, --result=RESULT_FILE         OUtput the result to RESULT_FILE\n"          \
 ""
 }
 
 parse_args()
 {
     # This is GNU getopt. "sudo port getopt" in BSD?
-    ARGS=`getopt -o hvb:s:cd:t: --long help,version,builddir:,srcdir:,no-graphics,desktop:,tests:\
+    ARGS=`getopt -o hvb:s:cd:t:r:o:O: --long \
+          help,version,builddir:,srcdir:,no-graphics,desktop:,tests:,runner:,output:,result:\
         -- "$@"`;
     eval set -- "$ARGS"
     while [ 1 ] ; do
@@ -75,6 +97,9 @@ parse_args()
         -c | --no-graphics ) HAVE_GRAPHICS=0; shift;;
         -d | --desktop )     DESKTOP_COMMAND="$2"; shift 2;;
         -t | --tests )       TESTS="$2"; shift 2;;
+        -r | --runner )      TESTING_RUNNER="$2"; shift 2;;
+        -o | --output )      TEST_LOG="$2"; shift 2;;
+        -O | --result )      RESULT_LOG="$2"; shift 2;;
         -- )                 shift; break;;
         * )                  usage; exit 1;;
         esac
@@ -83,18 +108,31 @@ parse_args()
 
 init_desktop()
 {
+    if [ "$RESULT_LOG" != "" ] ; then
+        rm $RESULT_LOG
+    fi
+    if [ "$TEST_LOG" = "" ] ; then
+        print_log -e "${RED}FAIL${NC}: ${RED}ERROR${NC}: a log file is required to get return value with 'read' command"
+        abrt
+    else
+        rm $TEST_LOG
+    fi
     if test x$FORCE_TEST != x ; then
         RUN_ARGS="$RUN_ARGS --force"
     fi
 
     if test ! -f $HOME/.config/gnome-initial-setup-done ; then
+        IS_SYSTEM_ACCOUNT=false
+        if [ "$USER" = "root" ] ; then
+            IS_SYSTEM_ACCOUNT=true
+        fi
         if test ! -f /var/lib/AccountsService/users/$USER ; then
             mkdir -p /var/lib/AccountsService/users
             cat >> /var/lib/AccountsService/users/$USER << _EOF
 [User]
 Language=ja_JP.UTF-8
 XSession=gnome
-SystemAccount=false
+SystemAccount=$IS_SYSTEM_ACCOUNT
 _EOF
         fi
         mkdir -p $HOME/.config
@@ -167,71 +205,120 @@ echo_case_result()
 {
     retval=$1
     tst=$2
-    log=$3
-    subtst=${4:-''}
+    subtst=${3:-''}
 
     if test $retval -eq  0 ; then
-        echo -e "${GREEN}PASS${NC}: $tst $subtst"
+        print_log -e "${GREEN}PASS${NC}: $tst $subtst"
     else
-        echo -e "${RED}FAIL${NC}: $tst $subtst"
-        echo "FAIL: $tst $subtst" >> $TEST_LOG
-        echo "======================" >> $TEST_LOG
-        echo "" >> $TEST_LOG
-        cat "$log" >> $TEST_LOG
-        echo "" >> $TEST_LOG
+        print_log -e "${RED}FAIL${NC}: $tst $subtst"
+        print_log "======================"
+        print_log ""
     fi
 }
 
-run_test_suite()
+run_direct_test_cases()
 {
-    cd `dirname $0`
     pass=0
     fail=0
-
-    export GTK_IM_MODULE=ibus
-    export IBUS_COMPOSE_CACHE_DIR=$PWD
-    if test -f $TEST_LOG ; then
-        rm $TEST_LOG
-    fi
     for tst in $TESTS; do
         ENVS=
         if test -f $SRCDIR/${tst}.env ; then
             ENVS="`cat $SRCDIR/${tst}.env`"
         fi
         if test x"$ENVS" = x ; then
-            $BUILDDIR/$tst $SRCDIR >&${tst}.log
+            $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
             retval=$?
             read pass fail << EOF
             `count_case_result $retval $pass $fail`
 EOF
-            echo_case_result $retval $tst ${tst}.log
+            echo_case_result $retval $tst
+            CACHE_FILES=`ls *.cache`
+            if [ x"$CACHE_FILES" != x ] ; then
+                print_log "Clean $CACHE_FILES"
+                rm $CACHE_FILES
+            fi
         else
             LANG_backup=$LANG
             i=1
             for e in $ENVS; do
-                first=`echo "$e" | cut -c1-1`
+                first=`echo "$e" | grep '^#'`
                 if test x"$first" = x"#" ; then
                     continue
                 fi
                 export $e
-                $BUILDDIR/$tst $SRCDIR >&${tst}.${i}.log
+                $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
                 retval=$?
                 read pass fail << EOF
                 `count_case_result $retval $pass $fail`
 EOF
-                echo_case_result $retval $tst ${tst}.${i}.log $e
+                echo_case_result $retval $tst $e
+                CACHE_FILES=`ls *.cache`
+                if [ x"$CACHE_FILES" != x ] ; then
+                    print_log "Clean $CACHE_FILES"
+                    rm $CACHE_FILES
+                fi
                 i=`expr $i + 1`
             done
             export LANG=$LANG_backup
         fi
     done
-    echo ""
-    echo -e "# ${GREEN}PASS${NC}: $pass"
-    echo -e "# ${RED}FAIL${NC}: $fail"
-    if test -f ${TEST_LOG} ; then
-        echo ""
-        echo -e "${RED}See ${TEST_LOG}$NC"
+    echo $pass $fail
+}
+
+run_gnome_desktop_testing_runner()
+{
+    pass=0
+    fail=0
+    if [ x"$TESTS" = x ] ; then
+        TESTS='ibus'
     fi
+    for tst in $TESTS; do
+        tst_dir="@INSTALLEDDIR@/$tst"
+        if [ ! -d "$tst_dir" ] ; then
+            print_log -e "${RED}FAIL${NC}: Not found %tst_dir"
+            fail=1
+            continue
+        fi
+        gnome-desktop-testing-runner $tst 2>>$TEST_LOG 1>>$TEST_LOG
+        retval=$?
+        read pass fail << EOF
+        `count_case_result $retval $pass $fail`
+EOF
+    done
+    echo $pass $fail
+}
+
+run_test_suite()
+{
+    pass=0
+    fail=0
+    export GTK_IM_MODULE=ibus
+    export IBUS_COMPOSE_CACHE_DIR=$PWD
+    if [ x"$TESTING_RUNNER" = x ] ; then
+        TESTING_RUNNER="default"
+    fi
+    case $TESTING_RUNNER in
+    default)
+        # Get only the last value with do-while.
+        read pass fail << EOF_RUNNER
+        `run_direct_test_cases`
+EOF_RUNNER
+        ;;
+    gnome)
+        read pass fail << EOF_RUNNER
+        `run_gnome_desktop_testing_runner`
+EOF_RUNNER
+        ;;
+    esac
+    echo ""
+    if [ $pass -ne 0 ] ; then
+        print_log -e "${GREEN}PASS${NC}: $pass"
+    fi
+    if [ $fail -ne 0 ] ; then
+        print_log -e "${RED}FAIL${NC}: $fail"
+    fi
+    echo ""
+    echo "See ${TEST_LOG}"
 }
 
 finit()
@@ -240,14 +327,15 @@ finit()
         ibus exit
     fi
     kill $PID_GNOME_SESSION $PID_XORG
+    echo "Finished $PROGNAME testing"
 }
 
 main()
 {
     parse_args $@
     init_desktop
-    run_dbus_daemon
-    run_desktop
+    run_dbus_daemon 2>>$TEST_LOG 1>>$TEST_LOG
+    run_desktop 2>>$TEST_LOG 1>>$TEST_LOG
     run_test_suite
     finit
 }
