@@ -37,18 +37,6 @@ fatal_handler(const gchar *log_domain,
     return TRUE;
 }
 
-static gchar *
-get_last_engine_id (const GList *engines)
-{
-    const char *result = NULL;
-    for (; engines; engines = g_list_next (engines)) {
-        IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
-        g_assert (engine_desc);
-        result = ibus_engine_desc_get_name (engine_desc);
-    }
-    return g_strdup (result);
-}
-
 static void
 call_basic_ipcs (IBusInputContext *context)
 {
@@ -68,18 +56,23 @@ call_basic_ipcs (IBusInputContext *context)
 static void
 test_input_context (void)
 {
-    GList *engines;
-    gchar *active_engine_name = NULL;
     IBusInputContext *context;
+    GLogLevelFlags flags;
     IBusEngineDesc *engine_desc;
+    gchar *active_engine_name = NULL;
     gchar *current_ic;
 
     context = ibus_bus_create_input_context (bus, "test");
     call_basic_ipcs (context);
 
-    engines = ibus_bus_list_active_engines (bus);
-    if (engines != NULL) {
-        active_engine_name = get_last_engine_id (engines);
+    /* "No global engine." warning is not critical message. */
+    flags = g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
+    engine_desc = ibus_bus_get_global_engine (bus);
+    g_log_set_always_fatal (flags);
+    if (engine_desc != NULL) {
+        active_engine_name = g_strdup (ibus_engine_desc_get_name(engine_desc));
+        g_object_unref (engine_desc);
+        engine_desc = NULL;
     } else {
         active_engine_name = g_strdup ("dummy");
     }
@@ -111,8 +104,6 @@ test_input_context (void)
     g_object_unref (context);
 
     g_free (active_engine_name);
-    g_list_foreach (engines, (GFunc) g_object_unref, NULL);
-    g_list_free (engines);
 }
 
 static void

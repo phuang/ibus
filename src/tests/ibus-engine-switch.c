@@ -13,17 +13,25 @@ static const gchar *engine_names[] = {
     AFTER_ENGINE
 };
 
+static const gchar *engine_names2[] = {
+    AFTER_ENGINE,
+    BEFORE_ENGINE
+};
+
 static void
-change_global_engine (void)
+change_global_engine (gboolean reverse)
 {
     gint i;
 
     for (i = 0; i < G_N_ELEMENTS (engine_names); i++) {
-        ibus_bus_set_global_engine (bus, engine_names[i]);
+        const gchar *engine_name = engine_names[i];
+        if (reverse)
+            engine_name = engine_names2[i];
+        ibus_bus_set_global_engine (bus, engine_name);
         IBusEngineDesc *engine_desc = ibus_bus_get_global_engine (bus);
         g_assert_cmpstr (ibus_engine_desc_get_name (engine_desc),
                          ==,
-                         engine_names[i]);
+                         engine_name);
         g_object_unref (G_OBJECT (engine_desc));
     }
 }
@@ -46,6 +54,7 @@ typedef struct {
     gint count;
     guint timeout_id;
     guint idle_id;
+    gboolean reverse;
 } GlobalEngineChangedData;
 
 static void
@@ -70,7 +79,7 @@ static gboolean
 change_global_engine_cb (gpointer user_data)
 {
     GlobalEngineChangedData *data = (GlobalEngineChangedData *) user_data;
-    change_global_engine ();
+    change_global_engine (data->reverse);
     data->idle_id = 0;
     return FALSE;
 }
@@ -78,11 +87,24 @@ change_global_engine_cb (gpointer user_data)
 static void
 test_global_engine (void)
 {
+    GLogLevelFlags flags;
+    IBusEngineDesc *desc;
     GlobalEngineChangedData data;
     guint handler_id;
 
     if (!ibus_bus_get_use_global_engine (bus))
         return;
+
+    /* "No global engine." warning is not critical message. */
+    flags = g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
+    desc = ibus_bus_get_global_engine (bus);
+    g_log_set_always_fatal (flags);
+    if (desc &&
+        !g_strcmp0 (BEFORE_ENGINE, ibus_engine_desc_get_name (desc))) {
+        data.reverse = TRUE;
+    } else {
+        data.reverse = FALSE;
+    }
 
     data.count = 0;
 
@@ -141,7 +163,7 @@ test_context_engine_set_by_global (void)
     /* ibus_bus_set_global_engine() changes focused context engine. */
     ibus_input_context_focus_in (context);
 
-    change_global_engine ();
+    change_global_engine (FALSE);
 
     /* ibus_input_context_set_engine() does not take effect when
        global engine is used. */
@@ -170,7 +192,7 @@ test_context_engine_set_by_focus (void)
 
     ibus_input_context_focus_in (context);
 
-    change_global_engine ();
+    change_global_engine (FALSE);
 
     /* When focus is lost, context engine is set to "dummy". */
     ibus_input_context_focus_in (another_context);

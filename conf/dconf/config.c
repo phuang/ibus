@@ -335,7 +335,19 @@ ibus_config_dconf_set_value (IBusConfigService *config,
     }
 
 #ifdef DCONF_0_13_4
-    retval = dconf_client_write_fast (client, gkey, value, error);
+    /* Use dconf_client_write_sync() instead of dconf_client_write_fast()
+     * because dconf_client_write_fast() does not sync the data when
+     * ibus_config_get_values() is called immediately after
+     * ibus_config_set_value() is called.
+     * We won't add a new API for the sync only since IBusConfig is
+     * now deprecated and GSettings is recommended.
+     */
+    retval = dconf_client_write_sync (client,
+                                      gkey,
+                                      value,
+                                      NULL,
+                                      NULL,
+                                      error);
 #else
     retval = dconf_client_write (client,
                                  gkey,

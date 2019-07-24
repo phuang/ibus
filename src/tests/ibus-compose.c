@@ -344,20 +344,26 @@ test_compose (void)
 int
 main (int argc, char *argv[])
 {
+    GLogLevelFlags flags;
     const gchar *test_name;
     gchar *test_path;
 
     ibus_init ();
+    /* Avoid a warning of "AT-SPI: Could not obtain desktop path or name"
+     * with gtk_main().
+     */
+    g_setenv ("NO_AT_BRIDGE", "1", TRUE);
     g_test_init (&argc, &argv, NULL);
     /* FIXME:
      * IBusIMContext opens GtkIMContextSimple as the slave and
      * GtkIMContextSimple opens the compose table on el_GR.UTF-8, and the
-     * multiple outputs in el_GR's compose causes a warning in gtkcomposetable 
+     * multiple outputs in el_GR's compose causes a warning in gtkcomposetable
      * and the warning always causes a fatal in GTest:
      " "GTK+ supports to output one char only: "
      */
-    g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
+    flags = g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
     gtk_init (&argc, &argv);
+    g_log_set_always_fatal (flags);
 
     m_srcdir = argc > 1 ? g_strdup (argv[1]) : g_strdup (".");
     m_compose_file = g_strdup (g_getenv ("COMPOSE_FILE"));

@@ -55,6 +55,8 @@ TESTS = \
     ibus-util                       \
     $(NULL)
 
+CLEANFILES =
+
 if ENABLE_ENGINE
 TESTS += ibus-engine-switch
 endif
@@ -90,9 +92,17 @@ test_sources_DATA = \
     $(NULL)
 test_sourcesdir = $(datadir)/installed-tests/ibus
 
+CLEANFILES += \
+    $(test_metas) \
+    ibus-desktop-testing-runner \
+    $(NULL)
+
 test_execs_PROGRAMS = $(TESTS)
 if ENABLE_GTK3
 test_execs_SCRIPTS = ibus-compose-locales
+CLEANFILES += \
+    ibus-compose-locales \
+    $(NULL)
 endif
 test_execsdir = $(libexecdir)/installed-tests/ibus
 endif
@@ -105,15 +115,14 @@ $(test_metas): $(test_metas_in) $(test_programs)
 	$(NULL)
 
 ibus-compose-locales: ibus-compose-locales.in
-	INSTALLEDDIR=$(datadir)/installed-tests; \
-	sed -e "s|@INSTALLEDDIR[@]|$$INSTALLEDDIR|g" $< > $@.tmp; \
+	SRCDIR=$(test_sourcesdir); \
+	sed -e "s|@SRCDIR[@]|$$SRCDIR|g" $< > $@.tmp; \
 	mv $@.tmp $@; \
 	$(NULL)
 
-    ibus-desktop-testing-runner.in \
 ibus-desktop-testing-runner: ibus-desktop-testing-runner.in
-	SRCDIR=$(test_sourcesdir); \
-	sed -e "s|@SRCDIR[@]|$$SRCDIR|g" $< > $@.tmp; \
+	INSTALLEDDIR=$(datadir)/installed-tests; \
+	sed -e "s|@INSTALLEDDIR[@]|$$INSTALLEDDIR|g" $< > $@.tmp; \
 	mv $@.tmp $@; \
 	$(NULL)
 

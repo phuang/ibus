@@ -34,9 +34,10 @@ DISPLAY=:99.0
 BUILDDIR="."
 SRCDIR="."
 TEST_LOG="test-suite.log"
+TEST_LOG_STDOUT=0
 RESULT_LOG=""
 HAVE_GRAPHICS=1
-DESKTOP_COMMAND="gnome-session"
+DESKTOP_COMMAND="dbus-launch --exit-with-session gnome-session"
 PID_XORG=0
 PID_GNOME_SESSION=0
 TESTING_RUNNER="default"
@@ -109,19 +110,26 @@ parse_args()
 init_desktop()
 {
     if [ "$RESULT_LOG" != "" ] ; then
-        rm $RESULT_LOG
+        if [ -f $RESULT_LOG ] ; then
+            rm $RESULT_LOG
+        fi
+    fi
+    HAS_STDOUT=`echo "$TEST_LOG" | grep ':stdout'`
+    if [ x"$HAS_STDOUT" != x ] ; then
+        TEST_LOG=`echo "$TEST_LOG" | sed -e 's|:stdout||'`
+        TEST_LOG_STDOUT=1
     fi
     if [ "$TEST_LOG" = "" ] ; then
         print_log -e "${RED}FAIL${NC}: ${RED}ERROR${NC}: a log file is required to get return value with 'read' command"
-        abrt
-    else
+        exit -1
+    elif [ -f $TEST_LOG ] ; then
         rm $TEST_LOG
     fi
-    if test x$FORCE_TEST != x ; then
+    if [ x$FORCE_TEST != x ] ; then
         RUN_ARGS="$RUN_ARGS --force"
     fi
 
-    if test ! -f $HOME/.config/gnome-initial-setup-done ; then
+    if [ ! -f $HOME/.config/gnome-initial-setup-done ] ; then
         IS_SYSTEM_ACCOUNT=false
         if [ "$USER" = "root" ] ; then
             IS_SYSTEM_ACCOUNT=true
@@ -141,7 +149,7 @@ _EOF
 
     # Prevent from launching a XDG dialog
     XDG_LOCALE_FILE="$HOME/.config/user-dirs.locale"
-    if test -f $XDG_LOCALE_FILE ; then
+    if [ -f $XDG_LOCALE_FILE ] ; then
         XDG_LANG_ORIG=`cat $XDG_LOCALE_FILE`
         XDG_LANG_NEW=`echo $LANG | sed -e 's/\(.*\)\..*/\1/'`
         if [ "$XDG_LANG_ORIG" != "$XDG_LANG_NEW" ] ; then
@@ -153,19 +161,8 @@ _EOF
 
 run_dbus_daemon()
 {
-    a=`ps -ef | grep dbus-daemon | grep "\-\-system" | grep -v session | grep -v grep`
-    if test x"$a" = x ; then
-        eval `dbus-launch --sh-syntax`
-    fi
-    SUSER=`echo "$USER" | cut -c 1-7`
-    a=`ps -ef | grep dbus-daemon | grep "$SUSER" | grep -v gdm | grep session | grep -v grep`
-    if test x"$a" = x ; then
-        systemctl --user start dbus
-        export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
-    fi
-    systemctl --user status dbus | col -b
-    ps -ef | grep dbus-daemon | grep "$SUSER" | grep -v gdm | egrep 'session|system' | grep -v grep
-    systemctl --user show-environment | col -b
+    # Use dbus-launch --exit-with-session later instead of --sh-syntax
+    export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
 }
 
 run_desktop()
@@ -181,7 +178,8 @@ run_desktop()
     $DESKTOP_COMMAND &
     PID_GNOME_SESSION=$!
     sleep 30
-    if test "$DESKTOP_COMMAND" != "gnome-session" ; then
+    HAS_GNOME=`echo $DESKTOP_COMMAND | grep gnome-session`
+    if [ x"$HAS_GNOME" = x ] ; then
         ibus-daemon --daemonize --verbose
         sleep 1
     fi
@@ -285,6 +283,16 @@ run_gnome_desktop_testing_runner()
         `count_case_result $retval $pass $fail`
 EOF
     done
+    child_pass=`grep '^PASS:' $TEST_LOG | wc -l`
+    child_fail=`grep '^FAIL:' $TEST_LOG | wc -l`
+    if [ $child_pass -ne 0 -o $child_fail -ne 0 ] ; then
+        pass=$child_pass
+        if [ $child_fail -ne 0 ] ; then
+            fail=`expr $child_fail / 2`
+        else
+            fail=0
+        fi
+    fi
     echo $pass $fail
 }
 
@@ -311,22 +319,29 @@ EOF_RUNNER
         ;;
     esac
     echo ""
-    if [ $pass -ne 0 ] ; then
-        print_log -e "${GREEN}PASS${NC}: $pass"
-    fi
-    if [ $fail -ne 0 ] ; then
-        print_log -e "${RED}FAIL${NC}: $fail"
-    fi
+    print_log -e "${GREEN}PASS${NC}: $pass"
+    print_log -e "${RED}FAIL${NC}: $fail"
     echo ""
-    echo "See ${TEST_LOG}"
+    if [ $TEST_LOG_STDOUT -eq 1 ] ; then
+        cat $TEST_LOG
+    else
+        echo "See $TEST_LOG"
+    fi
 }
 
 finit()
 {
-    if test "$DESKTOP_COMMAND" != "gnome-session" ; then
-        ibus exit
-    fi
+    echo "Killing left gnome-session and Xorg"
     kill $PID_GNOME_SESSION $PID_XORG
+    ibus exit
+    SUSER=`echo "$USER" | cut -c 1-7`
+    LEFT_CALENDAR=`ps -ef | grep gnome-shell-calendar-server | grep $SUSER | grep -v grep`
+    if [ x"$LEFT_CALENDAR" != x ] ; then
+        echo "Killing left gnome-shell-calendar-server"
+        echo "$LEFT_CALENDAR"
+        echo "$LEFT_CALENDAR" | awk '{print $2}' | xargs kill
+    fi
+
     echo "Finished $PROGNAME testing"
 }
 
