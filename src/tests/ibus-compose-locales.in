@@ -7,19 +7,27 @@ BUILDDIR=`dirname $0`
 export IBUS_COMPOSE_CACHE_DIR=$PWD
 
 retval=0
+# Let for-loop notice '\n' as a delimiter
+IFS=$'\n'
 for var in `cat $SRCDIR/ibus-compose.env`
 do
+    # Revert IFS to recognize env a=foo b=foo
+    IFS=' '
     IS_COMMENT=`echo "$var" | grep "^#"`
     if [ "x$IS_COMMENT" != x ] ; then
         continue
     fi
+    echo "# Starting $var $BUILDDIR/ibus-compose $SRCDIR $@"
     env $var $BUILDDIR/ibus-compose $SRCDIR $@
     retval=`expr $retval + $?`
+    echo "# Finished $var $BUILDDIR/ibus-compose $SRCDIR $@ with $retval"
 
     CACHE_FILES=`ls *.cache`
     if [ x"$CACHE_FILES" != x ] ; then
         echo "Clean $CACHE_FILES"
         rm $CACHE_FILES
     fi
+    IFS=$'\n'
 done
+IFS=' '
 exit $retval
