@@ -153,7 +153,7 @@ _EOF
         XDG_LANG_ORIG=`cat $XDG_LOCALE_FILE`
         XDG_LANG_NEW=`echo $LANG | sed -e 's/\(.*\)\..*/\1/'`
         if [ "$XDG_LANG_ORIG" != "$XDG_LANG_NEW" ] ; then
-            echo "Overriding XDG locale $XDG_LANG_ORIG with $XDG_LANG_NEW"
+            echo "# Overriding XDG locale $XDG_LANG_ORIG with $XDG_LANG_NEW"
             echo "$XDG_LANG_NEW" > $XDG_LOCALE_FILE
         fi
     fi
@@ -206,11 +206,9 @@ echo_case_result()
     subtst=${3:-''}
 
     if test $retval -eq  0 ; then
-        print_log -e "${GREEN}PASS${NC}: $tst $subtst"
+        echo "PASS: $tst $subtst" >>$TEST_LOG
     else
-        print_log -e "${RED}FAIL${NC}: $tst $subtst"
-        print_log "======================"
-        print_log ""
+        echo "FAIL: $tst $subtst" >>$TEST_LOG
     fi
 }
 
@@ -232,32 +230,37 @@ EOF
             echo_case_result $retval $tst
             CACHE_FILES=`ls *.cache`
             if [ x"$CACHE_FILES" != x ] ; then
-                print_log "Clean $CACHE_FILES"
+                echo "# Clean $CACHE_FILES" >>$TEST_LOG
                 rm $CACHE_FILES
             fi
         else
-            LANG_backup=$LANG
             i=1
+            # Let for-loop notice '\n' as a delimiter
+            IFS=$'\n'
             for e in $ENVS; do
+                # Revert IFS to recognize env a=foo b=foo
+                IFS=' '
                 first=`echo "$e" | grep '^#'`
                 if test x"$first" = x"#" ; then
                     continue
                 fi
-                export $e
-                $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
+                echo "# Starting $e $BUILDDIR/$tst $SRCDIR" >>$TEST_LOG
+                env $e $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
                 retval=$?
+                echo "# Finished $e $BUILDDIR/$tst $SRCDIR with $retval" >>$TEST_LOG
                 read pass fail << EOF
                 `count_case_result $retval $pass $fail`
 EOF
                 echo_case_result $retval $tst $e
                 CACHE_FILES=`ls *.cache`
                 if [ x"$CACHE_FILES" != x ] ; then
-                    print_log "Clean $CACHE_FILES"
+                    echo "# Clean $CACHE_FILES" >>$TEST_LOG
                     rm $CACHE_FILES
                 fi
                 i=`expr $i + 1`
+                IFS=$'\n'
             done
-            export LANG=$LANG_backup
+            IFS=' '
         fi
     done
     echo $pass $fail
@@ -325,24 +328,24 @@ EOF_RUNNER
     if [ $TEST_LOG_STDOUT -eq 1 ] ; then
         cat $TEST_LOG
     else
-        echo "See $TEST_LOG"
+        echo "# See $TEST_LOG"
     fi
 }
 
 finit()
 {
-    echo "Killing left gnome-session and Xorg"
+    echo "# Killing left gnome-session and Xorg"
     kill $PID_GNOME_SESSION $PID_XORG
     ibus exit
     SUSER=`echo "$USER" | cut -c 1-7`
     LEFT_CALENDAR=`ps -ef | grep gnome-shell-calendar-server | grep $SUSER | grep -v grep`
     if [ x"$LEFT_CALENDAR" != x ] ; then
-        echo "Killing left gnome-shell-calendar-server"
+        echo "# Killing left gnome-shell-calendar-server"
         echo "$LEFT_CALENDAR"
         echo "$LEFT_CALENDAR" | awk '{print $2}' | xargs kill
     fi
 
-    echo "Finished $PROGNAME testing"
+    echo "# Finished $PROGNAME testing"
 }
 
 main()
