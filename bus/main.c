@@ -342,7 +342,7 @@ main (gint argc, gchar **argv)
         * in gonme-shell when the session is logging out.
         * Maybe using SessionManager.LogoutRemote() or
         * global.screen.get_display().get_xdisplay()
-        * But I assume thereare other scenarios to causes the problem.
+        * But I assume there are other scenarios to cause the problem.
         *
         * And I decided ibus-daemon always exits with the parent's death here
         * to avoid unexpected ibus restarts during the logout.
