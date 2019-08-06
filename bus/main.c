@@ -33,6 +33,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#ifdef HAVE_SYS_PRCTL_H
+#include <sys/prctl.h>
+#endif
+
 #include "global.h"
 #include "ibusimpl.h"
 #include "server.h"
@@ -161,6 +165,15 @@ daemon (gint nochdir, gint noclose)
 }
 #endif
 
+#ifdef HAVE_SYS_PRCTL_H
+static void
+_sig_usr1_handler (int sig)
+{
+    g_warning ("The parent process died.");
+    bus_server_quit (FALSE);
+}
+#endif
+
 gint
 main (gint argc, gchar **argv)
 {
@@ -201,7 +214,7 @@ main (gint argc, gchar **argv)
     /* daemonize process */
     if (daemonize) {
         if (daemon (1, 0) != 0) {
-            g_printerr ("Can not daemonize ibus.\n");
+            g_printerr ("Cannot daemonize ibus.\n");
             exit (-1);
         }
     }
@@ -299,6 +312,47 @@ main (gint argc, gchar **argv)
             exit (-1);
     }
 
+    if (!daemonize) {
+        if (getppid () == 1) {
+            g_warning ("The parent process died.");
+            exit (0);
+        }
+#ifdef HAVE_SYS_PRCTL_H
+       /* Currently ibus-x11 detects XIOError and assume the error as the
+        * desktop session is closed and ibus-x11 calls Exit D-Bus method to
+        * exit ibus-daemon. But a few desktop sessions cause XError before
+        * XIOError and GTK does not allow to bind XError by applications and
+        * GTK calls gdk_x_error() with XError.
+        *
+        * E.g. GdkX11Screen calls XGetSelectionOwner() for "_XSETTINGS_S?"
+        * atoms during the logout but the selection owner already becomes
+        * NULL and the NULL window causes XError with
+        * gdk_x11_window_foreign_new_for_display().
+        *
+        * Since ibus-x11 exits with XError before XIOError, gnome-shell
+        * can detects the exit of ibus-daemon a little earlier and
+        * gnome-shell restarts ibus-daemon but gnome-shell dies soon.
+        * Then gnome-shell dies but ibus-daemon is alive, it's a problem.
+        * Because it causes double ibus-x11 of GDM and a login user
+        * and double XSetSelectionOwner() is not allowed for the unique
+        * "ibus" atom and the user cannot use XIM but not GtkIMModule.
+        *
+        * Probably we could fix the ibus process problem if we would fix
+        * XError about the X selection owner or stop to restart ibus-daemon
+        * in gonme-shell when the session is logging out.
+        * Maybe using SessionManager.LogoutRemote() or
+        * global.screen.get_display().get_xdisplay()
+        * But I assume thereare other scenarios to causes the problem.
+        *
+        * And I decided ibus-daemon always exits with the parent's death here
+        * to avoid unexpected ibus restarts during the logout.
+        */
+        if (prctl (PR_SET_PDEATHSIG, SIGUSR1))
+            g_printerr ("Cannot bind SIGUSR1 for parent death\n");
+        else
+            signal (SIGUSR1, _sig_usr1_handler);
+#endif
+    }
     bus_server_run ();
     return 0;
 }

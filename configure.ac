@@ -140,6 +140,9 @@ AC_ISC_POSIX
 AC_HEADER_STDC
 LT_INIT
 
+# Check header filess.
+AC_CHECK_HEADERS([sys/prctl.h])
+
 # Check functions.
 AC_CHECK_FUNCS(daemon)
 
