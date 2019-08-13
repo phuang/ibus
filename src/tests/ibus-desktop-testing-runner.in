@@ -157,6 +157,8 @@ _EOF
             echo "$XDG_LANG_NEW" > $XDG_LOCALE_FILE
         fi
     fi
+    # `su` command does not run loginctl
+    export XDG_SESSION_TYPE='x11'
 }
 
 run_dbus_daemon()
@@ -175,6 +177,7 @@ run_desktop()
     PID_XORG=$!
     sleep 1
     export DISPLAY=$DISPLAY
+    echo "Running $DESKTOP_COMMAND with $USER in `tty`"
     $DESKTOP_COMMAND &
     PID_GNOME_SESSION=$!
     sleep 30
