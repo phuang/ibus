@@ -289,6 +289,11 @@ if test x"$enable_wayland" = x"yes"; then
         wayland-client >= 1.2.0
         xkbcommon
     ])
+    m4_ifdef([WAYLAND_SCANNER_RULES],
+             [WAYLAND_PRTCLS_SUBDIR='wayland-protocols/unstable/input-method'
+              AC_SUBST(WAYLAND_PRTCLS_SUBDIR)
+              WAYLAND_SCANNER_RULES(['$(datadir)/$(WAYLAND_PRTCLS_SUBDIR)'])],
+             [AC_SUBST(wayland_scanner_rules)])
 else
     enable_wayland="no (disabled, use --enable-wayland to enable)"
 fi

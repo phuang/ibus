@@ -1,8 +1,9 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
+ * Copyright (C) 2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2013 Intel Corporation
- * Copyright (C) 2013 Red Hat, Inc.
+ * Copyright (C) 2013-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -29,12 +30,12 @@
 #include <wayland-client.h>
 #include <xkbcommon/xkbcommon.h>
 
-#include "input-method-client-protocol.h"
+#include "input-method-unstable-v1-client-protocol.h"
 
 struct _IBusWaylandIM
 {
-    struct wl_input_method *input_method;
-    struct wl_input_method_context *context;
+    struct zwp_input_method_v1 *input_method;
+    struct zwp_input_method_context_v1 *context;
     struct wl_keyboard *keyboard;
 
     IBusInputContext *ibuscontext;
@@ -67,7 +68,7 @@ typedef struct _IBusWaylandIM IBusWaylandIM;
 
 struct _IBusWaylandKeyEvent
 {
-    struct wl_input_method_context *context;
+    struct zwp_input_method_context_v1 *context;
     uint32_t serial;
     uint32_t time;
     uint32_t key;
@@ -183,9 +184,9 @@ _context_commit_text_cb (IBusInputContext *context,
                          IBusText         *text,
                          IBusWaylandIM    *wlim)
 {
-    wl_input_method_context_commit_string (wlim->context,
-                                           wlim->serial,
-                                           text->text);
+    zwp_input_method_context_v1_commit_string (wlim->context,
+                                               wlim->serial,
+                                               text->text);
 }
 
 static void
@@ -202,12 +203,12 @@ _context_forward_key_event_cb (IBusInputContext *context,
     else
         state = WL_KEYBOARD_KEY_STATE_PRESSED;
 
-    wl_input_method_context_keysym (wlim->context,
-                                    wlim->serial,
-                                    0,
-                                    keyval,
-                                    state,
-                                    modifiers);
+    zwp_input_method_context_v1_keysym (wlim->context,
+                                        wlim->serial,
+                                        0,
+                                        keyval,
+                                        state,
+                                        modifiers);
 }
 
 static void
@@ -220,22 +221,22 @@ _context_show_preedit_text_cb (IBusInputContext *context,
                                   wlim->preedit_cursor_pos) -
         wlim->preedit_text->text;
 
-    wl_input_method_context_preedit_cursor (wlim->context,
-                                            cursor);
-    wl_input_method_context_preedit_string (wlim->context,
-                                            wlim->serial,
-                                            wlim->preedit_text->text,
-                                            wlim->preedit_text->text);
+    zwp_input_method_context_v1_preedit_cursor (wlim->context,
+                                                cursor);
+    zwp_input_method_context_v1_preedit_string (wlim->context,
+                                                wlim->serial,
+                                                wlim->preedit_text->text,
+                                                wlim->preedit_text->text);
 }
 
 static void
 _context_hide_preedit_text_cb (IBusInputContext *context,
                                IBusWaylandIM    *wlim)
 {
-    wl_input_method_context_preedit_string (wlim->context,
-                                            wlim->serial,
-                                            "",
-                                            "");
+    zwp_input_method_context_v1_preedit_string (wlim->context,
+                                                wlim->serial,
+                                                "",
+                                                "");
 }
 
 static void
@@ -257,11 +258,11 @@ _context_update_preedit_text_cb (IBusInputContext *context,
 }
 
 static void
-handle_surrounding_text (void                           *data,
-                         struct wl_input_method_context *context,
-                         const char                     *text,
-                         uint32_t                        cursor,
-                         uint32_t                        anchor)
+handle_surrounding_text (void                               *data,
+                         struct zwp_input_method_context_v1 *context,
+                         const char                         *text,
+                         uint32_t                            cursor,
+                         uint32_t                            anchor)
 {
 #if ENABLE_SURROUNDING
     IBusWaylandIM *wlim = data;
@@ -283,30 +284,30 @@ handle_surrounding_text (void                           *data,
 
 static void
 handle_reset (void                           *data,
-              struct wl_input_method_context *context)
+              struct zwp_input_method_context_v1 *context)
 {
 }
 
 static void
-handle_content_type (void                           *data,
-                     struct wl_input_method_context *context,
-                     uint32_t                        hint,
-                     uint32_t                        purpose)
+handle_content_type (void                               *data,
+                     struct zwp_input_method_context_v1 *context,
+                     uint32_t                            hint,
+                     uint32_t                            purpose)
 {
 }
 
 static void
-handle_invoke_action (void                           *data,
-                      struct wl_input_method_context *context,
-                      uint32_t                        button,
-                      uint32_t                        index)
+handle_invoke_action (void                               *data,
+                      struct zwp_input_method_context_v1 *context,
+                      uint32_t                            button,
+                      uint32_t                            index)
 {
 }
 
 static void
-handle_commit_state (void                           *data,
-                     struct wl_input_method_context *context,
-                     uint32_t                        serial)
+handle_commit_state (void                               *data,
+                     struct zwp_input_method_context_v1 *context,
+                     uint32_t                            serial)
 {
     IBusWaylandIM *wlim = data;
 
@@ -314,13 +315,13 @@ handle_commit_state (void                           *data,
 }
 
 static void
-handle_preferred_language (void                           *data,
-                           struct wl_input_method_context *context,
-                           const char                     *language)
+handle_preferred_language (void                               *data,
+                           struct zwp_input_method_context_v1 *context,
+                           const char                         *language)
 {
 }
 
-static const struct wl_input_method_context_listener context_listener = {
+static const struct zwp_input_method_context_v1_listener context_listener = {
     handle_surrounding_text,
     handle_reset,
     handle_content_type,
@@ -415,11 +416,11 @@ _process_key_event_done (GObject      *object,
     }
 
     if (!retval) {
-        wl_input_method_context_key (event->context,
-                                     event->serial,
-                                     event->time,
-                                     event->key,
-                                     event->state);
+        zwp_input_method_context_v1_key (event->context,
+                                         event->serial,
+                                         event->time,
+                                         event->key,
+                                         event->state);
     }
 
     g_free (event);
@@ -444,11 +445,11 @@ input_method_keyboard_key (void               *data,
         return;
 
     if (!wlim->ibuscontext) {
-        wl_input_method_context_key (wlim->context,
-                                     serial,
-                                     time,
-                                     key,
-                                     state);
+        zwp_input_method_context_v1_key (wlim->context,
+                                         serial,
+                                         time,
+                                         key,
+                                         state);
         return;
     }
         
@@ -470,11 +471,11 @@ input_method_keyboard_key (void               *data,
                                                   code,
                                                   modifiers);
         if (!retval) {
-            wl_input_method_context_key (wlim->context,
-                                         serial,
-                                         time,
-                                         key,
-                                         state);
+            zwp_input_method_context_v1_key (wlim->context,
+                                             serial,
+                                             time,
+                                             key,
+                                             state);
         }
     } else {
         IBusWaylandKeyEvent *event = g_new (IBusWaylandKeyEvent, 1);
@@ -504,7 +505,7 @@ input_method_keyboard_modifiers (void               *data,
                                  uint32_t            group)
 {
     IBusWaylandIM *wlim = data;
-    struct wl_input_method_context *context = wlim->context;
+    struct zwp_input_method_context_v1 *context = wlim->context;
     xkb_mod_mask_t mask;
 
     xkb_state_update_mask (wlim->state, mods_depressed,
@@ -537,9 +538,9 @@ input_method_keyboard_modifiers (void               *data,
     if (mask & wlim->meta_mask)
         wlim->modifiers |= IBUS_META_MASK;
 
-    wl_input_method_context_modifiers (context, serial,
-                                       mods_depressed, mods_latched,
-                                       mods_locked, group);
+    zwp_input_method_context_v1_modifiers (context, serial,
+                                           mods_depressed, mods_latched,
+                                           mods_locked, group);
 }
 
 static const struct wl_keyboard_listener keyboard_listener = {
@@ -606,25 +607,25 @@ _create_input_context_done (GObject      *object,
 }
 
 static void
-input_method_activate (void                           *data,
-                       struct wl_input_method         *input_method,
-                       struct wl_input_method_context *context)
+input_method_activate (void                               *data,
+                       struct zwp_input_method_v1         *input_method,
+                       struct zwp_input_method_context_v1 *context)
 {
     IBusWaylandIM *wlim = data;
 
     if (wlim->context) {
-        wl_input_method_context_destroy (wlim->context);
+        zwp_input_method_context_v1_destroy (wlim->context);
         wlim->context = NULL;
     }
 
     wlim->serial = 0;
     wlim->context = context;
 
-    wl_input_method_context_add_listener (context, &context_listener, wlim);
-    wlim->keyboard = wl_input_method_context_grab_keyboard (context);
-    wl_keyboard_add_listener(wlim->keyboard,
-                             &keyboard_listener,
-                             wlim);
+    zwp_input_method_context_v1_add_listener (context, &context_listener, wlim);
+    wlim->keyboard = zwp_input_method_context_v1_grab_keyboard (context);
+    wl_keyboard_add_listener (wlim->keyboard,
+                              &keyboard_listener,
+                              wlim);
 
     if (wlim->ibuscontext) {
         g_object_unref (wlim->ibuscontext);
@@ -641,9 +642,9 @@ input_method_activate (void                           *data,
 }
 
 static void
-input_method_deactivate (void                           *data,
-                         struct wl_input_method         *input_method,
-                         struct wl_input_method_context *context)
+input_method_deactivate (void                               *data,
+                         struct zwp_input_method_v1         *input_method,
+                         struct zwp_input_method_context_v1 *context)
 {
     IBusWaylandIM *wlim = data;
 
@@ -666,12 +667,12 @@ input_method_deactivate (void                           *data,
     }
 
     if (wlim->context) {
-        wl_input_method_context_destroy (wlim->context);
+        zwp_input_method_context_v1_destroy (wlim->context);
         wlim->context = NULL;
     }
 }
 
-static const struct wl_input_method_listener input_method_listener = {
+static const struct zwp_input_method_v1_listener input_method_listener = {
     input_method_activate,
     input_method_deactivate
 };
@@ -685,11 +686,12 @@ registry_handle_global (void               *data,
 {
     IBusWaylandIM *wlim = data;
 
-    if (!g_strcmp0 (interface, "wl_input_method")) {
+    if (!g_strcmp0 (interface, "zwp_input_method_v1")) {
         wlim->input_method =
-            wl_registry_bind (registry, name, &wl_input_method_interface, 1);
-        wl_input_method_add_listener (wlim->input_method,
-                                      &input_method_listener, wlim);
+            wl_registry_bind (registry, name,
+                              &zwp_input_method_v1_interface, 1);
+        zwp_input_method_v1_add_listener (wlim->input_method,
+                                          &input_method_listener, wlim);
     }
 }
 
