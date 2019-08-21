@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus
  * Copyright (C) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2007-2015 Red Hat, Inc.
  *
  * main.c:
@@ -850,10 +850,9 @@ static void
 _bus_disconnected_cb (IBusBus  *bus,
                       gpointer  user_data)
 {
-    g_warning ("Connection closed by ibus-daemon");
-    g_object_unref (_bus);
-    _bus = NULL;
-    exit(EXIT_SUCCESS);
+    g_debug ("Connection closed by ibus-daemon\n");
+    g_clear_object (&_bus);
+    ibus_quit ();
 }
 
 static void
@@ -1244,7 +1243,7 @@ main (int argc, char **argv)
         atexit (_atexit_cb);
 
     _xim_init_IMdkit ();
-    gtk_main();
+    ibus_main();
 
     exit (EXIT_SUCCESS);
 }

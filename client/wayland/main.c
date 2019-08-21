@@ -707,6 +707,15 @@ static const struct wl_registry_listener registry_listener = {
     registry_handle_global_remove
 };
 
+static void
+_bus_disconnected_cb (IBusBus *bus,
+                      gpointer user_data)
+{
+    g_debug ("Connection closed by ibus-daemon\n");
+    g_clear_object (&_bus);
+    ibus_quit ();
+}
+
 gint
 main (gint    argc,
       gchar **argv)
@@ -751,6 +760,8 @@ main (gint    argc,
     g_source_set_can_recurse (source, TRUE);
     g_source_attach (source, NULL);
 
+    g_signal_connect (_bus, "disconnected",
+                      G_CALLBACK (_bus_disconnected_cb), NULL);
     ibus_main ();
 
     return EXIT_SUCCESS;
