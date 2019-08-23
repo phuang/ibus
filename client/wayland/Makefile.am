@@ -60,6 +60,6 @@ EXTRA_DIST = \
     $(protocol_sources) \
     $(NULL)
 
-@wayland_scanner_rules@
+-include @wayland_scanner_rules@
 
 -include $(top_srcdir)/git.mk

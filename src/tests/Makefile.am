@@ -79,10 +79,10 @@ TESTS_ENVIRONMENT = \
     $(NULL)
 
 LOG_COMPILER = $(srcdir)/runtest
+test_metas_in = meta.test.in
 
 if ENABLE_INSTALL_TESTS
 bin_SCRIPTS = ibus-desktop-testing-runner
-test_metas_in = meta.test.in
 test_execs = $(TESTS:ibus-compose=ibus-compose-locales)
 test_metas = $(addsuffix .test, $(test_execs))
 test_sources_DATA = \
