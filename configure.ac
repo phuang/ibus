@@ -296,6 +296,7 @@ if test x"$enable_wayland" = x"yes"; then
              [AC_SUBST(wayland_scanner_rules)])
 else
     enable_wayland="no (disabled, use --enable-wayland to enable)"
+    AC_SUBST(wayland_scanner_rules)
 fi
 
 enable_appindicator_engine_icon="no"

@@ -26,4 +26,8 @@ its_DATA = \
     ibus.loc \
     $(NULL)
 
+EXTRA_DIST = \
+    $(its_DATA) \
+    $(NULL)
+
 -include $(top_srcdir)/git.mk

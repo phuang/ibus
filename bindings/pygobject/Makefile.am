@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2012 Daiki Ueno <ueno@unixuser.org>
 # Copyright (c) 2014-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2012-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -60,6 +60,7 @@ EXTRA_DIST =					\
 	$(NULL)
 
 install-data-hook:
+	@$(NORMAL_INSTALL)
 if ENABLE_PYTHON2
 	@for data in $(overrides2_DATA); do \
 	    file=`echo $$data | sed -e 's|^.*/||'`; \
@@ -68,6 +69,25 @@ if ENABLE_PYTHON2
 	$(py2_compile) --destdir "$(DESTDIR)" \
 	               --basedir "$(overrides2dir)" \
 	               $$dlist
+endif
+	$(NULL)
+uninstall-hook:
+	@$(NORMAL_UNINSTALL)
+if ENABLE_PYTHON2
+	@list='$(overrides2_DATA)'; test -n "$(overrides2dir)" || list=; \
+	py_files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$py_files" || exit 0; \
+	dir='$(DESTDIR)$(overrides2dir)'; \
+	pyc_files=`echo "$$py_files" | sed 's|$$|c|'`; \
+	pyo_files=`echo "$$py_files" | sed 's|$$|o|'`; \
+	for files in \
+	    "$$py_files" \
+	    "$$pyc_files" \
+	    "$$pyo_files" \
+	; do \
+	    test -z "$$files" || rm -f "$$dir/$$files" || st=$$?; \
+	done; \
+	exit $$st
 endif
 	$(NULL)
 
