@@ -2,7 +2,7 @@
 .\" package.
 .\" Copyright (C) Takao Fujiwara <takao.fujiwara1@gmail.com>, 2017-2018.
 .\"
-.TH "IBUS EMOJI" 1 "August 2018" "@VERSION@" "User Commands"
+.TH "IBUS EMOJI" 7 "August 2018" "@VERSION@" "User Commands"
 .SH NAME
 .B ibus-emoji
 \- Call the IBus emoji utility by
