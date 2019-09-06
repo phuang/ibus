@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -36,7 +36,7 @@
 #include "ibusconfig.h"
 
 #define IBUS_BUS_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_BUS, IBusBusPrivate))
+   ((IBusBusPrivate *)ibus_bus_get_instance_private (o))
 
 enum {
     CONNECTED,
@@ -115,7 +115,7 @@ static void      ibus_bus_get_property           (IBusBus                *bus,
 
 static void     ibus_bus_close_connection        (IBusBus                *bus);
 
-G_DEFINE_TYPE (IBusBus, ibus_bus, IBUS_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusBus, ibus_bus, IBUS_TYPE_OBJECT)
 
 static void
 ibus_bus_class_init (IBusBusClass *class)
@@ -234,8 +234,6 @@ ibus_bus_class_init (IBusBusClass *class)
             G_TYPE_NONE,
             3,
             G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
-
-    g_type_class_add_private (class, sizeof (IBusBusPrivate));
 }
 
 static void

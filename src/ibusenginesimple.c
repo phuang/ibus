@@ -45,7 +45,7 @@
 
 #define X11_DATADIR X11_DATA_PREFIX "/share/X11/locale"
 #define IBUS_ENGINE_SIMPLE_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_SIMPLE, IBusEngineSimplePrivate))
+   ((IBusEngineSimplePrivate *)ibus_engine_simple_get_instance_private (o))
 
 #define SET_COMPOSE_BUFFER_ELEMENT_NEXT(buffer, index, value) {         \
     if ((index) >= COMPOSE_BUFFER_SIZE &&                               \
@@ -150,7 +150,9 @@ static void     ibus_engine_simple_commit_str  (IBusEngineSimple    *simple,
 static void     ibus_engine_simple_update_preedit_text
                                                (IBusEngineSimple    *simple);
 
-G_DEFINE_TYPE (IBusEngineSimple, ibus_engine_simple, IBUS_TYPE_ENGINE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusEngineSimple,
+                            ibus_engine_simple,
+                            IBUS_TYPE_ENGINE)
 
 static void
 ibus_engine_simple_class_init (IBusEngineSimpleClass *class)
@@ -170,8 +172,6 @@ ibus_engine_simple_class_init (IBusEngineSimpleClass *class)
     engine_class->page_up   = ibus_engine_simple_page_up;
     engine_class->candidate_clicked
                             = ibus_engine_simple_candidate_clicked;
-
-    g_type_class_add_private (class, sizeof (IBusEngineSimplePrivate));
 }
 
 static void

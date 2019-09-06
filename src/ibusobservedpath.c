@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input IBus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,7 +37,7 @@ struct _IBusObservedPathPrivate {
 typedef struct _IBusObservedPathPrivate IBusObservedPathPrivate;
 
 #define IBUS_OBSERVED_PATH_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_OBSERVED_PATH, IBusObservedPathPrivate))
+   ((IBusObservedPathPrivate *)ibus_observed_path_get_instance_private (o))
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
@@ -59,8 +59,6 @@ ibus_observed_path_class_init (IBusObservedPathClass *class)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
-
-    // g_type_class_add_private (class, sizeof (IBusObservedPathPrivate));
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_observed_path_destroy;
 

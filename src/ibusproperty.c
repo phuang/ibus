@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -59,7 +59,7 @@ struct _IBusPropertyPrivate {
 };
 
 #define IBUS_PROPERTY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_PROPERTY, IBusPropertyPrivate))
+   ((IBusPropertyPrivate *)ibus_property_get_instance_private (o))
 
 /* functions prototype */
 static void         ibus_property_set_property  (IBusProperty       *prop,
@@ -78,7 +78,7 @@ static gint         ibus_property_deserialize   (IBusProperty       *prop,
 static gboolean     ibus_property_copy          (IBusProperty       *dest,
                                                  const IBusProperty *src);
 
-G_DEFINE_TYPE (IBusProperty, ibus_property, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusProperty, ibus_property, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_property_class_init (IBusPropertyClass *class)
@@ -86,8 +86,6 @@ ibus_property_class_init (IBusPropertyClass *class)
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
-
-    g_type_class_add_private (class, sizeof (IBusPropertyPrivate));
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_property_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_property_get_property;

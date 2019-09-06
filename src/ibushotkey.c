@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2018 Red Hat, Inc.
+ * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@
 #include "ibusshare.h"
 
 #define IBUS_HOTKEY_PROFILE_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_HOTKEY_PROFILE, IBusHotkeyProfilePrivate))
+   ((IBusHotkeyProfilePrivate *)ibus_hotkey_profile_get_instance_private (o))
 
 enum {
     TRIGGER,
@@ -79,7 +79,10 @@ static guint         normalize_modifiers            (guint                   key
                                                      guint                   modifiers);
 static gboolean      is_modifier                    (guint                   keyval);
 
-static IBusSerializableClass *parent_class = NULL;
+G_DEFINE_TYPE_WITH_PRIVATE (IBusHotkeyProfile,
+                            ibus_hotkey_profile,
+                            IBUS_TYPE_SERIALIZABLE)
+
 
 static guint profile_signals[LAST_SIGNAL] = { 0 };
 
@@ -141,42 +144,11 @@ ibus_hotkey_cmp_with_data (IBusHotkey *hotkey1,
 
 
 
-GType
-ibus_hotkey_profile_get_type (void)
-{
-    static GType type = 0;
-
-    static const GTypeInfo type_info = {
-        sizeof (IBusHotkeyProfileClass),
-        (GBaseInitFunc)     NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)    ibus_hotkey_profile_class_init,
-        NULL,               /* class finalize */
-        NULL,               /* class data */
-        sizeof (IBusHotkeyProfile),
-        0,
-        (GInstanceInitFunc) ibus_hotkey_profile_init,
-    };
-
-    if (type == 0) {
-        type = g_type_register_static (IBUS_TYPE_SERIALIZABLE,
-                                       "IBusHotkeyProfile",
-                                       &type_info,
-                                       0);
-    }
-
-    return type;
-}
-
 static void
 ibus_hotkey_profile_class_init (IBusHotkeyProfileClass *class)
 {
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
-
-    parent_class = (IBusSerializableClass *) g_type_class_peek_parent (class);
-
-    g_type_class_add_private (class, sizeof (IBusHotkeyProfilePrivate));
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_hotkey_profile_destroy;
 
@@ -255,7 +227,8 @@ ibus_hotkey_profile_destroy (IBusHotkeyProfile *profile)
         priv->hotkeys = NULL;
     }
 
-    IBUS_OBJECT_CLASS (parent_class)->destroy ((IBusObject *)profile);
+    IBUS_OBJECT_CLASS (ibus_hotkey_profile_parent_class)->
+            destroy ((IBusObject *)profile);
 }
 
 static gboolean
@@ -264,7 +237,8 @@ ibus_hotkey_profile_serialize (IBusHotkeyProfile *profile,
 {
     gboolean retval;
 
-    retval = parent_class->serialize ((IBusSerializable *) profile, builder);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_hotkey_profile_parent_class)->
+            serialize ((IBusSerializable *) profile, builder);
     g_return_val_if_fail (retval, FALSE);
 
     return TRUE;
@@ -276,7 +250,8 @@ ibus_hotkey_profile_deserialize (IBusHotkeyProfile *profile,
 {
     gint retval;
 
-    retval = parent_class->deserialize ((IBusSerializable *) profile, variant);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_hotkey_profile_parent_class)->
+            deserialize ((IBusSerializable *) profile, variant);
     g_return_val_if_fail (retval, 0);
 
     return retval;
@@ -288,8 +263,8 @@ ibus_hotkey_profile_copy (IBusHotkeyProfile       *dest,
 {
     gboolean retval;
 
-    retval = parent_class->copy ((IBusSerializable *)dest,
-                                 (IBusSerializable *)src);
+    retval = IBUS_SERIALIZABLE_CLASS (ibus_hotkey_profile_parent_class)->
+            copy ((IBusSerializable *)dest, (IBusSerializable *)src);
     g_return_val_if_fail (retval, FALSE);
 
     g_return_val_if_fail (IBUS_IS_HOTKEY_PROFILE (dest), FALSE);

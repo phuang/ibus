@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2015 Red Hat, Inc.
+ * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,7 +55,7 @@ struct _IBusRegistryPrivate {
 };
 
 #define IBUS_REGISTRY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_REGISTRY, IBusRegistryPrivate))
+   ((IBusRegistryPrivate *)ibus_registry_get_instance_private (o))
 
 /* functions prototype */
 static void     ibus_registry_destroy        (IBusRegistry           *registry);
@@ -67,7 +67,7 @@ static gint     ibus_registry_deserialize    (IBusRegistry           *registry,
 static gboolean ibus_registry_copy           (IBusRegistry           *dest,
                                               const IBusRegistry     *src);
 
-G_DEFINE_TYPE (IBusRegistry, ibus_registry, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusRegistry, ibus_registry, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_registry_class_init (IBusRegistryClass *class)
@@ -83,8 +83,6 @@ ibus_registry_class_init (IBusRegistryClass *class)
     serializable_class->deserialize =
         (IBusSerializableDeserializeFunc) ibus_registry_deserialize;
     serializable_class->copy = (IBusSerializableCopyFunc) ibus_registry_copy;
-
-    g_type_class_add_private (class, sizeof (IBusRegistryPrivate));
 
     /* install signals */
     /**

@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2011-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2018 Red Hat, Inc.
+ * Copyright (C) 2011-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2180,7 +2180,8 @@ bus_ibus_impl_registry_destroy (BusIBusImpl *ibus)
 
     g_clear_pointer (&ibus->engine_table, g_hash_table_destroy);
 
-    g_clear_pointer (&ibus->registry, ibus_object_destroy);
+    ibus_object_destroy (IBUS_OBJECT (ibus->registry));
+    ibus->registry = NULL;
 
     if (ibus->extension_register_keys)
         g_clear_pointer (&ibus->extension_register_keys, g_variant_unref);

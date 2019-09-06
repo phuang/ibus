@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2018 Red Hat, Inc.
+ * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +32,7 @@
 #include "ibusxevent.h"
 
 #define IBUS_ENGINE_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE, IBusEnginePrivate))
+   ((IBusEnginePrivate *)ibus_engine_get_instance_private (o))
 
 enum {
     PROCESS_KEY_EVENT,
@@ -187,7 +187,7 @@ static void      ibus_engine_dbus_property_changed
                                               GVariant           *value);
 
 
-G_DEFINE_TYPE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusEngine, ibus_engine, IBUS_TYPE_SERVICE)
 
 static const gchar introspection_xml[] =
     "<node>"
@@ -829,8 +829,6 @@ ibus_engine_class_init (IBusEngineClass *class)
             2,
             G_TYPE_UINT,
             G_TYPE_UINT);
-
-    g_type_class_add_private (class, sizeof (IBusEnginePrivate));
 
     text_empty = ibus_text_new_from_static_string ("");
     g_object_ref_sink (text_empty);

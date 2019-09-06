@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -72,7 +72,7 @@ struct _IBusEngineDescPrivate {
 };
 
 #define IBUS_ENGINE_DESC_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_DESC, IBusEngineDescPrivate))
+   ((IBusEngineDescPrivate *)ibus_engine_desc_get_instance_private (o))
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
@@ -95,7 +95,9 @@ static gboolean     ibus_engine_desc_copy           (IBusEngineDesc         *des
 static gboolean     ibus_engine_desc_parse_xml_node (IBusEngineDesc         *desc,
                                                      XMLNode                *node);
 
-G_DEFINE_TYPE (IBusEngineDesc, ibus_engine_desc, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusEngineDesc,
+                            ibus_engine_desc,
+                            IBUS_TYPE_SERIALIZABLE)
 
 
 static void
@@ -112,8 +114,6 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_engine_desc_serialize;
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_engine_desc_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_engine_desc_copy;
-
-    g_type_class_add_private (class, sizeof (IBusEngineDescPrivate));
 
     /* install properties */
     /**

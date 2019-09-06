@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,7 +25,7 @@
 #include "ibusinternal.h"
 
 #define IBUS_OBJECT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_OBJECT, IBusObjectPrivate))
+   ((IBusObjectPrivate *)ibus_object_get_instance_private (o))
 
 enum {
     DESTROY,
@@ -53,7 +53,7 @@ static void      ibus_object_dispose        (IBusObject         *obj);
 static void      ibus_object_finalize       (IBusObject         *obj);
 static void      ibus_object_real_destroy   (IBusObject         *obj);
 
-G_DEFINE_TYPE (IBusObject, ibus_object, G_TYPE_INITIALLY_UNOWNED)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusObject, ibus_object, G_TYPE_INITIALLY_UNOWNED)
 
 static void
 ibus_object_class_init     (IBusObjectClass *class)
@@ -85,8 +85,6 @@ ibus_object_class_init     (IBusObjectClass *class)
             NULL, NULL,
             _ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-
-    g_type_class_add_private (class, sizeof (IBusObjectPrivate));
 
 #ifdef DEBUG_MEMORY
     _count_table = g_hash_table_new (g_direct_hash, g_direct_equal);

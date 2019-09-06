@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2015 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,7 +26,7 @@
 #include "ibusinternal.h"
 
 #define IBUS_FACTORY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_FACTORY, IBusFactoryPrivate))
+   ((IBusFactoryPrivate *)ibus_factory_get_instance_private (o))
 
 enum {
     CREATE_ENGINE,
@@ -87,7 +87,7 @@ static void      ibus_factory_engine_destroy_cb
                                              (IBusEngine         *engine,
                                               IBusFactory        *factory);
 
-G_DEFINE_TYPE (IBusFactory, ibus_factory, IBUS_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusFactory, ibus_factory, IBUS_TYPE_SERVICE)
 
 static const gchar introspection_xml[] =
     "<node>"
@@ -157,8 +157,6 @@ ibus_factory_class_init (IBusFactoryClass *class)
     class->create_engine = ibus_factory_real_create_engine;
 
     ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
-
-    g_type_class_add_private (class, sizeof (IBusFactoryPrivate));
 
     /**
      * IBusFactory::create-engine:

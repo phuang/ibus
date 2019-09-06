@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2018 Red Hat, Inc.
+ * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2018-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -64,13 +64,9 @@ typedef struct {
 } IBusUnicodeDataLoadData;
 
 #define IBUS_UNICODE_DATA_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-    IBUS_TYPE_UNICODE_DATA, \
-    IBusUnicodeDataPrivate))
+   ((IBusUnicodeDataPrivate *)ibus_unicode_data_get_instance_private (o))
 #define IBUS_UNICODE_BLOCK_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-    IBUS_TYPE_UNICODE_BLOCK, \
-    IBusUnicodeBlockPrivate))
+   ((IBusUnicodeBlockPrivate *)ibus_unicode_block_get_instance_private (o))
 
 /* functions prototype */
 static void      ibus_unicode_data_set_property (IBusUnicodeData      *unicode,
@@ -106,8 +102,12 @@ static gint      ibus_unicode_block_deserialize (IBusUnicodeBlock     *block,
 static gboolean  ibus_unicode_block_copy        (IBusUnicodeBlock     *dest,
                                                 const IBusUnicodeBlock *src);
 
-G_DEFINE_TYPE (IBusUnicodeData, ibus_unicode_data, IBUS_TYPE_SERIALIZABLE)
-G_DEFINE_TYPE (IBusUnicodeBlock, ibus_unicode_block, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusUnicodeData,
+                            ibus_unicode_data,
+                            IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusUnicodeBlock,
+                            ibus_unicode_block,
+                            IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_unicode_data_class_init (IBusUnicodeDataClass *class)
@@ -127,8 +127,6 @@ ibus_unicode_data_class_init (IBusUnicodeDataClass *class)
             (IBusSerializableDeserializeFunc) ibus_unicode_data_deserialize;
     serializable_class->copy        =
             (IBusSerializableCopyFunc) ibus_unicode_data_copy;
-
-    g_type_class_add_private (class, sizeof (IBusUnicodeDataPrivate));
 
     /* install properties */
     /**
@@ -689,8 +687,6 @@ ibus_unicode_block_class_init (IBusUnicodeBlockClass *class)
             (IBusSerializableDeserializeFunc) ibus_unicode_block_deserialize;
     serializable_class->copy        =
             (IBusSerializableCopyFunc) ibus_unicode_block_copy;
-
-    g_type_class_add_private (class, sizeof (IBusUnicodeBlockPrivate));
 
     /* install properties */
     /**

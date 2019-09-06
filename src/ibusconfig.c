@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@
 #include "ibuserror.h"
 
 #define IBUS_CONFIG_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_CONFIG, IBusConfigPrivate))
+   ((IBusConfigPrivate *)ibus_config_get_instance_private (o))
 
 enum {
     VALUE_CHANGED,
@@ -65,6 +65,7 @@ static void      _signal_unsubscribe        (GDBusProxy         *proxy,
 static void      _remove_all_match_rules    (IBusConfig         *config);
 
 G_DEFINE_TYPE_WITH_CODE (IBusConfig, ibus_config, IBUS_TYPE_PROXY,
+                         G_ADD_PRIVATE (IBusConfig)
                          G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, initable_iface_init)
                          G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, async_initable_iface_init)
                          );
@@ -74,8 +75,6 @@ ibus_config_class_init (IBusConfigClass *class)
 {
     GDBusProxyClass *dbus_proxy_class = G_DBUS_PROXY_CLASS (class);
     IBusProxyClass *proxy_class = IBUS_PROXY_CLASS (class);
-
-    g_type_class_add_private (class, sizeof (IBusConfigPrivate));
 
     dbus_proxy_class->g_signal = ibus_config_g_signal;
     proxy_class->destroy = ibus_config_real_destroy;
@@ -116,7 +115,7 @@ ibus_config_init (IBusConfig *config)
 static void
 ibus_config_real_destroy (IBusProxy *proxy)
 {
-    IBusConfigPrivate *priv = IBUS_CONFIG_GET_PRIVATE (proxy);
+    IBusConfigPrivate *priv = IBUS_CONFIG_GET_PRIVATE (IBUS_CONFIG (proxy));
 
     _signal_unsubscribe (G_DBUS_PROXY (proxy), priv->watch_config_signal_id);
     _remove_all_match_rules (IBUS_CONFIG (proxy));

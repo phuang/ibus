@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2018 Red Hat, Inc.
+ * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2018-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,13 +24,11 @@
 
 #define IBUS_EXTENSION_EVENT_VERSION 1
 #define IBUS_EXTENSION_EVENT_GET_PRIVATE(o)                             \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o),                                   \
-                                 IBUS_TYPE_EXTENSION_EVENT,             \
-                                 IBusExtensionEventPrivate))
+   ((IBusExtensionEventPrivate *)ibus_extension_event_get_instance_private (o))
 
 #define IBUS_X_EVENT_VERSION 1
 #define IBUS_X_EVENT_GET_PRIVATE(o)                                     \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_X_EVENT, IBusXEventPrivate))
+   ((IBusXEventPrivate *)ibus_x_event_get_instance_private (o))
 
 enum {
     PROP_0,
@@ -128,8 +126,12 @@ static gint      ibus_x_event_deserialize          (IBusXEvent         *event,
 static gboolean  ibus_x_event_copy                 (IBusXEvent         *dest,
                                                     const IBusXEvent   *src);
 
-G_DEFINE_TYPE (IBusExtensionEvent, ibus_extension_event, IBUS_TYPE_SERIALIZABLE)
-G_DEFINE_TYPE (IBusXEvent, ibus_x_event, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusExtensionEvent,
+                            ibus_extension_event,
+                            IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusXEvent,
+                            ibus_x_event,
+                            IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_extension_event_class_init (IBusExtensionEventClass *class)
@@ -228,8 +230,6 @@ ibus_extension_event_class_init (IBusExtensionEventClass *class)
                         "",
                         G_PARAM_READWRITE |
                         G_PARAM_CONSTRUCT_ONLY));
-
-    g_type_class_add_private (class, sizeof (IBusExtensionEventPrivate));
 }
 
 static void
@@ -779,8 +779,6 @@ ibus_x_event_class_init (IBusXEventClass *class)
                         "",
                         G_PARAM_READWRITE |
                         G_PARAM_CONSTRUCT_ONLY));
-
-    g_type_class_add_private (class, sizeof (IBusXEventPrivate));
 }
 
 static void

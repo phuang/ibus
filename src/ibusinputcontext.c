@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2018 Red Hat, Inc.
+ * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,7 @@
 #include "ibuserror.h"
 
 #define IBUS_INPUT_CONTEXT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_INPUT_CONTEXT, IBusInputContextPrivate))
+   ((IBusInputContextPrivate *)ibus_input_context_get_instance_private (o))
 
 enum {
     ENABLED,
@@ -83,15 +83,15 @@ static void     ibus_input_context_g_signal     (GDBusProxy             *proxy,
                                                  const gchar            *signal_name,
                                                  GVariant               *parameters);
 
-G_DEFINE_TYPE (IBusInputContext, ibus_input_context, IBUS_TYPE_PROXY)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusInputContext,
+                            ibus_input_context,
+                            IBUS_TYPE_PROXY)
 
 static void
 ibus_input_context_class_init (IBusInputContextClass *class)
 {
     IBusProxyClass *ibus_proxy_class = IBUS_PROXY_CLASS (class);
     GDBusProxyClass *g_dbus_proxy_class = G_DBUS_PROXY_CLASS (class);
-
-    g_type_class_add_private (class, sizeof (IBusInputContextPrivate));
 
     ibus_proxy_class->destroy = ibus_input_context_real_destroy;
 

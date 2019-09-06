@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,7 +58,7 @@ struct _IBusComponentPrivate {
 };
 
 #define IBUS_COMPONENT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_COMPONENT, IBusComponentPrivate))
+   ((IBusComponentPrivate *)ibus_component_get_instance_private (o))
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
@@ -90,7 +90,9 @@ static void         ibus_component_parse_observed_paths
                                                  XMLNode                *node,
                                                  gboolean                access_fs);
 
-G_DEFINE_TYPE (IBusComponent, ibus_component, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusComponent,
+                            ibus_component,
+                            IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_component_class_init (IBusComponentClass *class)
@@ -98,8 +100,6 @@ ibus_component_class_init (IBusComponentClass *class)
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
-
-    g_type_class_add_private (class, sizeof (IBusComponentPrivate));
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_component_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_component_get_property;

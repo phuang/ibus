@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2018 Red Hat, Inc.
+ * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,7 @@
 #include "ibusserializable.h"
 
 #define IBUS_SERIALIZABLE_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_SERIALIZABLE, IBusSerializablePrivate))
+   ((IBusSerializablePrivate *)ibus_serializable_get_instance_private (o))
 
 enum {
     LAST_SIGNAL,
@@ -50,7 +50,15 @@ static gboolean  ibus_serializable_real_copy        (IBusSerializable       *des
                                                      const IBusSerializable *src);
 
 static IBusObjectClass *parent_class = NULL;
+static gint ibus_serializable_private_offset;
 
+G_GNUC_UNUSED
+static inline gpointer
+ibus_serializable_get_instance_private (IBusSerializable *self)
+{
+    return (G_STRUCT_MEMBER_P (self, ibus_serializable_private_offset));
+}
+ 
 GType
 ibus_serializable_get_type (void)
 {
@@ -73,6 +81,9 @@ ibus_serializable_get_type (void)
                                        "IBusSerializable",
                                        &type_info,
                                        0);
+        ibus_serializable_private_offset =
+                g_type_add_instance_private (type,
+                                             sizeof (IBusSerializablePrivate));
     }
 
     return type;
@@ -101,7 +112,10 @@ ibus_serializable_class_init     (IBusSerializableClass *class)
 
     parent_class = (IBusObjectClass *) g_type_class_peek_parent (class);
 
-    g_type_class_add_private (class, sizeof (IBusSerializablePrivate));
+    if (ibus_serializable_private_offset) {
+        g_type_class_adjust_private_offset (class,
+                                            &ibus_serializable_private_offset);
+    }
 
     object_class->destroy = (IBusObjectDestroyFunc) ibus_serializable_destroy;
 
@@ -184,7 +198,7 @@ ibus_serializable_real_copy (IBusSerializable *dest,
 {
     IBusSerializablePrivate *src_priv;
     IBusSerializablePrivate *dest_priv;
-    src_priv = IBUS_SERIALIZABLE_GET_PRIVATE (src);
+    src_priv = IBUS_SERIALIZABLE_GET_PRIVATE (IBUS_SERIALIZABLE (src));
     dest_priv = IBUS_SERIALIZABLE_GET_PRIVATE (dest);
 
     g_datalist_foreach (&src_priv->attachments,

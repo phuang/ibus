@@ -1,8 +1,8 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2017 Red Hat, Inc.
+ * Copyright (C) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2017-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -47,9 +47,7 @@ struct _IBusEmojiDataPrivate {
 };
 
 #define IBUS_EMOJI_DATA_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
-    IBUS_TYPE_EMOJI_DATA, \
-    IBusEmojiDataPrivate))
+   ((IBusEmojiDataPrivate *)ibus_emoji_data_get_instance_private (o))
 
 /* functions prototype */
 static void      ibus_emoji_data_set_property  (IBusEmojiData       *emoji,
@@ -68,7 +66,9 @@ static gint      ibus_emoji_data_deserialize   (IBusEmojiData       *emoji,
 static gboolean  ibus_emoji_data_copy          (IBusEmojiData       *emoji,
                                                 const IBusEmojiData *src);
 
-G_DEFINE_TYPE (IBusEmojiData, ibus_emoji_data, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusEmojiData,
+                            ibus_emoji_data,
+                            IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_emoji_data_class_init (IBusEmojiDataClass *class)
@@ -88,8 +88,6 @@ ibus_emoji_data_class_init (IBusEmojiDataClass *class)
             (IBusSerializableDeserializeFunc) ibus_emoji_data_deserialize;
     serializable_class->copy        =
             (IBusSerializableCopyFunc) ibus_emoji_data_copy;
-
-    g_type_class_add_private (class, sizeof (IBusEmojiDataPrivate));
 
     /* install properties */
     /**
