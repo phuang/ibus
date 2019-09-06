@@ -111,7 +111,8 @@ fi
 run_test_case()
 {
     test -d $tstdir || mkdir $tstdir
-    pushd $tstdir
+    backup_dir=$PWD
+    cd $tstdir
 
     need_bus=no
     for t in $BUS_REQUIRED_TESTS; do
@@ -190,7 +191,7 @@ run_test_case()
 
     retval=`expr $retval \| $?`
 
-    popd
+    cd $backup_dir
 
     func_cleanup $tstdir
 }

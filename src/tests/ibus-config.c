@@ -114,7 +114,7 @@ test_config_set_get (void)
             value_bits |= (1 << 1);
         }
         else {
-            g_warning ("unknow value name=%s", name);
+            g_warning ("Unknown value name=%s", name);
         }
         ibus_config_unset (config, "test", name);
         g_variant_unref (value);
