@@ -22,6 +22,8 @@
  */
 #include "server.h"
 
+#include <errno.h>
+#include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -180,28 +182,102 @@ bus_acquired_handler (GDBusConnection       *connection,
                             NULL);
 }
 
+static gchar *
+_bus_extract_address (void)
+{
+    gchar *socket_address = g_strdup (g_address);
+    gchar *p;
+
+#define IF_REPLACE_VARIABLE_WITH_FUNC(variable, func, format)           \
+    if ((p = g_strstr_len (socket_address, -1, (variable)))) {          \
+        gchar *sub1 = g_strndup (socket_address, p - socket_address);   \
+        gchar *sub2 = g_strdup (p + strlen (variable));                 \
+        gchar *tmp = g_strdup_printf ("%s" format "%s",                 \
+                                      sub1, (func) (), sub2);           \
+        g_free (sub1);                                                  \
+        g_free (sub2);                                                  \
+        g_free (socket_address);                                        \
+        socket_address = tmp;                                           \
+    }
+
+    IF_REPLACE_VARIABLE_WITH_FUNC ("$XDG_RUNTIME_DIR",
+                                   g_get_user_runtime_dir,
+                                   "%s")
+    else
+    IF_REPLACE_VARIABLE_WITH_FUNC ("$XDG_CACHE_HOME",
+                                   g_get_user_cache_dir,
+                                   "%s")
+    else
+    IF_REPLACE_VARIABLE_WITH_FUNC ("$UID", getuid, "%d")
+
+#undef IF_REPLACE_VARIABLE_WITH_FUNC
+
+    return socket_address;
+}
+
 void
 bus_server_init (void)
 {
-    GError *error = NULL;
+#define IBUS_UNIX_TMPDIR        "unix:tmpdir="
+#define IBUS_UNIX_PATH          "unix:path="
+#define IBUS_UNIX_ABSTRACT      "unix:abstract="
+#define IBUS_UNIX_DIR           "unix:dir="
+
+    gchar *socket_address;
     GDBusServerFlags flags = G_DBUS_SERVER_FLAGS_NONE;
     gchar *guid;
     GDBusAuthObserver *observer;
+    GError *error = NULL;
+    gchar *unix_dir = NULL;
 
     dbus = bus_dbus_impl_get_default ();
     ibus = bus_ibus_impl_get_default ();
     bus_dbus_impl_register_object (dbus, (IBusService *)ibus);
 
     /* init server */
+    socket_address = _bus_extract_address ();
+
+#define IF_GET_UNIX_DIR(prefix)                                         \
+    if (g_str_has_prefix (socket_address, (prefix))) {                  \
+        unix_dir = g_strdup (socket_address + strlen (prefix));         \
+    }
+
+    IF_GET_UNIX_DIR (IBUS_UNIX_TMPDIR)
+    else
+    IF_GET_UNIX_DIR (IBUS_UNIX_PATH)
+    else
+    IF_GET_UNIX_DIR (IBUS_UNIX_ABSTRACT)
+    else
+    IF_GET_UNIX_DIR (IBUS_UNIX_DIR)
+    else {
+        g_error ("Your socket address \"%s\" does not correspond with "
+                 "one of the following formats; "
+                 IBUS_UNIX_TMPDIR "DIR, " IBUS_UNIX_PATH "FILE, "
+                 IBUS_UNIX_ABSTRACT "FILE, " IBUS_UNIX_DIR "DIR.",
+                 socket_address);
+    }
+    if (!g_file_test (unix_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+        /* Require mkdir for BSD system. */
+        if (g_mkdir_with_parents (unix_dir, 0) != 0) {
+            g_error ("mkdir is failed in: %s: %s",
+                     unix_dir, g_strerror (errno));
+        }
+        /* The mode 0700 can eliminate malicious users change the mode.
+         * `chmod` runs for the last directory only not to change the modes
+         * of the parent directories. E.g. "/tmp/ibus".
+         */
+        if (g_chmod (unix_dir, 0700) != 0) {
+            g_error ("chmod(700) is failed in: %s: %s",
+                     unix_dir, g_strerror (errno));
+        }
+    }
+    g_free (unix_dir);
     guid = g_dbus_generate_guid ();
     observer = g_dbus_auth_observer_new ();
-    if (!g_str_has_prefix (g_address, "unix:tmpdir=") &&
-        !g_str_has_prefix (g_address, "unix:path=")) {
-        g_error ("Your socket address does not have the format unix:tmpdir=$DIR "
-                 "or unix:path=$FILE; %s", g_address);
-    }
     server =  g_dbus_server_new_sync (
-                    g_address, /* the place where the socket file lives, e.g. /tmp, abstract namespace, etc. */
+                    /* the place where the socket file lives, e.g. /tmp,
+                     * abstract namespace, etc. */
+                    socket_address,
                     flags, guid,
                     observer,
                     NULL /* cancellable */,
@@ -209,8 +285,9 @@ bus_server_init (void)
     if (server == NULL) {
         g_error ("g_dbus_server_new_sync() is failed with address %s "
                  "and guid %s: %s",
-                 g_address, guid, error->message);
+                 socket_address, guid, error->message);
     }
+    g_free (socket_address);
     g_free (guid);
 
     g_signal_connect (observer, "allow-mechanism",
@@ -235,6 +312,12 @@ bus_server_init (void)
                     G_BUS_NAME_OWNER_FLAGS_NONE,
                     bus_acquired_handler,
                     NULL, NULL, NULL, NULL);
+
+#undef IF_GET_UNIX_DIR
+#undef IBUS_UNIX_TMPDIR
+#undef IBUS_UNIX_PATH
+#undef IBUS_UNIX_ABSTRACT
+#undef IBUS_UNIX_DIR
 }
 
 const gchar *

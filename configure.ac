@@ -702,6 +702,30 @@ the UCD files from https://www.unicode.org/Public/UNIDATA/)
     enable_unicode_dict="yes (enabled, use --disable-unicode-dict to disable)"
 fi
 
+AC_ARG_WITH(socket-dir,
+    AS_HELP_STRING([--with-socket-dir[=DIR]],
+        [Set the default socket directory to connect ibus-daemon with D-Bus
+         connections (default: "$XDG_RUNTIME_DIR/ibus").
+         The best practice of the socket directory would be unique per user
+         not to modify by malicious users but XDG_RUNTIME_DIR is not integrated
+         in BSD systems and the BSD's default is "/tmp".
+         "$XDG_RUMTIME_DIR", "$XDG_CACHE_HOME", "$UID" are extracted by
+         ibus-daemon.
+         ibus-daemon also runs mkdir for the socket directory since BSD
+         systems do not support abstract socket paths.
+         The socket path on a NFS mount would not be a good idea likes
+         "/home/$USER" because the directory is not sometimes accessible
+         with the network condition.]),
+    [IBUS_SOCKET_DIR=$with_socket_dir],
+    [case $host in
+         *linux*) IBUS_SOCKET_DIR='unix:tmpdir=$XDG_RUNTIME_DIR/ibus';;
+         *)       IBUS_SOCKET_DIR='unix:tmpdir=/tmp';;
+     esac]
+
+)
+AC_DEFINE_UNQUOTED(IBUS_SOCKET_DIR, "$IBUS_SOCKET_DIR",
+                   [The default socket directory to connect ibus-daemon.])
+
 # Check iso-codes.
 PKG_CHECK_MODULES(ISOCODES, [
     iso-codes
@@ -793,6 +817,7 @@ Build options:
   CLDR annotation directory     $EMOJI_ANNOTATION_DIR
   Enable Unicode dict           $enable_unicode_dict
   UCD directory                 $UCD_DIR
+  Socket directory              "$IBUS_SOCKET_DIR"
   Run test cases                $enable_tests
   Install tests                 $enable_install_tests
 ])

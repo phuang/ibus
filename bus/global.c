@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  * Copyright (c) 2012 Google, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,10 +21,12 @@
  * USA
  */
 
+#include <config.h>
+
 #include "global.h"
 
 gchar **g_argv = NULL;
-gchar *g_address = "unix:tmpdir=/tmp/ibus";
+gchar *g_address = IBUS_SOCKET_DIR;
 gchar *g_cache = "auto";
 gboolean g_mempro = FALSE;
 gboolean g_verbose = FALSE;
