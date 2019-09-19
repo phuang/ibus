@@ -148,7 +148,7 @@ parse_compose_value (IBusComposeData  *compose_data,
             } else {
                 compose_data->values = g_renew (gunichar,
                                                 compose_data->values,
-                                                n_uchars + 1);
+                                                n_uchars + 2);
             }
             compose_data->values[n_uchars++] = *up;
         }
