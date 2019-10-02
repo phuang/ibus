@@ -705,10 +705,12 @@ fi
 AC_ARG_WITH(socket-dir,
     AS_HELP_STRING([--with-socket-dir[=DIR]],
         [Set the default socket directory to connect ibus-daemon with D-Bus
-         connections (default: "$XDG_RUNTIME_DIR/ibus").
+         connections (default: "$XDG_CACHE_HOME/ibus").
          The best practice of the socket directory would be unique per user
          not to modify by malicious users but XDG_RUNTIME_DIR is not integrated
          in BSD systems and the BSD's default is "/tmp".
+         XDG_RUMTIME_DIR is not useful now because XDG_RUMTIME_DIR is available
+         by login but not `su` command but ibus-daemon can be run with su.
          "$XDG_RUMTIME_DIR", "$XDG_CACHE_HOME", "$UID" are extracted by
          ibus-daemon.
          ibus-daemon also runs mkdir for the socket directory since BSD
@@ -718,7 +720,7 @@ AC_ARG_WITH(socket-dir,
          with the network condition.]),
     [IBUS_SOCKET_DIR=$with_socket_dir],
     [case $host in
-         *linux*) IBUS_SOCKET_DIR='unix:tmpdir=$XDG_RUNTIME_DIR/ibus';;
+         *linux*) IBUS_SOCKET_DIR='unix:tmpdir=$XDG_CACHE_HOME/ibus';;
          *)       IBUS_SOCKET_DIR='unix:tmpdir=/tmp';;
      esac]
 
