@@ -315,7 +315,7 @@ ucd_parse_file (const gchar *filename,
             }
             break;
         default:
-            g_abort ();
+            abort ();
         }
         while (*end == '\n' && end - content < length) {
             end++;
