@@ -53,6 +53,7 @@ m4_define([ibus_binary_version],
 
 # Required versions of other packages.
 m4_define([glib_required_version], [2.46.0])
+m4_define([gtk3_required_version], [3.12.0])
 
 # VALA_TARGET_GLIB_VERSION is used by valac --ccode --target-glib .
 # VALA_TARGET_GLIB_VERSION and glib_required_version will be different
@@ -238,7 +239,7 @@ fi
 if test x"$enable_gtk3" = x"yes"; then
     # check for gtk3
     PKG_CHECK_MODULES(GTK3, [
-        gtk+-3.0
+        gtk+-3.0 >= gtk3_required_version
     ])
     PKG_CHECK_EXISTS([gdk-wayland-3.0],
         [enable_gdk3_wayland=yes],

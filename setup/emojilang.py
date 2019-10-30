@@ -3,7 +3,7 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2017 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -83,8 +83,8 @@ class EmojiLangChooser(Gtk.Dialog):
                 hscrollbar_policy = Gtk.PolicyType.NEVER,
                 vscrollbar_policy = Gtk.PolicyType.NEVER,
                 shadow_type = Gtk.ShadowType.IN,
-                margin_left = 6,
-                margin_right = 6,
+                margin_start = 6,
+                margin_end = 6,
                 margin_top = 6,
                 margin_bottom = 6)
         self.vbox.add(self.__scrolled)
@@ -192,8 +192,8 @@ class EmojiLangChooser(Gtk.Dialog):
         label = Gtk.Label(label = text)
         label.set_halign(alignment)
         label.set_valign(Gtk.Align.CENTER)
-        label.set_margin_left(20)
-        label.set_margin_right(20)
+        label.set_margin_start(20)
+        label.set_margin_end(20)
         label.set_margin_top(6)
         label.set_margin_bottom(6)
         hbox.pack_start(label, True, True, 0)
@@ -235,8 +235,8 @@ class EmojiLangChooser(Gtk.Dialog):
         row.set_tooltip_text(_("More…"))
         arrow = Gtk.Image.new_from_icon_name('view-more-symbolic',
                                              Gtk.IconSize.MENU)
-        arrow.set_margin_left(20)
-        arrow.set_margin_right(20)
+        arrow.set_margin_start(20)
+        arrow.set_margin_end(20)
         arrow.set_margin_top(6)
         arrow.set_margin_bottom(6)
         arrow.set_halign(Gtk.Align.CENTER)

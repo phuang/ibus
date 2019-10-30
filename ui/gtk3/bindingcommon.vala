@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2018 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2018 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2018-2019 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -75,8 +75,8 @@ class BindingCommon {
         // workaround a bug in gdk vapi vala > 0.18
         // https://bugzilla.gnome.org/show_bug.cgi?id=677559
 #if VALA_0_18
-            Gdk.Keymap.get_default().map_virtual_modifiers(
-                    ref switch_modifiers);
+            Gdk.Keymap.get_for_display(Gdk.Display.get_default()
+                    ).map_virtual_modifiers(ref switch_modifiers);
 #else
             if ((switch_modifiers & Gdk.ModifierType.SUPER_MASK) != 0)
                 switch_modifiers |= Gdk.ModifierType.MOD4_MASK;

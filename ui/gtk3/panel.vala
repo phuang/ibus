@@ -1053,7 +1053,7 @@ class Panel : IBus.PanelService {
 
     private void show_setup_dialog() {
         if (m_setup_pid != 0) {
-            if (Posix.kill(m_setup_pid, Posix.SIGUSR1) == 0)
+            if (Posix.kill(m_setup_pid, Posix.Signal.USR1) == 0)
                 return;
             m_setup_pid = 0;
         }
@@ -1087,7 +1087,7 @@ class Panel : IBus.PanelService {
 
             string copyright =
                 "Copyright © 2007-2015 Peng Huang\n" +
-                "Copyright © 2015 Takao Fujiwara\n" +
+                "Copyright © 2015-2019 Takao Fujiwara\n" +
                 "Copyright © 2007-2015 Red Hat, Inc.\n";
 
             m_about_dialog.set_copyright(copyright);

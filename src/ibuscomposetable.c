@@ -1058,6 +1058,7 @@ ibus_compose_table_list_add_array (GSList        *compose_tables,
     int i;
     guint16 *ibus_compose_seqs = NULL;
 
+    g_assert (length >= 0);
     g_return_val_if_fail (data != NULL, compose_tables);
     g_return_val_if_fail (max_seq_len <= IBUS_MAX_COMPOSE_LEN, compose_tables);
 

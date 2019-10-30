@@ -2180,6 +2180,7 @@ bus_ibus_impl_registry_destroy (BusIBusImpl *ibus)
 
     g_clear_pointer (&ibus->engine_table, g_hash_table_destroy);
 
+    /* g_clear_pointer() does not set the cast. */
     ibus_object_destroy (IBUS_OBJECT (ibus->registry));
     ibus->registry = NULL;
 

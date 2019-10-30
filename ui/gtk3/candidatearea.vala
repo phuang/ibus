@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -215,9 +215,10 @@ class CandidateArea : Gtk.Box {
                 candidate.show();
                 m_candidates += candidate;
 
-                /* Use Gtk.Widget.set_margin_start() since gtk 3.12 */
-                label.set_padding(8, 0);
-                candidate.set_padding(8, 0);
+                label.set_margin_start (8);
+                label.set_margin_end (8);
+                candidate.set_margin_start (8);
+                candidate.set_margin_end (8);
 
                 // Make a copy of i to workaround a bug in vala.
                 // https://bugzilla.gnome.org/show_bug.cgi?id=628336

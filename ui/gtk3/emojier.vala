@@ -2147,11 +2147,13 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                         ncandidates));
         int char_count = text.text.char_count();
         int start_index = -1;
+        unowned string title = text.text;
         for (int i = 0; i < char_count; i++) {
-            if (text.text.utf8_offset(i).has_prefix(language)) {
+            if (title.has_prefix(language)) {
                 start_index = i;
                 break;
             }
+            title = title.next_char();
         }
         if (start_index >= 0) {
             var attr = new IBus.Attribute(

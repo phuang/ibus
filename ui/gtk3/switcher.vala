@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2016 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -125,9 +125,10 @@ class Switcher : Gtk.Window {
         Atk.Object obj = m_label.get_accessible();
         obj.set_role (Atk.Role.STATUSBAR);
 
-        /* Use Gtk.Widget.set_margin_start() and
-         * Gtk.Widget.set_margin_top() since gtk 3.12 */
-        m_label.set_padding(3, 3);
+        m_label.set_margin_start(3);
+        m_label.set_margin_end(3);
+        m_label.set_margin_top(3);
+        m_label.set_margin_bottom(3);
         vbox.pack_end(m_label, false, false, 0);
 
         grab_focus();

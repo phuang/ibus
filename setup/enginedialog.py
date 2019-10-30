@@ -4,7 +4,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2013-2015 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or
@@ -70,8 +70,8 @@ class EngineDialog(Gtk.Dialog):
                 hscrollbar_policy = Gtk.PolicyType.NEVER,
                 vscrollbar_policy = Gtk.PolicyType.NEVER,
                 shadow_type = Gtk.ShadowType.IN,
-                margin_left = 6,
-                margin_right = 6,
+                margin_start = 6,
+                margin_end = 6,
                 margin_top = 6,
                 margin_bottom = 6)
         self.vbox.add(self.__scrolled)
@@ -94,8 +94,8 @@ class EngineDialog(Gtk.Dialog):
         self.__filter_timeout_id = 0
         self.__filter_word = None
         self.__filter_entry = Gtk.SearchEntry(hexpand = True,
-                                              margin_left = 6,
-                                              margin_right = 6,
+                                              margin_start = 6,
+                                              margin_end = 6,
                                               margin_top = 6,
                                               margin_bottom = 6)
         self.__filter_entry.set_no_show_all(True)
@@ -164,8 +164,8 @@ class EngineDialog(Gtk.Dialog):
         label = Gtk.Label(label = text)
         label.set_halign(alignment)
         label.set_valign(Gtk.Align.CENTER)
-        label.set_margin_left(20)
-        label.set_margin_right(20)
+        label.set_margin_start(20)
+        label.set_margin_end(20)
         label.set_margin_top(6)
         label.set_margin_bottom(6)
         hbox.pack_start(label, True, True, 0)
@@ -205,8 +205,8 @@ class EngineDialog(Gtk.Dialog):
         row.set_tooltip_text(_("More…"))
         arrow = Gtk.Image.new_from_icon_name('view-more-symbolic',
                                              Gtk.IconSize.MENU)
-        arrow.set_margin_left(20)
-        arrow.set_margin_right(20)
+        arrow.set_margin_start(20)
+        arrow.set_margin_end(20)
         arrow.set_margin_top(6)
         arrow.set_margin_bottom(6)
         arrow.set_halign(Gtk.Align.CENTER)

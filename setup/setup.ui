@@ -90,8 +90,8 @@
                 <property name="spacing">18</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
-                <property name="margin_left">12</property>
-                <property name="margin_right">12</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
                 <child>
                   <object class="GtkFrame" id="frame3">
                     <property name="visible">True</property>
@@ -105,7 +105,7 @@
                         <property name="column_spacing">12</property>
                         <property name="row_spacing">6</property>
                         <property name="margin_top">6</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <child>
                           <object class="GtkLabel" id="label8">
                             <property name="visible">True</property>
@@ -366,7 +366,7 @@
                         <property name="column_spacing">12</property>
                         <property name="row_spacing">6</property>
                         <property name="margin_top">6</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <child>
                           <object class="GtkLabel" id="label6">
                             <property name="visible">True</property>
@@ -589,8 +589,8 @@
                 <property name="can_focus">False</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
-                <property name="margin_left">12</property>
-                <property name="margin_right">12</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
                 <child>
                   <object class="GtkBox" id="hbox1">
                     <property name="orientation">horizontal</property>
@@ -658,7 +658,7 @@
                         <property name="can_focus">False</property>
                         <property name="spacing">5</property>
                         <property name="layout_style">start</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <child>
                           <object class="GtkButton" id="button_engine_add">
                             <property name="label" translatable="yes">_Add</property>
@@ -811,7 +811,7 @@
                         <property name="max_width_chars">74</property>
                         <property name="label" translatable="yes">&lt;small&gt;&lt;i&gt;The active input method can be switched around from the selected ones in the above list by pressing the keyboard shortcut keys or clicking the panel icon.&lt;/i&gt;&lt;/small&gt;</property>
                         <property name="use_markup">True</property>
-                        <!-- property name="margin_left">0</property -->
+                        <!-- property name="margin_start">0</property -->
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -850,8 +850,8 @@
                 <property name="spacing">18</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
-                <property name="margin_left">12</property>
-                <property name="margin_right">12</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
                 <child>
                   <object class="GtkFrame" id="frame_emoji1">
                     <property name="visible">True</property>
@@ -865,7 +865,7 @@
                         <property name="column_spacing">12</property>
                         <property name="row_spacing">6</property>
                         <property name="margin_top">6</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <child>
                           <object class="GtkLabel" id="label_emoji1">
                             <property name="visible">True</property>
@@ -1004,7 +1004,7 @@
                         <property name="column_spacing">12</property>
                         <property name="row_spacing">6</property>
                         <property name="margin_top">6</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                         <property name="row_homogeneous">false</property>
                         <child>
                           <object class="GtkLabel" id="label_emoji_font">
@@ -1187,8 +1187,8 @@
                 <property name="can_focus">False</property>
                 <property name="margin_top">12</property>
                 <property name="margin_bottom">12</property>
-                <property name="margin_left">12</property>
-                <property name="margin_right">12</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
                 <child>
                   <object class="GtkFrame" id="frame2">
                     <property name="visible">True</property>
@@ -1202,7 +1202,7 @@
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
                         <property name="margin_top">6</property>
-                        <property name="margin_left">24</property>
+                        <property name="margin_start">24</property>
                         <child>
                           <object class="GtkCheckButton" id="checkbutton_use_sys_layout">
                             <property name="label" translatable="yes">Use system keyboard layout</property>
@@ -1251,7 +1251,7 @@
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
                         <property name="margin_top">6</property>
-                        <property name="margin_left">24</property>
+                        <property name="margin_start">24</property>
                         <child>
                           <object class="GtkCheckButton" id="checkbutton_use_global_engine">
                             <property name="label" translatable="yes">Share the same input method among all applications</property>
@@ -1348,7 +1348,7 @@ Homepage: https://github.com/ibus/ibus/wiki
                         <property name="halign">start</property>
                         <property name="draw_indicator">True</property>
                         <property name="margin_top">6</property>
-                        <property name="margin_left">12</property>
+                        <property name="margin_start">12</property>
                       </object>
                     </child>
                     <child type="label">
