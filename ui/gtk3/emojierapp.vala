@@ -3,6 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright (c) 2017 Peng Wu <alexepico@gmail.com>
+ * Copyright (c) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,6 +41,33 @@ public class EmojiApplication : Gtk.Application {
     }
 
 
+    private void save_selected_string(string? selected_string,
+                                      bool    cancelled) {
+        if (cancelled) {
+            m_command_line.print("%s\n", _("Canceled to choose an emoji."));
+            return;
+        }
+        GLib.return_if_fail(selected_string != null);
+        Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
+        clipboard.set_text(selected_string, -1);
+        clipboard.store();
+
+        var emojier_favorites = m_settings_emoji.get_strv("favorites");
+        bool has_favorite = false;
+        foreach (unowned string favorite in emojier_favorites) {
+            if (favorite == selected_string) {
+                has_favorite = true;
+                break;
+            }
+        }
+        if (!has_favorite) {
+            emojier_favorites += selected_string;
+            m_settings_emoji.set_strv("favorites", emojier_favorites);
+        }
+        m_command_line.print("%s\n", _("Copied an emoji to your clipboard."));
+    }
+
+
     private void show_dialog(ApplicationCommandLine command_line) {
         m_command_line = command_line;
         m_emojier.reset();
@@ -55,7 +83,7 @@ public class EmojiApplication : Gtk.Application {
             return;
         if (button == IBusEmojier.BUTTON_CLOSE_BUTTON) {
             m_emojier.hide();
-            m_command_line.print("%s\n", _("Canceled to choose an emoji."));
+            save_selected_string(null, true);
             m_command_line = null;
             return;
         }
@@ -74,23 +102,7 @@ public class EmojiApplication : Gtk.Application {
         }
         string emoji = m_emojier.get_current_candidate();
         m_emojier.hide();
-        Gtk.Clipboard clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD);
-        clipboard.set_text(emoji, -1);
-        clipboard.store();
-
-        var emojier_favorites = m_settings_emoji.get_strv("favorites");
-        bool has_favorite = false;
-        foreach (unowned string favorite in emojier_favorites) {
-            if (favorite == emoji) {
-                has_favorite = true;
-                break;
-            }
-        }
-        if (!has_favorite) {
-            emojier_favorites += emoji;
-            m_settings_emoji.set_strv("favorites", emojier_favorites);
-        }
-        m_command_line.print("%s\n", _("Copied an emoji to your clipboard."));
+        save_selected_string(emoji, false);
         m_command_line = null;
     }
 
@@ -201,6 +213,21 @@ public class EmojiApplication : Gtk.Application {
             add_window(m_emojier);
             m_emojier.candidate_clicked.connect((i, b, s) => {
                 candidate_clicked_lookup_table(i, b, s);
+            });
+            m_emojier.cancel.connect(() => {
+                if (m_command_line == null)
+                    return;
+                m_emojier.hide();
+                save_selected_string(null, true);
+                m_command_line = null;
+            });
+            m_emojier.commit_text.connect(() => {
+                if (m_command_line == null)
+                    return;
+                m_emojier.hide();
+                string selected_string = m_emojier.get_selected_string();
+                save_selected_string(selected_string, false);
+                m_command_line = null;
             });
         }
 

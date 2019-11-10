@@ -320,6 +320,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 
     public signal void candidate_clicked(uint index, uint button, uint state);
     public signal void commit_text(string text);
+    public signal void cancel();
 
     public IBusEmojier() {
         GLib.Object(
@@ -1789,8 +1790,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             show_emoji_variants(emojis);
             return true;
         }
-        if (m_input_context_path != "")
-            m_result = text;
+        m_result = text;
         if (need_commit_signal)
             commit_text(text);
         return false;
@@ -1897,6 +1897,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
             // PageUp/PageDown.
             remove_all_children();
         }
+        cancel();
         return false;
     }
 
