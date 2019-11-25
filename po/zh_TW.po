@@ -4,10 +4,9 @@
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
-# Cheng-Chia Tseng <pswo10680@gmail.com>, 2011-2012,2014
-# Ding-Yi Chen <dchen@redhat.com>, 2009
-# Ding-Yi Chen <dchen@redhat.com>, 2009
-# Walter Cheuk <wwycheuk@gmail.com>, 2012
+# Ding-Yi Chen <dchen@redhat.com>, 2009.
+# Cheng-Chia Tseng <pswo10680@gmail.com>, 2011-2012,2014.
+# Walter Cheuk <wwycheuk@gmail.com>, 2012.
 # fujiwara <takao.fujiwara1@gmail.com>, 2015. #zanata
 # tomoe musashi <hkg.musashi@gmail.com>, 2016. #zanata
 # Cheng-Chia Tseng <pswo10680@gmail.com>, 2017. #zanata
@@ -15,17 +14,18 @@
 # Peter Pan <pan93412@gmail.com>, 2018. #zanata
 # fujiwara <takao.fujiwara1@gmail.com>, 2018. #zanata
 # Peter Pan <pan93412@gmail.com>, 2019. #zanata
+# fujiwara <takao.fujiwara1@gmail.com>, 2019. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus 1.5.20\n"
+"Project-Id-Version: ibus 1.5.21\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2019-04-16 17:33+0900\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-07-04 05:41+0000\n"
-"Last-Translator: Peter Pan <pan93412@gmail.com>\n"
-"Language-Team: Chinese (Taiwan) <trans-zh_TW@lists.fedoraproject.org>\n"
+"POT-Creation-Date: 2019-10-24 19:18+0900\n"
+"PO-Revision-Date: 2019-11-25 09:53+0000\n"
+"Last-Translator: pan93412 <pan93412@gmail.com>\n"
+"Language-Team: Chinese <chinese-l10n@googlegroups.com>\n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Zanata 4.6.2\n"
@@ -38,7 +38,7 @@ msgstr "預先載入引擎"
 #. Translators: Tooltip for the button “Preload Engines”
 #: data/dconf/org.freedesktop.ibus.gschema.xml:13
 msgid "Preload engines during ibus starts up"
-msgstr "當 iBus 啟動時預先載入引擎"
+msgstr "當 IBus 啟動時預先載入引擎"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:17
 msgid "Engines order"
@@ -58,6 +58,7 @@ msgid ""
 " 0 = Show the window immediately. 0 < Delay milliseconds. 0 > Do not show "
 "the window and switch prev/next engines."
 msgstr ""
+"設定用來顯示 IME 切換器視窗的彈出視窗延遲毫秒。預設值是 400。0 = 永遠顯示視窗。0 < 延遲毫秒。0 > 不顯示視窗及切換上下引擎。"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:27
 msgid "Saved version number"
@@ -395,7 +396,7 @@ msgid ""
 msgstr "著作權所有 (c) 2007-2010 黃鵬\n"
 "著作權所有 (c) 2007-2010 Red Hat, Inc."
 
-#: ibus/lang.py:41 src/ibusutil.c:198
+#: ibus/lang.py:41 src/ibusutil.c:209
 msgid "Other"
 msgstr "其他"
 
@@ -463,11 +464,11 @@ msgstr "鍵盤"
 
 #: setup/ibus-setup.desktop:3 setup/setup.ui:69
 msgid "IBus Preferences"
-msgstr "iBus 偏好設定"
+msgstr "IBus 偏好設定"
 
 #: setup/ibus-setup.desktop:4
 msgid "Set IBus Preferences"
-msgstr "設置 iBus 偏好設定"
+msgstr "設定 IBus 偏好設定"
 
 #: setup/keyboardshortcut.py:55
 msgid "Keyboard shortcuts"
@@ -618,7 +619,7 @@ msgstr "<b>鍵盤快捷鍵</b>"
 
 #: setup/setup.ui:374
 msgid "Set the orientation of candidates in lookup table"
-msgstr "設置查詢表單內候選字詞的排列方向"
+msgstr "設定查詢表單內候選字詞的排列方向"
 
 #: setup/setup.ui:376
 msgid "Candidates orientation:"
@@ -626,7 +627,7 @@ msgstr "候選詞排列方向："
 
 #: setup/setup.ui:407
 msgid "Set the behavior of ibus how to show or hide language bar"
-msgstr "設置 iBus 如何顯示或隱藏語言列的行為"
+msgstr "設定 IBus 如何顯示或隱藏語言列的行為"
 
 #: setup/setup.ui:409
 msgid "Show property panel:"
@@ -702,7 +703,7 @@ msgstr "偏好設定(_P)"
 
 #: setup/setup.ui:761
 msgid "Show setup of the selected input method"
-msgstr "顯示選取輸入法的設置"
+msgstr "顯示選取輸入法的設定"
 
 #: setup/setup.ui:812
 msgid ""
@@ -716,11 +717,11 @@ msgstr ""
 msgid ""
 "The shortcut keys to enable conversions of emoji annotations or Unicode "
 "names"
-msgstr "啟用 Emoji 符號或 Unicode 名稱轉換的快捷鍵"
+msgstr "啟用繪文字符號或 Unicode 名稱轉換的快捷鍵"
 
 #: setup/setup.ui:875
 msgid "Emoji annotation:"
-msgstr "Emoji 符號："
+msgstr "繪文字符號："
 
 #: setup/setup.ui:927
 msgid "The shortcut keys to enable Unicode code point conversions"
@@ -732,7 +733,7 @@ msgstr "Unicode 碼位："
 
 #: setup/setup.ui:1013
 msgid "Set a font of Unicode candidates on the emoji dialog"
-msgstr "設定 Emoji 對話框上的 Unicode 候選字型"
+msgstr "設定繪文字對話框上的 Unicode 候選字型"
 
 #: setup/setup.ui:1015
 msgid "Unicode font:"
@@ -795,7 +796,7 @@ msgid ""
 "\n"
 "\n"
 msgstr ""
-"<big><b>iBus</b></big>\n"
+"<big><b>IBus</b></big>\n"
 "<small>智慧型輸入框架</small>\n"
 "首頁: https://github.com/ibus/ibus/wiki\n"
 "\n"
@@ -804,7 +805,7 @@ msgstr ""
 
 #: setup/setup.ui:1341
 msgid "Start ibus on login"
-msgstr "在登入時啟動 iBus"
+msgstr "在登入時啟動 IBus"
 
 #: setup/setup.ui:1358
 msgid "<b>Startup</b>"
@@ -836,11 +837,11 @@ msgstr "物體"
 
 #: src/ibusemojigen.h:36
 msgid "People & Body"
-msgstr ""
+msgstr "人們 & 身體"
 
 #: src/ibusemojigen.h:37
 msgid "Smileys & Emotion"
-msgstr ""
+msgstr "笑臉 & 表情"
 
 #: src/ibusemojigen.h:38
 msgid "Symbols"
@@ -1296,7 +1297,7 @@ msgstr "西里爾字擴充-C"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:285
 msgid "Georgian Extended"
-msgstr ""
+msgstr "喬治亞文擴充"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2276,7 +2277,7 @@ msgstr "古匈牙利文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:845
 msgid "Hanifi Rohingya"
-msgstr ""
+msgstr "哈乃斐羅興亞文字"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2290,21 +2291,21 @@ msgstr "魯米數字符號"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:853
 msgid "Old Sogdian"
-msgstr ""
+msgstr "古粟特字母"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:857
 msgid "Sogdian"
-msgstr ""
+msgstr "粟特字母"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:861
 msgid "Elymaic"
-msgstr ""
+msgstr "埃利邁文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2437,7 +2438,7 @@ msgstr "阿洪姆文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:937
 msgid "Dogra"
-msgstr ""
+msgstr "多格拉文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2451,7 +2452,7 @@ msgstr "瓦蘭齊地文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:945
 msgid "Nandinagari"
-msgstr ""
+msgstr "南迪城文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2500,21 +2501,22 @@ msgstr "馬薩拉姆共地文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:973
 msgid "Gunjala Gondi"
-msgstr ""
+msgstr "古吉拉共地文字"
 
+# ref: https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%B9%B3%E9%9D%A2%E6%98%A0%E5%B0%84
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:977
 msgid "Makasar"
-msgstr ""
+msgstr "瑪卡莎文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:981
 msgid "Tamil Supplement"
-msgstr ""
+msgstr "泰米爾文補充"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2549,7 +2551,7 @@ msgstr "古埃及聖書字碑銘體"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1001
 msgid "Egyptian Hieroglyph Format Controls"
-msgstr ""
+msgstr "埃及聖書體格式控制"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2591,7 +2593,7 @@ msgstr "救世苗文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1025
 msgid "Medefaidrin"
-msgstr ""
+msgstr "梅德法伊德林文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2640,7 +2642,7 @@ msgstr "假名擴充-A"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1053
 msgid "Small Kana Extension"
-msgstr ""
+msgstr "小假名擴充"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2689,7 +2691,7 @@ msgstr "古希臘音樂譜記號"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1081
 msgid "Mayan Numerals"
-msgstr ""
+msgstr "瑪雅數字"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2731,14 +2733,14 @@ msgstr "格拉哥里字母補充"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1105
 msgid "Nyiakeng Puachue Hmong"
-msgstr ""
+msgstr "創世紀苗文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1109
 msgid "Wancho"
-msgstr ""
+msgstr "萬秋文"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2759,14 +2761,14 @@ msgstr "阿德拉姆文"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1121
 msgid "Indic Siyaq Numbers"
-msgstr ""
+msgstr "印度西亞克數字"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1125
 msgid "Ottoman Siyaq Numbers"
-msgstr ""
+msgstr "奧斯曼西亞克數字"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2871,14 +2873,14 @@ msgstr "補充符號與象形圖"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1185
 msgid "Chess Symbols"
-msgstr ""
+msgstr "西洋棋符號"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1189
 msgid "Symbols and Pictographs Extended-A"
-msgstr ""
+msgstr "符號和象形文字擴充-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -3168,8 +3170,7 @@ msgid ""
 "Failed to get the current text application. Please re-focus your application."
 " E.g. Press Esc key several times to release the emoji typing mode, click "
 "your desktop and click your text application again."
-msgstr ""
-"無法取得目前的文字應用程式，請重新取回您應用程式的焦點。例如按幾次 Esc 退出 Emoji 輸入模式後，按一下桌面再重按您的文字應用程式一次。"
+msgstr "無法取得目前的文字應用程式，請重新取回您應用程式的焦點。例如按幾次 Esc 退出繪文字輸入模式後，按一下桌面再重按您的文字應用程式一次。"
 
 #: ui/gtk3/emojierapp.vala:58
 msgid "Canceled to choose an emoji."
@@ -3219,7 +3220,7 @@ msgstr "IBus 面板"
 
 #: ui/gtk3/panel.vala:1095
 msgid "IBus is an intelligent input bus for Linux/Unix."
-msgstr "iBus 為 Linux/Unix 上的智慧型輸入法框架。"
+msgstr "IBus 為 Linux/Unix 上的智慧型輸入法框架。"
 
 #: ui/gtk3/panel.vala:1099
 msgid "translator-credits"
