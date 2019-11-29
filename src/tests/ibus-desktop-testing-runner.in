@@ -28,6 +28,10 @@
 # # /root/ibus/tests/test-console.sh --tests ibus-compose \
 #   --builddir /root/ibus/src/tests --srcdir /root/ibus/src/tests
 
+# POSIX sh has no 'echo -e'
+: ${ECHO:='/usr/bin/echo'}
+
+
 PROGNAME=`basename $0`
 VERSION=0.1
 DISPLAY=:99.0
@@ -54,15 +58,15 @@ print_log()
             shift
         fi
         NO_ESCAPE=`echo $@ | sed -e 's/\\\033\\[0;3.m//g' -e 's/\\\033\\[0m//g'`
-        echo $NO_ESCAPE >> $RESULT_LOG
+        $ECHO $NO_ESCAPE >> $RESULT_LOG
     else
-        echo $@
+        $ECHO $@
     fi
 }
 
 usage()
 {
-    echo -e \
+    $ECHO -e \
 "This test runs /usr/bin/ibus-daemon after install ibus\n"                     \
 "$PROGNAME [OPTIONS…]\n"                                                       \
 "\n"                                                                           \
@@ -92,7 +96,7 @@ parse_args()
     while [ 1 ] ; do
         case "$1" in
         -h | --help )        usage; exit 0;;
-        -v | --version )     echo -e "$VERSION"; exit 0;;
+        -v | --version )     $ECHO -e "$VERSION"; exit 0;;
         -b | --builddir )    BUILDDIR="$2"; shift 2;;
         -s | --srcdir )      SRCDIR="$2"; shift 2;;
         -c | --no-graphics ) HAVE_GRAPHICS=0; shift;;
@@ -121,7 +125,7 @@ init_desktop()
     fi
     if [ "$TEST_LOG" = "" ] ; then
         print_log -e "${RED}FAIL${NC}: ${RED}ERROR${NC}: a log file is required to get return value with 'read' command"
-        exit -1
+        exit 255
     elif [ -f $TEST_LOG ] ; then
         rm $TEST_LOG
     fi
@@ -291,7 +295,7 @@ EOF
     done
     child_pass=`grep '^PASS:' $TEST_LOG | wc -l`
     child_fail=`grep '^FAIL:' $TEST_LOG | wc -l`
-    if [ $child_pass -ne 0 -o $child_fail -ne 0 ] ; then
+    if [ $child_pass -ne 0 ] || [ $child_fail -ne 0 ] ; then
         pass=$child_pass
         if [ $child_fail -ne 0 ] ; then
             fail=`expr $child_fail / 2`
