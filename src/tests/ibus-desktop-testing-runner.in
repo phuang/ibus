@@ -30,6 +30,8 @@
 
 # POSIX sh has no 'echo -e'
 : ${ECHO:='/usr/bin/echo'}
+# POSIX sh has $UID
+: ${UID:='`id -u`'}
 
 
 PROGNAME=`basename $0`
@@ -57,10 +59,10 @@ print_log()
         if [ x"$1" = x'-e' ] ; then
             shift
         fi
-        NO_ESCAPE=`echo $@ | sed -e 's/\\\033\\[0;3.m//g' -e 's/\\\033\\[0m//g'`
+        NO_ESCAPE=`echo "$@" | sed -e 's/\\\033\\[0;3.m//g' -e 's/\\\033\\[0m//g'`
         $ECHO $NO_ESCAPE >> $RESULT_LOG
     else
-        $ECHO $@
+        $ECHO "$@"
     fi
 }
 
@@ -231,9 +233,9 @@ run_direct_test_cases()
         if test x"$ENVS" = x ; then
             $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
             retval=$?
-            read pass fail << EOF
+            read pass fail << EOF_COUNT
             `count_case_result $retval $pass $fail`
-EOF
+EOF_COUNT
             echo_case_result $retval $tst
             CACHE_FILES=`ls *.cache`
             if [ x"$CACHE_FILES" != x ] ; then
@@ -242,11 +244,9 @@ EOF
             fi
         else
             i=1
-            # Let for-loop notice '\n' as a delimiter
-            IFS=$'\n'
-            for e in $ENVS; do
-                # Revert IFS to recognize env a=foo b=foo
-                IFS=' '
+            # Deleted for var in "$ENVS" because IFS=$'\n' is not supported
+            # in POSIX sh
+            while read e ; do
                 first=`echo "$e" | grep '^#'`
                 if test x"$first" = x"#" ; then
                     continue
@@ -255,9 +255,9 @@ EOF
                 env $e $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
                 retval=$?
                 echo "# Finished $e $BUILDDIR/$tst $SRCDIR with $retval" >>$TEST_LOG
-                read pass fail << EOF
+                read pass fail << EOF_COUNT
                 `count_case_result $retval $pass $fail`
-EOF
+EOF_COUNT
                 echo_case_result $retval $tst $e
                 CACHE_FILES=`ls *.cache`
                 if [ x"$CACHE_FILES" != x ] ; then
@@ -265,9 +265,9 @@ EOF
                     rm $CACHE_FILES
                 fi
                 i=`expr $i + 1`
-                IFS=$'\n'
-            done
-            IFS=' '
+            done << EOF_ENVS
+            `echo "$ENVS"`
+EOF_ENVS
         fi
     done
     echo $pass $fail
@@ -357,7 +357,7 @@ finit()
 
 main()
 {
-    parse_args $@
+    parse_args "$@"
     init_desktop
     run_dbus_daemon 2>>$TEST_LOG 1>>$TEST_LOG
     run_desktop 2>>$TEST_LOG 1>>$TEST_LOG
@@ -365,4 +365,5 @@ main()
     finit
 }
 
-main $@
+# Need to enclose $@ with double quotes not to split the array.
+main "$@"
