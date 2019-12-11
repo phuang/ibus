@@ -1074,8 +1074,9 @@ ibus_im_context_reset (GtkIMContext *context)
         /* Commented out ibus_im_context_clear_preedit_text().
          * Hangul needs to receive the reset callback with button press
          * but other IMEs should avoid to receive the reset callback
-         * so the signal would need to be customized with GtkSetting.
-         * IBus uses button-press-event instead.
+         * by themselves.
+         * IBus uses button-press-event instead until GTK is fixed.
+         * https://gitlab.gnome.org/GNOME/gtk/issues/1534
          */
         ibus_input_context_reset (ibusimcontext->ibuscontext);
     }
@@ -1657,10 +1658,13 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
     if (!ibusimcontext->use_button_press_event &&
         mode == IBUS_ENGINE_PREEDIT_COMMIT) {
 #if !GTK_CHECK_VERSION (3, 93, 0)
-        if (ibusimcontext->client_window)
+        if (ibusimcontext->client_window) {
             _connect_button_press_event (ibusimcontext, TRUE);
-#endif
+            ibusimcontext->use_button_press_event = TRUE;
+        }
+#else
         ibusimcontext->use_button_press_event = TRUE;
+#endif
     }
 
     str = text->text;
