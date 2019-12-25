@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2018 Red Hat, Inc.
+ * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -73,7 +73,7 @@ struct _IBusIMContext {
     GCancellable    *cancellable;
     GQueue          *events_queue;
 
-    gboolean use_button_press_event;
+    gboolean         use_button_press_event;
 };
 
 struct _IBusIMContextClass {
@@ -1125,6 +1125,10 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
 
 
 #if !GTK_CHECK_VERSION (3, 93, 0)
+/* Use the button-press-event signal until GtkIMContext always emits the reset
+ * signal.
+ * https://gitlab.gnome.org/GNOME/gtk/merge_requests/460
+ */
 static gboolean
 ibus_im_context_button_press_event_cb (GtkWidget      *widget,
                                        GdkEventButton *event,
@@ -1157,11 +1161,13 @@ _connect_button_press_event (IBusIMContext *ibusimcontext,
                     "button-press-event",
                     G_CALLBACK (ibus_im_context_button_press_event_cb),
                     ibusimcontext);
+            ibusimcontext->use_button_press_event = TRUE;
         } else {
             g_signal_handlers_disconnect_by_func (
                     widget,
                     G_CALLBACK (ibus_im_context_button_press_event_cb),
                     ibusimcontext);
+            ibusimcontext->use_button_press_event = FALSE;
         }
     }
 }
@@ -1188,7 +1194,7 @@ ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
     if (client != NULL) {
         ibusimcontext->client_window = g_object_ref (client);
 #if !GTK_CHECK_VERSION (3, 93, 0)
-        if (ibusimcontext->use_button_press_event)
+        if (!ibusimcontext->use_button_press_event)
             _connect_button_press_event (ibusimcontext, TRUE);
 #endif
     }
@@ -1655,17 +1661,14 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
         ibusimcontext->preedit_attrs = NULL;
     }
 
+#if !GTK_CHECK_VERSION (3, 93, 0)
     if (!ibusimcontext->use_button_press_event &&
         mode == IBUS_ENGINE_PREEDIT_COMMIT) {
-#if !GTK_CHECK_VERSION (3, 93, 0)
         if (ibusimcontext->client_window) {
             _connect_button_press_event (ibusimcontext, TRUE);
-            ibusimcontext->use_button_press_event = TRUE;
         }
-#else
-        ibusimcontext->use_button_press_event = TRUE;
-#endif
     }
+#endif
 
     str = text->text;
     ibusimcontext->preedit_string = g_strdup (str);
