@@ -73,7 +73,9 @@ struct _IBusIMContext {
     GCancellable    *cancellable;
     GQueue          *events_queue;
 
+#if !GTK_CHECK_VERSION (3, 93, 0)
     gboolean         use_button_press_event;
+#endif
 };
 
 struct _IBusIMContextClass {
@@ -137,12 +139,12 @@ static void     ibus_im_context_set_surrounding
 
 /* static methods*/
 static void     _ibus_context_update_preedit_text_cb
-                                           (IBusInputContext   *ibuscontext,
-                                            IBusText           *text,
-                                            gint                cursor_pos,
-                                            gboolean            visible,
-                                            guint               mode,
-                                            IBusIMContext      *ibusimcontext);
+                                            (IBusInputContext   *ibuscontext,
+                                             IBusText           *text,
+                                             gint                cursor_pos,
+                                             gboolean            visible,
+                                             guint               mode,
+                                             IBusIMContext      *ibusimcontext);
 static void     _create_input_context       (IBusIMContext      *context);
 static gboolean _set_cursor_location_internal
                                             (IBusIMContext      *context);
@@ -170,7 +172,6 @@ static gboolean _slave_delete_surrounding_cb
 static void     _request_surrounding_text   (IBusIMContext      *context);
 static void     _create_fake_input_context  (void);
 static gboolean _set_content_type           (IBusIMContext      *context);
-
 
 
 static GType                _ibus_type_im_context = 0;
@@ -313,7 +314,6 @@ _process_key_event_done (GObject      *object,
 {
     IBusInputContext *context = (IBusInputContext *)object;
     GdkEventKey *event = (GdkEventKey *) user_data;
-
     GError *error = NULL;
     gboolean retval = ibus_input_context_process_key_event_async_finish (
             context,
@@ -362,12 +362,10 @@ _process_key_event (IBusInputContext *context,
         retval = TRUE;
     }
 
-    if (retval) {
+    if (retval)
         event->state |= IBUS_HANDLED_MASK;
-    }
-    else {
+    else
         event->state |= IBUS_IGNORED_MASK;
-    }
 
     return retval;
 }
@@ -1508,6 +1506,7 @@ _key_is_modifier (guint keyval)
         return FALSE;
     }
 }
+
 /* Copy from gdk */
 static GdkEventKey *
 _create_gdk_event (IBusIMContext *ibusimcontext,
