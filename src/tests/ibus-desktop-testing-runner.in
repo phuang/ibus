@@ -190,7 +190,7 @@ run_desktop()
     HAS_GNOME=`echo $DESKTOP_COMMAND | grep gnome-session`
     if [ x"$HAS_GNOME" = x ] ; then
         ibus-daemon --daemonize --verbose
-        sleep 1
+        sleep 3
     fi
 }
 

@@ -180,7 +180,7 @@ run_test_case()
         fi
 
         # Wait until all necessary components are up.
-        sleep 1
+        sleep 3
 
         export GTK_IM_MODULE=ibus
     fi

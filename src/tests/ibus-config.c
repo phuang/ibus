@@ -16,6 +16,10 @@ finish_create_config_async_success (GObject      *source_object,
     IBusConfig *config =
           ibus_config_new_async_finish (res, &error);
 
+    if (error) {
+        g_message ("Failed to generate IBusConfig: %s", error->message);
+        g_error_free (error);
+    }
     g_assert (IBUS_IS_CONFIG (config));
 
     /* Since we reuse single D-Bus connection, we need to remove the
