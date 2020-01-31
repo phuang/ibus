@@ -127,11 +127,13 @@ parse_compose_value (IBusComposeData  *compose_data,
         compose_data->values[0] = g_ascii_strtoll(p, NULL, 8);
         compose_data->values[1] = 0;
     } else {
-        if (!(uchars = g_utf8_to_ucs4 (ustr, -1, NULL, NULL, &error)) ||
-            !uchars[0]) {
+        if (!(uchars = g_utf8_to_ucs4 (ustr, -1, NULL, NULL, &error))) {
             g_warning ("Invalid Unicode: %s: %s in %s:",
                        error->message, ustr, line);
             g_error_free (error);
+            goto fail;
+        } else if (!uchars[0]) {
+            g_warning ("Invalid Unicode: \"\" in %s:", line);
             goto fail;
         }
 
