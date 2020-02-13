@@ -277,17 +277,13 @@ bus_server_init (void)
                  socket_address);
     }
     if (!g_file_test (unix_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
-        /* Require mkdir for BSD system. */
-        if (g_mkdir_with_parents (unix_dir, 0) != 0) {
-            g_error ("mkdir is failed in: %s: %s",
-                     unix_dir, g_strerror (errno));
-        }
-        /* The mode 0700 can eliminate malicious users change the mode.
+        /* Require mkdir for BSD system.
+         * The mode 0700 can eliminate malicious users change the mode.
          * `chmod` runs for the last directory only not to change the modes
          * of the parent directories. E.g. "/tmp/ibus".
          */
-        if (g_chmod (unix_dir, 0700) != 0) {
-            g_error ("chmod(700) is failed in: %s: %s",
+        if (g_mkdir_with_parents (unix_dir, 0700) != 0) {
+            g_error ("mkdir is failed in: %s: %s",
                      unix_dir, g_strerror (errno));
         }
     }
