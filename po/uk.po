@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: ibus 1.5.20\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2019-04-16 17:33+0900\n"
-"PO-Revision-Date: 2020-01-05 18:49+0000\n"
+"PO-Revision-Date: 2020-01-08 10:24+0000\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <https://translate.stg.fedoraproject.org/projects/"
 "ibus/ibus/uk/>\n"
@@ -717,7 +717,7 @@ msgstr ""
 
 #: setup/setup.ui:682
 msgid "_Remove"
-msgstr "В_илучити"
+msgstr "Ви_лучити"
 
 #: setup/setup.ui:689
 msgid "Remove the selected input method from the enabled input methods"
