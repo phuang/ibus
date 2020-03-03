@@ -4,7 +4,7 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2018-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,8 @@
 # POSIX sh has no 'echo -e'
 : ${ECHO:='/usr/bin/echo'}
 # POSIX sh has $UID
-: ${UID:='`id -u`'}
+# DASH saves the graves in '``' as characters not to be extracted
+: ${UID:=`id -u`}
 
 
 PROGNAME=`basename $0`
@@ -170,7 +171,7 @@ _EOF
 run_dbus_daemon()
 {
     # Use dbus-launch --exit-with-session later instead of --sh-syntax
-    export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus"
 }
 
 run_desktop()
