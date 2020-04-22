@@ -173,7 +173,7 @@ _EOF
     # `su` command does not get focus in events without this variable.
     # Need to restart sshd after set "PermitRootLogin yes" in sshd_config
     if [ "x$XDG_RUNTIME_DIR" = x ] ; then
-        export XDG_RUNTIME_DIR=/run/user/$UID
+        export XDG_RUNTIME_DIR="/run/user/$UID"
         is_root_login=`grep "^PermitRootLogin" /etc/ssh/sshd_config | grep yes`
         if [ "x$ANSIBLE" != x ] && [ "x$is_root_login" = x ] ; then
             print_log -e "${RED}FAIL${NC}: No permission to get focus-in events in GtkWindow with ansible"

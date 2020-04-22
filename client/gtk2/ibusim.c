@@ -2,7 +2,7 @@
 /* vim:set et ts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@ static const GtkIMContextInfo *info_list[] = {
 G_MODULE_EXPORT const gchar*
 g_module_check_init (GModule *module)
 {
-    return null;
+    return NULL;
 }
 
 G_MODULE_EXPORT void
