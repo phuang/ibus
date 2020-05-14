@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2013 Red Hat, Inc.
+ * Copyright (C) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -344,12 +345,21 @@ bus_name_service_set_primary_owner (BusNameService     *service,
                                     BusConnectionOwner *owner,
                                     BusDBusImpl        *dbus)
 {
+    gboolean has_old_owner = FALSE;
+
     g_assert (service != NULL);
     g_assert (owner != NULL);
     g_assert (dbus != NULL);
 
     BusConnectionOwner *old = service->owners != NULL ?
             (BusConnectionOwner *)service->owners->data : NULL;
+
+    /* rhbz#1432252 If bus_connection_get_unique_name() == NULL,
+     * "Hello" method is not received yet.
+     */
+    if (old != NULL && bus_connection_get_unique_name (old->conn) != NULL) {
+        has_old_owner = TRUE;
+    }
 
     if (old != NULL) {
         g_signal_emit (dbus,
@@ -370,7 +380,8 @@ bus_name_service_set_primary_owner (BusNameService     *service,
                    0,
                    owner->conn,
                    service->name,
-                   old != NULL ? bus_connection_get_unique_name (old->conn) : "",
+                   has_old_owner ? bus_connection_get_unique_name (old->conn) :
+                           "",
                    bus_connection_get_unique_name (owner->conn));
 
     if (old != NULL && old->do_not_queue != 0) {
@@ -427,6 +438,7 @@ bus_name_service_remove_owner (BusNameService     *service,
                                BusDBusImpl        *dbus)
 {
     GSList *owners;
+    gboolean has_new_owner = FALSE;
 
     g_assert (service != NULL);
     g_assert (owner != NULL);
@@ -439,6 +451,13 @@ bus_name_service_remove_owner (BusNameService     *service,
         BusConnectionOwner *_new = NULL;
         if (owners->next != NULL) {
             _new = (BusConnectionOwner *)owners->next->data;
+            /* rhbz#1406699 If bus_connection_get_unique_name() == NULL,
+             * "Hello" method is not received yet.
+             */
+            if (_new != NULL &&
+                bus_connection_get_unique_name (_new->conn) != NULL) {
+                has_new_owner = TRUE;
+            }
         }
 
         if (dbus != NULL) {
@@ -447,7 +466,7 @@ bus_name_service_remove_owner (BusNameService     *service,
                            0,
                            owner->conn,
                            service->name);
-            if (_new != NULL) {
+            if (has_new_owner) {
                 g_signal_emit (dbus,
                                dbus_signals[NAME_ACQUIRED],
                                0,
@@ -460,7 +479,7 @@ bus_name_service_remove_owner (BusNameService     *service,
                     _new != NULL ? _new->conn : NULL,
                     service->name,
                     bus_connection_get_unique_name (owner->conn),
-                    _new != NULL ? bus_connection_get_unique_name (_new->conn) : "");
+                    has_new_owner ? bus_connection_get_unique_name (_new->conn) : "");
 
         }
     }
