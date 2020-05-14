@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2011-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2019 Red Hat, Inc.
+ * Copyright (C) 2011-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -464,13 +464,16 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
     else if (!g_strcmp0 (name, IBUS_SERVICE_PANEL_EXTENSION_EMOJI))
         panel_type = PANEL_TYPE_EXTENSION_EMOJI;
 
-    if (panel_type != PANEL_TYPE_NONE) {
+    do {
+        if (panel_type == PANEL_TYPE_NONE)
+            break;
         if (g_strcmp0 (new_name, "") != 0) {
             /* a Panel process is started. */
             BusConnection *connection;
             BusInputContext *context = NULL;
             BusPanelProxy   **panel = (panel_type == PANEL_TYPE_PANEL) ?
                                       &ibus->panel : &ibus->emoji_extension;
+            GDBusConnection *dbus_connection = NULL;
 
             if (*panel != NULL) {
                 ibus_proxy_destroy ((IBusProxy *)(*panel));
@@ -479,8 +482,20 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
                 g_assert (*panel == NULL);
             }
 
-            connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS, new_name);
+            connection = bus_dbus_impl_get_connection_by_name (BUS_DEFAULT_DBUS,
+                                                               new_name);
             g_return_if_fail (connection != NULL);
+
+            dbus_connection = bus_connection_get_dbus_connection (connection);
+            /* rhbz#1349148 rhbz#1385349
+             * Avoid SEGV of BUS_IS_PANEL_PROXY (ibus->panel)
+             * This function is called during destroying the connection
+             * in this case? */
+            if (dbus_connection == NULL ||
+                g_dbus_connection_is_closed (dbus_connection)) {
+                new_name = "";
+                break;
+            }
 
             *panel = bus_panel_proxy_new (connection, panel_type);
             if (panel_type == PANEL_TYPE_EXTENSION_EMOJI)
@@ -535,7 +550,7 @@ _dbus_name_owner_changed_cb (BusDBusImpl   *dbus,
                 }
             }
         }
-    }
+    } while (0);
 
     bus_ibus_impl_component_name_owner_changed (ibus, name, old_name, new_name);
 }
