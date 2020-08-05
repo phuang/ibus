@@ -398,13 +398,6 @@ class Setup(object):
         self.__button_close = self.__builder.get_object("button_close")
         self.__button_close.connect("clicked", Gtk.main_quit)
 
-        # auto start ibus
-        self.__checkbutton_auto_start = self.__builder.get_object(
-                "checkbutton_auto_start")
-        self.__checkbutton_auto_start.set_active(self.__is_auto_start())
-        self.__checkbutton_auto_start.connect("toggled",
-                self.__checkbutton_auto_start_toggled_cb)
-
         self.__init_hotkeys()
         self.__init_panel()
         self.__init_general()
@@ -646,37 +639,6 @@ class Setup(object):
 
         # set new value
         model.set(iter, COLUMN_PRELOAD, data[DATA_PRELOAD])
-
-    def __is_auto_start(self):
-        link_file = path.join(GLib.get_user_config_dir(),
-                              "autostart/ibus.desktop")
-        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"),
-                                 "share/applications/ibus.desktop")
-
-        if not path.exists(link_file):
-            return False
-        if not path.islink(link_file):
-            return False
-        if path.realpath(link_file) != ibus_desktop:
-            return False
-        return True
-
-    def __checkbutton_auto_start_toggled_cb(self, button):
-        auto_start_dir = path.join(GLib.get_user_config_dir(), "autostart")
-        if not path.isdir(auto_start_dir):
-            os.makedirs(auto_start_dir)
-
-        link_file = path.join(GLib.get_user_config_dir(),
-                              "autostart/ibus.desktop")
-        ibus_desktop = path.join(os.getenv("IBUS_PREFIX"),
-                                 "share/applications/ibus.desktop")
-        # unlink file
-        try:
-            os.unlink(link_file)
-        except:
-            pass
-        if self.__checkbutton_auto_start.get_active():
-            os.symlink(ibus_desktop, link_file)
 
     def __sigusr1_cb(self, *args):
         self.__window.present()
