@@ -165,6 +165,15 @@
       <summary>Custom font</summary>
       <description>Custom font name for language panel</description>
     </key>
+    <key name="use-glyph-from-engine-lang" type="b">
+      <default>true</default>
+      <summary>Choose glyphs with input method's language on candidate window</summary>
+      <description>Some code points have the different glyphs and Pango
+                   determines the glyphs from the language attribute.
+                   Pango chooses glyphs from the IBus engine's language
+                   if the value is true and choose them from the desktop
+                   locale if the value is false.</description>
+    </key>
     <child name="emoji" schema="org.freedesktop.ibus.panel.emoji"/>
   </schema>
   <schema id="org.freedesktop.ibus.panel.emoji" path="/desktop/ibus/panel/emoji/">

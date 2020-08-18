@@ -212,6 +212,13 @@ class Setup(object):
                                    'active',
                                    Gio.SettingsBindFlags.DEFAULT)
 
+        self.__checkbutton_glyph_from_engine_lang = self.__builder.get_object(
+                "checkbutton_use_glyph_from_engine_lang")
+        self.__settings_panel.bind('use-glyph-from-engine-lang',
+                                   self.__checkbutton_glyph_from_engine_lang,
+                                   'active',
+                                   Gio.SettingsBindFlags.DEFAULT)
+
     def __init_general(self):
         # embed preedit text
         self.__checkbutton_embed_preedit_text = self.__builder.get_object(

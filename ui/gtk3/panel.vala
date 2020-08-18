@@ -47,6 +47,7 @@ class Panel : IBus.PanelService {
     private string m_current_context_path = "";
     private string m_real_current_context_path = "";
     private bool m_use_global_engine = true;
+    private bool m_use_engine_lang = true;
     private CandidatePanel m_candidate_panel;
     private Switcher m_switcher;
     private uint m_switcher_focus_set_engine_id;
@@ -195,6 +196,15 @@ class Panel : IBus.PanelService {
                 BindingCommon.set_custom_font(m_settings_panel,
                                               null,
                                               ref m_css_provider);
+        });
+
+        m_settings_panel.changed["use-glyph-from-engine-lang"].connect((key) =>
+        {
+                m_use_engine_lang = m_settings_panel.get_boolean(
+                        "use-glyph-from-engine-lang");
+                var engine = m_bus.get_global_engine();
+                if (engine != null)
+                    set_language_from_engine(engine);
         });
 
         m_settings_panel.changed["show-icon-on-systray"].connect((key) => {
@@ -732,6 +742,8 @@ class Panel : IBus.PanelService {
         set_use_system_keyboard_layout();
         set_use_global_engine();
         set_use_xmodmap();
+        m_use_engine_lang = m_settings_panel.get_boolean(
+                        "use-glyph-from-engine-lang");
         update_engines(m_settings_general.get_strv("preload-engines"),
                        m_settings_general.get_strv("engines-order"));
         BindingCommon.unbind_switch_shortcut(
@@ -801,6 +813,17 @@ class Panel : IBus.PanelService {
         m_engine_contexts.replace(m_current_context_path, engine);
     }
 
+    private void set_language_from_engine(IBus.EngineDesc engine) {
+        if (m_use_engine_lang) {
+            m_candidate_panel.set_language(new Pango.AttrLanguage(
+                    Pango.Language.from_string(engine.get_language())));
+        } else {
+            m_candidate_panel.set_language(new Pango.AttrLanguage(
+                    Pango.Language.from_string(null)));
+        }
+
+    }
+
     private void set_engine(IBus.EngineDesc engine) {
         if (m_property_icon_delay_time_id > 0) {
             GLib.Source.remove(m_property_icon_delay_time_id);
@@ -822,8 +845,7 @@ class Panel : IBus.PanelService {
         if (!m_use_system_keyboard_layout)
             m_xkblayout.set_layout(engine);
 
-        m_candidate_panel.set_language(new Pango.AttrLanguage(Pango.Language.from_string(engine.get_language())));
-
+        set_language_from_engine(engine);
         engine_contexts_insert(engine);
     }
 
