@@ -5,6 +5,23 @@ srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
 PKG_NAME="ibus"
+DIST_FILES="
+engine/simple.xml
+src/ibusemojigen.h
+src/ibusunicodegen.h
+"
+FEDORA_PKG1='autoconf automake libtool gettext-devel'
+FEDORA_PKG2='glib2-devel gtk2-devel gtk3-devel qt5-qtbase-devel
+ wayland-devel'
+FEDORA_PKG3='cldr-emoji-annotation iso-codes-devel unicode-emoji unicode-ucd'
+
+(test -z "$DISABLE_INSTALL_PKGS") && {
+    (test -f /etc/fedora-release ) && {
+        dnf update --assumeno $FEDORA_PKG1 || exit 1
+        dnf update --assumeno $FEDORA_PKG2 || exit 1
+        dnf update --assumeno $FEDORA_PKG3 || exit 1
+    }
+}
 
 (test -f $srcdir/configure.ac \
   && test -f $srcdir/README ) || {
@@ -26,3 +43,10 @@ CFLAGS=${CFLAGS-"-Wall -Wformat -Werror=format-security"}
 
 # need --enable-gtk-doc for gnome-autogen.sh to make dist
 ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I m4" REQUIRED_AUTOMAKE_VERSION=1.11 CFLAGS="$CFLAGS" . gnome-autogen.sh "$@"
+
+(test -z "$SAVE_DIST_FILES") && {
+    for f in $DIST_FILES ; do
+        echo "rm $f"
+        rm $f
+    done
+}

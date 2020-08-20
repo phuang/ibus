@@ -60,6 +60,10 @@ component_DATA = \
 	$(NULL)
 
 componentdir = $(pkgdatadir)/component
+else
+noinst_DATA = \
+	memconf.xml \
+	$(NULL)
 endif
 
 CLEANFILES = \
