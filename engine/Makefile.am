@@ -4,6 +4,7 @@
 #
 # Copyright (c) 2010-2016, Google Inc. All rights reserved.
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2013-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -78,20 +79,25 @@ component_DATA = \
 
 componentdir = $(pkgdatadir)/component
 
-CLEANFILES = \
+MAINTAINERCLEANFILES = \
 	simple.xml \
 	$(NULL)
 
 EXTRA_DIST = \
+	gensimple.py \
 	iso639converter.py \
-	simple.xml.in \
+	simple.xml \
 	$(NULL)
 
-simple.xml: simple.xml.in
-	$(AM_V_GEN) sed \
-		-e 's|@VERSION[@]|$(VERSION)|g' \
-		-e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
-		mv $@.tmp $@
+simple.xml:
+	$(srcdir)/gensimple.py \
+	    --input=$(datarootdir)/X11/xkb/rules/evdev.xml \
+	    --output=$@ \
+	    --version=$(VERSION).`date '+%Y%m%d'` \
+	    --exec-path=$(libexecdir)/ibus-engine-simple \
+	    --iso-path=$(datarootdir)/xml/iso-codes/iso_639.xml \
+	    --first-language \
+	$(NULL)
 
 $(libibus):
 	$(MAKE) -C $(top_builddir)/src
