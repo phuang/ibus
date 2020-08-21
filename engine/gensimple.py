@@ -180,6 +180,11 @@ class EvdevXML(XMLFilterBase):
             self.__downstream.startElement('layout', AttributesImpl({}))
             self.__downstream.characters(self.__layout)
             self.__downstream.endElement('layout')
+            if self.__variant != '':
+                self.__downstream.startElement('layout_variant',
+                                               AttributesImpl({}))
+                self.__downstream.characters(self.__variant)
+                self.__downstream.endElement('layout_variant')
             self.__downstream.startElement('longname', AttributesImpl({}))
             self.__downstream.characters(self.__description)
             self.__downstream.endElement('longname')

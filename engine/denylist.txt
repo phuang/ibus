@@ -24,4 +24,5 @@
 # Asterisk(*) character can be used to match any engines.
 # E.g. xkb:cn:*:* excludes xkb:cn::zho and xkb:cn:mon_trad:mvf
 xkb:cn:*:*
+xkb:latam:*:*
 xkb:nec_vndr/jp:*:*
