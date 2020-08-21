@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2015-2019 Red Hat, Inc.
+ * Copyright (C) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,7 +29,7 @@
 #include "ibusregistry.h"
 
 #define IBUS_CACHE_MAGIC 0x49425553 /* "IBUS" */
-#define IBUS_CACHE_VERSION 0x00010512
+#define IBUS_CACHE_VERSION 0x00010522
 
 enum {
     CHANGED,

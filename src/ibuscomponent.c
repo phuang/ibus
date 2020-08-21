@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2019 Red Hat, Inc.
+ * Copyright (C) 2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -499,11 +500,7 @@ ibus_component_output (IBusComponent *component,
 
         for (p = component->priv->observed_paths; p != NULL; p = p->next ) {
             IBusObservedPath *path = (IBusObservedPath *) p->data;
-
-            g_string_append_indent (output, indent + 2);
-            g_string_append_printf (output, "<path mtime=\"%ld\" >%s</path>\n",
-                                    path->mtime,
-                                    path->path);
+            ibus_observed_path_output (path, output, indent + 2);
         }
 
         g_string_append_indent (output, indent + 1);
