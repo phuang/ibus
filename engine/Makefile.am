@@ -80,21 +80,30 @@ component_DATA = \
 componentdir = $(pkgdatadir)/component
 
 MAINTAINERCLEANFILES = \
+	simple.xml.in \
+	$(NULL)
+
+CLEANFILES = \
 	simple.xml \
 	$(NULL)
 
 EXTRA_DIST = \
 	gensimple.py \
 	iso639converter.py \
-	simple.xml \
+	simple.xml.in \
 	$(NULL)
 
-simple.xml:
+simple.xml: simple.xml.in
+	$(AM_V_GEN) sed \
+	    -e 's|@libexecdir[@]|$(libexecdir)|g' $< > $@.tmp && \
+	    mv $@.tmp $@
+
+simple.xml.in:
 	$(srcdir)/gensimple.py \
 	    --input=$(datarootdir)/X11/xkb/rules/evdev.xml \
 	    --output=$@ \
 	    --version=$(VERSION).`date '+%Y%m%d'` \
-	    --exec-path=$(libexecdir)/ibus-engine-simple \
+	    --exec-path=@libexecdir\@/ibus-engine-simple \
 	    --iso-path=$(datarootdir)/xml/iso-codes/iso_639.xml \
 	    --first-language \
 	$(NULL)

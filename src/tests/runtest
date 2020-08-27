@@ -91,19 +91,6 @@ func_copy_component () {
     fi
 }
 
-func_copy_simple_xml () {
-    file=$1
-    base=`func_basename $file`
-    libexecdir=`func_dirname $file`
-    # top_srcdir != top_builddir in make dist
-    libexecdir=`echo "$libexecdir" | sed -e "s|$top_srcdir|$top_builddir|"`
-    if test -f $file; then
-        mkdir -p components
-        sed "s|\(<exec>\).*\(/ibus-engine-simple</exec>\)|\1$libexecdir\2|" \
-                < $file > components/$base
-    fi
-}
-
 trap 'func_cleanup $tstdir' 1 2 3 15
 
 tst=$1; shift
@@ -140,7 +127,7 @@ run_test_case()
             exit -1
         fi
         # func_copy_component replaces s/$top_srcdir/%top_builddir/
-        func_copy_simple_xml "../$top_srcdir/engine/simple.xml"
+        func_copy_component "../$top_srcdir/engine/simple.xml"
         func_copy_component "../$top_srcdir/conf/memconf/memconf.xml"
 
         IBUS_COMPONENT_PATH=$PWD/components
