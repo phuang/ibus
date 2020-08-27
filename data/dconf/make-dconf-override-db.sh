@@ -48,7 +48,9 @@ done
 # dbus-launch and gsettings run /usr/lib*/gvfsd-fuse $TMPDIR/cache/gvfs -f
 # via systemd since gvfs 1.45.90 in Fedora 33
 # and rm $TMPDIR could be failed until umount would be called.
-umount $TMPDIR/cache/gvfs
+if [ -d $TMPDIR/cache/gvfs ] ; then
+    umount $TMPDIR/cache/gvfs
+fi
 rm -rf $TMPDIR
 
 kill $DBUS_SESSION_BUS_PID
