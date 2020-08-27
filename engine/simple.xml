@@ -2,8 +2,8 @@
 <component>
     <name>org.freedesktop.IBus.Simple</name>
     <description>A table based simple engine</description>
-    <exec>/usr/libexec/ibus-engine-simple</exec>
-    <version>1.5.22.20200821</version>
+    <exec>/usr/local/libexec/ibus-engine-simple</exec>
+    <version>1.5.22.20200826</version>
     <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
     <license>GPL</license>
     <homepage>https://github.com/ibus/ibus/wiki</homepage>
@@ -33,8 +33,20 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:euro:chr</name>
-            <language>chr</language>
+            <name>xkb:us:haw:haw</name>
+            <language>haw</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>us</layout>
+            <layout_variant>haw</layout_variant>
+            <longname>Hawaiian</longname>
+            <description>Hawaiian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:us:euro:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -45,8 +57,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:intl:chr</name>
-            <language>chr</language>
+            <name>xkb:us:intl:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -57,8 +69,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:alt-intl:chr</name>
-            <language>chr</language>
+            <name>xkb:us:alt-intl:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -69,8 +81,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:colemak:chr</name>
-            <language>chr</language>
+            <name>xkb:us:colemak:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -81,8 +93,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:dvorak:chr</name>
-            <language>chr</language>
+            <name>xkb:us:dvorak:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -93,8 +105,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:dvorak-intl:chr</name>
-            <language>chr</language>
+            <name>xkb:us:dvorak-intl:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -105,8 +117,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:dvorak-alt-intl:chr</name>
-            <language>chr</language>
+            <name>xkb:us:dvorak-alt-intl:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -117,8 +129,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:dvorak-l:chr</name>
-            <language>chr</language>
+            <name>xkb:us:dvorak-l:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -129,8 +141,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:dvorak-r:chr</name>
-            <language>chr</language>
+            <name>xkb:us:dvorak-r:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -141,8 +153,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:dvorak-classic:chr</name>
-            <language>chr</language>
+            <name>xkb:us:dvorak-classic:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -153,8 +165,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:us:dvp:chr</name>
-            <language>chr</language>
+            <name>xkb:us:dvp:haw</name>
+            <language>haw</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
@@ -231,8 +243,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
             <layout_variant>olpc2</layout_variant>
-            <longname>English (the divide/multiply keys toggle the layout)</longname>
-            <description>English (the divide/multiply keys toggle the layout)</description>
+            <longname>English (the divide/multiply toggle the layout)</longname>
+            <description>English (the divide/multiply toggle the layout)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -243,8 +255,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
             <layout_variant>olpc2</layout_variant>
-            <longname>English (the divide/multiply keys toggle the layout)</longname>
-            <description>English (the divide/multiply keys toggle the layout)</description>
+            <longname>English (the divide/multiply toggle the layout)</longname>
+            <description>English (the divide/multiply toggle the layout)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -255,8 +267,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>us</layout>
             <layout_variant>olpc2</layout_variant>
-            <longname>English (the divide/multiply keys toggle the layout)</longname>
-            <description>English (the divide/multiply keys toggle the layout)</description>
+            <longname>English (the divide/multiply toggle the layout)</longname>
+            <description>English (the divide/multiply toggle the layout)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -590,8 +602,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ara</layout>
             <layout_variant>azerty_digits</layout_variant>
-            <longname>Arabic (AZERTY/digits)</longname>
-            <description>Arabic (AZERTY/digits)</description>
+            <longname>Arabic (AZERTY, Eastern Arabic numerals)</longname>
+            <description>Arabic (AZERTY, Eastern Arabic numerals)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -602,8 +614,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ara</layout>
             <layout_variant>digits</layout_variant>
-            <longname>Arabic (digits)</longname>
-            <description>Arabic (digits)</description>
+            <longname>Arabic (Eastern Arabic numerals)</longname>
+            <description>Arabic (Eastern Arabic numerals)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -626,8 +638,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ara</layout>
             <layout_variant>qwerty_digits</layout_variant>
-            <longname>Arabic (qwerty/digits)</longname>
-            <description>Arabic (qwerty/digits)</description>
+            <longname>Arabic (QWERTY, Eastern Arabic numerals)</longname>
+            <description>Arabic (QWERTY, Eastern Arabic numerals)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -803,8 +815,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>at</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>German (Austria, with Sun dead keys)</longname>
-            <description>German (Austria, with Sun dead keys)</description>
+            <longname>German (Austria, Sun dead keys)</longname>
+            <description>German (Austria, Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -890,6 +902,30 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:by:ru:bel</name>
+            <language>be</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>by</layout>
+            <layout_variant>ru</layout_variant>
+            <longname>Russian (Belarus)</longname>
+            <description>Russian (Belarus)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:by:intl:bel</name>
+            <language>be</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>by</layout>
+            <layout_variant>intl</layout_variant>
+            <longname>Belarusian (intl.)</longname>
+            <description>Belarusian (intl.)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
             <name>xkb:be::deu</name>
             <language>de</language>
             <license>GPL</license>
@@ -965,8 +1001,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>oss_latin9</layout_variant>
-            <longname>Belgian (alt., Latin-9 only)</longname>
-            <description>Belgian (alt., Latin-9 only)</description>
+            <longname>Belgian (Latin-9 only, alt.)</longname>
+            <description>Belgian (Latin-9 only, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -977,8 +1013,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>oss_latin9</layout_variant>
-            <longname>Belgian (alt., Latin-9 only)</longname>
-            <description>Belgian (alt., Latin-9 only)</description>
+            <longname>Belgian (Latin-9 only, alt.)</longname>
+            <description>Belgian (Latin-9 only, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -989,8 +1025,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>oss_latin9</layout_variant>
-            <longname>Belgian (alt., Latin-9 only)</longname>
-            <description>Belgian (alt., Latin-9 only)</description>
+            <longname>Belgian (Latin-9 only, alt.)</longname>
+            <description>Belgian (Latin-9 only, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1001,8 +1037,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>Belgian (alt., with Sun dead keys)</longname>
-            <description>Belgian (alt., with Sun dead keys)</description>
+            <longname>Belgian (Sun dead keys, alt.)</longname>
+            <description>Belgian (Sun dead keys, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1013,8 +1049,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>Belgian (alt., with Sun dead keys)</longname>
-            <description>Belgian (alt., with Sun dead keys)</description>
+            <longname>Belgian (Sun dead keys, alt.)</longname>
+            <description>Belgian (Sun dead keys, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1025,8 +1061,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>Belgian (alt., with Sun dead keys)</longname>
-            <description>Belgian (alt., with Sun dead keys)</description>
+            <longname>Belgian (Sun dead keys, alt.)</longname>
+            <description>Belgian (Sun dead keys, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1037,8 +1073,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>iso-alternate</layout_variant>
-            <longname>Belgian (alt. ISO)</longname>
-            <description>Belgian (alt. ISO)</description>
+            <longname>Belgian (ISO, alt.)</longname>
+            <description>Belgian (ISO, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1049,8 +1085,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>iso-alternate</layout_variant>
-            <longname>Belgian (alt. ISO)</longname>
-            <description>Belgian (alt. ISO)</description>
+            <longname>Belgian (ISO, alt.)</longname>
+            <description>Belgian (ISO, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1061,8 +1097,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>iso-alternate</layout_variant>
-            <longname>Belgian (alt. ISO)</longname>
-            <description>Belgian (alt. ISO)</description>
+            <longname>Belgian (ISO, alt.)</longname>
+            <description>Belgian (ISO, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1109,8 +1145,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>Belgian (with Sun dead keys)</longname>
-            <description>Belgian (with Sun dead keys)</description>
+            <longname>Belgian (Sun dead keys)</longname>
+            <description>Belgian (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1121,8 +1157,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>Belgian (with Sun dead keys)</longname>
-            <description>Belgian (with Sun dead keys)</description>
+            <longname>Belgian (Sun dead keys)</longname>
+            <description>Belgian (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1133,8 +1169,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>be</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>Belgian (with Sun dead keys)</longname>
-            <description>Belgian (with Sun dead keys)</description>
+            <longname>Belgian (Sun dead keys)</longname>
+            <description>Belgian (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1323,8 +1359,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>ben_gitanjali</layout_variant>
-            <longname>Bangla (India, Uni Gitanjali)</longname>
-            <description>Bangla (India, Uni Gitanjali)</description>
+            <longname>Bangla (India, Gitanjali)</longname>
+            <description>Bangla (India, Gitanjali)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1335,8 +1371,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>ben_gitanjali</layout_variant>
-            <longname>Bangla (India, Uni Gitanjali)</longname>
-            <description>Bangla (India, Uni Gitanjali)</description>
+            <longname>Bangla (India, Gitanjali)</longname>
+            <description>Bangla (India, Gitanjali)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1431,8 +1467,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>kan-kagapa</layout_variant>
-            <longname>Kannada (KaGaPa phonetic)</longname>
-            <description>Kannada (KaGaPa phonetic)</description>
+            <longname>Kannada (KaGaPa, phonetic)</longname>
+            <description>Kannada (KaGaPa, phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1587,8 +1623,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>tel-kagapa</layout_variant>
-            <longname>Telugu (KaGaPa phonetic)</longname>
-            <description>Telugu (KaGaPa phonetic)</description>
+            <longname>Telugu (KaGaPa, phonetic)</longname>
+            <description>Telugu (KaGaPa, phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1611,8 +1647,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>tel-kagapa</layout_variant>
-            <longname>Telugu (KaGaPa phonetic)</longname>
-            <description>Telugu (KaGaPa phonetic)</description>
+            <longname>Telugu (KaGaPa, phonetic)</longname>
+            <description>Telugu (KaGaPa, phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1647,8 +1683,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>urd-winkeys</layout_variant>
-            <longname>Urdu (Win keys)</longname>
-            <description>Urdu (Win keys)</description>
+            <longname>Urdu (Windows)</longname>
+            <description>Urdu (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1683,8 +1719,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>hin-kagapa</layout_variant>
-            <longname>Hindi (KaGaPa phonetic)</longname>
-            <description>Hindi (KaGaPa phonetic)</description>
+            <longname>Hindi (KaGaPa, phonetic)</longname>
+            <description>Hindi (KaGaPa, phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1695,8 +1731,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>san-kagapa</layout_variant>
-            <longname>Sanskrit (KaGaPa phonetic)</longname>
-            <description>Sanskrit (KaGaPa phonetic)</description>
+            <longname>Sanskrit (KaGaPa, phonetic)</longname>
+            <description>Sanskrit (KaGaPa, phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1707,8 +1743,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>mar-kagapa</layout_variant>
-            <longname>Marathi (KaGaPa phonetic)</longname>
-            <description>Marathi (KaGaPa phonetic)</description>
+            <longname>Marathi (KaGaPa, phonetic)</longname>
+            <description>Marathi (KaGaPa, phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1721,6 +1757,30 @@
             <layout_variant>eng</layout_variant>
             <longname>English (India, with rupee)</longname>
             <description>English (India, with rupee)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:in:iipa:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <layout_variant>iipa</layout_variant>
+            <longname>Indic IPA (IIPA)</longname>
+            <description>Indic IPA (IIPA)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:in:marathi:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <layout_variant>marathi</layout_variant>
+            <longname>मराठी इन्स्क्रिप्ट</longname>
+            <description>मराठी इन्स्क्रिप्ट</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1778,8 +1838,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ba</layout>
             <layout_variant>us</layout_variant>
-            <longname>Bosnian (US, with Bosnian letters)</longname>
-            <description>Bosnian (US, with Bosnian letters)</description>
+            <longname>Bosnian (US)</longname>
+            <description>Bosnian (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1902,14 +1962,50 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:dz:ber:ber</name>
-            <language>ber</language>
+            <name>xkb:dz:azerty-deadkeys:kab</name>
+            <language>kab</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>dz</layout>
+            <layout_variant>azerty-deadkeys</layout_variant>
+            <longname>Kabylian (azerty layout, with dead keys)</longname>
+            <description>Kabylian (azerty layout, with dead keys)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:dz:qwerty-gb-deadkeys:kab</name>
+            <language>kab</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>dz</layout>
+            <layout_variant>qwerty-gb-deadkeys</layout_variant>
+            <longname>Kabylian (qwerty-gb layout, with dead keys)</longname>
+            <description>Kabylian (qwerty-gb layout, with dead keys)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:dz:qwerty-us-deadkeys:kab</name>
+            <language>kab</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>dz</layout>
+            <layout_variant>qwerty-us-deadkeys</layout_variant>
+            <longname>Kabylian (qwerty-us layout, with dead keys)</longname>
+            <description>Kabylian (qwerty-us layout, with dead keys)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:dz:ber:kab</name>
+            <language>kab</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>ber</layout_variant>
-            <longname>Berber (Algeria, Tifinagh)</longname>
-            <description>Berber (Algeria, Tifinagh)</description>
+            <longname>Kabylian (Algeria, Tifinagh)</longname>
+            <description>Kabylian (Algeria, Tifinagh)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1968,8 +2064,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ma</layout>
             <layout_variant>tifinagh-alt-phonetic</layout_variant>
-            <longname>Berber (Morocco, Tifinagh alt. phonetic)</longname>
-            <description>Berber (Morocco, Tifinagh alt. phonetic)</description>
+            <longname>Berber (Morocco, Tifinagh phonetic, alt.)</longname>
+            <description>Berber (Morocco, Tifinagh phonetic, alt.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2039,8 +2135,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2051,8 +2147,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2063,8 +2159,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2075,8 +2171,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2087,8 +2183,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2099,8 +2195,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2111,8 +2207,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2123,8 +2219,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2135,8 +2231,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2147,8 +2243,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2159,8 +2255,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2171,8 +2267,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2183,8 +2279,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2195,8 +2291,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2207,8 +2303,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2219,8 +2315,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2231,8 +2327,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2243,8 +2339,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2255,8 +2351,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2267,8 +2363,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2279,8 +2375,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2291,8 +2387,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2303,8 +2399,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2315,8 +2411,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2327,8 +2423,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2339,8 +2435,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2351,8 +2447,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2363,8 +2459,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2375,8 +2471,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>qwerty</layout_variant>
-            <longname>Cameroon Multilingual (QWERTY)</longname>
-            <description>Cameroon Multilingual (QWERTY)</description>
+            <longname>Cameroon Multilingual (QWERTY, intl.)</longname>
+            <description>Cameroon Multilingual (QWERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2387,8 +2483,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2399,8 +2495,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2411,8 +2507,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2423,8 +2519,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2435,8 +2531,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2447,8 +2543,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2459,8 +2555,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2471,8 +2567,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2483,8 +2579,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2495,8 +2591,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2507,8 +2603,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2519,8 +2615,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2531,8 +2627,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2543,8 +2639,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2555,8 +2651,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2567,8 +2663,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2579,8 +2675,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2591,8 +2687,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2603,8 +2699,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2615,8 +2711,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2627,8 +2723,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2639,8 +2735,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2651,8 +2747,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2663,8 +2759,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2675,8 +2771,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2687,8 +2783,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2699,8 +2795,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2711,8 +2807,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2723,8 +2819,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>azerty</layout_variant>
-            <longname>Cameroon Multilingual (AZERTY)</longname>
-            <description>Cameroon Multilingual (AZERTY)</description>
+            <longname>Cameroon (AZERTY, intl.)</longname>
+            <description>Cameroon (AZERTY, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2735,8 +2831,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2747,8 +2843,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2759,8 +2855,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2771,8 +2867,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2783,8 +2879,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2795,8 +2891,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2807,8 +2903,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2819,8 +2915,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2831,8 +2927,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2843,8 +2939,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2855,8 +2951,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2867,8 +2963,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2879,8 +2975,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2891,8 +2987,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2903,8 +2999,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2915,8 +3011,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2927,8 +3023,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2939,8 +3035,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2951,8 +3047,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2963,8 +3059,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2975,8 +3071,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2987,8 +3083,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2999,8 +3095,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3011,8 +3107,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3023,8 +3119,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3035,8 +3131,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3047,8 +3143,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3059,8 +3155,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3071,8 +3167,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>cm</layout>
             <layout_variant>dvorak</layout_variant>
-            <longname>Cameroon Multilingual (Dvorak)</longname>
-            <description>Cameroon Multilingual (Dvorak)</description>
+            <longname>Cameroon (Dvorak, intl.)</longname>
+            <description>Cameroon (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3489,8 +3585,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ca</layout>
             <layout_variant>multix</layout_variant>
-            <longname>Canadian Multilingual</longname>
-            <description>Canadian Multilingual</description>
+            <longname>Canadian (intl.)</longname>
+            <description>Canadian (intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3501,8 +3597,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ca</layout>
             <layout_variant>multi</layout_variant>
-            <longname>Canadian Multilingual (1st part)</longname>
-            <description>Canadian Multilingual (1st part)</description>
+            <longname>Canadian (intl., 1st part)</longname>
+            <description>Canadian (intl., 1st part)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3513,8 +3609,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ca</layout>
             <layout_variant>multi-2gr</layout_variant>
-            <longname>Canadian Multilingual (2nd part)</longname>
-            <description>Canadian Multilingual (2nd part)</description>
+            <longname>Canadian (intl., 2nd part)</longname>
+            <description>Canadian (intl., 2nd part)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3607,8 +3703,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hr</layout>
             <layout_variant>us</layout_variant>
-            <longname>Croatian (US, with Croatian letters)</longname>
-            <description>Croatian (US, with Croatian letters)</description>
+            <longname>Croatian (US)</longname>
+            <description>Croatian (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3737,8 +3833,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dk</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Danish (Win keys)</longname>
-            <description>Danish (Win keys)</description>
+            <longname>Danish (Windows)</longname>
+            <description>Danish (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3796,8 +3892,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>nl</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>Dutch (with Sun dead keys)</longname>
-            <description>Dutch (with Sun dead keys)</description>
+            <longname>Dutch (Sun dead keys)</longname>
+            <description>Dutch (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3878,8 +3974,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ee</layout>
             <layout_variant>us</layout_variant>
-            <longname>Estonian (US, with Estonian letters)</longname>
-            <description>Estonian (US, with Estonian letters)</description>
+            <longname>Estonian (US)</longname>
+            <description>Estonian (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4065,8 +4161,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fi</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Finnish (Winkeys)</longname>
-            <description>Finnish (Winkeys)</description>
+            <longname>Finnish (Windows)</longname>
+            <description>Finnish (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4148,8 +4244,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>French (with Sun dead keys)</longname>
-            <description>French (with Sun dead keys)</description>
+            <longname>French (Sun dead keys)</longname>
+            <description>French (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4196,8 +4292,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>French (alt., with Sun dead keys)</longname>
-            <description>French (alt., with Sun dead keys)</description>
+            <longname>French (alt., Sun dead keys)</longname>
+            <description>French (alt., Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4232,8 +4328,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>latin9_sundeadkeys</layout_variant>
-            <longname>French (legacy, alt., with Sun dead keys)</longname>
-            <description>French (legacy, alt., with Sun dead keys)</description>
+            <longname>French (legacy, alt., Sun dead keys)</longname>
+            <description>French (legacy, alt., Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4244,8 +4340,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>bepo</layout_variant>
-            <longname>French (Bepo, ergonomic, Dvorak way)</longname>
-            <description>French (Bepo, ergonomic, Dvorak way)</description>
+            <longname>French (BEPO)</longname>
+            <description>French (BEPO)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4256,8 +4352,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>bepo_latin9</layout_variant>
-            <longname>French (Bepo, ergonomic, Dvorak way, Latin-9 only)</longname>
-            <description>French (Bepo, ergonomic, Dvorak way, Latin-9 only)</description>
+            <longname>French (BEPO, Latin-9 only)</longname>
+            <description>French (BEPO, Latin-9 only)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4268,8 +4364,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>bepo_afnor</layout_variant>
-            <longname>French (Bepo, ergonomic, Dvorak way, AFNOR)</longname>
-            <description>French (Bepo, ergonomic, Dvorak way, AFNOR)</description>
+            <longname>French (BEPO, AFNOR)</longname>
+            <description>French (BEPO, AFNOR)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4316,8 +4412,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>afnor</layout_variant>
-            <longname>French (AFNOR standardized AZERTY)</longname>
-            <description>French (AFNOR standardized AZERTY)</description>
+            <longname>French (AZERTY, AFNOR)</longname>
+            <description>French (AZERTY, AFNOR)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4364,8 +4460,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>fr</layout>
             <layout_variant>us</layout_variant>
-            <longname>French (US, with French letters)</longname>
-            <description>French (US, with French letters)</description>
+            <longname>French (US)</longname>
+            <description>French (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4648,8 +4744,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>de</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>German (with Sun dead keys)</longname>
-            <description>German (with Sun dead keys)</description>
+            <longname>German (Sun dead keys)</longname>
+            <description>German (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4874,8 +4970,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwertz_comma_dead</layout_variant>
-            <longname>Hungarian (101/QWERTZ/comma/dead keys)</longname>
-            <description>Hungarian (101/QWERTZ/comma/dead keys)</description>
+            <longname>Hungarian (QWERTZ, 101-key, comma, dead keys)</longname>
+            <description>Hungarian (QWERTZ, 101-key, comma, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4886,8 +4982,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwertz_comma_nodead</layout_variant>
-            <longname>Hungarian (101/QWERTZ/comma/no dead keys)</longname>
-            <description>Hungarian (101/QWERTZ/comma/no dead keys)</description>
+            <longname>Hungarian (QWERTZ, 101-key, comma, no dead keys)</longname>
+            <description>Hungarian (QWERTZ, 101-key, comma, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4898,8 +4994,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwertz_dot_dead</layout_variant>
-            <longname>Hungarian (101/QWERTZ/dot/dead keys)</longname>
-            <description>Hungarian (101/QWERTZ/dot/dead keys)</description>
+            <longname>Hungarian (QWERTZ, 101-key, dot, dead keys)</longname>
+            <description>Hungarian (QWERTZ, 101-key, dot, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4910,8 +5006,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwertz_dot_nodead</layout_variant>
-            <longname>Hungarian (101/QWERTZ/dot/no dead keys)</longname>
-            <description>Hungarian (101/QWERTZ/dot/no dead keys)</description>
+            <longname>Hungarian (QWERTZ, 101-key, dot, no dead keys)</longname>
+            <description>Hungarian (QWERTZ, 101-key, dot, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4922,8 +5018,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwerty_comma_dead</layout_variant>
-            <longname>Hungarian (101/QWERTY/comma/dead keys)</longname>
-            <description>Hungarian (101/QWERTY/comma/dead keys)</description>
+            <longname>Hungarian (QWERTY, 101-key, comma, dead keys)</longname>
+            <description>Hungarian (QWERTY, 101-key, comma, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4934,8 +5030,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwerty_comma_nodead</layout_variant>
-            <longname>Hungarian (101/QWERTY/comma/no dead keys)</longname>
-            <description>Hungarian (101/QWERTY/comma/no dead keys)</description>
+            <longname>Hungarian (QWERTY, 101-key, comma, no dead keys)</longname>
+            <description>Hungarian (QWERTY, 101-key, comma, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4946,8 +5042,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwerty_dot_dead</layout_variant>
-            <longname>Hungarian (101/QWERTY/dot/dead keys)</longname>
-            <description>Hungarian (101/QWERTY/dot/dead keys)</description>
+            <longname>Hungarian (QWERTY, 101-key, dot, dead keys)</longname>
+            <description>Hungarian (QWERTY, 101-key, dot, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4958,8 +5054,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>101_qwerty_dot_nodead</layout_variant>
-            <longname>Hungarian (101/QWERTY/dot/no dead keys)</longname>
-            <description>Hungarian (101/QWERTY/dot/no dead keys)</description>
+            <longname>Hungarian (QWERTY, 101-key, dot, no dead keys)</longname>
+            <description>Hungarian (QWERTY, 101-key, dot, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4970,8 +5066,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwertz_comma_dead</layout_variant>
-            <longname>Hungarian (102/QWERTZ/comma/dead keys)</longname>
-            <description>Hungarian (102/QWERTZ/comma/dead keys)</description>
+            <longname>Hungarian (QWERTZ, 102-key, comma, dead keys)</longname>
+            <description>Hungarian (QWERTZ, 102-key, comma, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4982,8 +5078,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwertz_comma_nodead</layout_variant>
-            <longname>Hungarian (102/QWERTZ/comma/no dead keys)</longname>
-            <description>Hungarian (102/QWERTZ/comma/no dead keys)</description>
+            <longname>Hungarian (QWERTZ, 102-key, comma, no dead keys)</longname>
+            <description>Hungarian (QWERTZ, 102-key, comma, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4994,8 +5090,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwertz_dot_dead</layout_variant>
-            <longname>Hungarian (102/QWERTZ/dot/dead keys)</longname>
-            <description>Hungarian (102/QWERTZ/dot/dead keys)</description>
+            <longname>Hungarian (QWERTZ, 102-key, dot, dead keys)</longname>
+            <description>Hungarian (QWERTZ, 102-key, dot, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5006,8 +5102,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwertz_dot_nodead</layout_variant>
-            <longname>Hungarian (102/QWERTZ/dot/no dead keys)</longname>
-            <description>Hungarian (102/QWERTZ/dot/no dead keys)</description>
+            <longname>Hungarian (QWERTZ, 102-key, dot, no dead keys)</longname>
+            <description>Hungarian (QWERTZ, 102-key, dot, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5018,8 +5114,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwerty_comma_dead</layout_variant>
-            <longname>Hungarian (102/QWERTY/comma/dead keys)</longname>
-            <description>Hungarian (102/QWERTY/comma/dead keys)</description>
+            <longname>Hungarian (QWERTY, 102-key, comma, dead keys)</longname>
+            <description>Hungarian (QWERTY, 102-key, comma, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5030,8 +5126,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwerty_comma_nodead</layout_variant>
-            <longname>Hungarian (102/QWERTY/comma/no dead keys)</longname>
-            <description>Hungarian (102/QWERTY/comma/no dead keys)</description>
+            <longname>Hungarian (QWERTY, 102-key, comma, no dead keys)</longname>
+            <description>Hungarian (QWERTY, 102-key, comma, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5042,8 +5138,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwerty_dot_dead</layout_variant>
-            <longname>Hungarian (102/QWERTY/dot/dead keys)</longname>
-            <description>Hungarian (102/QWERTY/dot/dead keys)</description>
+            <longname>Hungarian (QWERTY, 102-key, dot, dead keys)</longname>
+            <description>Hungarian (QWERTY, 102-key, dot, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5054,8 +5150,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>hu</layout>
             <layout_variant>102_qwerty_dot_nodead</layout_variant>
-            <longname>Hungarian (102/QWERTY/dot/no dead keys)</longname>
-            <description>Hungarian (102/QWERTY/dot/no dead keys)</description>
+            <longname>Hungarian (QWERTY, 102-key, dot, no dead keys)</longname>
+            <description>Hungarian (QWERTY, 102-key, dot, no dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5077,8 +5173,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>is</layout>
             <layout_variant>Sundeadkeys</layout_variant>
-            <longname>Icelandic (with Sun dead keys)</longname>
-            <description>Icelandic (with Sun dead keys)</description>
+            <longname>Icelandic (Sun dead keys)</longname>
+            <description>Icelandic (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5207,8 +5303,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>it</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Italian (Winkeys)</longname>
-            <description>Italian (Winkeys)</description>
+            <longname>Italian (Windows)</longname>
+            <description>Italian (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5231,8 +5327,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>it</layout>
             <layout_variant>us</layout_variant>
-            <longname>Italian (US, with Italian letters)</longname>
-            <description>Italian (US, with Italian letters)</description>
+            <longname>Italian (US)</longname>
+            <description>Italian (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5598,8 +5694,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>la</layout>
             <layout_variant>stea</layout_variant>
-            <longname>Lao (STEA proposed standard layout)</longname>
-            <description>Lao (STEA proposed standard layout)</description>
+            <longname>Lao (STEA)</longname>
+            <description>Lao (STEA)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5633,8 +5729,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>lt</layout>
             <layout_variant>us</layout_variant>
-            <longname>Lithuanian (US, with Lithuanian letters)</longname>
-            <description>Lithuanian (US, with Lithuanian letters)</description>
+            <longname>Lithuanian (US)</longname>
+            <description>Lithuanian (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5858,8 +5954,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>me</layout>
             <layout_variant>cyrillicalternatequotes</layout_variant>
-            <longname>Montenegrin (Cyrillic with guillemets)</longname>
-            <description>Montenegrin (Cyrillic with guillemets)</description>
+            <longname>Montenegrin (Cyrillic, with guillemets)</longname>
+            <description>Montenegrin (Cyrillic, with guillemets)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5870,8 +5966,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>me</layout>
             <layout_variant>latinalternatequotes</layout_variant>
-            <longname>Montenegrin (Latin with guillemets)</longname>
-            <description>Montenegrin (Latin with guillemets)</description>
+            <longname>Montenegrin (Latin, with guillemets)</longname>
+            <description>Montenegrin (Latin, with guillemets)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5916,8 +6012,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>mt</layout>
             <layout_variant>us</layout_variant>
-            <longname>Maltese (with US layout)</longname>
-            <description>Maltese (with US layout)</description>
+            <longname>Maltese (US)</longname>
+            <description>Maltese (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5940,8 +6036,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>mt</layout>
             <layout_variant>alt-gb</layout_variant>
-            <longname>Maltese (UK layout with AltGr overrides)</longname>
-            <description>Maltese (UK layout with AltGr overrides)</description>
+            <longname>Maltese (UK, with AltGr overrides)</longname>
+            <description>Maltese (UK, with AltGr overrides)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6032,8 +6128,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>no</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Norwegian (Win keys)</longname>
-            <description>Norwegian (Win keys)</description>
+            <longname>Norwegian (Windows)</longname>
+            <description>Norwegian (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6044,8 +6140,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>no</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Norwegian (Win keys)</longname>
-            <description>Norwegian (Win keys)</description>
+            <longname>Norwegian (Windows)</longname>
+            <description>Norwegian (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6056,8 +6152,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>no</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Norwegian (Win keys)</longname>
-            <description>Norwegian (Win keys)</description>
+            <longname>Norwegian (Windows)</longname>
+            <description>Norwegian (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6306,8 +6402,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>pt</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>Portuguese (with Sun dead keys)</longname>
-            <description>Portuguese (with Sun dead keys)</description>
+            <longname>Portuguese (Sun dead keys)</longname>
+            <description>Portuguese (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6342,8 +6438,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>pt</layout>
             <layout_variant>mac_sundeadkeys</layout_variant>
-            <longname>Portuguese (Macintosh, with Sun dead keys)</longname>
-            <description>Portuguese (Macintosh, with Sun dead keys)</description>
+            <longname>Portuguese (Macintosh, Sun dead keys)</longname>
+            <description>Portuguese (Macintosh, Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6437,8 +6533,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ro</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Romanian (Win keys)</longname>
-            <description>Romanian (Win keys)</description>
+            <longname>Romanian (Windows)</longname>
+            <description>Romanian (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6472,20 +6568,20 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ru</layout>
             <layout_variant>phonetic_winkeys</layout_variant>
-            <longname>Russian (phonetic, with Win keys)</longname>
-            <description>Russian (phonetic, with Win keys)</description>
+            <longname>Russian (phonetic, Windows)</longname>
+            <description>Russian (phonetic, Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:ru:phonetic_yazherty:rus</name>
+            <name>xkb:ru:phonetic_YAZHERTY:rus</name>
             <language>ru</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ru</layout>
-            <layout_variant>phonetic_yazherty</layout_variant>
-            <longname>Russian (phonetic yazherty)</longname>
-            <description>Russian (phonetic yazherty)</description>
+            <layout_variant>phonetic_YAZHERTY</layout_variant>
+            <longname>Russian (phonetic, YAZHERTY)</longname>
+            <description>Russian (phonetic, YAZHERTY)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6556,8 +6652,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ru</layout>
             <layout_variant>os_winkeys</layout_variant>
-            <longname>Ossetian (Win keys)</longname>
-            <description>Ossetian (Win keys)</description>
+            <longname>Ossetian (Windows)</longname>
+            <description>Ossetian (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6819,8 +6915,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>rs</layout>
             <layout_variant>alternatequotes</layout_variant>
-            <longname>Serbian (Cyrillic with guillemets)</longname>
-            <description>Serbian (Cyrillic with guillemets)</description>
+            <longname>Serbian (Cyrillic, with guillemets)</longname>
+            <description>Serbian (Cyrillic, with guillemets)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6831,8 +6927,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>rs</layout>
             <layout_variant>latinalternatequotes</layout_variant>
-            <longname>Serbian (Latin with guillemets)</longname>
-            <description>Serbian (Latin with guillemets)</description>
+            <longname>Serbian (Latin, with guillemets)</longname>
+            <description>Serbian (Latin, with guillemets)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6878,8 +6974,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>si</layout>
             <layout_variant>us</layout_variant>
-            <longname>Slovenian (US, with Slovenian letters)</longname>
-            <description>Slovenian (US, with Slovenian letters)</description>
+            <longname>Slovenian (US)</longname>
+            <description>Slovenian (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6960,8 +7056,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>es</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Spanish (Win keys)</longname>
-            <description>Spanish (Win keys)</description>
+            <longname>Spanish (Windows)</longname>
+            <description>Spanish (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6984,8 +7080,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>es</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>Spanish (with Sun dead keys)</longname>
-            <description>Spanish (with Sun dead keys)</description>
+            <longname>Spanish (Sun dead keys)</longname>
+            <description>Spanish (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7008,8 +7104,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>es</layout>
             <layout_variant>ast</layout_variant>
-            <longname>Asturian (Spain, with bottom-dot H and bottom-dot L)</longname>
-            <description>Asturian (Spain, with bottom-dot H and bottom-dot L)</description>
+            <longname>Asturian (Spain, with bottom-dot H and L)</longname>
+            <description>Asturian (Spain, with bottom-dot H and L)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7139,8 +7235,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>se</layout>
             <layout_variant>us_dvorak</layout_variant>
-            <longname>Swedish (based on US Intl. Dvorak)</longname>
-            <description>Swedish (based on US Intl. Dvorak)</description>
+            <longname>Swedish (Dvorak, intl.)</longname>
+            <description>Swedish (Dvorak, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7151,8 +7247,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>se</layout>
             <layout_variant>us</layout_variant>
-            <longname>Swedish (US, with Swedish letters)</longname>
-            <description>Swedish (US, with Swedish letters)</description>
+            <longname>Swedish (US)</longname>
+            <description>Swedish (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7245,8 +7341,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ch</layout>
             <layout_variant>de_sundeadkeys</layout_variant>
-            <longname>German (Switzerland, with Sun dead keys)</longname>
-            <description>German (Switzerland, with Sun dead keys)</description>
+            <longname>German (Switzerland, Sun dead keys)</longname>
+            <description>German (Switzerland, Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7257,8 +7353,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ch</layout>
             <layout_variant>de_sundeadkeys</layout_variant>
-            <longname>German (Switzerland, with Sun dead keys)</longname>
-            <description>German (Switzerland, with Sun dead keys)</description>
+            <longname>German (Switzerland, Sun dead keys)</longname>
+            <description>German (Switzerland, Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7293,8 +7389,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ch</layout>
             <layout_variant>fr_sundeadkeys</layout_variant>
-            <longname>French (Switzerland, with Sun dead keys)</longname>
-            <description>French (Switzerland, with Sun dead keys)</description>
+            <longname>French (Switzerland, Sun dead keys)</longname>
+            <description>French (Switzerland, Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7458,8 +7554,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>lk</layout>
             <layout_variant>us</layout_variant>
-            <longname>Sinhala (US, with Sinhala letters)</longname>
-            <description>Sinhala (US, with Sinhala letters)</description>
+            <longname>Sinhala (US)</longname>
+            <description>Sinhala (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7540,8 +7636,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>tr</layout>
             <layout_variant>sundeadkeys</layout_variant>
-            <longname>Turkish (with Sun dead keys)</longname>
-            <description>Turkish (with Sun dead keys)</description>
+            <longname>Turkish (Sun dead keys)</longname>
+            <description>Turkish (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7886,8 +7982,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>ua</layout>
             <layout_variant>winkeys</layout_variant>
-            <longname>Ukrainian (Win keys)</longname>
-            <description>Ukrainian (Win keys)</description>
+            <longname>Ukrainian (Windows)</longname>
+            <description>Ukrainian (Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7957,8 +8053,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>gb</layout>
             <layout_variant>extd</layout_variant>
-            <longname>English (UK, extended, with Win keys)</longname>
-            <description>English (UK, extended, with Win keys)</description>
+            <longname>English (UK, extended, Windows)</longname>
+            <description>English (UK, extended, Windows)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -8017,8 +8113,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>gb</layout>
             <layout_variant>mac_intl</layout_variant>
-            <longname>English (UK, intl., Macintosh)</longname>
-            <description>English (UK, intl., Macintosh)</description>
+            <longname>English (UK, Macintosh, intl.)</longname>
+            <description>English (UK, Macintosh, intl.)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -8087,8 +8183,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>vn</layout>
             <layout_variant>us</layout_variant>
-            <longname>Vietnamese (US, with Vietnamese letters)</longname>
-            <description>Vietnamese (US, with Vietnamese letters)</description>
+            <longname>Vietnamese (US)</longname>
+            <description>Vietnamese (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -8099,8 +8195,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>vn</layout>
             <layout_variant>fr</layout_variant>
-            <longname>Vietnamese (French, with Vietnamese letters)</longname>
-            <description>Vietnamese (French, with Vietnamese letters)</description>
+            <longname>Vietnamese (French)</longname>
+            <description>Vietnamese (French)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -8122,8 +8218,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>kr</layout>
             <layout_variant>kr104</layout_variant>
-            <longname>Korean (101/104 key compatible)</longname>
-            <description>Korean (101/104 key compatible)</description>
+            <longname>Korean (101/104-key compatible)</longname>
+            <description>Korean (101/104-key compatible)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -8285,8 +8381,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>epo</layout>
             <layout_variant>legacy</layout_variant>
-            <longname>Esperanto (displaced semicolon and quote, obsolete)</longname>
-            <description>Esperanto (displaced semicolon and quote, obsolete)</description>
+            <longname>Esperanto (legacy)</longname>
+            <description>Esperanto (legacy)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -10002,8 +10098,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, ext. phonetic)</longname>
-            <description>Indonesian (Arab Melayu, ext. phonetic)</description>
+            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
+            <description>Indonesian (Arab Melayu, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -10014,8 +10110,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, ext. phonetic)</longname>
-            <description>Indonesian (Arab Melayu, ext. phonetic)</description>
+            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
+            <description>Indonesian (Arab Melayu, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -10026,8 +10122,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, ext. phonetic)</longname>
-            <description>Indonesian (Arab Melayu, ext. phonetic)</description>
+            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
+            <description>Indonesian (Arab Melayu, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -10038,8 +10134,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, ext. phonetic)</longname>
-            <description>Indonesian (Arab Melayu, ext. phonetic)</description>
+            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
+            <description>Indonesian (Arab Melayu, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -10050,8 +10146,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, ext. phonetic)</longname>
-            <description>Indonesian (Arab Melayu, ext. phonetic)</description>
+            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
+            <description>Indonesian (Arab Melayu, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -10062,8 +10158,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, ext. phonetic)</longname>
-            <description>Indonesian (Arab Melayu, ext. phonetic)</description>
+            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
+            <description>Indonesian (Arab Melayu, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -10074,8 +10170,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, ext. phonetic)</longname>
-            <description>Indonesian (Arab Melayu, ext. phonetic)</description>
+            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
+            <description>Indonesian (Arab Melayu, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
