@@ -6,7 +6,7 @@ test -z "$srcdir" && srcdir=.
 
 PKG_NAME="ibus"
 DIST_FILES="
-engine/simple.xml
+engine/simple.xml.in
 src/ibusemojigen.h
 src/ibusunicodegen.h
 "

@@ -4,8 +4,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2010-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2016 Red Hat, Inc.
+# Copyright (c) 2010-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2020 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -547,7 +547,7 @@ class Setup(object):
             self.__flush_gtk_events()
         else:
             # Translators: %d == 5 currently
-            message = _("IBus daemon could not be started in %d seconds")
+            message = _("IBus daemon could not be started in %d seconds.")
             dlg = Gtk.MessageDialog(message_type = Gtk.MessageType.INFO,
                                     buttons = Gtk.ButtonsType.OK,
                                     text = message % timeout)

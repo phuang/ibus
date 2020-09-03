@@ -1,14 +1,14 @@
 # Source translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ibus 1.5.22\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
-"POT-Creation-Date: 2020-08-26 19:53+0900\n"
-"PO-Revision-Date: 2020-08-26 19:53+0900\n"
+"POT-Creation-Date: 2020-09-03 21:21+0900\n"
+"PO-Revision-Date: 2020-09-03 21:21+0900\n"
 "Last-Translator: Takao Fujiwara <takao.fujiwara1@gmail.com>\n"
 "Language-Team: Source\n"
 "Language: \n"
@@ -301,7 +301,7 @@ msgstr ""
 #: data/dconf/org.freedesktop.ibus.gschema.xml:198
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:202
@@ -507,7 +507,7 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
+msgid "IBus daemon could not be started in %d seconds."
 msgstr ""
 
 #: setup/main.py:562
@@ -3075,7 +3075,7 @@ msgid "Reset the configuration values"
 msgstr ""
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
+msgid "Save emoji on dialog to clipboard"
 msgstr ""
 
 #: tools/main.vala:458

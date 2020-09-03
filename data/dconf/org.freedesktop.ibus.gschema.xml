@@ -195,7 +195,7 @@
     <key name="lang" type="s">
       <default>'en'</default>
       <summary>Default language for emoji dictionary</summary>
-      <description>Choose a default language of emoji dictionaries on the emoji dialog. The value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict</description>
+      <description>Choose a default language of emoji dictionaries on the emoji dialog. The value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict .</description>
     </key>
     <key name="favorites" type="as">
       <default>[]</default>

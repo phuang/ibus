@@ -3,8 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2014-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2018 Red Hat, Inc.
+# Copyright (c) 2014-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2020 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -93,7 +93,7 @@ class EngineTreeView(Gtk.TreeView):
         renderer.set_property("has-entry", False)
         renderer.set_property("editable", True)
 
-        column = Gtk.TreeViewColumn(_("Kbd"))
+        column = Gtk.TreeViewColumn("Kbd")
         column.set_expand(False)
         column.set_fixed_width(32)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)

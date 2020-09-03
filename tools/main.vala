@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -453,7 +453,7 @@ const CommandEntry commands[]  = {
     { "read-config", N_("Show the configuration values"), read_config },
     { "reset-config", N_("Reset the configuration values"), reset_config },
 #if EMOJI_DICT
-    { "emoji", N_("Save emoji on dialog to clipboard "), emoji_dialog },
+    { "emoji", N_("Save emoji on dialog to clipboard"), emoji_dialog },
 #endif
     { "help", N_("Show this information"), print_help }
 };
