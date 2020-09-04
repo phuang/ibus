@@ -539,8 +539,8 @@ msgstr "IBus беше стартиран! Ако не можете да изпо
 #. Translators: %d == 5 currently
 #: ../setup/main.py:364
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "IBus демонът не може да се стартира вече %d секунди"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "IBus демонът не може да се стартира вече %d секунди."
 
 #: ../setup/main.py:376
 #, python-format

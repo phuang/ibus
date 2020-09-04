@@ -346,7 +346,7 @@ msgstr "絵文字辞書用のデフォルトの言語"
 #: data/dconf/org.freedesktop.ibus.gschema.xml:198
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 "絵文字ダイアログ上の絵文字辞書のデフォルトの言語を選択します。その値 $lang "
 "は、/usr/share/ibus/dicts/emoji-$lang.dict に適用されます。"
@@ -390,7 +390,7 @@ msgstr "指定した長さで絵文字ルビを一致させる"
 msgid ""
 "Match emoji annotations partially with more than the specified number of "
 "characters instead of the exact match."
-msgstr "絵文字ルビを完全一致ではなく指定した文字数で部分一致させる"
+msgstr "絵文字ルビを完全一致ではなく指定した文字数で部分一致させる。"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:222
 msgid "Choose a condition to match emoji annotations partially"
@@ -439,8 +439,8 @@ msgid ""
 "Copyright (c) 2007-2010 Peng Huang\n"
 "Copyright (c) 2007-2010 Red Hat, Inc."
 msgstr ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
+"Copyright © 2007-2010 Peng Huang\n"
+"Copyright © 2007-2010 Red Hat, Inc."
 
 #: ibus/lang.py:41 src/ibusutil.c:209
 msgid "Other"
@@ -543,12 +543,12 @@ msgid ""
 "Please press a key (or a key combination).\n"
 "The dialog will be closed when the key is released."
 msgstr ""
-"キーもしくはキーの組み合わせを入力してください。\n"
+"キー (もしくはキーの組み合わせ) を入力してください。\n"
 "キーを離すとダイアログを閉じます。"
 
 #: setup/keyboardshortcut.py:255
 msgid "Please press a key (or a key combination)"
-msgstr "キーもしくはキーの組み合わせを入力してください"
+msgstr "キー (もしくはキーの組み合わせ) を入力してください"
 
 #: setup/main.py:121 setup/main.py:588
 msgid "Use shortcut with shift to switch to the previous input method"
@@ -577,7 +577,7 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
+msgid "IBus daemon could not be started in %d seconds."
 msgstr "IBus デーモンを %d 秒以内に開始できませんでした。"
 
 #: setup/main.py:562
@@ -653,7 +653,7 @@ msgstr "…"
 
 #: setup/setup.ui:226
 msgid "Enable or disable:"
-msgstr "切り替え"
+msgstr "切り替え:"
 
 #: setup/setup.ui:238
 msgid "Enable:"
@@ -685,7 +685,7 @@ msgstr "プロパティーパネルを表示する:"
 
 #: setup/setup.ui:423
 msgid "Language panel position:"
-msgstr "言語パネルの位置"
+msgstr "言語パネルの位置:"
 
 #: setup/setup.ui:494
 msgid "Show input method's name on language bar when check the checkbox"
@@ -3116,7 +3116,7 @@ msgstr "完了"
 
 #: tools/main.vala:444
 msgid "Set or get engine"
-msgstr "エンジンを設定もしくは表示する。"
+msgstr "エンジンを設定もしくは表示する"
 
 #: tools/main.vala:445
 msgid "Exit ibus-daemon"
@@ -3159,7 +3159,7 @@ msgid "Reset the configuration values"
 msgstr "設定値を初期化する"
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
+msgid "Save emoji on dialog to clipboard"
 msgstr "ダイアログ上の絵文字をクリップボードに保存する"
 
 #: tools/main.vala:458

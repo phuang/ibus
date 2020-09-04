@@ -314,7 +314,7 @@ msgstr "에모지 사전에 사용할 기본값 언어"
 #: data/dconf/org.freedesktop.ibus.gschema.xml:189
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 "에모지 대화창의 에모지 사전의 기본 언어를 선택합니다. $lang 값이면 /usr/share/ibus/dicts/emoji-$lang."
 "dict 사전을 사용합니다."
@@ -534,8 +534,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "IBus 데몬이 %d초 내에 시작하지 못했습니다"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "IBus 데몬이 %d초 내에 시작하지 못했습니다."
 
 #: setup/main.py:562
 #, python-format
@@ -3108,7 +3108,7 @@ msgid "Reset the configuration values"
 msgstr "설정 값 재설정"
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
+msgid "Save emoji on dialog to clipboard"
 msgstr "대화창의 에모지를 클립보드에 저장"
 
 #: tools/main.vala:458

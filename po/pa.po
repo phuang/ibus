@@ -520,8 +520,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "IBus ਡੈਮਨ %d ਸਕਿੰਟਾਂ ਵਿੱਚ ਚਾਲੂ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "IBus ਡੈਮਨ %d ਸਕਿੰਟਾਂ ਵਿੱਚ ਚਾਲੂ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ."
 
 #: setup/main.py:562
 #, python-format

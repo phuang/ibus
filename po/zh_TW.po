@@ -320,10 +320,10 @@ msgstr "繪文字字典的預設語言"
 #: data/dconf/org.freedesktop.ibus.gschema.xml:189
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 "請在繪文字對話窗當中選擇繪文字字典語言。$lang 的值會套用到 /usr/share/ibus/"
-"dicts/emoji-$lang.dict"
+"dicts/emoji-$lang.dict。"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:193
 msgid "favorite emoji list on emoji dialog"
@@ -544,8 +544,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "IBus 幕後程式無法在 %d 秒後啟動"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "IBus 幕後程式無法在 %d 秒後啟動。"
 
 #: setup/main.py:562
 #, python-format
@@ -3073,8 +3073,8 @@ msgid "Reset the configuration values"
 msgstr "重設組態值"
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
-msgstr "將對話窗中的繪文字儲存到剪貼簿 "
+msgid "Save emoji on dialog to clipboard"
+msgstr "將對話窗中的繪文字儲存到剪貼簿"
 
 #: tools/main.vala:458
 msgid "Show this information"

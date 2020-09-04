@@ -764,8 +764,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: ../setup/main.py:542
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "IBus डिमन %d सेकंदात सुरू करणे अशक्य"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "IBus डिमन %d सेकंदात सुरू करणे अशक्य."
 
 #: ../setup/main.py:554
 #, python-format

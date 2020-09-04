@@ -334,10 +334,10 @@ msgstr "Standaard taal voor emoji woordenboek"
 #: data/dconf/org.freedesktop.ibus.gschema.xml:189
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 "Kies een standaard taal met emoji woordenboeken op de emoji dialoog. De "
-"waarde $lang wordt toepast in /usr/share/ibus/dicts/emoji-$lang.dict"
+"waarde $lang wordt toepast in /usr/share/ibus/dicts/emoji-$lang.dict ."
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:193
 msgid "favorite emoji list on emoji dialog"
@@ -570,8 +570,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "IBus daemon kon niet binnen %d seconden gestart worden"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "IBus daemon kon niet binnen %d seconden gestart worden."
 
 #: setup/main.py:562
 #, python-format
@@ -3120,8 +3120,8 @@ msgid "Reset the configuration values"
 msgstr "Herstel de configuratiewaarden"
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
-msgstr "Sla emoji op dialoog  op naar clipboard "
+msgid "Save emoji on dialog to clipboard"
+msgstr "Sla emoji op dialoog  op naar clipboard"
 
 #: tools/main.vala:458
 msgid "Show this information"

@@ -318,11 +318,11 @@ msgstr "Lingua predefinita per il dizionario degli emoji"
 #: data/dconf/org.freedesktop.ibus.gschema.xml:189
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 "Scegliere una lingua predefinita di dizionari emoji nella finestra di "
 "dialogo. Il valore di $lang viene applicato a /usr/share/ibus/dicts/emoji-"
-"$lang.dict"
+"$lang.dict ."
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:193
 msgid "favorite emoji list on emoji dialog"
@@ -538,8 +538,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "Impossibile avviare il demone IBus in %d secondi"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "Impossibile avviare il demone IBus in %d secondi."
 
 #: setup/main.py:562
 #, python-format
@@ -3079,7 +3079,7 @@ msgid "Reset the configuration values"
 msgstr "Reimpostare i valori della configurazione"
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
+msgid "Save emoji on dialog to clipboard"
 msgstr "Salvare emoji sulla finestra degli appunti"
 
 #: tools/main.vala:458

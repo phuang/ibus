@@ -3021,7 +3021,7 @@ msgid "Reset the configuration values"
 msgstr "Redefinir os valores da configuração"
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
+msgid "Save emoji on dialog to clipboard"
 msgstr "Guardar emoji na janela para a área de transferência"
 
 #: tools/main.vala:458

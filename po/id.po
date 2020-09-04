@@ -579,8 +579,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: ../setup/main.py:364
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "Daemon IBus tidak dapat dimulai dalam% d detik"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "Daemon IBus tidak dapat dimulai dalam% d detik."
 
 #: ../setup/main.py:376
 #, python-format

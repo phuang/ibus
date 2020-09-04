@@ -580,8 +580,8 @@ msgstr "IBus തുടങ്ങി! IBus ഉപയോഗിയ്ക്കുവ
 #. Translators: %d == 5 currently
 #: ../setup/main.py:403
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "IBus ഡെമണ്‍ %d സെക്കന്‍ഡുകളില്‍ ആരംഭിയ്ക്കുവാന്‍ സാധ്യമല്ല"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "IBus ഡെമണ്‍ %d സെക്കന്‍ഡുകളില്‍ ആരംഭിയ്ക്കുവാന്‍ സാധ്യമല്ല."
 
 #: ../setup/main.py:415
 #, python-format

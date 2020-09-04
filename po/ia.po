@@ -540,8 +540,8 @@ msgstr "IBus se ha initiate! Si tu non pote usar IBus, adde le lineas sequente a
 #. Translators: %d == 5 currently
 #: ../setup/main.py:364
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "Le demonio IBus non pote initiar se in %d secundas"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "Le demonio IBus non pote initiar se in %d secundas."
 
 #: ../setup/main.py:376
 #, python-format

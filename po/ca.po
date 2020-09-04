@@ -339,10 +339,10 @@ msgstr "Idioma predeterminat per al diccionari emoji"
 #: data/dconf/org.freedesktop.ibus.gschema.xml:189
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 "Trieu l'idioma predeterminat per ls diccionaris dels emojis al diàleg "
-"d'emojis. El valor $lang s'aplica a /usr/share/ibus/dicts/emoji-$lang.dict"
+"d'emojis. El valor $lang s'aplica a /usr/share/ibus/dicts/emoji-$lang.dict ."
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:193
 msgid "favorite emoji list on emoji dialog"
@@ -573,8 +573,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: setup/main.py:550
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "El dimoni de l'IBus no s'ha pogut iniciar en %d segons"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "El dimoni de l'IBus no s'ha pogut iniciar en %d segons."
 
 #: setup/main.py:562
 #, python-format
@@ -3139,8 +3139,8 @@ msgid "Reset the configuration values"
 msgstr "Restableix els valors de la configuració"
 
 #: tools/main.vala:456
-msgid "Save emoji on dialog to clipboard "
-msgstr "Desa l'emoji del diàleg al porta-retalls "
+msgid "Save emoji on dialog to clipboard"
+msgstr "Desa l'emoji del diàleg al porta-retalls"
 
 #: tools/main.vala:458
 msgid "Show this information"

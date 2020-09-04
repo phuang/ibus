@@ -580,10 +580,10 @@ msgstr "Předvolený jazyk pro slovník emoji"
 #: ../data/ibus.schemas.in.h:54
 msgid ""
 "Choose a default language of emoji dictionaries on the emoji dialog. The "
-"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict"
+"value $lang is applied to /usr/share/ibus/dicts/emoji-$lang.dict ."
 msgstr ""
 "Zvolte výchozí jazyk slovníků emoji v dialogovém okně emoji. Hodnota $lang "
-"je aplikována na /usr/share/ibus/dicts/emoji-$lang.dict"
+"je aplikována na /usr/share/ibus/dicts/emoji-$lang.dict ."
 
 #: ../data/ibus.schemas.in.h:55
 msgid "favorite emoji list on emoji dialog"
@@ -792,8 +792,8 @@ msgstr ""
 #. Translators: %d == 5 currently
 #: ../setup/main.py:542
 #, python-format
-msgid "IBus daemon could not be started in %d seconds"
-msgstr "Démon IBus nemohl být spuštěn během %d sekund"
+msgid "IBus daemon could not be started in %d seconds."
+msgstr "Démon IBus nemohl být spuštěn během %d sekund."
 
 #: ../setup/main.py:554
 #, python-format
@@ -2897,8 +2897,8 @@ msgid "Reset the configuration values"
 msgstr "Obnovit konfigurační hodnoty"
 
 #: ../tools/main.vala:385
-msgid "Save emoji on dialog to clipboard "
-msgstr "Uložit emoji z dialogu do schránky."
+msgid "Save emoji on dialog to clipboard"
+msgstr "Uložit emoji z dialogu do schránky"
 
 #: ../tools/main.vala:387
 msgid "Show this information"
