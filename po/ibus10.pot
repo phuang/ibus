@@ -443,10 +443,6 @@ msgstr ""
 msgid "Input Method"
 msgstr ""
 
-#: setup/enginetreeview.py:96
-msgid "Kbd"
-msgstr ""
-
 #: setup/ibus-setup.desktop:3 setup/setup.ui:69
 msgid "IBus Preferences"
 msgstr ""
