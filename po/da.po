@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: ibus 1.5.20\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2020-09-03 21:21+0900\n"
-"PO-Revision-Date: 2020-09-14 09:14+0000\n"
+"PO-Revision-Date: 2020-09-17 22:29+0000\n"
 "Last-Translator: scootergrisen <scootergrisen@gmail.com>\n"
 "Language-Team: Danish <https://translate.fedoraproject.org/projects/ibus/"
 "ibus/da/>\n"
@@ -298,7 +298,7 @@ msgstr "Tilpasset skrifttypenavn til sprogpanel"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:170 setup/setup.ui:1305
 msgid "Choose glyphs with input method's language on candidate window"
-msgstr ""
+msgstr "Vælg glyffer med inputmetodens sprog i kandidatvinduet"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:171
 msgid ""
@@ -837,12 +837,12 @@ msgid ""
 "Choose glyphs with the input method's language on the candidate window for "
 "the duplicated code points"
 msgstr ""
+"Vælg glyffer med inputmetodens sprog i kandidatvinduet for de duplikerede "
+"kodepunkter"
 
 #: setup/setup.ui:1327
-#, fuzzy
-#| msgid "<b>Font and Style</b>"
 msgid "<b>Fonts</b>"
-msgstr "<b>Skrifttype og stil</b>"
+msgstr "<b>Skrifttyper</b>"
 
 #: setup/setup.ui:1347
 msgid "Advanced"
