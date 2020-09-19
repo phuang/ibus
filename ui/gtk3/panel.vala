@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2019 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2020 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -594,11 +594,10 @@ class Panel : IBus.PanelService {
             if (m_indicator == null)
                 return;
 
-            if (m_settings_panel.get_boolean("show-icon-on-systray")) {
+            if (m_settings_panel.get_boolean("show-icon-on-systray"))
                 m_indicator.set_status(Indicator.Status.ACTIVE);
-            } else {
+            else
                 m_indicator.set_status(Indicator.Status.PASSIVE);
-            }
         }
     }
 
@@ -1459,20 +1458,10 @@ class Panel : IBus.PanelService {
         }
 
         if (icon_name[0] == '/') {
-            if (m_icon_type == IconType.STATUS_ICON) {
+            if (m_icon_type == IconType.STATUS_ICON)
                 m_status_icon.set_from_file(icon_name);
-            }
-            else if (m_icon_type == IconType.INDICATOR) {
-#if INDICATOR_ENGINE_ICON
+            else if (m_icon_type == IconType.INDICATOR)
                 m_indicator.set_icon_full(icon_name, "");
-#else
-                warning("plasma-workspace 5.2 or later is required to " +
-                        "show the absolute path icon %s. Currently check " +
-                        "qtbase 5.4 since there is no way to check " +
-                        "the version of plasma-workspace.", icon_name);
-                m_indicator.set_icon_full("ibus-engine", "");
-#endif
-            }
         } else {
             string language = null;
 
@@ -1497,19 +1486,15 @@ class Panel : IBus.PanelService {
             } else {
                 var theme = Gtk.IconTheme.get_default();
                 if (theme.lookup_icon(icon_name, 48, 0) != null) {
-                    if (m_icon_type == IconType.STATUS_ICON) {
+                    if (m_icon_type == IconType.STATUS_ICON)
                         m_status_icon.set_from_icon_name(icon_name);
-                    }
-                    else if (m_icon_type == IconType.INDICATOR) {
+                    else if (m_icon_type == IconType.INDICATOR)
                         m_indicator.set_icon_full(icon_name, "");
-                    }
                 } else {
-                    if (m_icon_type == IconType.STATUS_ICON) {
+                    if (m_icon_type == IconType.STATUS_ICON)
                         m_status_icon.set_from_icon_name("ibus-engine");
-                    }
-                    else if (m_icon_type == IconType.INDICATOR) {
+                    else if (m_icon_type == IconType.INDICATOR)
                         m_indicator.set_icon_full("ibus-engine", "");
-                    }
                 }
             }
         }
