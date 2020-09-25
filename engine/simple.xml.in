@@ -1461,18 +1461,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:in:tel-kagapa:tel</name>
-            <language>te</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>in</layout>
-            <layout_variant>tel-kagapa</layout_variant>
-            <longname>Telugu (KaGaPa, phonetic)</longname>
-            <description>Telugu (KaGaPa, phonetic)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:in:urd-phonetic:urd</name>
             <language>ur</language>
             <license>GPL</license>
