@@ -67,6 +67,16 @@ noinst_HEADERS = \
 	locales.h \
 	$(NULL)
 
+xwaylandsessiond_in_files = 10-ibus-x11.in
+xwaylandsessiond_DATA = $(xwaylandsessiond_in_files:.in=)
+xwaylandsessionddir=$(sysconfdir)/xdg/Xwayland-session.d
+
+10-ibus-x11: 10-ibus-x11.in
+	$(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|"  $< > $@.tmp && mv $@.tmp $@
+
+install-data-hook:
+	chmod 755 $(DESTDIR)$(xwaylandsessionddir)/10-ibus-x11
+
 $(libIMdkit):
 	(cd $(top_builddir)/util/IMdkit; make)
 
@@ -80,5 +90,13 @@ locales.h:
 		uniq | sort | \
 		xargs python -c 'import sys;print "#define LOCALES_STRING \"%s\"" % ",".join(sys.argv[1:])' \
 	 ) > $@
+
+CLEANFILES =                    \
+    $(xwaylandsessiond_DATA)    \
+    $(NULL)
+
+EXTRA_DIST =                    \
+    10-ibus-x11.in              \
+    $(NULL)
 
 -include $(top_srcdir)/git.mk

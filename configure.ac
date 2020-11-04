@@ -393,6 +393,22 @@ if test x"$enable_dconf" = x"yes"; then
     enable_dconf="yes (enabled, use --disable-dconf to disable)"
 fi
 
+AC_ARG_ENABLE(systemd-services,
+    AS_HELP_STRING([--disable-systemd-services],
+                   [Disable systemd services installation]),
+    [enable_systemd=$enableval],
+    [enable_systemd=yes]
+)
+AM_CONDITIONAL([ENABLE_SYSTEMD], [test x"$enable_systemd" = x"yes"])
+
+if test x"$enable_systemd" = x"yes"; then
+    PKG_CHECK_MODULES(SYSTEMD, [
+        systemd >= 0.7.5
+    ])
+    AC_SUBST([SYSTEMD_USER_UNIT_DIR], [`$PKG_CONFIG --variable systemduserunitdir systemd`])
+    enable_systemd="yes (enabled, use --disable-systemd-services to disable)"
+fi
+
 # Check env.
 AC_PATH_PROG(ENV_IBUS_TEST, env)
 AC_SUBST(ENV_IBUS_TEST)
@@ -860,6 +876,7 @@ Build options:
   UCD directory                 $UCD_DIR
   Socket directory              "$IBUS_SOCKET_DIR"
   XFixes client disconnect      $have_xfixes
+  Install systemd service       $enable_systemd
   Run test cases                $enable_tests
   Install tests                 $enable_install_tests
 ])
