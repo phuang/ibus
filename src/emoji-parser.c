@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2016-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2016-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -1294,6 +1294,8 @@ main (int argc, char *argv[])
         category_file_save (output_category, list);
     if (list)
         g_slist_free (list);
+    else
+        return 99;
 
     return 0;
 }
