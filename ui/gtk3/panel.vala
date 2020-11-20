@@ -970,6 +970,21 @@ class Panel : IBus.PanelService {
             names =  {"xkb:us::eng"};
             m_settings_general.set_strv("preload-engines", names);
             engines = m_bus.get_engines_by_names(names);
+            var message = _("Your input method %s does not exist in IBus " +
+                    "input methods so \"US\" layout was configured instead " +
+                    "of your input method. Please run `ibus-setup` command, " +
+                    "open \"Input Method\" tab, and configure your input " +
+                    "methods again.").printf(names[0]);
+            var dialog = new Gtk.MessageDialog(
+                    null,
+                    Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                    Gtk.MessageType.WARNING,
+                    Gtk.ButtonsType.CLOSE,
+                    message);
+            dialog.response.connect((id) => {
+                    dialog.destroy();
+            });
+            dialog.show();
 	}
 
         if (m_engines.length == 0) {
