@@ -104,7 +104,7 @@ simple.xml.in:
 	    --output=$@ \
 	    --version=$(VERSION).`date '+%Y%m%d'` \
 	    --exec-path=@libexecdir\@/ibus-engine-simple \
-	    --iso-path=$(datarootdir)/xml/iso-codes/iso_639.xml \
+	    --iso-path=$(ISOCODES_PREFIX)/share/xml/iso-codes/iso_639.xml \
 	    --first-language \
 	$(NULL)
 
