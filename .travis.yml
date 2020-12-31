@@ -1,0 +1,70 @@
+language: c
+compiler: gcc
+os: linux
+
+# Require gettext-0.19.8
+dist: focal
+
+branches:
+  only:
+  - master
+
+# FIXME: Run script in every arch
+arch:
+  - amd64
+  #- ppc64le
+  #- s390x
+  #- arm64
+
+addons:
+  apt:
+    packages:
+    # For autogen.sh
+    - gnome-common
+    - gtk-doc-tools
+    # For make from
+    # https://packages.ubuntu.com/search?searchon=sourcenames&keywords=ibus
+    - desktop-file-utils
+    - gobject-introspection
+    - iso-codes
+    - libdconf-dev
+    - libgirepository1.0-dev
+    - libglib2.0-dev
+    - libgtk-3-bin
+    - libgtk-3-dev
+    - libgtk2.0-dev
+    - libtool
+    - libwayland-dev
+    - python-gi-dev
+    - python3-all
+    - unicode-cldr-core
+    - unicode-data
+    - valac
+
+jobs:
+  include:
+  - name: Build in Ubuntu
+    before_script:
+    - sudo apt-get -qq update
+    script:
+    - set -e
+    - git pull --depth=200
+    # configure options from
+    # https://salsa.debian.org/debian/ibus/-/blob/master/debian/rules
+    - >
+      ./autogen.sh
+      --with-ucd-dir='/usr/share/unicode'
+    # Set the cutom DESTDIR because the default DESTDIR
+    # /home/travis/bulid/fujiwarat/$PKG/ibus/ibus-$VERSION/_inst seems to be
+    # too long and failed to set DESTDIR to install bindings/pygobject/IBus.py
+    - >
+      make distcheck
+      DISTCHECK_CONFIGURE_FLAGS="
+      --enable-gtk-doc
+      --disable-schemas-install
+      --enable-memconf
+      --with-ucd-dir='/usr/share/unicode'
+      "
+      DISABLE_GUI_TESTS="ibus-compose ibus-keypress test-stress"
+      VERBOSE=1
+      DESTDIR="$HOME/build/$USER/dest"
