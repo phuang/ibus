@@ -720,6 +720,13 @@ PKG_CHECK_MODULES(ISOCODES, [
 ISOCODES_PREFIX=`$PKG_CONFIG iso-codes --variable=prefix`
 AC_SUBST(ISOCODES_PREFIX)
 
+PKG_CHECK_MODULES(XKBCONFIG,
+    [xkeyboard-config],
+    [XKBCONFIG_BASE=`$PKG_CONFIG xkeyboard-config --variable=xkb_base`],
+    [XKBCONFIG_BASE='$(datarootdir)/X11/xkb']
+)
+AC_SUBST(XKBCONFIG_BASE)
+
 AC_SUBST([GDBUS_CODEGEN], [`$PKG_CONFIG --variable gdbus_codegen gio-2.0`])
 
 # OUTPUT files

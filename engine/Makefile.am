@@ -100,7 +100,7 @@ simple.xml: simple.xml.in
 
 simple.xml.in:
 	$(srcdir)/gensimple.py \
-	    --input=$(datarootdir)/X11/xkb/rules/evdev.xml \
+	    --input=$(XKBCONFIG_BASE)/rules/evdev.xml \
 	    --output=$@ \
 	    --version=$(VERSION).`date '+%Y%m%d'` \
 	    --exec-path=@libexecdir\@/ibus-engine-simple \
