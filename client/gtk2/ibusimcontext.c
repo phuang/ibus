@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2019 Red Hat, Inc.
+ * Copyright (C) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,7 +32,11 @@
 #include "ibusimcontext.h"
 
 #ifdef GDK_WINDOWING_WAYLAND
+#if GTK_CHECK_VERSION (3, 98, 4)
+#include <gdk/wayland/gdkwayland.h>
+#else
 #include <gdk/gdkwayland.h>
+#endif
 #endif
 
 #if !GTK_CHECK_VERSION (2, 91, 0)
@@ -52,7 +56,11 @@ struct _IBusIMContext {
 
     /* instance members */
     GtkIMContext *slave;
+#if GTK_CHECK_VERSION (3, 98, 4)
+    GtkWidget *client_window;
+#else
     GdkWindow *client_window;
+#endif
 
     IBusInputContext *ibuscontext;
 
@@ -73,7 +81,12 @@ struct _IBusIMContext {
     GCancellable    *cancellable;
     GQueue          *events_queue;
 
-#if !GTK_CHECK_VERSION (3, 93, 0)
+#if GTK_CHECK_VERSION (3, 98, 4)
+    GdkSurface      *surface;
+    GdkDevice       *device;
+    double           x;
+    double           y;
+#else
     gboolean         use_button_press_event;
 #endif
 };
@@ -90,9 +103,11 @@ static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
 static const gchar *_no_snooper_apps = NO_SNOOPER_APPS;
 static gboolean _use_key_snooper = ENABLE_SNOOPER;
 static guint    _key_snooper_id = 0;
+#endif
 
 static gboolean _use_sync_mode = FALSE;
 
@@ -101,8 +116,10 @@ static gboolean _use_discard_password = FALSE;
 
 static GtkIMContext *_focus_im_context = NULL;
 static IBusInputContext *_fake_context = NULL;
+#if !GTK_CHECK_VERSION (3, 98, 4)
 static GdkWindow *_input_window = NULL;
 static GtkWidget *_input_widget = NULL;
+#endif
 
 /* functions prototype */
 static void     ibus_im_context_class_init  (IBusIMContextClass    *class);
@@ -114,7 +131,11 @@ static void     ibus_im_context_finalize    (GObject               *obj);
 static void     ibus_im_context_reset       (GtkIMContext          *context);
 static gboolean ibus_im_context_filter_keypress
                                             (GtkIMContext           *context,
+#if GTK_CHECK_VERSION (3, 98, 4)
+                                             GdkEvent               *key);
+#else
                                              GdkEventKey            *key);
+#endif
 static void     ibus_im_context_focus_in    (GtkIMContext          *context);
 static void     ibus_im_context_focus_out   (GtkIMContext          *context);
 static void     ibus_im_context_get_preedit_string
@@ -122,9 +143,15 @@ static void     ibus_im_context_get_preedit_string
                                              gchar                  **str,
                                              PangoAttrList          **attrs,
                                              gint                   *cursor_pos);
+#if GTK_CHECK_VERSION (3, 98, 4)
+static void     ibus_im_context_set_client_widget
+                                            (GtkIMContext           *context,
+                                             GtkWidget              *client);
+#else
 static void     ibus_im_context_set_client_window
                                             (GtkIMContext           *context,
                                              GdkWindow              *client);
+#endif
 static void     ibus_im_context_set_cursor_location
                                             (GtkIMContext           *context,
                                              GdkRectangle           *area);
@@ -239,6 +266,7 @@ ibus_im_context_new (void)
     return IBUS_IM_CONTEXT (obj);
 }
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
 static gboolean
 _focus_in_cb (GtkWidget     *widget,
               GdkEventFocus *event,
@@ -260,22 +288,41 @@ _focus_out_cb (GtkWidget     *widget,
     }
     return FALSE;
 }
+#endif /* end of GTK_CHECK_VERSION (3, 98, 4) */
 
 static gboolean
 ibus_im_context_commit_event (IBusIMContext *ibusimcontext,
+#if GTK_CHECK_VERSION (3, 98, 4)
+                              GdkEvent      *event)
+#else
                               GdkEventKey   *event)
+#endif
 {
+    guint keyval = 0;
+    GdkModifierType state = 0;
     int i;
     GdkModifierType no_text_input_mask;
     gunichar ch;
 
+#if GTK_CHECK_VERSION (3, 98, 4)
+    if (gdk_event_get_event_type (event) == GDK_KEY_RELEASE)
+        return FALSE;
+    keyval = gdk_key_event_get_keyval (event);
+    state = gdk_event_get_modifier_state (event);
+#else
     if (event->type == GDK_KEY_RELEASE)
         return FALSE;
+    keyval = event->keyval;
+    state = event->state;
+#endif
+
     /* Ignore modifier key presses */
     for (i = 0; i < G_N_ELEMENTS (IBUS_COMPOSE_IGNORE_KEYLIST); i++)
-        if (event->keyval == IBUS_COMPOSE_IGNORE_KEYLIST[i])
+        if (keyval == IBUS_COMPOSE_IGNORE_KEYLIST[i])
             return FALSE;
-#if GTK_CHECK_VERSION (3, 4, 0)
+#if GTK_CHECK_VERSION (3, 98, 4)
+    no_text_input_mask = GDK_MODIFIER_MASK;
+#elif GTK_CHECK_VERSION (3, 4, 0)
     no_text_input_mask = gdk_keymap_get_modifier_mask (
             gdk_keymap_get_for_display (gdk_display_get_default ()),
             GDK_MODIFIER_INTENT_NO_TEXT_INPUT);
@@ -290,13 +337,13 @@ ibus_im_context_commit_event (IBusIMContext *ibusimcontext,
 
 #  undef _IBUS_NO_TEXT_INPUT_MOD_MASK
 #endif
-    if (event->state & no_text_input_mask ||
-        event->keyval == GDK_KEY_Return ||
-        event->keyval == GDK_KEY_ISO_Enter ||
-        event->keyval == GDK_KEY_KP_Enter) {
+    if (state & no_text_input_mask ||
+        keyval == GDK_KEY_Return ||
+        keyval == GDK_KEY_ISO_Enter ||
+        keyval == GDK_KEY_KP_Enter) {
         return FALSE;
     }
-    ch = ibus_keyval_to_unicode (event->keyval);
+    ch = ibus_keyval_to_unicode (keyval);
     if (ch != 0 && !g_unichar_iscntrl (ch)) {
         IBusText *text = ibus_text_new_from_unichar (ch);
         g_signal_emit (ibusimcontext, _signal_commit_id, 0, text->text);
@@ -307,14 +354,26 @@ ibus_im_context_commit_event (IBusIMContext *ibusimcontext,
    return FALSE;
 }
 
+struct _ProcessKeyEventData {
+    GdkEvent *event;
+    IBusIMContext *ibusimcontext;
+};
+
+typedef struct _ProcessKeyEventData ProcessKeyEventData;
+
 static void
 _process_key_event_done (GObject      *object,
                          GAsyncResult *res,
                          gpointer      user_data)
 {
     IBusInputContext *context = (IBusInputContext *)object;
-    GdkEventKey *event = (GdkEventKey *) user_data;
+
+    ProcessKeyEventData *data = (ProcessKeyEventData *)user_data;
+    GdkEvent *event = data->event;
+    IBusIMContext *ibusimcontext = data->ibusimcontext;
     GError *error = NULL;
+
+    g_slice_free (ProcessKeyEventData, data);
     gboolean retval = ibus_input_context_process_key_event_async_finish (
             context,
             res,
@@ -326,46 +385,96 @@ _process_key_event_done (GObject      *object,
     }
 
     if (retval == FALSE) {
-        event->state |= IBUS_IGNORED_MASK;
-        gdk_event_put ((GdkEvent *)event);
+#if GTK_CHECK_VERSION (3, 98, 4)
+        g_return_if_fail (GTK_IS_IM_CONTEXT (ibusimcontext));
+        gtk_im_context_filter_key (
+                GTK_IM_CONTEXT (ibusimcontext),
+                gdk_event_get_event_type (event) == GDK_KEY_PRESS,
+                gdk_event_get_surface (event),
+                gdk_event_get_device (event),
+                gdk_event_get_time (event),
+                gdk_key_event_get_keycode (event),
+                gdk_event_get_modifier_state (event) | IBUS_IGNORED_MASK,
+                0);
+#else
+        ((GdkEventKey *)event)->state |= IBUS_IGNORED_MASK;
+        gdk_event_put (event);
+#endif
     }
-    gdk_event_free ((GdkEvent *)event);
+#if GTK_CHECK_VERSION (3, 98, 4)
+    gdk_event_unref (event);
+#else
+    gdk_event_free (event);
+#endif
 }
 
 static gboolean
 _process_key_event (IBusInputContext *context,
-                    GdkEventKey      *event)
+#if GTK_CHECK_VERSION (3, 98, 4)
+                    GdkEvent         *event,
+#else
+                    GdkEventKey      *event,
+#endif
+                    IBusIMContext    *ibusimcontext)
 {
-    guint state = event->state;
+    guint state;
+    guint keyval = 0;
+    guint16 hardware_keycode = 0;
+    guint keycode = 0;
     gboolean retval = FALSE;
 
-    if (event->type == GDK_KEY_RELEASE) {
+#if GTK_CHECK_VERSION (3, 98, 4)
+    GdkModifierType gdkstate = gdk_event_get_modifier_state (event);
+    state = (uint)gdkstate;
+    if (gdk_event_get_event_type (event) == GDK_KEY_RELEASE)
         state |= IBUS_RELEASE_MASK;
-    }
+    keyval = gdk_key_event_get_keyval (event);
+    hardware_keycode = gdk_key_event_get_keycode (event);
+#else
+    state = event->state;
+    if (event->type == GDK_KEY_RELEASE)
+        state |= IBUS_RELEASE_MASK;
+    keyval = event->keyval;
+    hardware_keycode = event->hardware_keycode;
+#endif
+    keycode = hardware_keycode;
 
     if (_use_sync_mode) {
         retval = ibus_input_context_process_key_event (context,
-            event->keyval,
-            event->hardware_keycode - 8,
+            keyval,
+            keycode - 8,
             state);
     }
     else {
+        ProcessKeyEventData *data = g_slice_new0 (ProcessKeyEventData);
+#if GTK_CHECK_VERSION (3, 98, 4)
+        data->event = gdk_event_ref (event);
+#else
+        data->event = gdk_event_copy ((GdkEvent *)event);
+#endif
+        data->ibusimcontext = ibusimcontext;
         ibus_input_context_process_key_event_async (context,
-            event->keyval,
-            event->hardware_keycode - 8,
+            keyval,
+            keycode - 8,
             state,
             -1,
             NULL,
             _process_key_event_done,
-            gdk_event_copy ((GdkEvent *) event));
+            data);
 
         retval = TRUE;
     }
 
+    /* GTK4 does not provide gtk_key_snooper_install() and also
+     * GtkIMContextClass->filter_keypress() cannot send the updated
+     * GdkEventKey so event->state is not updated here in GTK4.
+     */
+#if !GTK_CHECK_VERSION (3, 98, 4)
     if (retval)
         event->state |= IBUS_HANDLED_MASK;
     else
         event->state |= IBUS_IGNORED_MASK;
+#endif
 
     return retval;
 }
@@ -425,6 +534,7 @@ _set_content_type (IBusIMContext *context)
 }
 
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
 static gint
 _key_snooper_cb (GtkWidget   *widget,
                  GdkEventKey *event,
@@ -526,7 +636,7 @@ _key_snooper_cb (GtkWidget   *widget,
         ibusimcontext->time = event->time;
     }
 
-    retval = _process_key_event (ibuscontext, event);
+    retval = _process_key_event (ibuscontext, event, ibusimcontext);
 
     if (ibusimcontext != NULL) {
         /* unref ibusimcontext could call ibus_im_context_finalize here
@@ -537,6 +647,7 @@ _key_snooper_cb (GtkWidget   *widget,
 
     return retval;
 }
+#endif
 
 static gboolean
 _get_boolean_env(const gchar *name,
@@ -599,7 +710,11 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     im_context_class->focus_out = ibus_im_context_focus_out;
     im_context_class->filter_keypress = ibus_im_context_filter_keypress;
     im_context_class->get_preedit_string = ibus_im_context_get_preedit_string;
+#if GTK_CHECK_VERSION (3, 98, 4)
+    im_context_class->set_client_widget = ibus_im_context_set_client_widget;
+#else
     im_context_class->set_client_window = ibus_im_context_set_client_window;
+#endif
     im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
     im_context_class->set_use_preedit = ibus_im_context_set_use_preedit;
     im_context_class->set_surrounding = ibus_im_context_set_surrounding;
@@ -630,8 +745,10 @@ ibus_im_context_class_init (IBusIMContextClass *class)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
     _use_key_snooper = !_get_boolean_env ("IBUS_DISABLE_SNOOPER",
                                           !(ENABLE_SNOOPER));
+#endif
     _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", FALSE);
     _use_discard_password = _get_boolean_env ("IBUS_DISCARD_PASSWORD", FALSE);
 
@@ -656,6 +773,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     g_strfreev (apps);                                                  \
 }
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
     /* env IBUS_DISABLE_SNOOPER does not exist */
     if (_use_key_snooper) {
         /* disable snooper if app is in _no_snooper_apps */
@@ -664,6 +782,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
                                         _no_snooper_apps,
                                         FALSE);
     }
+#endif
     if (!_use_discard_password) {
         CHECK_APP_IN_CSV_ENV_VARIABLES (_use_discard_password,
                                         IBUS_DISCARD_PASSWORD_APPS,
@@ -686,6 +805,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
     }
 
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
     /* always install snooper */
     if (_key_snooper_id == 0) {
 #pragma GCC diagnostic push
@@ -693,6 +813,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
         _key_snooper_id = gtk_key_snooper_install (_key_snooper_cb, NULL);
 #pragma GCC diagnostic pop
     }
+#endif
 
     _daemon_name_watch_id = g_bus_watch_name (G_BUS_TYPE_SESSION,
                                               ibus_bus_get_service_name (_bus),
@@ -706,6 +827,7 @@ ibus_im_context_class_init (IBusIMContextClass *class)
 static void
 ibus_im_context_class_fini (IBusIMContextClass *class)
 {
+#if !GTK_CHECK_VERSION (3, 98, 4)
     if (_key_snooper_id != 0) {
         IDEBUG ("snooper is terminated.");
 #pragma GCC diagnostic push
@@ -714,6 +836,7 @@ ibus_im_context_class_fini (IBusIMContextClass *class)
 #pragma GCC diagnostic pop
         _key_snooper_id = 0;
     }
+#endif
 
     g_bus_unwatch_name (_daemon_name_watch_id);
 }
@@ -849,7 +972,11 @@ ibus_im_context_finalize (GObject *obj)
         ibus_proxy_destroy ((IBusProxy *)ibusimcontext->ibuscontext);
     }
 
+#if GTK_CHECK_VERSION (3, 98, 4)
+    ibus_im_context_set_client_widget ((GtkIMContext *)ibusimcontext, NULL);
+#else
     ibus_im_context_set_client_window ((GtkIMContext *)ibusimcontext, NULL);
+#endif
 
     if (ibusimcontext->slave) {
         g_object_unref (ibusimcontext->slave);
@@ -864,8 +991,13 @@ ibus_im_context_finalize (GObject *obj)
         pango_attr_list_unref (ibusimcontext->preedit_attrs);
     }
 
+#if GTK_CHECK_VERSION (3, 98, 4)
+    g_queue_free_full (ibusimcontext->events_queue,
+                       (GDestroyNotify)gdk_event_unref);
+#else
     g_queue_free_full (ibusimcontext->events_queue,
                        (GDestroyNotify)gdk_event_free);
+#endif
 
     G_OBJECT_CLASS(parent_class)->finalize (obj);
 }
@@ -902,7 +1034,11 @@ ibus_im_context_clear_preedit_text (IBusIMContext *ibusimcontext)
 
 static gboolean
 ibus_im_context_filter_keypress (GtkIMContext *context,
+#if GTK_CHECK_VERSION (3, 98, 4)
+                                 GdkEvent     *event)
+#else
                                  GdkEventKey  *event)
+#endif
 {
     IDEBUG ("%s", __FUNCTION__);
 
@@ -917,6 +1053,15 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     if (!ibusimcontext->has_focus)
         return gtk_im_context_filter_keypress (ibusimcontext->slave, event);
 
+#if GTK_CHECK_VERSION (3, 98, 4)
+    {
+        GdkModifierType state = gdk_event_get_modifier_state (event);
+        if (state & IBUS_HANDLED_MASK)
+            return TRUE;
+        if (state & IBUS_IGNORED_MASK)
+            return ibus_im_context_commit_event (ibusimcontext, event);
+    }
+#else
     if (event->state & IBUS_HANDLED_MASK)
         return TRUE;
 
@@ -931,17 +1076,28 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
     if (ibusimcontext->client_window == NULL && event->window != NULL)
         gtk_im_context_set_client_window ((GtkIMContext *)ibusimcontext,
                                           event->window);
+#endif
 
     _request_surrounding_text (ibusimcontext);
 
+#if GTK_CHECK_VERSION (3, 98, 4)
+    ibusimcontext->time = gdk_event_get_time (event);
+    ibusimcontext->surface= gdk_event_get_surface (event);
+    ibusimcontext->device = gdk_event_get_device (event);
+    gdk_event_get_position (event, &ibusimcontext->x, &ibusimcontext->y);
+#else
     ibusimcontext->time = event->time;
+#endif
 
     if (ibusimcontext->ibuscontext) {
-        if (_process_key_event (ibusimcontext->ibuscontext, event))
+        if (_process_key_event (ibusimcontext->ibuscontext,
+                                event,
+                                ibusimcontext)) {
             return TRUE;
-        else
+        } else {
             return gtk_im_context_filter_keypress (ibusimcontext->slave,
                                                    event);
+        }
     }
 
     /* At this point we _should_ be waiting for the IBus context to be
@@ -952,12 +1108,21 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
                           ibus_bus_is_connected (_bus) == FALSE,
                           FALSE);
     g_queue_push_tail (ibusimcontext->events_queue,
+#if GTK_CHECK_VERSION (3, 98, 4)
+                       gdk_event_ref (event));
+#else
                        gdk_event_copy ((GdkEvent *)event));
+#endif
 
     if (g_queue_get_length (ibusimcontext->events_queue) > MAX_QUEUED_EVENTS) {
         g_warning ("Events queue growing too big, will start to drop.");
+#if GTK_CHECK_VERSION (3, 98, 4)
+        gdk_event_unref ((GdkEvent *)
+                         g_queue_pop_head (ibusimcontext->events_queue));
+#else
         gdk_event_free ((GdkEvent *)
                         g_queue_pop_head (ibusimcontext->events_queue));
+#endif
     }
 
     return TRUE;
@@ -966,26 +1131,29 @@ ibus_im_context_filter_keypress (GtkIMContext *context,
 static void
 ibus_im_context_focus_in (GtkIMContext *context)
 {
-    IDEBUG ("%s", __FUNCTION__);
-
     IBusIMContext *ibusimcontext = (IBusIMContext *) context;
+    GtkWidget *widget = NULL;
+
+    IDEBUG ("%s", __FUNCTION__);
 
     if (ibusimcontext->has_focus)
         return;
 
     /* don't set focus on password entry */
+#if GTK_CHECK_VERSION (3, 98, 4)
+    widget = ibusimcontext->client_window;
+#else
     if (ibusimcontext->client_window != NULL) {
-        GtkWidget *widget;
-
         gdk_window_get_user_data (ibusimcontext->client_window,
                                   (gpointer *)&widget);
 
-        if (GTK_IS_ENTRY (widget) &&
-            !gtk_entry_get_visibility (GTK_ENTRY (widget))) {
-            return;
-        }
     }
+#endif
 
+    if (widget && GTK_IS_ENTRY (widget) &&
+        !gtk_entry_get_visibility (GTK_ENTRY (widget))) {
+        return;
+    }
     /* Do not call gtk_im_context_focus_out() here.
      * google-chrome's notification popup window (Pushbullet)
      * takes the focus and the popup window disappears.
@@ -1014,10 +1182,10 @@ ibus_im_context_focus_in (GtkIMContext *context)
 
     /* set_cursor_location_internal() will get origin from X server,
      * it blocks UI. So delay it to idle callback. */
-    gdk_threads_add_idle_full (G_PRIORITY_DEFAULT_IDLE,
-                               (GSourceFunc) _set_cursor_location_internal,
-                               g_object_ref (ibusimcontext),
-                               (GDestroyNotify) g_object_unref);
+    g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+                     (GSourceFunc) _set_cursor_location_internal,
+                     g_object_ref (ibusimcontext),
+                     (GDestroyNotify) g_object_unref);
 
     /* retrieve the initial surrounding-text (regardless of whether
      * the current IBus engine needs surrounding-text) */
@@ -1122,7 +1290,7 @@ ibus_im_context_get_preedit_string (GtkIMContext   *context,
 }
 
 
-#if !GTK_CHECK_VERSION (3, 93, 0)
+#if !GTK_CHECK_VERSION (3, 98, 4)
 /* Use the button-press-event signal until GtkIMContext always emits the reset
  * signal.
  * https://gitlab.gnome.org/GNOME/gtk/merge_requests/460
@@ -1171,8 +1339,15 @@ _connect_button_press_event (IBusIMContext *ibusimcontext,
 }
 #endif
 
+#if GTK_CHECK_VERSION (3, 98, 4)
 static void
-ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
+ibus_im_context_set_client_widget (GtkIMContext *context,
+                                   GtkWidget    *client)
+#else
+static void
+ibus_im_context_set_client_window (GtkIMContext *context,
+                                   GdkWindow    *client)
+#endif
 {
     IBusIMContext *ibusimcontext;
 
@@ -1181,7 +1356,7 @@ ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
     ibusimcontext = IBUS_IM_CONTEXT (context);
 
     if (ibusimcontext->client_window) {
-#if !GTK_CHECK_VERSION (3, 93, 0)
+#if !GTK_CHECK_VERSION (3, 98, 4)
         if (ibusimcontext->use_button_press_event)
             _connect_button_press_event (ibusimcontext, FALSE);
 #endif
@@ -1191,26 +1366,41 @@ ibus_im_context_set_client_window (GtkIMContext *context, GdkWindow *client)
 
     if (client != NULL) {
         ibusimcontext->client_window = g_object_ref (client);
-#if !GTK_CHECK_VERSION (3, 93, 0)
+#if !GTK_CHECK_VERSION (3, 98, 4)
         if (!ibusimcontext->use_button_press_event)
             _connect_button_press_event (ibusimcontext, TRUE);
 #endif
     }
+#if GTK_CHECK_VERSION (3, 98, 4)
+    if (ibusimcontext->slave)
+        gtk_im_context_set_client_widget (ibusimcontext->slave, client);
+#else
     if (ibusimcontext->slave)
         gtk_im_context_set_client_window (ibusimcontext->slave, client);
+#endif
 }
 
 static void
 _set_rect_scale_factor_with_window (GdkRectangle *area,
+#if GTK_CHECK_VERSION (3, 98, 4)
+                                    GtkWidget    *window)
+#else
                                     GdkWindow    *window)
+#endif
 {
 #if GTK_CHECK_VERSION (3, 10, 0)
     int scale_factor;
 
     g_assert (area);
+#if GTK_CHECK_VERSION (3, 98, 4)
+    g_assert (GTK_IS_WIDGET (window));
+
+    scale_factor = gtk_widget_get_scale_factor (window);
+#else
     g_assert (GDK_IS_WINDOW (window));
 
     scale_factor = gdk_window_get_scale_factor (window);
+#endif
     area->x *= scale_factor;
     area->y *= scale_factor;
     area->width *= scale_factor;
@@ -1230,6 +1420,7 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
 
     area = ibusimcontext->cursor_area;
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
 #ifdef GDK_WINDOWING_WAYLAND
     if (GDK_IS_WAYLAND_DISPLAY (gdk_display_get_default ())) {
         gdouble px, py;
@@ -1254,9 +1445,13 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
         return FALSE;
     }
 #endif
+#endif
 
     if (area.x == -1 && area.y == -1 && area.width == 0 && area.height == 0) {
-#if GTK_CHECK_VERSION (2, 91, 0)
+#if GTK_CHECK_VERSION (3, 98, 4)
+        area.x = 0;
+        area.y += gtk_widget_get_height (ibusimcontext->client_window);
+#elif GTK_CHECK_VERSION (2, 91, 0)
         area.x = 0;
         area.y += gdk_window_get_height (ibusimcontext->client_window);
 #else
@@ -1267,9 +1462,39 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
 #endif
     }
 
+#if GTK_CHECK_VERSION (3, 93, 0)
+    {
+#if GTK_CHECK_VERSION (3, 98, 4)
+        GtkNative *native = gtk_widget_get_native (
+                ibusimcontext->client_window);
+        GtkRoot *root = gtk_widget_get_root (ibusimcontext->client_window);
+        double nx, ny;
+        double px, py;
+        gtk_native_get_surface_transform (native, &nx, &ny);
+        px = (double)area.x + ibusimcontext->x - nx;
+        py = (double)area.y + ibusimcontext->y - ny;
+        gtk_widget_translate_coordinates (ibusimcontext->client_window,
+                                          (GtkWidget *)root,
+                                          px, py,
+                                          &px, &py);
+        area.x = (int)px;
+        area.y = (int)py;
+#else
+        GtkNative *native = gtk_widget_get_native (
+                ibusimcontext->client_window);
+        GdkSurface *surface = gtk_native_get_surface (native);
+        int root_x = 0;
+        int root_y = 0;
+        gdk_surface_get_position (surface, &root_x, &root_y);
+        area.x += root_x;
+        area.y += root_y;
+#endif
+    }
+#else
     gdk_window_get_root_coords (ibusimcontext->client_window,
                                 area.x, area.y,
                                 &area.x, &area.y);
+#endif
     _set_rect_scale_factor_with_window (&area, ibusimcontext->client_window);
     ibus_input_context_set_cursor_location (ibusimcontext->ibuscontext,
                                             area.x,
@@ -1326,7 +1551,11 @@ get_selection_anchor_point (IBusIMContext *ibusimcontext,
     if (ibusimcontext->client_window == NULL) {
         return cursor_pos;
     }
+#if GTK_CHECK_VERSION (3, 98, 4)
+    widget = ibusimcontext->client_window;
+#else
     gdk_window_get_user_data (ibusimcontext->client_window, (gpointer *)&widget);
+#endif
 
     if (!GTK_IS_TEXT_VIEW (widget)){
         return cursor_pos;
@@ -1440,6 +1669,7 @@ _ibus_context_commit_text_cb (IBusInputContext *ibuscontext,
     _request_surrounding_text (ibusimcontext);
 }
 
+#if !GTK_CHECK_VERSION (3, 98, 4)
 static gboolean
 _key_is_modifier (guint keyval)
 {
@@ -1615,6 +1845,7 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
 out:
     return event;
 }
+#endif
 
 static void
 _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
@@ -1624,9 +1855,32 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
                                     IBusIMContext     *ibusimcontext)
 {
     IDEBUG ("%s", __FUNCTION__);
+#if GTK_CHECK_VERSION (3, 98, 4)
+    int group = 0;
+    g_return_if_fail (GTK_IS_IM_CONTEXT (ibusimcontext));
+    if (keycode == 0 && ibusimcontext->client_window) {
+        GdkDisplay *display = gtk_widget_get_display (ibusimcontext->client_window);
+        GdkKeymapKey *keys = NULL;
+        gint n_keys = 0;
+        if (!gdk_display_map_keyval (display, keyval, &keys, &n_keys))
+            g_warning ("Failed to parse keycode from keyval %x", keyval);
+       keycode = keys->keycode;
+       group = keys->group;
+    }
+    gtk_im_context_filter_key (
+        GTK_IM_CONTEXT (ibusimcontext),
+        (state & IBUS_RELEASE_MASK) ? FALSE : TRUE,
+        ibusimcontext->surface,
+        ibusimcontext->device,
+        ibusimcontext->time,
+        keycode,
+        (GdkModifierType)state,
+        group);
+#else
     GdkEventKey *event = _create_gdk_event (ibusimcontext, keyval, keycode, state);
     gdk_event_put ((GdkEvent *)event);
     gdk_event_free ((GdkEvent *)event);
+#endif
 }
 
 static void
@@ -1660,7 +1914,7 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
         ibusimcontext->preedit_attrs = NULL;
     }
 
-#if !GTK_CHECK_VERSION (3, 93, 0)
+#if !GTK_CHECK_VERSION (3, 98, 4)
     if (!ibusimcontext->use_button_press_event &&
         mode == IBUS_ENGINE_PREEDIT_COMMIT) {
         if (ibusimcontext->client_window) {
@@ -1847,10 +2101,18 @@ _create_input_context_done (IBusBus       *bus,
         }
 
         if (!g_queue_is_empty (ibusimcontext->events_queue)) {
+#if GTK_CHECK_VERSION (3, 98, 4)
+            GdkEvent *event;
+#else
             GdkEventKey *event;
+#endif
             while ((event = g_queue_pop_head (ibusimcontext->events_queue))) {
-                _process_key_event (context, event);
+                _process_key_event (context, event, ibusimcontext);
+#if GTK_CHECK_VERSION (3, 98, 4)
+                gdk_event_unref (event);
+#else
                 gdk_event_free ((GdkEvent *)event);
+#endif
             }
         }
     }

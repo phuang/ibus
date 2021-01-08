@@ -193,6 +193,15 @@ AC_ARG_ENABLE(gtk3,
 )
 AM_CONDITIONAL([ENABLE_GTK3], [test x"$enable_gtk3" = x"yes"])
 
+# --enable-gtk4 option.
+AC_ARG_ENABLE(gtk4,
+    AS_HELP_STRING([--enable-gtk4],
+                   [Build gtk4 im module]),
+    [enable_gtk4=$enableval],
+    [enable_gtk4=no]
+)
+AM_CONDITIONAL([ENABLE_GTK4], [test x"$enable_gtk4" = x"yes"])
+
 # --disable-xim option.
 AC_ARG_ENABLE(xim,
     AS_HELP_STRING([--disable-xim],
@@ -256,6 +265,18 @@ if test x"$enable_gdk3_wayland" != x"yes"; then
     enable_gdk3_wayland="no (disabled, need to install gdk-wayland-3.0.pc)"
 fi
 AM_CONDITIONAL([ENABLE_GDK3_WAYLAND], [test x"$enable_gdk3_wayland" = x"yes"])
+
+if test x"$enable_gtk4" = x"yes"; then
+    # check for gtk4
+    PKG_CHECK_MODULES(GTK4, [
+        gtk4
+    ])
+
+    gtk4_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk4`
+    GTK4_IM_MODULEDIR="$libdir"/gtk-4.0/$gtk4_binary_version/immodules
+else
+    enable_gtk4="no (disabled, use --enable-gtk4 to enable)"
+fi
 
 if test x"$enable_xim" = x"yes"; then
     # Check for x11
@@ -477,6 +498,14 @@ AC_ARG_WITH(gtk3-im-module-dir,
     GTK3_IM_MODULEDIR=$with_gtk3_im_module_dir
 )
 AC_SUBST(GTK3_IM_MODULEDIR)
+
+# Define gtk4 immodule dir.
+AC_ARG_WITH(gtk4-im-module-dir,
+    AS_HELP_STRING([--with-gtk4-im-module-dir[=DIR]],
+        [Select gtk4 immodule dir]),
+    GTK4_IM_MODULEDIR=$with_gtk4_im_module_dir
+)
+AC_SUBST(GTK4_IM_MODULEDIR)
 
 if test x"$enable_python" = x"yes"; then
     # Check for dbus-python.
@@ -737,6 +766,7 @@ ibus.spec
 client/Makefile
 client/gtk2/Makefile
 client/gtk3/Makefile
+client/gtk4/Makefile
 client/x11/Makefile
 client/wayland/Makefile
 src/Makefile
@@ -786,8 +816,10 @@ Build options:
   Enable python2                $enable_python2
   Gtk2 immodule dir             $GTK2_IM_MODULEDIR
   Gtk3 immodule dir             $GTK3_IM_MODULEDIR
+  Gtk4 immodule dir             $GTK4_IM_MODULEDIR
   Build gtk2 immodule           $enable_gtk2
   Build gtk3 immodule           $enable_gtk3
+  Build gtk4 immodule           $enable_gtk4
   Build XIM agent server        $enable_xim
   Build wayland support         $enable_wayland
   Build gdk3 wayland support    $enable_gdk3_wayland

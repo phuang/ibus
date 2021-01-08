@@ -2,8 +2,8 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2020 Red Hat, Inc.
+# Copyright (c) 2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2020 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,32 +20,47 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 # USA
 
-if ENABLE_GTK2
-GTK2 = gtk2
-endif
+libibus = $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la
 
-if ENABLE_GTK3
-GTK3 = gtk3
-endif
-
-if ENABLE_GTK4
-GTK4 = gtk4
-endif
-
-if ENABLE_XIM
-X11 = x11
-endif
-
-if ENABLE_WAYLAND
-WAYLAND = wayland
-endif
-
-SUBDIRS = \
-	$(GTK2) \
-	$(GTK3) \
-	$(GTK4) \
-	$(X11) \
-	$(WAYLAND) \
+AM_CPPFLAGS = \
+	-I$(top_srcdir)/src \
+	-I$(top_builddir)/src \
 	$(NULL)
+
+immoduledir = @GTK4_IM_MODULEDIR@
+immodule_LTLIBRARIES = libim-ibus.la
+
+libim_ibus_la_SOURCES = \
+	ibusim.c \
+	ibusimcontext.c \
+	ibusimcontext.h \
+	$(NULL)
+
+libim_ibus_la_DEPENDENCIES = $(libibus)
+
+libim_ibus_la_CFLAGS = \
+	@GTK4_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	-DG_LOG_DOMAIN=\"IBUS\" \
+	$(NULL)
+
+libim_ibus_la_LIBADD = \
+	@GTK4_LIBS@ \
+	@DBUS_LIBS@ \
+	$(libibus) \
+	$(NULL)
+libim_ibus_la_LDFLAGS = \
+	-avoid-version \
+	-module \
+	$(NULL)
+
+$(libibus):
+	(cd $(top_builddir)/src; make )
+
+EXTRA_DIST = \
+	$(NULL)
+
+test: all
+	GTK_IM_MODULE=ibus gedit
 
 -include $(top_srcdir)/git.mk
