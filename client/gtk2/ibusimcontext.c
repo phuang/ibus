@@ -39,6 +39,13 @@
 #endif
 #endif
 
+#ifdef GDK_WINDOWING_X11
+#if GTK_CHECK_VERSION (3, 98, 4)
+#include <gdk/x11/gdkx.h>
+#include <X11/Xlib.h>
+#endif
+#endif
+
 #if !GTK_CHECK_VERSION (2, 91, 0)
 #  define DEPRECATED_GDK_KEYSYMS 1
 #endif
@@ -1462,24 +1469,33 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
 #endif
     }
 
-#if GTK_CHECK_VERSION (3, 93, 0)
-    {
 #if GTK_CHECK_VERSION (3, 98, 4)
+#ifdef GDK_WINDOWING_X11
+    GdkDisplay *display = gtk_widget_get_display (ibusimcontext->client_window);
+    if (GDK_IS_X11_DISPLAY (display)) {
+        Display *xdisplay = gdk_x11_display_get_xdisplay (display);
+        Window root_window = gdk_x11_display_get_xrootwindow (display);
         GtkNative *native = gtk_widget_get_native (
                 ibusimcontext->client_window);
-        GtkRoot *root = gtk_widget_get_root (ibusimcontext->client_window);
-        double nx, ny;
-        double px, py;
-        gtk_native_get_surface_transform (native, &nx, &ny);
-        px = (double)area.x + ibusimcontext->x - nx;
-        py = (double)area.y + ibusimcontext->y - ny;
-        gtk_widget_translate_coordinates (ibusimcontext->client_window,
-                                          (GtkWidget *)root,
-                                          px, py,
-                                          &px, &py);
-        area.x = (int)px;
-        area.y = (int)py;
-#else
+        GdkSurface *surface = gtk_native_get_surface (native);
+        /* The window is the toplevel window but not the inner text widget.
+         * Unfortunatelly GTK4 cannot get the coordinate of the text widget.
+         */
+        Window window = gdk_x11_surface_get_xid (surface);
+        Window child;
+        int x, y;
+        XTranslateCoordinates (xdisplay, window, root_window,
+                               0, 0, &x, &y, &child);
+        XWindowAttributes xwa;
+        XGetWindowAttributes (xdisplay, window, &xwa);
+        area.x = x - xwa.x + area.x;
+        area.y = y - xwa.y + area.y;
+        area.width = xwa.width;
+        area.height = xwa.height;
+    }
+#endif
+#elif GTK_CHECK_VERSION (3, 93, 0)
+    {
         GtkNative *native = gtk_widget_get_native (
                 ibusimcontext->client_window);
         GdkSurface *surface = gtk_native_get_surface (native);
@@ -1488,7 +1504,6 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
         gdk_surface_get_position (surface, &root_x, &root_y);
         area.x += root_x;
         area.y += root_y;
-#endif
     }
 #else
     gdk_window_get_root_coords (ibusimcontext->client_window,
