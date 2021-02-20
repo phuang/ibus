@@ -7,6 +7,7 @@
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2017. #zanata, 2020.
 # Toni Rantala <trantalafilo@gmail.com>, 2017. #zanata
 # Jan Kuparinen <copper_fin@hotmail.com>, 2021.
+# Ricky Tigg <ricky.tigg@gmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
@@ -798,7 +799,7 @@ msgstr ""
 
 #: src/ibusemojigen.h:32
 msgid "Component"
-msgstr ""
+msgstr "Komponentti"
 
 #: src/ibusemojigen.h:33
 msgid "Flags"
@@ -3181,7 +3182,7 @@ msgstr ""
 #: ui/gtk3/emojier.vala:1642
 #, c-format
 msgid "Name: %s"
-msgstr ""
+msgstr "Nimi: %s"
 
 #: ui/gtk3/emojier.vala:1650
 #, c-format
