@@ -3,8 +3,8 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2016 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
-# Copyright (c) 2007-2020 Red Hat, Inc.
+# Copyright (c) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2021 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@ m4_define([ibus_released], [1])
 
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [5])
-m4_define([ibus_micro_version], [23])
+m4_define([ibus_micro_version], [24])
 m4_define([ibus_abi_current], [5])
 m4_define([ibus_abi_revision],
           [m4_eval(100 * ibus_minor_version + ibus_micro_version)])
