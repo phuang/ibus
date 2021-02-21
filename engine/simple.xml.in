@@ -3,7 +3,7 @@
     <name>org.freedesktop.IBus.Simple</name>
     <description>A table based simple engine</description>
     <exec>@libexecdir@/ibus-engine-simple</exec>
-    <version>1.5.22.20200909</version>
+    <version>1.5.23.20210221</version>
     <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
     <license>GPL</license>
     <homepage>https://github.com/ibus/ibus/wiki</homepage>
@@ -93,6 +93,18 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:us:colemak_dh:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>us</layout>
+            <layout_variant>colemak_dh</layout_variant>
+            <longname>English (Colemak-DH)</longname>
+            <description>English (Colemak-DH)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
             <name>xkb:us:dvorak:eng</name>
             <language>en</language>
             <license>GPL</license>
@@ -173,6 +185,18 @@
             <layout_variant>dvp</layout_variant>
             <longname>English (programmer Dvorak)</longname>
             <description>English (programmer Dvorak)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:us:symbolic:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>us</layout>
+            <layout_variant>symbolic</layout_variant>
+            <longname>English (US, Symbolic)</longname>
+            <description>English (US, Symbolic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -629,18 +653,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:at:sundeadkeys:deu</name>
-            <language>de</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>at</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>German (Austria, Sun dead keys)</longname>
-            <description>German (Austria, Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:at:mac:deu</name>
             <language>de</language>
             <license>GPL</license>
@@ -851,42 +863,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:be:oss_sundeadkeys:deu</name>
-            <language>de</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>be</layout>
-            <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>Belgian (Sun dead keys, alt.)</longname>
-            <description>Belgian (Sun dead keys, alt.)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:be:oss_sundeadkeys:nld</name>
-            <language>nl</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>be</layout>
-            <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>Belgian (Sun dead keys, alt.)</longname>
-            <description>Belgian (Sun dead keys, alt.)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:be:oss_sundeadkeys:fra</name>
-            <language>fr</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>be</layout>
-            <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>Belgian (Sun dead keys, alt.)</longname>
-            <description>Belgian (Sun dead keys, alt.)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:be:iso-alternate:deu</name>
             <language>de</language>
             <license>GPL</license>
@@ -955,42 +931,6 @@
             <layout_variant>nodeadkeys</layout_variant>
             <longname>Belgian (no dead keys)</longname>
             <description>Belgian (no dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:be:sundeadkeys:deu</name>
-            <language>de</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>be</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>Belgian (Sun dead keys)</longname>
-            <description>Belgian (Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:be:sundeadkeys:nld</name>
-            <language>nl</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>be</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>Belgian (Sun dead keys)</longname>
-            <description>Belgian (Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:be:sundeadkeys:fra</name>
-            <language>fr</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>be</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>Belgian (Sun dead keys)</longname>
-            <description>Belgian (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1569,26 +1509,26 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:in:iipa:eng</name>
-            <language>en</language>
+            <name>xkb:in:iipa:inc</name>
+            <language>inc</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>iipa</layout_variant>
-            <longname>Indic IPA (IIPA)</longname>
-            <description>Indic IPA (IIPA)</description>
+            <longname>Indic IPA</longname>
+            <description>Indic IPA</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:in:marathi:eng</name>
-            <language>en</language>
+            <name>xkb:in:marathi:mar</name>
+            <language>mr</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>marathi</layout_variant>
-            <longname>मराठी इन्स्क्रिप्ट</longname>
-            <description>मराठी इन्स्क्रिप्ट</description>
+            <longname>Marathi (enhanced Inscript)</longname>
+            <description>Marathi (enhanced Inscript)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1770,14 +1710,26 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:bg:bekl:bul</name>
+            <language>bg</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>bg</layout>
+            <layout_variant>bekl</layout_variant>
+            <longname>Bulgarian (enhanced)</longname>
+            <description>Bulgarian (enhanced)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
             <name>xkb:dz:azerty-deadkeys:kab</name>
             <language>kab</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>azerty-deadkeys</layout_variant>
-            <longname>Kabylian (azerty layout, with dead keys)</longname>
-            <description>Kabylian (azerty layout, with dead keys)</description>
+            <longname>Kabyle (azerty layout, dead keys)</longname>
+            <description>Kabyle (azerty layout, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1788,8 +1740,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>qwerty-gb-deadkeys</layout_variant>
-            <longname>Kabylian (qwerty-gb layout, with dead keys)</longname>
-            <description>Kabylian (qwerty-gb layout, with dead keys)</description>
+            <longname>Kabyle (qwerty-gb layout, dead keys)</longname>
+            <description>Kabyle (qwerty-gb layout, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1800,8 +1752,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>qwerty-us-deadkeys</layout_variant>
-            <longname>Kabylian (qwerty-us layout, with dead keys)</longname>
-            <description>Kabylian (qwerty-us layout, with dead keys)</description>
+            <longname>Kabyle (qwerty-us layout, dead keys)</longname>
+            <description>Kabyle (qwerty-us layout, dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1812,8 +1764,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>ber</layout_variant>
-            <longname>Kabylian (Algeria, Tifinagh)</longname>
-            <description>Kabylian (Algeria, Tifinagh)</description>
+            <longname>Berber (Algeria, Tifinagh)</longname>
+            <description>Berber (Algeria, Tifinagh)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3022,18 +2974,6 @@
             <rank>50</rank>
         </engine>
         <engine>
-            <name>xkb:nl:sundeadkeys:nld</name>
-            <language>nl</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>nl</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>Dutch (Sun dead keys)</longname>
-            <description>Dutch (Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:nl:mac:nld</name>
             <language>nl</language>
             <license>GPL</license>
@@ -3374,18 +3314,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:fr:sundeadkeys:fra</name>
-            <language>fr</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>fr</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>French (Sun dead keys)</longname>
-            <description>French (Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:fr:oss:fra</name>
             <language>fr</language>
             <license>GPL</license>
@@ -3422,18 +3350,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:fr:oss_sundeadkeys:fra</name>
-            <language>fr</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>fr</layout>
-            <layout_variant>oss_sundeadkeys</layout_variant>
-            <longname>French (alt., Sun dead keys)</longname>
-            <description>French (alt., Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:fr:latin9:fra</name>
             <language>fr</language>
             <license>GPL</license>
@@ -3454,18 +3370,6 @@
             <layout_variant>latin9_nodeadkeys</layout_variant>
             <longname>French (legacy, alt., no dead keys)</longname>
             <description>French (legacy, alt., no dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:fr:latin9_sundeadkeys:fra</name>
-            <language>fr</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>fr</layout>
-            <layout_variant>latin9_sundeadkeys</layout_variant>
-            <longname>French (legacy, alt., Sun dead keys)</longname>
-            <description>French (legacy, alt., Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3709,13 +3613,13 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:gn::fra</name>
-            <language>fr</language>
+            <name>xkb:gn::nqo</name>
+            <language>nqo</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>gn</layout>
-            <longname>French (Guinea)</longname>
-            <description>French (Guinea)</description>
+            <longname>N'Ko (azerty)</longname>
+            <description>N'Ko (azerty)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -3826,6 +3730,30 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:de:e1:deu</name>
+            <language>de</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>de</layout>
+            <layout_variant>e1</layout_variant>
+            <longname>German (E1)</longname>
+            <description>German (E1)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:de:e2:deu</name>
+            <language>de</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>de</layout>
+            <layout_variant>e2</layout_variant>
+            <longname>German (E2)</longname>
+            <description>German (E2)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
             <name>xkb:de:T3:deu</name>
             <language>de</language>
             <license>GPL</license>
@@ -3834,6 +3762,18 @@
             <layout_variant>T3</layout_variant>
             <longname>German (T3)</longname>
             <description>German (T3)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:de:us:deu</name>
+            <language>de</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>de</layout>
+            <layout_variant>us</layout_variant>
+            <longname>German (US)</longname>
+            <description>German (US)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -3870,18 +3810,6 @@
             <layout_variant>dvorak</layout_variant>
             <longname>German (Dvorak)</longname>
             <description>German (Dvorak)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:de:sundeadkeys:deu</name>
-            <language>de</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>de</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>German (Sun dead keys)</longname>
-            <description>German (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -4301,30 +4229,6 @@
             <description>Icelandic</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
-        </engine>
-        <engine>
-            <name>xkb:is:Sundeadkeys:isl</name>
-            <language>is</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>is</layout>
-            <layout_variant>Sundeadkeys</layout_variant>
-            <longname>Icelandic (Sun dead keys)</longname>
-            <description>Icelandic (Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:is:nodeadkeys:isl</name>
-            <language>is</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>is</layout>
-            <layout_variant>nodeadkeys</layout_variant>
-            <longname>Icelandic (no dead keys)</longname>
-            <description>Icelandic (no dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
         </engine>
         <engine>
             <name>xkb:is:mac_legacy:isl</name>
@@ -4915,6 +4819,18 @@
             <layout_variant>sgs</layout_variant>
             <longname>Samogitian</longname>
             <description>Samogitian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:lt:ratise:lit</name>
+            <language>lt</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>lt</layout>
+            <layout_variant>ratise</layout_variant>
+            <longname>Lithuanian (Ratise)</longname>
+            <description>Lithuanian (Ratise)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5604,18 +5520,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:pt:sundeadkeys:por</name>
-            <language>pt</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>pt</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>Portuguese (Sun dead keys)</longname>
-            <description>Portuguese (Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:pt:mac:por</name>
             <language>pt</language>
             <license>GPL</license>
@@ -5636,18 +5540,6 @@
             <layout_variant>mac_nodeadkeys</layout_variant>
             <longname>Portuguese (Macintosh, no dead keys)</longname>
             <description>Portuguese (Macintosh, no dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:pt:mac_sundeadkeys:por</name>
-            <language>pt</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>pt</layout>
-            <layout_variant>mac_sundeadkeys</layout_variant>
-            <longname>Portuguese (Macintosh, Sun dead keys)</longname>
-            <description>Portuguese (Macintosh, Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -5699,18 +5591,6 @@
             <rank>50</rank>
         </engine>
         <engine>
-            <name>xkb:ro:cedilla:ron</name>
-            <language>ro</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>ro</layout>
-            <layout_variant>cedilla</layout_variant>
-            <longname>Romanian (cedilla)</longname>
-            <description>Romanian (cedilla)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:ro:std:ron</name>
             <language>ro</language>
             <license>GPL</license>
@@ -5719,18 +5599,6 @@
             <layout_variant>std</layout_variant>
             <longname>Romanian (standard)</longname>
             <description>Romanian (standard)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:ro:std_cedilla:ron</name>
-            <language>ro</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>ro</layout>
-            <layout_variant>std_cedilla</layout_variant>
-            <longname>Romanian (standard cedilla)</longname>
-            <description>Romanian (standard cedilla)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6282,18 +6150,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:es:sundeadkeys:spa</name>
-            <language>es</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>es</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>Spanish (Sun dead keys)</longname>
-            <description>Spanish (Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:es:dvorak:spa</name>
             <language>es</language>
             <license>GPL</license>
@@ -6543,30 +6399,6 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:ch:de_sundeadkeys:deu</name>
-            <language>de</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>ch</layout>
-            <layout_variant>de_sundeadkeys</layout_variant>
-            <longname>German (Switzerland, Sun dead keys)</longname>
-            <description>German (Switzerland, Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:ch:de_sundeadkeys:gsw</name>
-            <language>gsw</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>ch</layout>
-            <layout_variant>de_sundeadkeys</layout_variant>
-            <longname>German (Switzerland, Sun dead keys)</longname>
-            <description>German (Switzerland, Sun dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:ch:fr:fra</name>
             <language>fr</language>
             <license>GPL</license>
@@ -6587,18 +6419,6 @@
             <layout_variant>fr_nodeadkeys</layout_variant>
             <longname>French (Switzerland, no dead keys)</longname>
             <description>French (Switzerland, no dead keys)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:ch:fr_sundeadkeys:fra</name>
-            <language>fr</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>ch</layout>
-            <layout_variant>fr_sundeadkeys</layout_variant>
-            <longname>French (Switzerland, Sun dead keys)</longname>
-            <description>French (Switzerland, Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6846,18 +6666,6 @@
             <layout_variant>alt</layout_variant>
             <longname>Turkish (Alt-Q)</longname>
             <description>Turkish (Alt-Q)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:tr:sundeadkeys:tur</name>
-            <language>tr</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>tr</layout>
-            <layout_variant>sundeadkeys</layout_variant>
-            <longname>Turkish (Sun dead keys)</longname>
-            <description>Turkish (Sun dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7347,6 +7155,18 @@
             <layout_variant>colemak</layout_variant>
             <longname>English (UK, Colemak)</longname>
             <description>English (UK, Colemak)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:gb:colemak_dh:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>gb</layout>
+            <layout_variant>colemak_dh</layout_variant>
+            <longname>English (UK, Colemak-DH)</longname>
+            <description>English (UK, Colemak-DH)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
