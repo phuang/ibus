@@ -4,7 +4,7 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2018-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2018-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2018 Red Hat, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -36,7 +36,7 @@
 
 
 PROGNAME=`basename $0`
-VERSION=0.1
+VERSION=0.2
 DISPLAY=:99.0
 BUILDDIR="."
 SRCDIR="."
@@ -80,7 +80,9 @@ usage()
 "-b, --builddir=BUILDDIR          Set the BUILDDIR\n"                          \
 "-s, --srcdir=SOURCEDIR           Set the SOURCEDIR\n"                         \
 "-c, --no-graphics                Use Xvfb instead of Xorg\n"                  \
-"-d, --desktop=DESKTOP            Run DESTKTOP. The default is gnome-session\n" \
+"-d, --desktop=DESKTOP            Run DESTKTOP. The default is gnome-session.\n" \
+"                                 Suffix '-with-dbus' can run DESKTOP with dbus session." \
+"                                 E.g. --desktop=mutter-with-dbus"             \
 "-t, --tests=\"TESTS...\"           Run TESTS programs which is separated by space\n" \
 "-r, --runner=RUNNER              Run TESTS programs with a test RUNNER.\n"    \
 "                                 RUNNDER = gnome or default.\n"               \
@@ -115,6 +117,13 @@ parse_args()
         * )                  usage; exit 1;;
         esac
     done
+    DL='$'
+    echo "$DESKTOP_COMMAND" | grep "\-with\-dbus$DL" > /dev/null
+    HAS_DBUS_SUFFIX=$?
+    if [ $HAS_DBUS_SUFFIX -eq 0 ] ; then
+        DESKTOP_COMMAND=`echo "$DESKTOP_COMMAND" | sed -e 's/-with-dbus$//'`
+        DESKTOP_COMMAND="dbus-launch --exit-with-session $DESKTOP_COMMAND"
+    fi
 }
 
 init_desktop()
@@ -124,8 +133,9 @@ init_desktop()
             rm $RESULT_LOG
         fi
     fi
-    HAS_STDOUT=`echo "$TEST_LOG" | grep ':stdout'`
-    if [ x"$HAS_STDOUT" != x ] ; then
+    echo "$TEST_LOG" | grep ':stdout' > /dev/null
+    HAS_STDOUT=$?
+    if [ $HAS_STDOUT -eq 0 ] ; then
         TEST_LOG=`echo "$TEST_LOG" | sed -e 's|:stdout||'`
         TEST_LOG_STDOUT=1
     fi
@@ -203,6 +213,39 @@ run_dbus_daemon()
     export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus"
 }
 
+init_gnome()
+{
+    # Disable Tour dialog to get focus
+    V=`gsettings get org.gnome.shell welcome-dialog-last-shown-version`
+    if [ x"$V" = x ] ; then
+        gsettings set org.gnome.shell welcome-dialog-last-shown-version '100'
+    fi
+    # gnome-shell now starts overview mode by login.
+    # https://extensions.gnome.org/extension/4099/no-overview/
+    NO_SYS_DIR=/usr/share/gnome-shell/extensions/no-overview@fthx
+    NO_USER_DIR=$HOME/.local/share/gnome-shell/extensions/no-overview@fthx
+    if [ ! -d $NO_SYS_DIR ] && [ ! -d $NO_USER_DIR ] ; then
+        mkdir -p `dirname $NO_USER_DIR`
+        cp -R no-overview@fthx `dirname $NO_USER_DIR`
+    fi
+    V=`gsettings get org.gnome.shell disable-user-extensions`
+    if [ x"$V" = x"true" ] ; then
+        gsettings set org.gnome.shell disable-user-extensions false
+    fi
+    V=`gsettings get org.gnome.shell enabled-extensions`
+    echo "$V" | grep "no-overview" > /dev/null
+    V2=$?
+    if [ $V2 -ne 0 ] ; then
+        V3=`echo "$V" | sed -e 's/\[//' -e 's/\]//'`
+        if [ x"$V3" = x ] ; then
+            V4="['no-overview@fthx']"
+        else
+            V4="[$V3, 'no-overview@fthx']"
+        fi
+        gsettings set org.gnome.shell enabled-extensions "$V4"
+    fi
+}
+
 run_desktop()
 {
     if test $HAVE_GRAPHICS -eq 1 ; then
@@ -217,8 +260,11 @@ run_desktop()
     $DESKTOP_COMMAND &
     PID_GNOME_SESSION=$!
     sleep 30
-    HAS_GNOME=`echo $DESKTOP_COMMAND | grep gnome-session`
-    if [ x"$HAS_GNOME" = x ] ; then
+    echo "$DESKTOP_COMMAND" | grep gnome-session > /dev/null
+    HAS_GNOME=$?
+    if [  $HAS_GNOME -eq 0 ] ; then
+        init_gnome
+    else
         ibus-daemon --daemonize --verbose
         sleep 3
     fi
@@ -360,8 +406,13 @@ EOF_RUNNER
         ;;
     esac
     echo ""
-    print_log -e "${GREEN}PASS${NC}: $pass"
-    print_log -e "${RED}FAIL${NC}: $fail"
+    # Fedora CI assumes the test is failed even if $fail is 0.
+    if [ $pass -ne 0 ] ; then
+        print_log -e "${GREEN}PASS${NC}: $pass"
+    fi
+    if [ $fail -ne 0 ] ; then
+        print_log -e "${RED}FAIL${NC}: $fail"
+    fi
     echo ""
     if [ $TEST_LOG_STDOUT -eq 1 ] ; then
         cat $TEST_LOG
