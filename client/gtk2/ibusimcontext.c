@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2020 Red Hat, Inc.
+ * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -165,11 +165,19 @@ static void     ibus_im_context_set_cursor_location
 static void     ibus_im_context_set_use_preedit
                                             (GtkIMContext           *context,
                                              gboolean               use_preedit);
+#if !GTK_CHECK_VERSION (4, 1, 2)
 static void     ibus_im_context_set_surrounding
                                             (GtkIMContext  *slave,
                                              const gchar   *text,
-                                             gint           len,
-                                             gint           cursor_index);
+                                             int            len,
+                                             int            cursor_index);
+#endif
+static void     ibus_im_context_set_surrounding_with_selection
+                                            (GtkIMContext  *slave,
+                                             const gchar   *text,
+                                             int            len,
+                                             int            cursor_index,
+                                             int            anchor_index);
 
 /* static methods*/
 static void     _ibus_context_update_preedit_text_cb
@@ -724,7 +732,12 @@ ibus_im_context_class_init (IBusIMContextClass *class)
 #endif
     im_context_class->set_cursor_location = ibus_im_context_set_cursor_location;
     im_context_class->set_use_preedit = ibus_im_context_set_use_preedit;
+#if GTK_CHECK_VERSION (4, 1, 2)
+    im_context_class->set_surrounding_with_selection
+            = ibus_im_context_set_surrounding_with_selection;
+#else
     im_context_class->set_surrounding = ibus_im_context_set_surrounding;
+#endif
     gobject_class->notify = ibus_im_context_notify;
     gobject_class->finalize = ibus_im_context_finalize;
 
@@ -1624,8 +1637,22 @@ get_selection_anchor_point (IBusIMContext *ibusimcontext,
 static void
 ibus_im_context_set_surrounding (GtkIMContext  *context,
                                  const gchar   *text,
-                                 gint           len,
-                                 gint           cursor_index)
+                                 int            len,
+                                 int            cursor_index)
+{
+    ibus_im_context_set_surrounding_with_selection (context,
+                                                    text,
+                                                    len,
+                                                    cursor_index,
+                                                    cursor_index);
+}
+
+static void
+ibus_im_context_set_surrounding_with_selection (GtkIMContext  *context,
+                                                const gchar   *text,
+                                                int            len,
+                                                int            cursor_index,
+                                                int            anchor_index)
 {
     g_return_if_fail (context != NULL);
     g_return_if_fail (IBUS_IS_IM_CONTEXT (context));
@@ -1647,18 +1674,26 @@ ibus_im_context_set_surrounding (GtkIMContext  *context,
         ibustext = ibus_text_new_from_string (p);
         g_free (p);
 
-        guint anchor_pos = get_selection_anchor_point (ibusimcontext,
-                                                       cursor_pos,
-                                                       utf8_len);
+        gint anchor_pos = get_selection_anchor_point (ibusimcontext,
+                                                      cursor_pos,
+                                                      utf8_len);
         ibus_input_context_set_surrounding_text (ibusimcontext->ibuscontext,
                                                  ibustext,
                                                  cursor_pos,
                                                  anchor_pos);
     }
+#if GTK_CHECK_VERSION (4, 1, 2)
+    gtk_im_context_set_surrounding_with_selection (ibusimcontext->slave,
+                                                   text,
+                                                   len,
+                                                   cursor_index,
+                                                   anchor_index);
+#else
     gtk_im_context_set_surrounding (ibusimcontext->slave,
                                     text,
                                     len,
                                     cursor_index);
+#endif
 }
 
 static void
