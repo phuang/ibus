@@ -215,9 +215,11 @@ run_dbus_daemon()
 
 init_gnome()
 {
+    # gsettings set command needs dconf-service with the same $DISPLAY
+    pkill dconf-service
     # Disable Tour dialog to get focus
     V=`gsettings get org.gnome.shell welcome-dialog-last-shown-version`
-    if [ x"$V" = x ] ; then
+    if [ x"$V" = x"''" ] ; then
         gsettings set org.gnome.shell welcome-dialog-last-shown-version '100'
     fi
     # gnome-shell now starts overview mode by login.
@@ -237,7 +239,7 @@ init_gnome()
     V2=$?
     if [ $V2 -ne 0 ] ; then
         V3=`echo "$V" | sed -e 's/\[//' -e 's/\]//'`
-        if [ x"$V3" = x ] ; then
+        if [ x"$V3" = x"''" ] ; then
             V4="['no-overview@fthx']"
         else
             V4="[$V3, 'no-overview@fthx']"
@@ -248,6 +250,8 @@ init_gnome()
 
 run_desktop()
 {
+    echo "$DESKTOP_COMMAND" | grep gnome-session > /dev/null
+    HAS_GNOME=$?
     if test $HAVE_GRAPHICS -eq 1 ; then
         /usr/libexec/Xorg.wrap -noreset +extension GLX +extension RANDR +extension RENDER -logfile ./xorg.log -config ./xorg.conf -configdir . $DISPLAY &
     else
@@ -256,15 +260,15 @@ run_desktop()
     PID_XORG=$!
     sleep 1
     export DISPLAY=$DISPLAY
+    # init_gnome need to be called with $DISPLAY before gnome-session is called
+    if [  $HAS_GNOME -eq 0 ] ; then
+        init_gnome
+    fi
     echo "Running $DESKTOP_COMMAND with $USER in `tty`"
     $DESKTOP_COMMAND &
     PID_GNOME_SESSION=$!
     sleep 30
-    echo "$DESKTOP_COMMAND" | grep gnome-session > /dev/null
-    HAS_GNOME=$?
-    if [  $HAS_GNOME -eq 0 ] ; then
-        init_gnome
-    else
+    if [  $HAS_GNOME -ne 0 ] ; then
         ibus-daemon --daemonize --verbose
         sleep 3
     fi
