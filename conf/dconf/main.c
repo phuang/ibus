@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2012-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -70,7 +71,9 @@ main (gint argc, gchar **argv)
     GOptionContext *context;
 
     setlocale (LC_ALL, "");
-    g_setenv ("DCONF_PROFILE", "ibus", FALSE);
+    errno = 0;
+    if (!g_setenv ("DCONF_PROFILE", "ibus", FALSE))
+        g_warning ("Failed setenv %s", strerror (errno));
 
     context = g_option_context_new ("- ibus dconf component");
 

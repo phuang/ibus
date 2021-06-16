@@ -46,6 +46,8 @@ _Xi18nNeedSwap (Xi18n i18n_core, CARD16 connect_id)
     CARD8 im_byteOrder = i18n_core->address.im_byteOrder;
     Xi18nClient *client = _Xi18nFindClient (i18n_core, connect_id);
 
+    if (!client)
+        return True;
     return (client->byte_order != im_byteOrder);
 }
 
@@ -67,6 +69,11 @@ Xi18nClient *_Xi18nNewClient(Xi18n i18n_core)
 	new_connect_id = ++connect_id;
     }
     /*endif*/
+    if (!client) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        return NULL;
+    }
     memset (client, 0, sizeof (Xi18nClient));
     client->connect_id = new_connect_id;
     client->pending = (XIMPending *) NULL;
@@ -113,7 +120,14 @@ void _Xi18nDeleteClient (Xi18n i18n_core, CARD16 connect_id)
                 ccp0->next = ccp->next;
             /*endif*/
             /* put it back to free list */
+            /* gcc 11.0.1 warns dereference of NULL with
+             * -Wanalyzer-null-dereference option
+             * but target should not be NULL.
+             */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-null-dereference"
             target->next = i18n_core->address.free_clients;
+#pragma GCC diagnostic pop
             i18n_core->address.free_clients = target;
             return;
         }
@@ -161,6 +175,12 @@ void _Xi18nSendMessage (XIMS ims,
 
     reply_length = header_size + length;
     reply = (unsigned char *) malloc (reply_length);
+    if (!reply) {
+        _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        XFree (reply_hdr);
+        FrameMgrFree (fm);
+        return;
+    }
     replyp = reply;
     memmove (reply, reply_hdr, header_size);
     replyp += header_size;

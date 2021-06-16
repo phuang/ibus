@@ -468,7 +468,7 @@ ibus_accelerator_name (guint            accelerator_key,
     if (accelerator_mods & IBUS_SUPER_MASK)
         l += sizeof (text_super) - 1;
 
-    accelerator = g_new (gchar, l + 1);
+    g_return_val_if_fail ((accelerator = g_new (gchar, l + 1)), NULL);
 
     accelerator_mods = saved_mods;
     l = 0;

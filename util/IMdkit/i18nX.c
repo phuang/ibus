@@ -58,16 +58,21 @@ static XClient *NewXClient (Xi18n i18n_core, Window new_client)
     XClient *x_client;
 
     x_client = (XClient *) malloc (sizeof (XClient));
-    x_client->client_win = new_client;
-    x_client->accept_win = XCreateSimpleWindow (dpy,
-                                                DefaultRootWindow(dpy),
-                                                0,
-                                                0,
-                                                1,
-                                                1,
-                                                1,
-                                                0,
-                                                0);
+    if (!x_client) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+    } else {
+        x_client->client_win = new_client;
+        x_client->accept_win = XCreateSimpleWindow (dpy,
+                                                    DefaultRootWindow(dpy),
+                                                    0,
+                                                    0,
+                                                    1,
+                                                    1,
+                                                    1,
+                                                    0,
+                                                    0);
+    }
     client->trans_rec = x_client;
     return ((XClient *) x_client);
 }
@@ -219,7 +224,7 @@ static void ReadXConnectMessage (XIMS ims, XClientMessageEvent *ev)
     }
     /*endif*/
     _XRegisterFilterByType (dpy,
-                            x_client->accept_win,
+                            x_client ? x_client->accept_win : 0,
                             ClientMessage,
                             ClientMessage,
                             WaitXIMProtocol,
@@ -229,7 +234,7 @@ static void ReadXConnectMessage (XIMS ims, XClientMessageEvent *ev)
     event.xclient.window = new_client;
     event.xclient.message_type = spec->connect_request;
     event.xclient.format = 32;
-    event.xclient.data.l[0] = x_client->accept_win;
+    event.xclient.data.l[0] = x_client ? x_client->accept_win : 0;
     event.xclient.data.l[1] = major_version;
     event.xclient.data.l[2] = minor_version;
     event.xclient.data.l[3] = XCM_DATA_LIMIT;

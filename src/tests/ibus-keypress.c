@@ -291,7 +291,8 @@ main (int argc, char *argv[])
     /* Avoid a warning of "AT-SPI: Could not obtain desktop path or name"
      * with gtk_main().
      */
-    g_setenv ("NO_AT_BRIDGE", "1", TRUE);
+    if (!g_setenv ("NO_AT_BRIDGE", "1", TRUE))
+        g_message ("Failed setenv NO_AT_BRIDGE\n");
     g_test_init (&argc, &argv, NULL);
     gtk_init (&argc, &argv);
 

@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus
  * Copyright (C) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2007-2015 Red Hat, Inc.
  *
  * main.c:
@@ -229,12 +229,13 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
         }
     }
 
-    for (i = 0; i < len; i++) {
+    for (i = 0; feedback && i < len; i++) {
         if (feedback[i] == 0) {
             feedback[i] = XIMUnderline;
         }
     }
-    feedback[len] = 0;
+    if (feedback)
+        feedback[len] = 0;
 
     pcb.major_code = XIM_PREEDIT_DRAW;
     pcb.connect_id = x11ic->connect_id;
@@ -736,9 +737,20 @@ xim_get_ic_values (XIMS xims, IMChangeICStruct *call_data)
 
     for (i = 0; i < (int) call_data->ic_attr_num; ++i, ++ic_attr) {
         if (g_strcmp0 (XNFilterEvents, ic_attr->name) == 0) {
+            /* ic_attr->value will be freed in server side and ignore
+             * leak of malloc with -Wanalyzer-malloc-leak flags in gcc 11.0.1
+             */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
             ic_attr->value = (void *) malloc (sizeof (CARD32));
-            *(CARD32 *) ic_attr->value = KeyPressMask | KeyReleaseMask;
-            ic_attr->value_length = sizeof (CARD32);
+            if (ic_attr->value) {
+                *(CARD32 *) ic_attr->value = KeyPressMask | KeyReleaseMask;
+                ic_attr->value_length = sizeof (CARD32);
+            } else {
+                g_warning ("Failed to malloc");
+                ic_attr->value_length = 0;
+            }
+#pragma GCC diagnostic pop
         }
     }
 

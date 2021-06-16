@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2011-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2020 Red Hat, Inc.
+ * Copyright (C) 2011-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -624,7 +624,6 @@ bus_ibus_impl_destroy (BusIBusImpl *ibus)
 
     g_list_foreach (ibus->components, (GFunc) bus_component_stop, NULL);
 
-    pid = 0;
     timeout = 0;
     flag = FALSE;
     while (1) {
@@ -1190,6 +1189,7 @@ _ibus_get_current_input_context (BusIBusImpl     *ibus,
                                  GDBusConnection *connection,
                                  GError         **error)
 {
+    GVariant *retval = NULL;
     if (error) {
         *error = NULL;
     }
@@ -1204,8 +1204,14 @@ _ibus_get_current_input_context (BusIBusImpl     *ibus,
         const gchar *path = ibus_service_get_object_path (
                 (IBusService *) ibus->focused_context);
         /* the format-string 'o' is for a D-Bus object path. */
-        return g_variant_new_object_path (path);
+        retval = g_variant_new_object_path (path);
+        if (!retval) {
+            g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                         "Could not get object path from %s",
+                         path ? path : "(null)");
+        }
     }
+    return retval;
 }
 
 static void
@@ -1572,6 +1578,7 @@ _ibus_get_global_engine (BusIBusImpl     *ibus,
                          GError         **error)
 {
     IBusEngineDesc *desc = NULL;
+    GVariant *retval = NULL;
 
     if (error) {
         *error = NULL;
@@ -1592,7 +1599,13 @@ _ibus_get_global_engine (BusIBusImpl     *ibus,
         GVariant *variant = ibus_serializable_serialize (
                 (IBusSerializable *) desc);
         // Set type "v" for introspection_xml.
-        return g_variant_new_variant (variant);
+        retval = g_variant_new_variant (variant);
+        if (!retval) {
+            g_set_error (error,
+                         G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                         "Failed to serialize engine desc.");
+        }
+        return retval;
     } while (0);
 
     g_set_error (error,

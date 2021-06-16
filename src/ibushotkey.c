@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2018-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -373,6 +373,8 @@ ibus_hotkey_profile_add_hotkey (IBusHotkeyProfile *profile,
         p->event = event;
     }
 
+    if (!p)
+        return FALSE;
     p->hotkeys = g_list_append (p->hotkeys, hotkey);
 
     return TRUE;

@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2014-2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -466,11 +466,15 @@ check_hex (IBusEngineSimple *simple,
 
         ch = ibus_keyval_to_unicode (priv->compose_buffer[i]);
 
-        if (ch == 0)
+        if (ch == 0) {
+            g_string_free (str, TRUE);
             return FALSE;
+        }
 
-        if (!g_unichar_isxdigit (ch))
+        if (!g_unichar_isxdigit (ch)) {
+            g_string_free (str, TRUE);
             return FALSE;
+        }
 
         buf[g_unichar_to_utf8 (ch, buf)] = '\0';
 
@@ -487,8 +491,9 @@ check_hex (IBusEngineSimple *simple,
     if (nptr - str->str < str->len) {
         g_string_free (str, TRUE);
         return FALSE;
-    } else
+    } else {
         g_string_free (str, TRUE);
+    }
 
     if (g_unichar_validate (n)) {
         priv->tentative_match = n;
@@ -559,11 +564,15 @@ check_emoji_table (IBusEngineSimple       *simple,
 
         ch = ibus_keyval_to_unicode (priv->compose_buffer[i]);
 
-        if (ch == 0)
+        if (ch == 0) {
+            g_string_free (str, TRUE);
             return FALSE;
+        }
 
-        if (!g_unichar_isprint (ch))
+        if (!g_unichar_isprint (ch)) {
+            g_string_free (str, TRUE);
             return FALSE;
+        }
 
         buf[g_unichar_to_utf8 (ch, buf)] = '\0';
 

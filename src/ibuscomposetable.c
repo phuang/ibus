@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus - The Input Bus
  * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -108,6 +108,7 @@ parse_compose_value (IBusComposeData  *compose_data,
     }
     ++head;
     p = head;
+    end = NULL;
     while ((*p != '\0') && (end = strchr (p, '\"'))) {
         if (*(end - 1) == '\\' && *(end - 2) == '\\')
             break;
@@ -516,10 +517,10 @@ ibus_compose_hash_get_cache_path (guint32 hash)
                                 "ibus", "compose", NULL);
     }
     path = g_build_filename (dir, basename, NULL);
-    if (g_mkdir_with_parents (dir, 0755) != 0) {
-        g_warning ("Failed to mkdir %s", dir);
-        g_free (path);
-        path = NULL;
+    errno = 0;
+    if (g_mkdir_with_parents (dir, 0755)) {
+        g_warning ("Failed to mkdir %s: %s", dir, g_strerror (errno));
+        g_clear_pointer (&path, g_free);
     }
 
     g_free (dir);
@@ -812,10 +813,14 @@ ibus_compose_table_deserialize (const gchar *contents,
         }
     }
     if (data_length) {
-        retval->priv->data_second = g_new (guint32, data_length);
-        memcpy (retval->priv->data_second,
-                data_32bit_second, data_length * sizeof (guint32));
-        retval->priv->second_size = second_size;
+        if ((retval->priv->data_second = g_new (guint32, data_length))) {
+            memcpy (retval->priv->data_second,
+                    data_32bit_second, data_length * sizeof (guint32));
+            retval->priv->second_size = second_size;
+        } else {
+            g_warning ("Failed g_new");
+            retval->priv->second_size = 0;
+        }
     }
 
 
@@ -910,6 +915,43 @@ ibus_compose_table_new_with_list (GList   *compose_list,
                                   int      n_index_stride,
                                   guint32  hash)
 {
+    /* @ibus_compose_seqs: Include both compose sequence and the value(compose
+     *     output) as the tradition GTK. The value is one character only
+     *     and within 16bit. I.e. All compose sequences and the values
+     *     are 16bit.
+     * @ibus_compose_seqs_32bit_second: Include the compose values only.
+     *     The length of values by compose sequence is more than one characster
+     *     or one of the values is outside 16bit but within 32bit.
+     *     Some values could be more than one character and Emoji character
+     *     could be outside 16bit.
+     *     See also ibus/src/tests/ibus-compose.emoji file for e.g.
+     * @ibus_compose_seqs_32bit_first: Include the compose sequence only in
+     *     case the value is included in @ibus_compose_seqs_32bit_second.
+     * @s_size_total: The number of compose sequences.
+     * @s_size_16bit: The number of compose sequences whose value is one
+     *     character only and within 16bit. I.e. the number of the compose
+     *     sequence in @ibus_compose_seqs is @@s_size_16bit. And
+     *     @s_size_total - @s_size_16bit is the number of the compose sequence
+     *     in @ibus_compose_seqs_32bit_first.
+     * @v_size_32bit: The total number of compose values. Each length of the
+     *     values is more than one character or one of the value is
+     *     outside 16bit but within 32bit. I.e. The size of
+     *     @ibus_compose_seqs_32bit_second is @v_size_32bit.
+     * @v_index_32bit: Each index of the compose values in
+     *     @ibus_compose_seqs_32bit_second and this is not a fixed value in
+     *     this API. If a compose sequence is found in
+     *     @ibus_compose_seqs_32bit_first and the next value is 0, 0 is lined
+     *     in @ibus_compose_seqs_32bit_first until @max_compose_len after
+     *     the found compose sequence. And the next value is the length of
+     *     the compose values and the next value is the @v_index_32bit, i.e.
+     *     the index of @ibus_compose_seqs_32bit_second.
+     *     E.g. the following line could be found in
+     *     @ibus_compose_seqs_32bit_first:
+     *         ..., "U17ff", "0", "0", "0", "0", 2, 100, ...
+     *     @ibus_compose_seqs_32bit_second[100] is "ាំ"  and the character
+     *     length is 2.
+     *     @max_compose_len is 5 and @n_index_stride is 7.
+     */
     gsize s_size_total, s_size_16bit, v_size_32bit, v_index_32bit;
     guint n = 0, m = 0;
     int i, j;
@@ -935,13 +977,25 @@ ibus_compose_table_new_with_list (GList   *compose_list,
         }
     }
 
-    if (s_size_16bit)
+    if (s_size_16bit) {
         ibus_compose_seqs = g_new (guint16, s_size_16bit * n_index_stride);
+        if (!ibus_compose_seqs) {
+            g_warning ("Failed g_new");
+            return NULL;
+        }
+    }
     if (s_size_total > s_size_16bit) {
         ibus_compose_seqs_32bit_first =
                 g_new (guint16,
                        (s_size_total - s_size_16bit) * n_index_stride);
         ibus_compose_seqs_32bit_second = g_new (guint32, v_size_32bit);
+        if (!ibus_compose_seqs_32bit_first || !ibus_compose_seqs_32bit_second) {
+            g_warning ("Failed g_new");
+            g_free (ibus_compose_seqs);
+            g_free (ibus_compose_seqs_32bit_first);
+            g_free (ibus_compose_seqs_32bit_second);
+            return NULL;
+        }
     }
 
     v_index_32bit = 0;
@@ -951,32 +1005,45 @@ ibus_compose_table_new_with_list (GList   *compose_list,
 
         is_32bit = unichar_length (compose_data->values) > 1 ? TRUE :
                 compose_data->values[0] >= 0xFFFF ? TRUE : FALSE;
+        if (is_32bit) {
+            g_assert (ibus_compose_seqs_32bit_first);
+            g_assert (ibus_compose_seqs_32bit_second);
+        }
         for (i = 0; i < max_compose_len; i++) {
             if (compose_data->sequence[i] == 0) {
                 for (j = i; j < max_compose_len; j++) {
-                    if (is_32bit)
+                    if (is_32bit) {
+                        g_assert (m < (s_size_total - s_size_16bit)
+                                  * n_index_stride);
                         ibus_compose_seqs_32bit_first[m++] = 0;
-                    else
+                    } else {
+                        g_assert (n < s_size_16bit * n_index_stride);
                         ibus_compose_seqs[n++] = 0;
+                    }
                 }
                 break;
             }
             if (is_32bit) {
+                g_assert (m < (s_size_total - s_size_16bit) * n_index_stride);
                 ibus_compose_seqs_32bit_first[m++] =
                         (guint16) compose_data->sequence[i];
             } else {
+                g_assert (n < s_size_16bit * n_index_stride);
                 ibus_compose_seqs[n++] = (guint16) compose_data->sequence[i];
             }
         }
         if (is_32bit) {
             for (j = 0; compose_data->values[j]; j++) {
+                g_assert (v_index_32bit + j <  v_size_32bit);
                 ibus_compose_seqs_32bit_second[v_index_32bit + j] =
                         compose_data->values[j];
             }
+            g_assert (m + 1 < (s_size_total - s_size_16bit) * n_index_stride);
             ibus_compose_seqs_32bit_first[m++] = j;
             ibus_compose_seqs_32bit_first[m++] = v_index_32bit;
             v_index_32bit += j;
         } else {
+            g_assert (n + 1 < s_size_16bit * n_index_stride);
             ibus_compose_seqs[n++] = (guint16) compose_data->values[0];
             ibus_compose_seqs[n++] = 0;
         }

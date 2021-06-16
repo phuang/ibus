@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2019-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2013 Intel Corporation
  * Copyright (C) 2013-2019 Red Hat, Inc.
  *
@@ -339,16 +339,19 @@ input_method_keyboard_keymap (void               *data,
 {
     IBusWaylandIM *wlim = data;
     GMappedFile *map;
-    GError *error;
+    GError *error = NULL;
 
     if (format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1) {
         close(fd);
         return;
     }
 
-    error = NULL;
     map = g_mapped_file_new_from_fd (fd, FALSE, &error);
     if (map == NULL) {
+        if (error) {
+            g_warning ("Failed to map file fd %s", error->message);
+            g_error_free (error);
+        }
         close (fd);
         return;
     }

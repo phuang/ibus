@@ -360,11 +360,13 @@ main (int argc, char *argv[])
     /* Avoid a warning of "AT-SPI: Could not obtain desktop path or name"
      * with gtk_main().
      */
-    g_setenv ("NO_AT_BRIDGE", "1", TRUE);
+    if (!g_setenv ("NO_AT_BRIDGE", "1", TRUE))
+        g_message ("Failed setenv NO_AT_BRIDGE\n");
     g_test_init (&argc, &argv, NULL);
     gtk_init (&argc, &argv);
 
-    m_srcdir = argc > 1 ? g_strdup (argv[1]) : g_strdup (".");
+    m_srcdir = (argc > 1 && strlen (argv[1]) < FILENAME_MAX)
+            ? g_strdup (argv[1]) : g_strdup (".");
     m_compose_file = g_strdup (g_getenv ("COMPOSE_FILE"));
 #if GLIB_CHECK_VERSION (2, 58, 0)
     test_name = g_get_language_names_with_category ("LC_CTYPE")[0];

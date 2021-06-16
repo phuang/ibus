@@ -181,8 +181,13 @@ static void OpenMessageProc(XIMS ims, IMProtocol *call_data, unsigned char *p)
     FrameMgrGetToken (fm, name);
     imopen->lang.length = str_length;
     imopen->lang.name = malloc (str_length + 1);
-    strncpy (imopen->lang.name, name, str_length);
-    imopen->lang.name[str_length] = (char) 0;
+    if (!imopen->lang.name) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+    } else {
+        strncpy (imopen->lang.name, name, str_length);
+        imopen->lang.name[str_length] = (char) 0;
+    }
 
     FrameMgrFree (fm);
 
@@ -339,7 +344,7 @@ static XIMExt *MakeExtensionList (Xi18n i18n_core,
                                   int number,
                                   int *reply_number)
 {
-    XIMExt *ext_list;
+    XIMExt *ext_list = NULL;
     XIMExt *im_ext = (XIMExt *) i18n_core->address.extension;
     int im_ext_len = i18n_core->address.ext_num;
     int i;
@@ -358,7 +363,8 @@ static XIMExt *MakeExtensionList (Xi18n i18n_core,
         {
             for (j = 0;  j < (int) number;  j++)
             {
-                if (strcmp (lib_extension[j].name, im_ext[i].name) == 0)
+                if (lib_extension[j].name
+                    && strcmp (lib_extension[j].name, im_ext[i].name) == 0)
                 {
                     (*reply_number)++;
                     break;
@@ -389,7 +395,13 @@ static XIMExt *MakeExtensionList (Xi18n i18n_core,
             ext_list[i].minor_opcode = im_ext[i].minor_opcode;
             ext_list[i].length = im_ext[i].length;
             ext_list[i].name = malloc (im_ext[i].length + 1);
-            strcpy (ext_list[i].name, im_ext[i].name);
+            if (!ext_list[i].name) {
+                fprintf (stderr,
+                         "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                         __FILE__, __LINE__);
+            } else {
+                strcpy (ext_list[i].name, im_ext[i].name);
+            }
         }
         /*endfor*/
     }
@@ -401,13 +413,20 @@ static XIMExt *MakeExtensionList (Xi18n i18n_core,
         {
             for (j = 0;  j < (int)number;  j++)
             {
-                if (strcmp (lib_extension[j].name, im_ext[i].name) == 0)
+                if (lib_extension[j].name
+                    && strcmp (lib_extension[j].name, im_ext[i].name) == 0)
                 {
                     ext_list[n].major_opcode = im_ext[i].major_opcode;
                     ext_list[n].minor_opcode = im_ext[i].minor_opcode;
                     ext_list[n].length = im_ext[i].length;
                     ext_list[n].name = malloc (im_ext[i].length + 1);
-                    strcpy (ext_list[n].name, im_ext[i].name);
+                    if (!ext_list[n].name) {
+                        fprintf (stderr,
+                                 "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                                 __FILE__, __LINE__);
+                    } else {
+                        strcpy (ext_list[n].name, im_ext[i].name);
+                    }
                     n++;
                     break;
                 }
@@ -450,6 +469,11 @@ static void QueryExtensionMessageProc (XIMS ims,
     FrameMgrGetToken (fm, input_method_ID);
     FrameMgrGetToken (fm, byte_length);
     query_ext->extension = (XIMStr *) malloc (sizeof (XIMStr)*10);
+    if (!query_ext->extension) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        return;
+    }
     memset (query_ext->extension, 0, sizeof (XIMStr)*10);
     number = 0;
     while (FrameMgrIsIterLoopEnd (fm, &status) == False)
@@ -461,9 +485,20 @@ static void QueryExtensionMessageProc (XIMS ims,
         FrameMgrSetSize (fm, str_length);
         query_ext->extension[number].length = str_length;
         FrameMgrGetToken (fm, name);
+        /* I don't know why extension[number].name is detected as leak
+         * with -Wanalyzer-malloc-leak option in gcc 11.0.1.
+         */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
         query_ext->extension[number].name = malloc (str_length + 1);
-        strncpy (query_ext->extension[number].name, name, str_length);
-        query_ext->extension[number].name[str_length] = (char) 0;
+        if (!query_ext->extension[number].name) {
+            fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                     __FILE__, __LINE__);
+        } else {
+            strncpy (query_ext->extension[number].name, name, str_length);
+            query_ext->extension[number].name[str_length] = (char) 0;
+        }
+#pragma GCC diagnostic pop
         number++;
     }
     /*endwhile*/
@@ -490,6 +525,8 @@ static void QueryExtensionMessageProc (XIMS ims,
         XFree (query_ext->extension[i].name);
     /*endfor*/
     XFree (query_ext->extension);
+    if (!ext_list)
+        return;
 
     fm = FrameMgrInit (query_extension_reply_fr,
                        NULL,
@@ -501,7 +538,10 @@ static void QueryExtensionMessageProc (XIMS ims,
     /* set length of BARRAY item in ext_fr */
     for (i = 0;  i < reply_number;  i++)
     {
-        str_size = strlen (ext_list[i].name);
+        if (ext_list[i].name)
+            str_size = strlen (ext_list[i].name);
+        else
+            str_size = 0;
         FrameMgrSetSize (fm, str_size);
     }
     /*endfor*/
@@ -700,7 +740,13 @@ static XIMAttribute *MakeIMAttributeList (Xi18n i18n_core,
                                     &value_length);
                 attrib_list[list_num].value_length = value_length;
                 attrib_list[list_num].value = (void *) malloc (value_length);
-                memset(attrib_list[list_num].value, 0, value_length);
+                if (attrib_list[list_num].value) {
+                    memset(attrib_list[list_num].value, 0, value_length);
+                } else {
+                    fprintf (stderr,
+                             "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                             __FILE__, __LINE__);
+                }
                 GetIMValueFromName (i18n_core,
                                     connect_id,
                                     attrib_list[list_num].value,
@@ -737,10 +783,10 @@ static void GetIMValuesMessageProc (XIMS ims,
     register int i;
     register int j;
     int number;
-    CARD16 *im_attrID_list;
-    char **name_list;
+    CARD16 *im_attrID_list = NULL;
+    char **name_list = NULL;
     CARD16 name_number;
-    XIMAttribute *im_attribute_list;
+    XIMAttribute *im_attribute_list = NULL;
     IMGetIMValuesStruct *getim = (IMGetIMValuesStruct *)&call_data->getim;
     CARD16 connect_id = call_data->any.connect_id;
     CARD16 input_method_ID;
@@ -753,8 +799,18 @@ static void GetIMValuesMessageProc (XIMS ims,
     FrameMgrGetToken (fm, input_method_ID);
     FrameMgrGetToken (fm, byte_length);
     im_attrID_list = (CARD16 *) malloc (sizeof (CARD16)*20);
+    if (!im_attrID_list) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        goto GetIMValuesMessageProc_finit;
+    }
     memset (im_attrID_list, 0, sizeof (CARD16)*20);
     name_list = (char **)malloc(sizeof(char *) * 20);
+    if (!name_list) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        goto GetIMValuesMessageProc_finit;
+    }
     memset(name_list, 0, sizeof(char *) * 20);
     number = 0;
     while (FrameMgrIsIterLoopEnd (fm, &status) == False)
@@ -792,8 +848,11 @@ static void GetIMValuesMessageProc (XIMS ims,
                                              im_attrID_list,
                                              &number,
                                              &list_len);
-    if (im_attrID_list)
-        XFree (im_attrID_list);
+    if (!im_attribute_list) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        goto GetIMValuesMessageProc_finit2;
+    }
     /*endif*/
 
     fm = FrameMgrInit (get_im_values_reply_fr,
@@ -815,11 +874,7 @@ static void GetIMValuesMessageProc (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
-        FrameMgrFree (fm);
-        for (i = 0; i < iter_count; i++)
-            XFree(im_attribute_list[i].value);
-        XFree (im_attribute_list);
-        return;
+        goto GetIMValuesMessageProc_finit;
     }
     /*endif*/
     memset (reply, 0, total_size);
@@ -840,12 +895,18 @@ static void GetIMValuesMessageProc (XIMS ims,
                        0,
                        reply,
                        total_size);
-    FrameMgrFree (fm);
     XFree (reply);
 
-    for (i = 0; i < iter_count; i++)
-        XFree(im_attribute_list[i].value);
-    XFree (im_attribute_list);
+GetIMValuesMessageProc_finit:
+    FrameMgrFree (fm);
+GetIMValuesMessageProc_finit2:
+    if (im_attrID_list)
+        XFree (im_attrID_list);
+    if (im_attribute_list) {
+        for (i = 0; i < iter_count; i++)
+            XFree(im_attribute_list[i].value);
+        XFree (im_attribute_list);
+    }
 }
 
 static void CreateICMessageProc (XIMS ims,
@@ -1435,6 +1496,11 @@ static void EncodingNegotiatonMessageProc (XIMS ims,
     if (byte_length > 0)
     {
         enc_nego->encoding = (XIMStr *) malloc (sizeof (XIMStr)*10);
+        if (!enc_nego->encoding) {
+            fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                     __FILE__, __LINE__);
+            goto EncodingNegotiatonMessageProc_finit;
+        }
         memset (enc_nego->encoding, 0, sizeof (XIMStr)*10);
         i = 0;
         while (FrameMgrIsIterLoopEnd (fm, &status) == False)
@@ -1446,9 +1512,21 @@ static void EncodingNegotiatonMessageProc (XIMS ims,
             FrameMgrSetSize (fm, str_length);
             enc_nego->encoding[i].length = str_length;
             FrameMgrGetToken (fm, name);
+            /* I don't know why encoding[i].name is detected as leak
+             * with -Wanalyzer-malloc-leak option in gcc 11.0.1.
+             */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
             enc_nego->encoding[i].name = malloc (str_length + 1);
+            if (!(enc_nego->encoding[i].name)) {
+                fprintf (stderr,
+                         "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                         __FILE__, __LINE__);
+                goto EncodingNegotiatonMessageProc_finit;
+            }
             strncpy (enc_nego->encoding[i].name, name, str_length);
             enc_nego->encoding[i].name[str_length] = '\0';
+#pragma GCC diagnostic pop
             i++;
         }
         /*endwhile*/
@@ -1460,20 +1538,37 @@ static void EncodingNegotiatonMessageProc (XIMS ims,
     if (byte_length > 0)
     {
         enc_nego->encodinginfo = (XIMStr *) malloc (sizeof (XIMStr)*10);
+        if (!enc_nego->encodinginfo) {
+            fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                     __FILE__, __LINE__);
+            goto EncodingNegotiatonMessageProc_finit;
+        }
         memset (enc_nego->encodinginfo, 0, sizeof (XIMStr)*10);
         i = 0;
         while (FrameMgrIsIterLoopEnd (fm, &status) == False)
         {
             char *name;
             int str_length;
-            
+
             FrameMgrGetToken (fm, str_length);
             FrameMgrSetSize (fm, str_length);
             enc_nego->encodinginfo[i].length = str_length;
             FrameMgrGetToken (fm, name);
+            /* I don't know why encodinginfo[i].name is detected as leak
+             * with -Wanalyzer-malloc-leak option in gcc 11.0.1.
+             */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
             enc_nego->encodinginfo[i].name = malloc (str_length + 1);
+            if (!enc_nego->encodinginfo[i].name) {
+                fprintf (stderr,
+                         "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                         __FILE__, __LINE__);
+                goto EncodingNegotiatonMessageProc_finit;
+            }
             strncpy (enc_nego->encodinginfo[i].name, name, str_length);
             enc_nego->encodinginfo[i].name[str_length] = '\0';
+#pragma GCC diagnostic pop
             i++;
         }
         /*endwhile*/
@@ -1524,6 +1619,7 @@ static void EncodingNegotiatonMessageProc (XIMS ims,
                        total_size);
     XFree (reply);
 
+EncodingNegotiatonMessageProc_finit:
     /* free data for encoding list */
     if (enc_nego->encoding)
     {

@@ -94,7 +94,7 @@ void _Xi18nSetPropertyOffset (Xi18nOffsetCache *offset_cache, Atom key,
     }
 
     assert (data != NULL);
-    if (offset_cache->size > 0) {
+    if (offset_cache->size > 0 && i < offset_cache->capacity) {
         data[i].key = key;
         data[i].offset = offset;
     }

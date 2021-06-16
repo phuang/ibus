@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2017-2019 Red Hat, Inc.
+ * Copyright (C) 2017-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -508,7 +508,6 @@ create_input_context_done (IBusBus               *bus,
     if (portal_context == NULL) {
         g_dbus_method_invocation_return_gerror (invocation, error);
         g_error_free (error);
-        g_object_unref (portal_context);
         return;
     }
 
@@ -656,8 +655,10 @@ main (gint argc, gchar **argv)
         exit (-1);
     }
 
+     errno = 0;
     /* Avoid even loading gvfs to avoid accidental confusion */
-    g_setenv ("GIO_USE_VFS", "local", TRUE);
+    if (!g_setenv ("GIO_USE_VFS", "local", TRUE))
+        g_warning ("Failed setenv %s", strerror (errno));
 
     ibus_init ();
 

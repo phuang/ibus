@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2016 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -555,12 +555,18 @@ ibus_bus_init (IBusBus *bus)
 
     path = g_path_get_dirname (ibus_get_socket_path ());
 
-    g_mkdir_with_parents (path, 0700);
+    errno = 0;
+    if (g_mkdir_with_parents (path, 0700)) {
+        g_warning ("Failed to mkdir %s: %s", path, g_strerror (errno));
+        g_free (path);
+        return;
+    }
 
     if (stat (path, &buf) == 0) {
         if (buf.st_uid != getuid ()) {
             g_warning ("The owner of %s is not %s!",
                        path, ibus_get_user_name ());
+            g_free (path);
             return;
         }
         if (buf.st_mode != (S_IFDIR | S_IRWXU)) {

@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2015 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2015-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -438,7 +438,12 @@ ibus_registry_save_cache_file (IBusRegistry *registry,
     g_assert (filename != NULL);
 
     cachedir = g_path_get_dirname (filename);
-    g_mkdir_with_parents (cachedir, 0775);
+    errno = 0;
+    if (g_mkdir_with_parents (cachedir, 0775)) {
+        g_warning ("Failed to mkdir %s: %s", cachedir, g_strerror (errno));
+        g_free (cachedir);
+        return FALSE;
+    }
     g_free (cachedir);
 
     variant = ibus_serializable_serialize (IBUS_SERIALIZABLE (registry));

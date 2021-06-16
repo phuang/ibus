@@ -166,8 +166,14 @@ static Bool GetEncodings(Xi18n i18n_core, XIMEncodings **p_encoding)
     {
         (*p_encoding)->supported_encodings[i]
             = (char *) malloc (strlen (p->supported_encodings[i]) + 1);
-        strcpy ((*p_encoding)->supported_encodings[i],
-                p->supported_encodings[i]);
+        if (!((*p_encoding)->supported_encodings[i])) {
+            fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                     __FILE__, __LINE__);
+
+        } else {
+            strcpy ((*p_encoding)->supported_encodings[i],
+                    p->supported_encodings[i]);
+        }
     }
     /*endif*/
     return True;
@@ -187,11 +193,17 @@ static char *ParseArgs (Xi18n i18n_core, int mode, XIMArg *args)
                 if (address->imvalue_mask & I18N_IM_LOCALE)
                     return IMLocale;
                 /*endif*/
+                /* address->im_locale will be released later and don't need
+                 * -Wanalyzer-malloc-leak flag in gcc 11.0.1.
+                 */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
                 address->im_locale = (char *) malloc (strlen (p->value) + 1);
                 if (!address->im_locale)
                     return IMLocale;
                 /*endif*/
                 strcpy (address->im_locale, p->value);
+#pragma GCC diagnostic pop
                 address->imvalue_mask |= I18N_IM_LOCALE;
             }
             else if (strcmp (p->name, IMServerTransport) == 0)
@@ -199,11 +211,14 @@ static char *ParseArgs (Xi18n i18n_core, int mode, XIMArg *args)
                 if (address->imvalue_mask & I18N_IM_ADDRESS)
                     return IMServerTransport;
                 /*endif*/
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
                 address->im_addr = (char *) malloc (strlen (p->value) + 1);
                 if (!address->im_addr)
                     return IMServerTransport;
                 /*endif*/
                 strcpy(address->im_addr, p->value);
+#pragma GCC diagnostic pop
                 address->imvalue_mask |= I18N_IM_ADDRESS;
             }
             else if (strcmp (p->name, IMServerName) == 0)
@@ -211,11 +226,14 @@ static char *ParseArgs (Xi18n i18n_core, int mode, XIMArg *args)
                 if (address->imvalue_mask & I18N_IM_NAME)
                     return IMServerName;
                 /*endif*/
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
                 address->im_name = (char *) malloc (strlen (p->value) + 1);
                 if (!address->im_name)
                     return IMServerName;
                 /*endif*/
                 strcpy (address->im_name, p->value);
+#pragma GCC diagnostic pop
                 address->imvalue_mask |= I18N_IM_NAME;
             }
             else if (strcmp (p->name, IMServerWindow) == 0)
@@ -698,7 +716,7 @@ static void ReturnSelectionNotify (Xi18n i18n_core, XSelectionRequestEvent *ev)
 {
     XEvent event;
     Display *dpy = i18n_core->address.dpy;
-    char buf[4096];
+    char buf[4096] = { '\0', };
 
     event.type = SelectionNotify;
     event.xselection.requestor = ev->requestor;

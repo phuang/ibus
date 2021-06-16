@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2011-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2019 Red Hat, Inc.
+ * Copyright (C) 2011-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,12 +22,11 @@
  */
 #include "server.h"
 
-#include <errno.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
-#include <stdlib.h>
-#include <fcntl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "dbusimpl.h"
@@ -282,6 +281,7 @@ bus_server_init (void)
          * `chmod` runs for the last directory only not to change the modes
          * of the parent directories. E.g. "/tmp/ibus".
          */
+        errno = 0;
         if (g_mkdir_with_parents (unix_dir, 0700) != 0) {
             g_error ("mkdir is failed in: %s: %s",
                      unix_dir, g_strerror (errno));

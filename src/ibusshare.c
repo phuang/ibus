@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2018 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -197,22 +197,17 @@ ibus_get_address (void)
     FILE *pf;
 
     /* free address */
-    if (address != NULL) {
-        g_free (address);
-        address = NULL;
-    }
+    g_clear_pointer (&address, g_free);
 
     /* get address from env variable */
     address = g_strdup (g_getenv ("IBUS_ADDRESS"));
-    if (address) {
+    if (address)
         return address;
-    }
 
     /* read address from ~/.config/ibus/bus/soketfile */
     pf = fopen (ibus_get_socket_path (), "r");
-    if (pf == NULL) {
+    if (pf == NULL)
         return NULL;
-    }
 
     while (!feof (pf)) {
         gchar *p = buffer;
@@ -224,11 +219,12 @@ ibus_get_address (void)
             continue;
         /* parse IBUS_ADDRESS */
         if (strncmp (p, "IBUS_ADDRESS=", sizeof ("IBUS_ADDRESS=") - 1) == 0) {
-            address = p + sizeof ("IBUS_ADDRESS=") - 1;
-            for (p = (gchar *)address; *p != '\n' && *p != '\0'; p++);
+            gchar *head = p + sizeof ("IBUS_ADDRESS=") - 1;
+            for (p = head; *p != '\n' && *p != '\0'; p++);
             if (*p == '\n')
                 *p = '\0';
-            address = g_strdup (address);
+            g_free (address);
+            address = g_strdup (head);
             continue;
         }
 
@@ -241,9 +237,8 @@ ibus_get_address (void)
     }
     fclose (pf);
 
-    if (pid == -1 || kill (pid, 0) != 0) {
+    if (pid == -1 || kill (pid, 0) != 0)
         return NULL;
-    }
 
     return address;
 }
@@ -256,10 +251,19 @@ ibus_write_address (const gchar *address)
     g_return_if_fail (address != NULL);
 
     path = g_path_get_dirname (ibus_get_socket_path ());
-    g_mkdir_with_parents (path, 0700);
+    errno = 0;
+    if (g_mkdir_with_parents (path, 0700)) {
+        g_warning ("Failed to mkdir %s: %s", path, g_strerror (errno));
+        g_free (path);
+        return;
+    }
     g_free (path);
 
-    g_unlink (ibus_get_socket_path ());
+    errno = 0;
+    if (g_unlink (ibus_get_socket_path ())) {
+        g_warning ("Failed to unlink %s: %s",
+                   ibus_get_socket_path (), g_strerror (errno));
+    }
     pf = fopen (ibus_get_socket_path (), "w");
     g_return_if_fail (pf != NULL);
 

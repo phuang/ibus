@@ -385,7 +385,9 @@ _process_key_event_done (GObject      *object,
 
     ProcessKeyEventData *data = (ProcessKeyEventData *)user_data;
     GdkEvent *event = data->event;
+#if GTK_CHECK_VERSION (3, 98, 4)
     IBusIMContext *ibusimcontext = data->ibusimcontext;
+#endif
     GError *error = NULL;
 
     g_slice_free (ProcessKeyEventData, data);
@@ -1634,6 +1636,7 @@ get_selection_anchor_point (IBusIMContext *ibusimcontext,
     return anchor;
 }
 
+#if !GTK_CHECK_VERSION (4, 1, 2)
 static void
 ibus_im_context_set_surrounding (GtkIMContext  *context,
                                  const gchar   *text,
@@ -1646,6 +1649,7 @@ ibus_im_context_set_surrounding (GtkIMContext  *context,
                                                     cursor_index,
                                                     cursor_index);
 }
+#endif
 
 static void
 ibus_im_context_set_surrounding_with_selection (GtkIMContext  *context,
@@ -1851,7 +1855,11 @@ _create_gdk_event (IBusIMContext *ibusimcontext,
         if (event->state & GDK_CONTROL_MASK) {
             if ((c >= '@' && c < '\177') || c == ' ') c &= 0x1F;
             else if (c == '2') {
+#if GLIB_CHECK_VERSION (2, 68, 0)
+                event->string = g_memdup2 ("\0\0", 2);
+#else
                 event->string = g_memdup ("\0\0", 2);
+#endif
                 event->length = 1;
                 buf[0] = '\0';
                 goto out;

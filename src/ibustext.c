@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2011-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -220,7 +221,7 @@ ibus_text_new_from_unichar (gunichar c)
     text= g_object_new (IBUS_TYPE_TEXT, NULL);
 
     text->is_static = FALSE;
-    text->text = (gchar *)g_malloc (12);
+    g_return_val_if_fail ((text->text = (gchar *)g_malloc (12)), NULL);
     len = g_unichar_to_utf8 (c, text->text);
     text->text[len] =  0;
 
