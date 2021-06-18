@@ -21,7 +21,6 @@
 
 #include <glib.h>
 #include <glib/gstdio.h>
-#include <locale.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -36,6 +35,7 @@
 
 #define IBUS_COMPOSE_TABLE_MAGIC "IBusComposeTable"
 #define IBUS_COMPOSE_TABLE_VERSION (3)
+#define PATHLEN_MAX 256
 
 typedef struct {
   gunichar     *sequence;
@@ -181,7 +181,8 @@ parse_compose_sequence (IBusComposeData *compose_data,
     int n = 0;
 
     if (g_strv_length (words) < 2) {
-        g_warning ("key sequence format is <a> <b>...: %s", line);
+        g_warning ("too few words; key sequence format is <a> <b>...: %s",
+                   line);
         goto fail;
     }
 
@@ -244,10 +245,68 @@ fail:
 }
 
 
+static gchar *
+expand_include_path (const gchar *include_path) {
+    gchar *out = g_malloc0 (PATHLEN_MAX);
+    gchar *out_lastchar = out + PATHLEN_MAX - 2;
+    const gchar *i = include_path;
+    gchar *o = out;
+
+    while (*i && o < out_lastchar) {
+        // expand sequence
+        if (*i == '%') {
+            switch (*(i+1)) {
+            // $HOME
+            case 'H': {
+                const gchar *home = getenv ("HOME");
+                if (!home) {
+                    g_warning ("while parsing XCompose include target %s, "
+                               "%%H replacement failed because HOME is not "
+                               "defined; the include has been ignored",
+                               include_path);
+                    goto fail;
+                }
+                o = out + g_strlcat (out, home, PATHLEN_MAX);
+                break;
+            }
+            // locale compose file
+            case 'L':
+                g_warning ("while handling XCompose include target %s, found "
+                          "redundant %%L include; the include has been "
+                          "ignored", include_path);
+                goto fail;
+            // system compose dir
+            case 'S':
+                o = out + g_strlcat (out, "/usr/share/X11/locale",
+                                     PATHLEN_MAX);
+                break;
+            // escaped %
+            case '%':
+                *o++ = '%';
+                break;
+            default:
+                g_warning ("while parsing XCompose include target %s, found "
+                           "unknown substitution character '%c'; the include "
+                           "has been ignored", include_path, *(i+1));
+                goto fail;
+            }
+            i += 2;
+        } else {
+            *o++ = *i++;
+        }
+    }
+    return out;
+fail:
+    g_free (out);
+    return NULL;
+}
+
+
 static void
 parse_compose_line (GList       **compose_list,
                     const gchar  *line,
-                    int          *compose_len)
+                    int          *compose_len,
+                    gchar        **include)
 {
     gchar **components = NULL;
     IBusComposeData *compose_data = NULL;
@@ -256,11 +315,32 @@ parse_compose_line (GList       **compose_list,
     g_assert (compose_len);
     *compose_len = 0;
 
+    // eat spaces at the start of the line
+    while (*line && (*line == ' ' || *line == '\t')) line++;
+
     if (line[0] == '\0' || line[0] == '#')
         return;
 
-    if (g_str_has_prefix (line, "include "))
+    if (g_str_has_prefix (line, "include ")) {
+        const char *rest = line + sizeof ("include ") - 1;
+        while (*rest && *rest == ' ') rest++;
+
+        // grabbed the path part of the line
+        char *rest2;
+        if (*rest == '"') {
+            rest++;
+            rest2 = g_strdup (rest);
+            // eat the closing quote
+            char *i = rest2;
+            while (*i && *i != '"') i++;
+            *i = '\0';
+        } else {
+            rest2 = g_strdup (rest);
+        }
+        *include = expand_include_path (rest2);
+        g_free (rest2);
         return;
+    }
 
     components = g_strsplit (line, ":", 2);
 
@@ -316,8 +396,18 @@ ibus_compose_list_parse_file (const gchar *compose_file,
 
     lines = g_strsplit (contents, "\n", -1);
     g_free (contents);
+    gchar *include = NULL;
     for (i = 0; lines[i] != NULL; i++) {
-        parse_compose_line (&compose_list, lines[i], &compose_len);
+        parse_compose_line (&compose_list, lines[i], &compose_len, &include);
+        if (include && *include) {
+            GList *rest = ibus_compose_list_parse_file (include,
+                    max_compose_len);
+            if (rest) {
+                compose_list = g_list_concat (compose_list, rest);
+            }
+        }
+
+        g_clear_pointer (&include, g_free);
         if (*max_compose_len < compose_len)
             *max_compose_len = compose_len;
     }
