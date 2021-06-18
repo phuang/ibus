@@ -34,8 +34,8 @@
 #include "ibusenginesimpleprivate.h"
 
 #define IBUS_COMPOSE_TABLE_MAGIC "IBusComposeTable"
-#define IBUS_COMPOSE_TABLE_VERSION (3)
-#define PATHLEN_MAX 256
+#define IBUS_COMPOSE_TABLE_VERSION (4)
+#define X11_DATADIR X11_DATA_PREFIX "/share/X11/locale"
 
 typedef struct {
   gunichar     *sequence;
@@ -247,17 +247,15 @@ fail:
 
 static gchar *
 expand_include_path (const gchar *include_path) {
-    gchar *out = g_malloc0 (PATHLEN_MAX);
-    gchar *out_lastchar = out + PATHLEN_MAX - 2;
-    const gchar *i = include_path;
-    gchar *o = out;
+    gchar *out = strdup ("");
+    const gchar *head, *i;
+    gchar *former, *o;
 
-    while (*i && o < out_lastchar) {
-        // expand sequence
+    for (head = i = include_path; *i; ++i) {
+        /* expand sequence */
         if (*i == '%') {
-            switch (*(i+1)) {
-            // $HOME
-            case 'H': {
+            switch (*(i + 1)) {
+            case 'H': { /* $HOME */
                 const gchar *home = getenv ("HOME");
                 if (!home) {
                     g_warning ("while parsing XCompose include target %s, "
@@ -266,23 +264,34 @@ expand_include_path (const gchar *include_path) {
                                include_path);
                     goto fail;
                 }
-                o = out + g_strlcat (out, home, PATHLEN_MAX);
+                o = out;
+                former = g_strndup (head, i - head);
+                out = g_strdup_printf ("%s%s%s", o, former, home);
+                head = i + 2;
+                g_free (o);
+                g_free (former);
                 break;
             }
-            // locale compose file
-            case 'L':
+            case 'L': /* locale compose file */
                 g_warning ("while handling XCompose include target %s, found "
                           "redundant %%L include; the include has been "
                           "ignored", include_path);
                 goto fail;
-            // system compose dir
-            case 'S':
-                o = out + g_strlcat (out, "/usr/share/X11/locale",
-                                     PATHLEN_MAX);
+            case 'S': /* system compose dir */
+                o = out;
+                former = g_strndup (head, i - head);
+                out = g_strdup_printf ("%s%s%s", o, former, X11_DATADIR);
+                head = i + 2;
+                g_free (o);
+                g_free (former);
                 break;
-            // escaped %
-            case '%':
-                *o++ = '%';
+            case '%': /* escaped % */
+                o = out;
+                former = g_strndup (head, i - head);
+                out = g_strdup_printf ("%s%s%s", o, former, "%");
+                head = i + 2;
+                g_free (o);
+                g_free (former);
                 break;
             default:
                 g_warning ("while parsing XCompose include target %s, found "
@@ -290,11 +299,12 @@ expand_include_path (const gchar *include_path) {
                            "has been ignored", include_path, *(i+1));
                 goto fail;
             }
-            i += 2;
-        } else {
-            *o++ = *i++;
+            ++i;
         }
     }
+    o = out;
+    out = g_strdup_printf ("%s%s", o, head);
+    g_free (o);
     return out;
 fail:
     g_free (out);
@@ -315,7 +325,7 @@ parse_compose_line (GList       **compose_list,
     g_assert (compose_len);
     *compose_len = 0;
 
-    // eat spaces at the start of the line
+    /* eat spaces at the start of the line */
     while (*line && (*line == ' ' || *line == '\t')) line++;
 
     if (line[0] == '\0' || line[0] == '#')
@@ -325,12 +335,12 @@ parse_compose_line (GList       **compose_list,
         const char *rest = line + sizeof ("include ") - 1;
         while (*rest && *rest == ' ') rest++;
 
-        // grabbed the path part of the line
+        /* grabbed the path part of the line */
         char *rest2;
         if (*rest == '"') {
             rest++;
             rest2 = g_strdup (rest);
-            // eat the closing quote
+            /* eat the closing quote */
             char *i = rest2;
             while (*i && *i != '"') i++;
             *i = '\0';
@@ -374,6 +384,23 @@ fail:
 }
 
 
+static gchar *
+get_en_compose_file (void)
+{
+    gchar * const sys_langs[] = { "en_US.UTF-8", "en_US", "en.UTF-8",
+                                  "en", NULL };
+    gchar * const *sys_lang = NULL;
+    gchar *path = NULL;
+    for (sys_lang = sys_langs; *sys_lang; sys_lang++) {
+        path = g_build_filename (X11_DATADIR, *sys_lang, "Compose", NULL);
+        if (g_file_test (path, G_FILE_TEST_EXISTS))
+            break;
+        g_free (path);
+    }
+    return path;
+}
+
+
 static GList *
 ibus_compose_list_parse_file (const gchar *compose_file,
                               int         *max_compose_len)
@@ -399,6 +426,52 @@ ibus_compose_list_parse_file (const gchar *compose_file,
     gchar *include = NULL;
     for (i = 0; lines[i] != NULL; i++) {
         parse_compose_line (&compose_list, lines[i], &compose_len, &include);
+        if (*max_compose_len < compose_len)
+            *max_compose_len = compose_len;
+        if (include && *include) {
+            GStatBuf buf_include = { 0, };
+            GStatBuf buf_parent = { 0, };
+            gchar *en_compose;
+            errno = 0;
+            if (g_stat (include,  &buf_include)) {
+                g_warning ("Cannot access %s: %s",
+                           include,
+                           g_strerror (errno));
+                g_clear_pointer (&include, g_free);
+                continue;
+            }
+            errno = 0;
+            if (g_stat (compose_file,  &buf_parent)) {
+                g_warning ("Cannot access %s: %s",
+                           compose_file,
+                           g_strerror (errno));
+                g_clear_pointer (&include, g_free);
+                continue;
+            }
+            if (buf_include.st_ino == buf_parent.st_ino) {
+                g_warning ("Found recursive nest same file %s", include);
+                g_clear_pointer (&include, g_free);
+                continue;
+            }
+            en_compose = get_en_compose_file ();
+            if (en_compose) {
+                errno = 0;
+                if (g_stat (en_compose,  &buf_parent)) {
+                    g_warning ("Cannot access %s: %s",
+                               compose_file,
+                               g_strerror (errno));
+                    g_clear_pointer (&include, g_free);
+                    g_free (en_compose);
+                    continue;
+                }
+            }
+            g_free (en_compose);
+            if (buf_include.st_ino == buf_parent.st_ino) {
+                g_log ("System en_US Compose is already loaded %s\n", include);
+                g_clear_pointer (&include, g_free);
+                continue;
+            }
+        }
         if (include && *include) {
             GList *rest = ibus_compose_list_parse_file (include,
                     max_compose_len);
@@ -406,10 +479,7 @@ ibus_compose_list_parse_file (const gchar *compose_file,
                 compose_list = g_list_concat (compose_list, rest);
             }
         }
-
         g_clear_pointer (&include, g_free);
-        if (*max_compose_len < compose_len)
-            *max_compose_len = compose_len;
     }
     g_strfreev (lines);
 
