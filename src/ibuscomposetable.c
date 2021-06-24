@@ -410,7 +410,6 @@ ibus_compose_list_parse_file (const gchar *compose_file,
     gsize length = 0;
     GError *error = NULL;
     GList *compose_list = NULL;
-    int compose_len = 0;
     int i;
 
     g_assert (max_compose_len);
@@ -423,8 +422,9 @@ ibus_compose_list_parse_file (const gchar *compose_file,
 
     lines = g_strsplit (contents, "\n", -1);
     g_free (contents);
-    gchar *include = NULL;
     for (i = 0; lines[i] != NULL; i++) {
+        int compose_len = 0;
+        gchar *include = NULL;
         parse_compose_line (&compose_list, lines[i], &compose_len, &include);
         if (*max_compose_len < compose_len)
             *max_compose_len = compose_len;
@@ -467,7 +467,8 @@ ibus_compose_list_parse_file (const gchar *compose_file,
             }
             g_free (en_compose);
             if (buf_include.st_ino == buf_parent.st_ino) {
-                g_log ("System en_US Compose is already loaded %s\n", include);
+                g_message ("System en_US Compose is already loaded %s\n",
+                           include);
                 g_clear_pointer (&include, g_free);
                 continue;
             }
@@ -583,12 +584,20 @@ ibus_compose_data_compare (gpointer a,
     IBusComposeData *compose_data_b = b;
     int max_compose_len = GPOINTER_TO_INT (data);
     int i;
+    /* The allocation length of compose_data_a->sequence[] is different from
+     * one of compose_data_b->sequence[] and max_compose_len indicates
+     * the sequence length only but not include the compose value length.
+     * So max_compose_len is greater than any allocation lengths of sequence[]
+     * and this API should return if code_a or code_b is 0.
+     */
     for (i = 0; i < max_compose_len; i++) {
         gunichar code_a = compose_data_a->sequence[i];
         gunichar code_b = compose_data_b->sequence[i];
 
         if (code_a != code_b)
             return code_a - code_b;
+        if (code_a == 0 && code_b == 0)
+            return 0;
     }
     return 0;
 }
