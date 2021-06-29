@@ -217,6 +217,10 @@ init_gnome()
 {
     # gsettings set command needs dconf-service with the same $DISPLAY
     pkill dconf-service
+    # G_MESSAGES_DEBUG=all or G_MESSAGES_DEBUG=GLib-GIO-DEBUG would append
+    # debug messages to gsettings output and could not get the result correctly.
+    backup_G_MESSAGES_DEBUG="$G_MESSAGES_DEBUG"
+    export -n G_MESSAGES_DEBUG=''
     # Disable Tour dialog to get focus
     V=`gsettings get org.gnome.shell welcome-dialog-last-shown-version`
     if [ x"$V" = x"''" ] ; then
@@ -238,13 +242,16 @@ init_gnome()
     echo "$V" | grep "no-overview" > /dev/null
     V2=$?
     if [ $V2 -ne 0 ] ; then
-        V3=`echo "$V" | sed -e 's/\[//' -e 's/\]//'`
-        if [ x"$V3" = x"''" ] ; then
+        V3=`echo "$V" | sed -e 's/@as //' -e 's/\[//' -e 's/\]//'`
+        if [ x"$V3" = x"''" ] || [ x"$V3" = x"" ]; then
             V4="['no-overview@fthx']"
         else
             V4="[$V3, 'no-overview@fthx']"
         fi
         gsettings set org.gnome.shell enabled-extensions "$V4"
+    fi
+    if [ x"$backup_G_MESSAGES_DEBUG" != x ] ; then
+        export G_MESSAGES_DEBUG="$backup_G_MESSAGES_DEBUG"
     fi
 }
 
