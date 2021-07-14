@@ -183,7 +183,7 @@
       <description>The shortcut keys for turning Unicode typing on or off</description>
     </key>
     <key name="hotkey" type="as">
-      <default>[ '&lt;Control&gt;&lt;Shift&gt;e' ]</default>
+      <default>[ '&lt;Control&gt;period' ]</default>
       <summary>Emoji shortcut keys for gtk_accelerator_parse</summary>
       <description>The shortcut keys for turning emoji typing on or off</description>
     </key>
