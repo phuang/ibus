@@ -120,12 +120,26 @@ class EngineDialog(Gtk.Dialog):
             return True
         if word in row.untrans.lower():
             return True
-        if row.lang_info and row.name in self.__engines_for_lang:
-            for row_e in self.__engines_for_lang[row.name]:
-                if word in row_e.name.lower():
-                    return True
-                if word in row_e.untrans.lower():
-                    return True
+        # Search engine name in language list
+        if row.lang_info:
+            if row.name in self.__engines_for_lang.keys():
+                for row_l in self.__engines_for_lang[row.name]:
+                    if word in row_l.name.lower():
+                        return True
+                    if word in row_l.untrans.lower():
+                        return True
+        # Search language name in engine list
+        if not row.lang_info:
+            for l in self.__engines_for_lang.keys():
+                if word in l.lower():
+                    for row_l in self.__engines_for_lang[l]:
+                        if row.name == row_l.name:
+                            return True
+            for (trans, untrans) in self.__untrans_for_lang.items():
+                if word in untrans.lower():
+                    for row_l in self.__engines_for_lang[trans]:
+                        if row.name == row_l.name:
+                            return True
         return False
 
 
