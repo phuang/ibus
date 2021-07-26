@@ -79,8 +79,8 @@ typedef struct {
 struct _IBusEngineSimplePrivate {
     guint16            *compose_buffer;
     gunichar            tentative_match;
-    gchar              *tentative_emoji;
-    gint                tentative_match_len;
+    char               *tentative_emoji;
+    int                 tentative_match_len;
 
     guint               hex_mode_enabled : 1;
     guint               in_hex_sequence : 1;
@@ -142,7 +142,7 @@ static void     ibus_engine_simple_candidate_clicked
 static void     ibus_engine_simple_commit_char (IBusEngineSimple    *simple,
                                                 gunichar             ch);
 static void     ibus_engine_simple_commit_str  (IBusEngineSimple    *simple,
-                                                const gchar         *str);
+                                                const char          *str);
 static void     ibus_engine_simple_update_preedit_text
                                                (IBusEngineSimple    *simple);
 
@@ -260,10 +260,10 @@ ibus_engine_simple_commit_char (IBusEngineSimple *simple,
 
 static void
 ibus_engine_simple_commit_str (IBusEngineSimple *simple,
-                               const gchar      *str)
+                               const char       *str)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
-    gchar *backup_str;
+    char *backup_str;
 
     g_return_if_fail (str && *str);
 
@@ -368,15 +368,15 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
 
 static gboolean
 check_hex (IBusEngineSimple *simple,
-           gint              n_compose)
+           int               n_compose)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
 
-    gint i;
+    int i;
     GString *str;
     gulong n;
-    gchar *nptr = NULL;
-    gchar buf[7];
+    char *nptr = NULL;
+    char buf[7];
 
     CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
@@ -453,14 +453,14 @@ load_emoji_dict ()
 
 static gboolean
 check_emoji_table (IBusEngineSimple       *simple,
-                   gint                    n_compose,
-                   gint                    index)
+                   int                     n_compose,
+                   int                     index)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
     IBusEngineDict *emoji_dict = priv->emoji_dict;
     GString *str = NULL;
-    gint i;
-    gchar buf[7];
+    int i;
+    char buf[7];
     GSList *words = NULL;
 
     g_assert (IBUS_IS_ENGINE_SIMPLE (simple));
@@ -535,7 +535,7 @@ check_emoji_table (IBusEngineSimple       *simple,
 
 static gboolean
 no_sequence_matches (IBusEngineSimple *simple,
-                     gint              n_compose,
+                     int               n_compose,
                      guint             keyval,
                      guint             keycode,
                      guint             modifiers)
@@ -550,7 +550,7 @@ no_sequence_matches (IBusEngineSimple *simple,
      * match pending.
      */
     if (priv->tentative_match) {
-        gint len = priv->tentative_match_len;
+        int len = priv->tentative_match_len;
         int i;
 
         ibus_engine_simple_commit_char (simple, priv->tentative_match);
@@ -615,7 +615,7 @@ ibus_engine_simple_update_lookup_and_aux_table (IBusEngineSimple *simple)
 {
     IBusEngineSimplePrivate *priv;
     guint index, candidates;
-    gchar *aux_label = NULL;
+    char *aux_label = NULL;
     IBusText *text = NULL;
 
     g_return_if_fail (IBUS_IS_ENGINE_SIMPLE (simple));
@@ -697,7 +697,7 @@ ibus_engine_simple_set_number_on_lookup_table (IBusEngineSimple *simple,
 
 static gboolean
 ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
-                                            gint              n_compose)
+                                            int               n_compose)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
     gboolean compose_finish = FALSE;
@@ -818,7 +818,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 {
     IBusEngineSimple *simple = (IBusEngineSimple *)engine;
     IBusEngineSimplePrivate *priv = simple->priv;
-    gint n_compose = 0;
+    int n_compose = 0;
     gboolean have_hex_mods;
     gboolean is_hex_start = FALSE;
     gboolean is_emoji_start = FALSE;
@@ -828,7 +828,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
     gboolean is_escape;
     guint hex_keyval;
     guint printable_keyval;
-    gint i;
+    int i;
 
     while (n_compose <= COMPOSE_BUFFER_SIZE && priv->compose_buffer[n_compose] != 0)
         n_compose++;
@@ -1274,7 +1274,7 @@ ibus_engine_simple_candidate_clicked (IBusEngine *engine,
     IBusEngineSimple *simple = (IBusEngineSimple *)engine;
     IBusEngineSimplePrivate *priv = simple->priv;
     guint keyval;
-    gint n_compose = 0;
+    int n_compose = 0;
 
     if (priv->lookup_table == NULL || !priv->lookup_table_visible)
         return;
@@ -1308,18 +1308,18 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
 {
     /* Now ibus_engine_simple_add_compose_file() always returns TRUE. */
     gboolean retval = TRUE;
-    gchar *path = NULL;
-    const gchar *home;
+    char *path = NULL;
+    const char *home;
 #if GLIB_CHECK_VERSION (2, 58, 0)
-    const gchar * const *langs;
-    const gchar * const *lang = NULL;
+    const char * const *langs;
+    const char * const *lang = NULL;
 #else
-    const gchar *_locale;
-    gchar **langs = NULL;
-    gchar **lang = NULL;
+    const char *_locale;
+    char **langs = NULL;
+    char **lang = NULL;
 #endif
-    gchar * const sys_langs[] = { "el_gr", "fi_fi", "pt_br", NULL };
-    gchar * const *sys_lang = NULL;
+    char * const sys_langs[] = { "el_gr", "fi_fi", "pt_br", NULL };
+    char * const *sys_lang = NULL;
 
     if (locale == NULL) {
         path = g_build_filename (g_get_user_config_dir (),

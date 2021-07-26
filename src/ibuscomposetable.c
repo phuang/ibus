@@ -47,7 +47,7 @@
 typedef struct {
   gunichar     *sequence;
   gunichar     *values;
-  gchar        *comment;
+  char         *comment;
 } IBusComposeData;
 
 
@@ -85,7 +85,7 @@ unichar_length (gunichar *uni_array)
 
 
 static gboolean
-is_codepoint (const gchar *str)
+is_codepoint (const char *str)
 {
     int i;
 
@@ -104,11 +104,11 @@ is_codepoint (const gchar *str)
 
 static gboolean
 parse_compose_value (IBusComposeData  *compose_data,
-                     const gchar      *val,
-                     const gchar      *line)
+                     const char       *val,
+                     const char       *line)
 {
-    gchar *head, *end, *p;
-    gchar *ustr = NULL;
+    char *head, *end, *p;
+    char *ustr = NULL;
     gunichar *uchars = NULL, *up;
     GError *error = NULL;
     int n_uchars = 0;
@@ -184,10 +184,10 @@ fail:
 
 static int
 parse_compose_sequence (IBusComposeData *compose_data,
-                        const gchar     *seq,
-                        const gchar     *line)
+                        const char      *seq,
+                        const char      *line)
 {
-    gchar **words = g_strsplit (seq, "<", -1);
+    char **words = g_strsplit (seq, "<", -1);
     int i;
     int n = 0;
 
@@ -198,9 +198,9 @@ parse_compose_sequence (IBusComposeData *compose_data,
     }
 
     for (i = 1; words[i] != NULL; i++) {
-        gchar *start = words[i];
-        gchar *end = index (words[i], '>');
-        gchar *match;
+        char *start = words[i];
+        char *end = index (words[i], '>');
+        char *match;
         gunichar codepoint;
 
         if (words[i][0] == '\0')
@@ -256,18 +256,18 @@ fail:
 }
 
 
-static gchar *
-expand_include_path (const gchar *include_path) {
-    gchar *out = strdup ("");
-    const gchar *head, *i;
-    gchar *former, *o;
+static char *
+expand_include_path (const char *include_path) {
+    char *out = strdup ("");
+    const char *head, *i;
+    char *former, *o;
 
     for (head = i = include_path; *i; ++i) {
         /* expand sequence */
         if (*i == '%') {
             switch (*(i + 1)) {
             case 'H': { /* $HOME */
-                const gchar *home = getenv ("HOME");
+                const char *home = getenv ("HOME");
                 if (!home) {
                     g_warning ("while parsing XCompose include target %s, "
                                "%%H replacement failed because HOME is not "
@@ -325,11 +325,11 @@ fail:
 
 static void
 parse_compose_line (GList       **compose_list,
-                    const gchar  *line,
+                    const char   *line,
                     int          *compose_len,
-                    gchar        **include)
+                    char        **include)
 {
-    gchar **components = NULL;
+    char **components = NULL;
     IBusComposeData *compose_data = NULL;
     int l;
 
@@ -395,13 +395,13 @@ fail:
 }
 
 
-static gchar *
+static char *
 get_en_compose_file (void)
 {
-    gchar * const sys_langs[] = { "en_US.UTF-8", "en_US", "en.UTF-8",
-                                  "en", NULL };
-    gchar * const *sys_lang = NULL;
-    gchar *path = NULL;
+    char * const sys_langs[] = { "en_US.UTF-8", "en_US", "en.UTF-8",
+                                 "en", NULL };
+    char * const *sys_lang = NULL;
+    char *path = NULL;
     for (sys_lang = sys_langs; *sys_lang; sys_lang++) {
         path = g_build_filename (X11_DATADIR, *sys_lang, "Compose", NULL);
         if (g_file_test (path, G_FILE_TEST_EXISTS))
@@ -413,11 +413,11 @@ get_en_compose_file (void)
 
 
 static GList *
-ibus_compose_list_parse_file (const gchar *compose_file,
-                              int         *max_compose_len)
+ibus_compose_list_parse_file (const char *compose_file,
+                              int        *max_compose_len)
 {
-    gchar *contents = NULL;
-    gchar **lines = NULL;
+    char *contents = NULL;
+    char **lines = NULL;
     gsize length = 0;
     GError *error = NULL;
     GList *compose_list = NULL;
@@ -435,14 +435,14 @@ ibus_compose_list_parse_file (const gchar *compose_file,
     g_free (contents);
     for (i = 0; lines[i] != NULL; i++) {
         int compose_len = 0;
-        gchar *include = NULL;
+        char *include = NULL;
         parse_compose_line (&compose_list, lines[i], &compose_len, &include);
         if (*max_compose_len < compose_len)
             *max_compose_len = compose_len;
         if (include && *include) {
             GStatBuf buf_include = { 0, };
             GStatBuf buf_parent = { 0, };
-            gchar *en_compose;
+            char *en_compose;
             errno = 0;
             if (g_stat (include,  &buf_include)) {
                 g_warning ("Cannot access %s: %s",
@@ -588,7 +588,7 @@ ibus_compose_list_check_duplicated (GList *compose_list,
 }
 
 
-static gint
+static int
 ibus_compose_data_compare (gpointer a,
                            gpointer b,
                            gpointer data)
@@ -625,7 +625,7 @@ ibus_compose_list_print (GList *compose_list,
     int i, j;
     IBusComposeData *compose_data;
     int total_size = 0;
-    const gchar *keyval;
+    const char *keyval;
 
     for (list = compose_list; list != NULL; list = list->next) {
         compose_data = list->data;
@@ -682,13 +682,13 @@ ibus_compose_table_data_hash (gconstpointer v,
 }
 
 
-static gchar *
+static char *
 ibus_compose_hash_get_cache_path (guint32 hash)
 {
-    gchar *basename = NULL;
-    const gchar *cache_dir;
-    gchar *dir = NULL;
-    gchar *path = NULL;
+    char *basename = NULL;
+    const char *cache_dir;
+    char *dir = NULL;
+    char *path = NULL;
 
     basename = g_strdup_printf ("%08x.cache", hash);
 
@@ -715,7 +715,7 @@ ibus_compose_hash_get_cache_path (guint32 hash)
 static GVariant *
 ibus_compose_table_serialize (IBusComposeTableEx *compose_table)
 {
-    const gchar *header = IBUS_COMPOSE_TABLE_MAGIC;
+    const char *header = IBUS_COMPOSE_TABLE_MAGIC;
     const guint16 version = IBUS_COMPOSE_TABLE_VERSION;
     guint16 max_seq_len;
     guint16 index_stride;
@@ -825,7 +825,7 @@ out_serialize:
 }
 
 
-static gint
+static int
 ibus_compose_table_find (gconstpointer data1,
                          gconstpointer data2)
 {
@@ -837,8 +837,8 @@ ibus_compose_table_find (gconstpointer data1,
 
 
 static IBusComposeTableEx *
-ibus_compose_table_deserialize (const gchar *contents,
-                                gsize        length)
+ibus_compose_table_deserialize (const char *contents,
+                                gsize       length)
 {
     IBusComposeTableEx *retval = NULL;
     GVariantType *type;
@@ -846,7 +846,7 @@ ibus_compose_table_deserialize (const gchar *contents,
     GVariant *variant_data_32bit_first = NULL;
     GVariant *variant_data_32bit_second = NULL;
     GVariant *variant_table = NULL;
-    const gchar *header = NULL;
+    const char *header = NULL;
     guint16 version = 0;
     guint16 max_seq_len = 0;
     guint16 n_seqs = 0;
@@ -1020,8 +1020,8 @@ ibus_compose_table_load_cache (const gchar *compose_file)
 {
     IBusComposeTableEx *retval = NULL;
     guint32 hash;
-    gchar *path = NULL;
-    gchar *contents = NULL;
+    char *path = NULL;
+    char *contents = NULL;
     GStatBuf original_buf;
     GStatBuf cache_buf;
     gsize length = 0;
@@ -1063,9 +1063,9 @@ ibus_compose_table_load_cache (const gchar *compose_file)
 void
 ibus_compose_table_save_cache (IBusComposeTableEx *compose_table)
 {
-    gchar *path = NULL;
+    char *path = NULL;
     GVariant *variant_table = NULL;
-    const gchar *contents = NULL;
+    const char *contents = NULL;
     GError *error = NULL;
     gsize length = 0;
 
@@ -1392,13 +1392,13 @@ compare_seq (const void *key, const void *value)
 gboolean
 ibus_compose_table_check (const IBusComposeTableEx *table,
                           guint16                  *compose_buffer,
-                          gint                      n_compose,
+                          int                       n_compose,
                           gboolean                 *compose_finish,
                           gboolean                 *compose_match,
                           GString                  *output,
                           gboolean                  is_32bit)
 {
-    gint row_stride = table->max_seq_len + 2;
+    int row_stride = table->max_seq_len + 2;
     guint16 *data_first;
     int n_seqs;
     guint16 *seq;
@@ -1448,7 +1448,7 @@ ibus_compose_table_check (const IBusComposeTableEx *table,
         gunichar value = 0;
         int num = 0;
         int index = 0;
-        gchar *output_str = NULL;
+        char *output_str = NULL;
         GError *error = NULL;
 
         if (is_32bit) {
@@ -1526,15 +1526,15 @@ gboolean
 ibus_compose_table_compact_check (const IBusComposeTableCompactEx *table,
                                   guint16
                                                                *compose_buffer,
-                                  gint                             n_compose,
+                                  int                              n_compose,
                                   gboolean
                                                                *compose_finish,
                                   gunichar                       **output_chars)
 {
-    gint row_stride;
+    int row_stride;
     guint16 *seq_index;
     guint16 *seq;
-    gint i;
+    int i;
 
     if (compose_finish)
         *compose_finish = FALSE;
@@ -1654,14 +1654,14 @@ ibus_compose_table_compact_check (const IBusComposeTableCompactEx *table,
  * permutations of the diacritic marks, then attempt to normalize.
  */
 static gboolean
-check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
+check_normalize_nfc (gunichar* combination_buffer, int n_compose)
 {
     gunichar combination_buffer_temp[IBUS_MAX_COMPOSE_LEN];
-    gchar *combination_utf8_temp = NULL;
-    gchar *nfc_temp = NULL;
-    gint n_combinations;
+    char *combination_utf8_temp = NULL;
+    char *nfc_temp = NULL;
+    int n_combinations;
     gunichar temp_swap;
-    gint i;
+    int i;
 
     n_combinations = 1;
 
@@ -1703,8 +1703,8 @@ check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
         g_free (nfc_temp);
 
         if (n_compose > 2) {
-            gint j = i % (n_compose - 1) + 1;
-            gint k = (i+1) % (n_compose - 1) + 1;
+            int j = i % (n_compose - 1) + 1;
+            int k = (i+1) % (n_compose - 1) + 1;
             if (j >= IBUS_MAX_COMPOSE_LEN) {
                 g_warning ("j >= IBUS_MAX_COMPOSE_LEN for " \
                            "combination_buffer_temp");
@@ -1729,13 +1729,13 @@ check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
 
 gboolean
 ibus_check_algorithmically (const guint16 *compose_buffer,
-                            gint           n_compose,
+                            int            n_compose,
                             gunichar      *output_char)
 
 {
-    gint i;
+    int i;
     gunichar combination_buffer[IBUS_MAX_COMPOSE_LEN];
-    gchar *combination_utf8, *nfc;
+    char *combination_utf8, *nfc;
 
     if (output_char)
         *output_char = 0;

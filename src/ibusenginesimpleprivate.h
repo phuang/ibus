@@ -43,11 +43,11 @@ struct _IBusComposeTableCompactPrivate
 };
 
 gboolean ibus_check_algorithmically (const guint16              *compose_buffer,
-                                     gint                        n_compose,
+                                     int                         n_compose,
                                      gunichar                   *output);
 gboolean ibus_compose_table_check   (const IBusComposeTableEx   *table,
                                      guint16                    *compose_buffer,
-                                     gint                        n_compose,
+                                     int                         n_compose,
                                      gboolean                   *compose_finish,
                                      gboolean                   *compose_match,
                                      GString                    *output,
@@ -56,7 +56,7 @@ gboolean ibus_compose_table_compact_check
                                     (const IBusComposeTableCompactEx
                                                                 *table,
                                      guint16                    *compose_buffer,
-                                     gint                        n_compose,
+                                     int                         n_compose,
                                      gboolean                   *compose_finish,
                                      gunichar                  **output_chars);
 gunichar ibus_keysym_to_unicode     (guint16                     keysym,
