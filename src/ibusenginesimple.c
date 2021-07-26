@@ -289,32 +289,27 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
 
-    gunichar outbuf[COMPOSE_BUFFER_SIZE + 1];
-    int len = 0;
+    GString *s = g_string_new ("");
 
     if (priv->in_hex_sequence || priv->in_emoji_sequence) {
         int hexchars = 0;
 
         if (priv->in_hex_sequence)
-            outbuf[0] = L'u';
+            g_string_append_c (s, 'u');
         else
-            outbuf[0] = L'@';
-
-        len = 1;
+            g_string_append_c (s, '@');
 
         while (priv->compose_buffer[hexchars] != 0) {
-            outbuf[len] = ibus_keyval_to_unicode (
-                priv->compose_buffer[hexchars]);
-            ++len;
-            ++hexchars;
+            g_string_append_unichar(
+                    s,
+                    ibus_keyval_to_unicode (priv->compose_buffer[hexchars++])
+            );
         }
-
-        g_assert (len <= COMPOSE_BUFFER_SIZE);
     } else if (priv->tentative_match) {
-        outbuf[len++] = priv->tentative_match;
+        g_string_append_unichar(s, priv->tentative_match);
     } else if (priv->tentative_emoji && *priv->tentative_emoji) {
         IBusText *text = ibus_text_new_from_string (priv->tentative_emoji);
-        len = strlen (priv->tentative_emoji);
+        int len = strlen (priv->tentative_emoji);
         ibus_text_append_attribute (text,
                 IBUS_ATTR_TYPE_UNDERLINE, IBUS_ATTR_UNDERLINE_SINGLE, 0, len);
         ibus_engine_update_preedit_text ((IBusEngine *)simple, text, len, TRUE);
@@ -324,31 +319,33 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
         while (priv->compose_buffer[hexchars] != 0) {
             guint16 keysym = priv->compose_buffer[hexchars];
             gunichar unichar = ibus_keysym_to_unicode (keysym, FALSE);
-            if (unichar > 0)
-                outbuf[len] = unichar;
-            else
-                outbuf[len] = ibus_keyval_to_unicode (keysym);
-            if (!outbuf[len]) {
+            if (unichar > 0) {
+                g_string_append_unichar(s, unichar);
+            } else {
+                unichar = ibus_keyval_to_unicode (keysym);
+                g_string_append_unichar(s, unichar);
+            }
+            if (!unichar) {
                 g_warning (
                         "Not found alternative character of compose key 0x%X",
                         priv->compose_buffer[hexchars]);
             }
-            ++len;
             ++hexchars;
         }
-        g_assert (len <= IBUS_MAX_COMPOSE_LEN);
     }
 
-    outbuf[len] = L'\0';
-    if (len == 0) {
+    if (s->len == 0) {
         ibus_engine_hide_preedit_text ((IBusEngine *)simple);
-    }
-    else {
-        IBusText *text = ibus_text_new_from_ucs4 (outbuf);
+    } else if (s->len >= G_MAXINT) {
+        g_warning ("%s is too long compose length: %lu", s->str, s->len);
+    } else {
+        int len = (int)s->len;
+        IBusText *text = ibus_text_new_from_string (s->str);
         ibus_text_append_attribute (text,
                 IBUS_ATTR_TYPE_UNDERLINE, IBUS_ATTR_UNDERLINE_SINGLE, 0, len);
         ibus_engine_update_preedit_text ((IBusEngine *)simple, text, len, TRUE);
     }
+    g_string_free (s, TRUE);
 }
 
 

@@ -1846,7 +1846,13 @@ ibus_keysym_to_unicode (guint16  keysym,
     CASE_COMBINE (tilde,                        0x0303, 0x007E);
     CASE_COMBINE (voiced_sound,                 0x3099, 0x309B);
     case IBUS_KEY_Multi_key:
-        return 0x2384;
+        /* We only show the Compose key visibly when it is the
+         * only glyph in the preedit, or when it occurs in the
+         * middle of the sequence. Sadly, the official character,
+         * U+2384, COMPOSITION SYMBOL, is bit too distracting, so
+         * we use U+00B7, MIDDLE DOT.
+         */
+        return 0x00B7;
     default:;
     }
     return 0x0;
