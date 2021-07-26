@@ -33,6 +33,13 @@
 
 #include "ibusenginesimpleprivate.h"
 
+/* This file contains the table of the compose sequences,
+ * static const guint16 gtk_compose_seqs_compact[] = {}
+ * It is generated from the compose-parse.py script.
+ */
+#include "gtkimcontextsimpleseqs.h"
+
+
 #define IBUS_COMPOSE_TABLE_MAGIC "IBusComposeTable"
 #define IBUS_COMPOSE_TABLE_VERSION (4)
 #define X11_DATADIR X11_DATA_PREFIX "/share/X11/locale"
@@ -42,6 +49,10 @@ typedef struct {
   gunichar     *values;
   gchar        *comment;
 } IBusComposeData;
+
+
+extern const IBusComposeTableCompactEx ibus_compose_table_compact;
+extern const IBusComposeTableCompactEx ibus_compose_table_compact_32bit;
 
 
 static void
@@ -527,20 +538,22 @@ ibus_compose_list_check_duplicated (GList *compose_list,
         is_32bit = (n_outputs > 1) ? TRUE :
                 (compose_data->values[0] >= 0xFFFF) ? TRUE : FALSE;
         if (!is_32bit &&
-            ibus_check_compact_table (&ibus_compose_table_compact,
-                                      keysyms,
-                                      n_compose,
-                                      &compose_finish,
-                                      &output_chars) && compose_finish) {
+            ibus_compose_table_compact_check (&ibus_compose_table_compact,
+                                              keysyms,
+                                              n_compose,
+                                              &compose_finish,
+                                              &output_chars) &&
+            compose_finish) {
             if (compose_data->values[0] == *output_chars)
                 removed_list = g_list_append (removed_list, compose_data);
             g_free (output_chars);
         } else if (is_32bit &&
-                   ibus_check_compact_table (&ibus_compose_table_compact_32bit,
-                                             keysyms,
-                                             n_compose,
-                                             &compose_finish,
-                                             &output_chars) && compose_finish) {
+                   ibus_compose_table_compact_check (
+                          &ibus_compose_table_compact_32bit,
+                          keysyms,
+                          n_compose,
+                          &compose_finish,
+                          &output_chars) && compose_finish) {
             
             if (n_outputs == unichar_length (output_chars)) {
                 int j = 0;
@@ -1353,4 +1366,490 @@ ibus_compose_table_list_add_file (GSList      *compose_tables,
 
     ibus_compose_table_save_cache (compose_table);
     return g_slist_prepend (compose_tables, compose_table);
+}
+
+
+static int
+compare_seq (const void *key, const void *value)
+{
+    int i = 0;
+    const guint16 *keysyms = key;
+    const guint16 *seq = value;
+
+    while (keysyms[i]) {
+        if (keysyms[i] < seq[i])
+            return -1;
+        else if (keysyms[i] > seq[i])
+            return 1;
+
+        i++;
+    }
+
+    return 0;
+}
+
+
+gboolean
+ibus_compose_table_check (const IBusComposeTableEx *table,
+                          guint16                  *compose_buffer,
+                          gint                      n_compose,
+                          gboolean                 *compose_finish,
+                          gboolean                 *compose_match,
+                          GString                  *output,
+                          gboolean                  is_32bit)
+{
+    gint row_stride = table->max_seq_len + 2;
+    guint16 *data_first;
+    int n_seqs;
+    guint16 *seq;
+
+    if (compose_finish)
+        *compose_finish = FALSE;
+    if (compose_match)
+        *compose_match = FALSE;
+    if (output)
+        g_string_set_size (output, 0);
+
+    if (n_compose > table->max_seq_len)
+        return FALSE;
+
+    if (is_32bit) {
+        if (!table->priv)
+            return FALSE;
+        data_first = table->priv->data_first;
+        n_seqs = table->priv->first_n_seqs;
+    } else {
+        data_first = table->data;
+        n_seqs = table->n_seqs;
+    }
+    seq = bsearch (compose_buffer,
+                   data_first, n_seqs,
+                   sizeof (guint16) * row_stride,
+                   compare_seq);
+
+    if (seq == NULL)
+        return FALSE;
+
+    guint16 *prev_seq;
+
+    /* Back up to the first sequence that matches to make sure
+     * we find the exact match if their is one.
+     */
+    while (seq > data_first) {
+        prev_seq = seq - row_stride;
+        if (compare_seq (compose_buffer, prev_seq) != 0)
+            break;
+        seq = prev_seq;
+    }
+
+    /* complete sequence */
+    if (n_compose == table->max_seq_len || seq[n_compose] == 0) {
+        guint16 *next_seq;
+        gunichar value = 0;
+        int num = 0;
+        int index = 0;
+        gchar *output_str = NULL;
+        GError *error = NULL;
+
+        if (is_32bit) {
+            num = seq[table->max_seq_len];
+            index = seq[table->max_seq_len + 1];
+            value =  table->priv->data_second[index];
+        } else {
+            value = seq[table->max_seq_len];
+        }
+
+        if (is_32bit) {
+            output_str = g_ucs4_to_utf8 (table->priv->data_second + index,
+                                         num, NULL, NULL, &error);
+            if (output_str) {
+                if (output)
+                    g_string_append (output, output_str);
+                g_free (output_str);
+                if (compose_match)
+                    *compose_match = TRUE;
+            } else {
+                g_warning ("Failed to output multiple characters: %s",
+                           error->message);
+                g_error_free (error);
+            }
+        } else {
+            if (output)
+                g_string_append_unichar (output, value);
+            if (compose_match)
+                *compose_match = TRUE;
+        }
+
+        /* We found a tentative match. See if there are any longer
+         * sequences containing this subsequence
+         */
+        next_seq = seq + row_stride;
+        if (next_seq < data_first + row_stride * n_seqs) {
+            if (compare_seq (compose_buffer, next_seq) == 0)
+                return TRUE;
+        }
+
+        if (compose_finish)
+            *compose_finish = TRUE;
+        compose_buffer[0] = 0;
+    }
+    return TRUE;
+}
+
+
+static int
+compare_seq_index (const void *key, const void *value)
+{
+    const guint16 *keysyms = key;
+    const guint16 *seq = value;
+
+    if (keysyms[0] < seq[0])
+        return -1;
+    else if (keysyms[0] > seq[0])
+        return 1;
+    return 0;
+}
+
+
+/**
+ * ibus_compose_table_compact_check:
+ * @table: A const `IBusComposeTableCompactEx`
+ * @compose_buffer: Typed compose sequence buffer
+ * @n_compose: The length of `compose_buffer`
+ * @compose_finish: If %TRUE, `output_chars` should be committed
+ * @output_chars: An array of gunichar of output compose characters
+ *
+ * output_chars is better to use gunichar instead of GString because
+ * IBusComposeData->values[] is the gunichar array.
+ */
+gboolean
+ibus_compose_table_compact_check (const IBusComposeTableCompactEx *table,
+                                  guint16
+                                                               *compose_buffer,
+                                  gint                             n_compose,
+                                  gboolean
+                                                               *compose_finish,
+                                  gunichar                       **output_chars)
+{
+    gint row_stride;
+    guint16 *seq_index;
+    guint16 *seq;
+    gint i;
+
+    if (compose_finish)
+        *compose_finish = FALSE;
+    if (output_chars)
+        *output_chars = NULL;
+
+    /* Will never match, if the sequence in the compose buffer is longer
+     * than the sequences in the table.  Further, compare_seq (key, val)
+     * will overrun val if key is longer than val. */
+    if (n_compose > table->max_seq_len)
+        return FALSE;
+
+    seq_index = bsearch (compose_buffer,
+                         table->data,
+                         table->n_index_size,
+                         sizeof (guint16) *  table->n_index_stride,
+                         compare_seq_index);
+
+    if (seq_index == NULL)
+        return FALSE;
+
+    if (n_compose == 1)
+        return TRUE;
+
+    seq = NULL;
+
+    if (table->priv) {
+        for (i = n_compose - 1; i < table->max_seq_len; i++) {
+            row_stride = i + 2;
+
+            if (seq_index[i + 1] - seq_index[i] > 0) {
+                seq = bsearch (compose_buffer + 1,
+                               table->data + seq_index[i],
+                               (seq_index[i + 1] - seq_index[i]) / row_stride,
+                               sizeof (guint16) * row_stride,
+                               compare_seq);
+                if (seq) {
+                    if (i == n_compose - 1)
+                        break;
+                    else
+                        return TRUE;
+                }
+            }
+        }
+        if (!seq) {
+            return FALSE;
+        } else {
+            int index = seq[row_stride - 2];
+            int length = seq[row_stride - 1];
+            int j;
+            if (compose_finish)
+                *compose_finish = TRUE;
+            if (output_chars) {
+                *output_chars = g_new (gunichar, length + 1);
+                for (j = 0; j < length; j++) {
+                    (*output_chars)[j] = table->priv->data2[index + j];
+                }
+                (*output_chars)[length] = 0;
+            }
+
+            return TRUE;
+        }
+    } else {
+        for (i = n_compose - 1; i < table->max_seq_len; i++) {
+            row_stride = i + 1;
+
+            if (seq_index[i + 1] - seq_index[i] > 0) {
+                seq = bsearch (compose_buffer + 1,
+                               table->data + seq_index[i],
+                               (seq_index[i + 1] - seq_index[i]) / row_stride,
+                               sizeof (guint16) * row_stride,
+                               compare_seq);
+
+                if (seq) {
+                    if (i == n_compose - 1)
+                        break;
+                    else
+                        return TRUE;
+                }
+            }
+        }
+        if (!seq) {
+            return FALSE;
+        } else {
+            if (compose_finish)
+                *compose_finish = TRUE;
+            if (output_chars) {
+                *output_chars = g_new (gunichar, 2);
+                (*output_chars)[0] = seq[row_stride - 1];
+                (*output_chars)[1] = 0;
+            }
+
+            return TRUE;
+        }
+    }
+
+    g_assert_not_reached ();
+}
+
+
+/* Checks if a keysym is a dead key. Dead key keysym values are defined in
+ * ../gdk/gdkkeysyms.h and the first is GDK_KEY_dead_grave. As X.Org is updated,
+ * more dead keys are added and we need to update the upper limit.
+ * Currently, the upper limit is GDK_KEY_dead_dasia+1. The +1 has to do with
+ * a temporary issue in the X.Org header files.
+ * In future versions it will be just the keysym (no +1).
+ */
+#define IS_DEAD_KEY(k) \
+      ((k) >= IBUS_KEY_dead_grave && (k) <= IBUS_KEY_dead_greek)
+
+/* This function receives a sequence of Unicode characters and tries to
+ * normalize it (NFC). We check for the case the the resulting string
+ * has length 1 (single character).
+ * NFC normalisation normally rearranges diacritic marks, unless these
+ * belong to the same Canonical Combining Class.
+ * If they belong to the same canonical combining class, we produce all
+ * permutations of the diacritic marks, then attempt to normalize.
+ */
+static gboolean
+check_normalize_nfc (gunichar* combination_buffer, gint n_compose)
+{
+    gunichar combination_buffer_temp[IBUS_MAX_COMPOSE_LEN];
+    gchar *combination_utf8_temp = NULL;
+    gchar *nfc_temp = NULL;
+    gint n_combinations;
+    gunichar temp_swap;
+    gint i;
+
+    n_combinations = 1;
+
+    for (i = 1; i < n_compose; i++ )
+        n_combinations *= i;
+
+    /* Xorg reuses dead_tilde for the perispomeni diacritic mark.
+     * We check if base character belongs to Greek Unicode block,
+     * and if so, we replace tilde with perispomeni. */
+    if (combination_buffer[0] >= 0x390 && combination_buffer[0] <= 0x3FF) {
+        for (i = 1; i < n_compose; i++ )
+            if (combination_buffer[i] == 0x303)
+                combination_buffer[i] = 0x342;
+    }
+
+    memcpy (combination_buffer_temp,
+            combination_buffer,
+            IBUS_MAX_COMPOSE_LEN * sizeof (gunichar) );
+
+    for (i = 0; i < n_combinations; i++ ) {
+        g_unicode_canonical_ordering (combination_buffer_temp, n_compose);
+        combination_utf8_temp = g_ucs4_to_utf8 (combination_buffer_temp, -1,
+                                                NULL, NULL, NULL);
+        nfc_temp = g_utf8_normalize (combination_utf8_temp, -1,
+                                     G_NORMALIZE_NFC);
+
+        if (g_utf8_strlen (nfc_temp, -1) == 1) {
+            memcpy (combination_buffer,
+                    combination_buffer_temp,
+                    IBUS_MAX_COMPOSE_LEN * sizeof (gunichar) );
+
+            g_free (combination_utf8_temp);
+            g_free (nfc_temp);
+
+            return TRUE;
+        }
+
+        g_free (combination_utf8_temp);
+        g_free (nfc_temp);
+
+        if (n_compose > 2) {
+            gint j = i % (n_compose - 1) + 1;
+            gint k = (i+1) % (n_compose - 1) + 1;
+            if (j >= IBUS_MAX_COMPOSE_LEN) {
+                g_warning ("j >= IBUS_MAX_COMPOSE_LEN for " \
+                           "combination_buffer_temp");
+                break;
+            }
+            if (k >= IBUS_MAX_COMPOSE_LEN) {
+                g_warning ("k >= IBUS_MAX_COMPOSE_LEN for " \
+                           "combination_buffer_temp");
+                break;
+            }
+            temp_swap = combination_buffer_temp[j];
+            combination_buffer_temp[j] = combination_buffer_temp[k];
+            combination_buffer_temp[k] = temp_swap;
+        } else {
+            break;
+        }
+    }
+
+    return FALSE;
+}
+
+
+gboolean
+ibus_check_algorithmically (const guint16 *compose_buffer,
+                            gint           n_compose,
+                            gunichar      *output_char)
+
+{
+    gint i;
+    gunichar combination_buffer[IBUS_MAX_COMPOSE_LEN];
+    gchar *combination_utf8, *nfc;
+
+    if (output_char)
+        *output_char = 0;
+
+    if (n_compose >= IBUS_MAX_COMPOSE_LEN)
+        return FALSE;
+
+    for (i = 0; i < n_compose && IS_DEAD_KEY (compose_buffer[i]); i++)
+        ;
+    if (i == n_compose)
+        return TRUE;
+
+    if (i > 0 && i == n_compose - 1) {
+        combination_buffer[0] = ibus_keyval_to_unicode (compose_buffer[i]);
+        combination_buffer[n_compose] = 0;
+        i--;
+        while (i >= 0) {
+            combination_buffer[i+1] = ibus_keysym_to_unicode (compose_buffer[i],
+                                                              TRUE);
+            if (!combination_buffer[i+1]) {
+                combination_buffer[i+1] =
+                        ibus_keyval_to_unicode (compose_buffer[i]);
+            }
+            i--;
+        }
+
+        /* If the buffer normalizes to a single character,
+         * then modify the order of combination_buffer accordingly, if
+         * necessary, and return TRUE.
+         */
+        if (check_normalize_nfc (combination_buffer, n_compose)) {
+            combination_utf8 = g_ucs4_to_utf8 (combination_buffer, -1,
+                                               NULL, NULL, NULL);
+            nfc = g_utf8_normalize (combination_utf8, -1, G_NORMALIZE_NFC);
+
+            if (output_char)
+                *output_char = g_utf8_get_char (nfc);
+
+            g_free (combination_utf8);
+            g_free (nfc);
+
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+
+gunichar
+ibus_keysym_to_unicode (guint16  keysym,
+                        gboolean combining) {
+#define CASE(keysym_suffix, unicode)                                    \
+        case IBUS_KEY_dead_##keysym_suffix: return unicode
+#define CASE_COMBINE(keysym_suffix, combined_unicode, isolated_unicode) \
+        case IBUS_KEY_dead_##keysym_suffix:                             \
+            if (combining)                                              \
+                return combined_unicode;                                \
+            else                                                        \
+                return isolated_unicode
+    switch (keysym) {
+    CASE (a, 0x03041);
+    CASE (A, 0x03042);
+    CASE (i, 0x03043);
+    CASE (I, 0x03044);
+    CASE (u, 0x03045);
+    CASE (U, 0x03046);
+    CASE (e, 0x03047);
+    CASE (E, 0x03048);
+    CASE (o, 0x03049);
+    CASE (O, 0x0304A);
+    CASE         (abovecomma,                   0x0313);
+    CASE_COMBINE (abovedot,                     0x0307, 0x02D9);
+    CASE         (abovereversedcomma,           0x0314);
+    CASE_COMBINE (abovering,                    0x030A, 0x02DA);
+    CASE_COMBINE (acute,                        0x0301, 0x00B4);
+    CASE         (belowbreve,                   0x032E);
+    CASE_COMBINE (belowcircumflex,              0x032D, 0xA788);
+    CASE_COMBINE (belowcomma,                   0x0326, 0x002C);
+    CASE         (belowdiaeresis,               0x0324);
+    CASE_COMBINE (belowdot,                     0x0323, 0x002E);
+    CASE_COMBINE (belowmacron,                  0x0331, 0x02CD);
+    CASE_COMBINE (belowring,                    0x030A, 0x02F3);
+    CASE_COMBINE (belowtilde,                   0x0330, 0x02F7);
+    CASE_COMBINE (breve,                        0x0306, 0x02D8);
+    CASE_COMBINE (capital_schwa,                0x018F, 0x04D8);
+    CASE_COMBINE (caron,                        0x030C, 0x02C7);
+    CASE_COMBINE (cedilla,                      0x0327, 0x00B8);
+    CASE_COMBINE (circumflex,                   0x0302, 0x005E);
+    CASE         (currency,                     0x00A4);
+    // IBUS_KEY_dead_dasia == IBUS_KEY_dead_abovereversedcomma
+    CASE_COMBINE (diaeresis,                    0x0308, 0x00A8);
+    CASE_COMBINE (doubleacute,                  0x030B, 0x02DD);
+    CASE_COMBINE (doublegrave,                  0x030F, 0x02F5);
+    CASE_COMBINE (grave,                        0x0300, 0x0060);
+    CASE         (greek,                        0x03BC);
+    CASE         (hook,                         0x0309);
+    CASE         (horn,                         0x031B);
+    CASE         (invertedbreve,                0x032F);
+    CASE_COMBINE (iota,                         0x0345, 0x037A);
+    CASE_COMBINE (macron,                       0x0304, 0x00AF);
+    CASE_COMBINE (ogonek,                       0x0328, 0x02DB);
+    // IBUS_KEY_dead_perispomeni == IBUS_KEY_dead_tilde
+    // IBUS_KEY_dead_psili == IBUS_KEY_dead_abovecomma
+    CASE_COMBINE (semivoiced_sound,             0x309A, 0x309C);
+    CASE_COMBINE (small_schwa,                  0x1D4A, 0x04D9);
+    CASE         (stroke,                       0x002F);
+    CASE_COMBINE (tilde,                        0x0303, 0x007E);
+    CASE_COMBINE (voiced_sound,                 0x3099, 0x309B);
+    case IBUS_KEY_Multi_key:
+        return 0x2384;
+    default:;
+    }
+    return 0x0;
+#undef CASE
+#undef CASE_COMBINE
 }

@@ -37,15 +37,30 @@ struct _IBusComposeTablePrivate
     gsize second_size;
 };
 
+struct _IBusComposeTableCompactPrivate
+{
+    const guint32 *data2;
+};
+
 gboolean ibus_check_algorithmically (const guint16              *compose_buffer,
                                      gint                        n_compose,
                                      gunichar                   *output);
-gboolean ibus_check_compact_table   (const IBusComposeTableCompactEx
+gboolean ibus_compose_table_check   (const IBusComposeTableEx   *table,
+                                     guint16                    *compose_buffer,
+                                     gint                        n_compose,
+                                     gboolean                   *compose_finish,
+                                     gboolean                   *compose_match,
+                                     GString                    *output,
+                                     gboolean                    is_32bit);
+gboolean ibus_compose_table_compact_check
+                                    (const IBusComposeTableCompactEx
                                                                 *table,
                                      guint16                    *compose_buffer,
                                      gint                        n_compose,
                                      gboolean                   *compose_finish,
                                      gunichar                  **output_chars);
+gunichar ibus_keysym_to_unicode     (guint16                     keysym,
+                                     gboolean                    combining);
 
 G_END_DECLS
 

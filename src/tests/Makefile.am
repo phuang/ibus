@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2018 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@ AM_CPPFLAGS = \
     @GLIB2_CFLAGS@                          \
     @GIO2_CFLAGS@                           \
     -DIBUS_DISABLE_DEPRECATION_WARNINGS     \
+    -DX11_DATA_PREFIX=\"$(X11_PREFIX)\"     \
     -I$(top_srcdir)/src                     \
     -I$(top_builddir)/src                   \
     $(NULL)
