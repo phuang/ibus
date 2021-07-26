@@ -406,7 +406,7 @@ get_en_compose_file (void)
         path = g_build_filename (X11_DATADIR, *sys_lang, "Compose", NULL);
         if (g_file_test (path, G_FILE_TEST_EXISTS))
             break;
-        g_free (path);
+        g_clear_pointer (&path, g_free);
     }
     return path;
 }
@@ -975,7 +975,10 @@ ibus_compose_table_deserialize (const char *contents,
         goto out_load_cache;
     }
     if (data_length) {
-        retval->priv = g_new0 (IBusComposeTablePrivate, 1);
+        if (!(retval->priv = g_new0 (IBusComposeTablePrivate, 1))) {
+            g_warning ("Failed g_new");
+            goto out_load_cache;
+        }
         retval->priv->data_first = g_new (guint16, data_length);
         memcpy (retval->priv->data_first,
                 data_32bit_first, data_length * sizeof (guint16));
@@ -1565,6 +1568,7 @@ ibus_compose_table_compact_check (const IBusComposeTableCompactEx
             row_stride = i + 2;
 
             if (seq_index[i + 1] - seq_index[i] > 0) {
+                g_assert (row_stride);
                 seq = bsearch (compose_buffer + 1,
                                table->data + seq_index[i],
                                (seq_index[i + 1] - seq_index[i]) / row_stride,

@@ -21,13 +21,14 @@
  * USA
  */
 
-#include "ibusbus.h"
 #include <errno.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <glib/gstdio.h>
 #include <gio/gio.h>
+#include "ibusbus.h"
 #include "ibusmarshalers.h"
 #include "ibusinternal.h"
 #include "ibusshare.h"
@@ -537,7 +538,8 @@ static void
 ibus_bus_init (IBusBus *bus)
 {
     struct stat buf;
-    gchar *path;
+    char *path;
+    int fd;
 
     bus->priv = IBUS_BUS_GET_PRIVATE (bus);
 
@@ -562,20 +564,31 @@ ibus_bus_init (IBusBus *bus)
         return;
     }
 
-    if (stat (path, &buf) == 0) {
+    errno = 0;
+    if ((fd = open (path, O_RDONLY | O_DIRECTORY, S_IRWXU)) == -1) {
+        g_warning ("open %s failed: %s", path, g_strerror (errno));
+        g_free (path);
+        return;
+    }
+    /* TOCTOU: Use fstat() and fchmod() but not stat() and chmod().
+     * because it can cause a time-of-check, time-of-use race condition.
+     */
+    if (fstat (fd, &buf) == 0) {
         if (buf.st_uid != getuid ()) {
             g_warning ("The owner of %s is not %s!",
                        path, ibus_get_user_name ());
+            close (fd);
             g_free (path);
             return;
         }
         if (buf.st_mode != (S_IFDIR | S_IRWXU)) {
             errno = 0;
-            if (g_chmod (path, 0700))
-                g_warning ("chmod failed: %s", errno ? g_strerror (errno) : "");
+            if (fchmod (fd, S_IRWXU))
+                g_warning ("chmod failed: %s", g_strerror (errno));
         }
     }
 
+    close (fd);
     g_free (path);
 }
 

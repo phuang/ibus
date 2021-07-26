@@ -220,7 +220,7 @@ init_gnome()
     # G_MESSAGES_DEBUG=all or G_MESSAGES_DEBUG=GLib-GIO-DEBUG would append
     # debug messages to gsettings output and could not get the result correctly.
     backup_G_MESSAGES_DEBUG="$G_MESSAGES_DEBUG"
-    export -n G_MESSAGES_DEBUG=''
+    unset G_MESSAGES_DEBUG
     # Disable Tour dialog to get focus
     V=`gsettings get org.gnome.shell welcome-dialog-last-shown-version`
     if [ x"$V" = x"''" ] ; then
@@ -231,8 +231,8 @@ init_gnome()
     NO_SYS_DIR=/usr/share/gnome-shell/extensions/no-overview@fthx
     NO_USER_DIR=$HOME/.local/share/gnome-shell/extensions/no-overview@fthx
     if [ ! -d $NO_SYS_DIR ] && [ ! -d $NO_USER_DIR ] ; then
-        mkdir -p `dirname $NO_USER_DIR`
-        cp -R no-overview@fthx `dirname $NO_USER_DIR`
+        mkdir -p "`dirname $NO_USER_DIR`"
+        cp -R "no-overview@fthx" "`dirname $NO_USER_DIR`"
     fi
     V=`gsettings get org.gnome.shell disable-user-extensions`
     if [ x"$V" = x"true" ] ; then
