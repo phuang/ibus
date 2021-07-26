@@ -1523,23 +1523,22 @@ compare_seq_index (const void *key, const void *value)
  * IBusComposeData->values[] is the gunichar array.
  */
 gboolean
-ibus_compose_table_compact_check (const IBusComposeTableCompactEx *table,
-                                  guint16
-                                                               *compose_buffer,
-                                  int                              n_compose,
-                                  gboolean
-                                                               *compose_finish,
-                                  gunichar                       **output_chars)
+ibus_compose_table_compact_check (const IBusComposeTableCompactEx
+                                                                *table,
+                                  guint16                       *compose_buffer,
+                                  int                            n_compose,
+                                  gboolean                      *compose_finish,
+                                  gunichar                     **output_chars)
 {
     int row_stride;
     guint16 *seq_index;
     guint16 *seq;
     int i;
 
-    if (compose_finish)
-        *compose_finish = FALSE;
-    if (output_chars)
-        *output_chars = NULL;
+    /* compose_finish and output_chars should not be initialized because
+     * ibus_compose_table_check() is called at first and
+     * engine->priv->tentative_match will be preedit after this is called.
+     */
 
     /* Will never match, if the sequence in the compose buffer is longer
      * than the sequences in the table.  Further, compare_seq (key, val)
@@ -1588,7 +1587,8 @@ ibus_compose_table_compact_check (const IBusComposeTableCompactEx *table,
             if (compose_finish)
                 *compose_finish = TRUE;
             if (output_chars) {
-                *output_chars = g_new (gunichar, length + 1);
+                if (!(*output_chars))
+                    *output_chars = g_new (gunichar, length + 1);
                 for (j = 0; j < length; j++) {
                     (*output_chars)[j] = table->priv->data2[index + j];
                 }
@@ -1622,7 +1622,8 @@ ibus_compose_table_compact_check (const IBusComposeTableCompactEx *table,
             if (compose_finish)
                 *compose_finish = TRUE;
             if (output_chars) {
-                *output_chars = g_new (gunichar, 2);
+                if (!(*output_chars))
+                    *output_chars = g_new (gunichar, 2);
                 (*output_chars)[0] = seq[row_stride - 1];
                 (*output_chars)[1] = 0;
             }
@@ -1634,16 +1635,6 @@ ibus_compose_table_compact_check (const IBusComposeTableCompactEx *table,
     g_assert_not_reached ();
 }
 
-
-/* Checks if a keysym is a dead key. Dead key keysym values are defined in
- * ../gdk/gdkkeysyms.h and the first is GDK_KEY_dead_grave. As X.Org is updated,
- * more dead keys are added and we need to update the upper limit.
- * Currently, the upper limit is GDK_KEY_dead_dasia+1. The +1 has to do with
- * a temporary issue in the X.Org header files.
- * In future versions it will be just the keysym (no +1).
- */
-#define IS_DEAD_KEY(k) \
-      ((k) >= IBUS_KEY_dead_grave && (k) <= IBUS_KEY_dead_greek)
 
 /* This function receives a sequence of Unicode characters and tries to
  * normalize it (NFC). We check for the case the the resulting string
@@ -1754,7 +1745,8 @@ ibus_check_algorithmically (const guint16 *compose_buffer,
         i--;
         while (i >= 0) {
             combination_buffer[i+1] = ibus_keysym_to_unicode (compose_buffer[i],
-                                                              TRUE);
+                                                              TRUE,
+                                                              NULL);
             if (!combination_buffer[i+1]) {
                 combination_buffer[i+1] =
                         ibus_keyval_to_unicode (compose_buffer[i]);
@@ -1786,66 +1778,91 @@ ibus_check_algorithmically (const guint16 *compose_buffer,
 
 
 gunichar
-ibus_keysym_to_unicode (guint16  keysym,
-                        gboolean combining) {
-#define CASE(keysym_suffix, unicode)                                    \
-        case IBUS_KEY_dead_##keysym_suffix: return unicode
-#define CASE_COMBINE(keysym_suffix, combined_unicode, isolated_unicode) \
-        case IBUS_KEY_dead_##keysym_suffix:                             \
-            if (combining)                                              \
-                return combined_unicode;                                \
-            else                                                        \
+ibus_keysym_to_unicode (guint16   keysym,
+                        gboolean  combining,
+                        gboolean *need_space) {
+#define CASE(keysym_suffix, unicode, sp)                                      \
+        case IBUS_KEY_dead_##keysym_suffix:                                   \
+            if (need_space)                                                   \
+                *need_space = sp;                                             \
+            return unicode
+#define CASE_COMBINE(keysym_suffix, combined_unicode, isolated_unicode, sp)   \
+        case IBUS_KEY_dead_##keysym_suffix:                                   \
+            if (need_space)                                                   \
+                *need_space = sp;                                             \
+            if (combining)                                                    \
+                return combined_unicode;                                      \
+            else                                                              \
                 return isolated_unicode
     switch (keysym) {
-    CASE (a, 0x03041);
-    CASE (A, 0x03042);
-    CASE (i, 0x03043);
-    CASE (I, 0x03044);
-    CASE (u, 0x03045);
-    CASE (U, 0x03046);
-    CASE (e, 0x03047);
-    CASE (E, 0x03048);
-    CASE (o, 0x03049);
-    CASE (O, 0x0304A);
-    CASE         (abovecomma,                   0x0313);
-    CASE_COMBINE (abovedot,                     0x0307, 0x02D9);
-    CASE         (abovereversedcomma,           0x0314);
-    CASE_COMBINE (abovering,                    0x030A, 0x02DA);
-    CASE_COMBINE (acute,                        0x0301, 0x00B4);
-    CASE         (belowbreve,                   0x032E);
-    CASE_COMBINE (belowcircumflex,              0x032D, 0xA788);
-    CASE_COMBINE (belowcomma,                   0x0326, 0x002C);
-    CASE         (belowdiaeresis,               0x0324);
-    CASE_COMBINE (belowdot,                     0x0323, 0x002E);
-    CASE_COMBINE (belowmacron,                  0x0331, 0x02CD);
-    CASE_COMBINE (belowring,                    0x030A, 0x02F3);
-    CASE_COMBINE (belowtilde,                   0x0330, 0x02F7);
-    CASE_COMBINE (breve,                        0x0306, 0x02D8);
-    CASE_COMBINE (capital_schwa,                0x018F, 0x04D8);
-    CASE_COMBINE (caron,                        0x030C, 0x02C7);
-    CASE_COMBINE (cedilla,                      0x0327, 0x00B8);
-    CASE_COMBINE (circumflex,                   0x0302, 0x005E);
-    CASE         (currency,                     0x00A4);
+#ifdef IBUS_ENGLISH_DEAD_KEY
+    CASE (a, 0x0363, 1);
+    CASE (A, 0x0363, 1);
+    CASE (i, 0x0365, 1);
+    CASE (I, 0x0365, 1);
+    CASE (u, 0x0367, 1);
+    CASE (U, 0x0367, 1);
+    CASE (e, 0x0364, 1);
+    CASE (E, 0x0364, 1);
+    CASE (o, 0x0366, 1);
+    CASE (O, 0x0366, 1);
+#else
+    CASE (a, 0x3041, 0);
+    CASE (A, 0x3042, 0);
+    CASE (i, 0x3043, 0);
+    CASE (I, 0x3044, 0);
+    CASE (u, 0x3045, 0);
+    CASE (U, 0x3046, 0);
+    CASE (e, 0x3047, 0);
+    CASE (E, 0x3048, 0);
+    CASE (o, 0x3049, 0);
+    CASE (O, 0x304A, 0);
+#endif
+    CASE_COMBINE (abovecomma,                   0x0313, 0x02BC, 0);
+    CASE_COMBINE (abovedot,                     0x0307, 0x02D9, 0);
+    CASE_COMBINE (abovereversedcomma,           0x0314, 0x02BD, 0);
+    CASE_COMBINE (abovering,                    0x030A, 0x02DA, 0);
+    CASE_COMBINE (aboveverticalline,            0x030D, 0x02C8, 0);
+    CASE_COMBINE (acute,                        0x0301, 0x00B4, 0);
+    CASE         (belowbreve,                   0x032E, 1);
+    CASE_COMBINE (belowcircumflex,              0x032D, 0xA788, 0);
+    CASE_COMBINE (belowcomma,                   0x0326, 0x002C, 0);
+    CASE         (belowdiaeresis,               0x0324, 1);
+    CASE_COMBINE (belowdot,                     0x0323, 0x002E, 0);
+    CASE_COMBINE (belowmacron,                  0x0331, 0x02CD, 0);
+    CASE_COMBINE (belowring,                    0x030A, 0x02F3, 0);
+    CASE_COMBINE (belowtilde,                   0x0330, 0x02F7, 0);
+    CASE_COMBINE (belowverticalline,            0x0329, 0x02CC, 0);
+    CASE_COMBINE (breve,                        0x0306, 0x02D8, 0);
+    CASE_COMBINE (capital_schwa,                0x1DEA, 0x1D4A, 0);
+    CASE_COMBINE (caron,                        0x030C, 0x02C7, 0);
+    CASE_COMBINE (cedilla,                      0x0327, 0x00B8, 0);
+    CASE_COMBINE (circumflex,                   0x0302, 0x005E, 0);
+    CASE         (currency,                     0x00A4, 0);
     // IBUS_KEY_dead_dasia == IBUS_KEY_dead_abovereversedcomma
-    CASE_COMBINE (diaeresis,                    0x0308, 0x00A8);
-    CASE_COMBINE (doubleacute,                  0x030B, 0x02DD);
-    CASE_COMBINE (doublegrave,                  0x030F, 0x02F5);
-    CASE_COMBINE (grave,                        0x0300, 0x0060);
-    CASE         (greek,                        0x03BC);
-    CASE         (hook,                         0x0309);
-    CASE         (horn,                         0x031B);
-    CASE         (invertedbreve,                0x032F);
-    CASE_COMBINE (iota,                         0x0345, 0x037A);
-    CASE_COMBINE (macron,                       0x0304, 0x00AF);
-    CASE_COMBINE (ogonek,                       0x0328, 0x02DB);
+    CASE_COMBINE (diaeresis,                    0x0308, 0x00A8, 0);
+    CASE_COMBINE (doubleacute,                  0x030B, 0x02DD, 0);
+    CASE_COMBINE (doublegrave,                  0x030F, 0x02F5, 0);
+    CASE_COMBINE (grave,                        0x0300, 0x0060, 0);
+    CASE         (greek,                        0x03BC, 0);
+    CASE_COMBINE (hook,                         0x0309, 0x02C0, 0);
+    CASE         (horn,                         0x031B, 1);
+    CASE         (invertedbreve,                0x032F, 1);
+    CASE_COMBINE (iota,                         0x0345, 0x037A, 0);
+    CASE         (longsolidusoverlay,           0x0338, 1);
+    CASE_COMBINE (lowline,                      0x0332, 0x005F, 0);
+    CASE_COMBINE (macron,                       0x0304, 0x00AF, 0);
+    CASE_COMBINE (ogonek,                       0x0328, 0x02DB, 0);
     // IBUS_KEY_dead_perispomeni == IBUS_KEY_dead_tilde
     // IBUS_KEY_dead_psili == IBUS_KEY_dead_abovecomma
-    CASE_COMBINE (semivoiced_sound,             0x309A, 0x309C);
-    CASE_COMBINE (small_schwa,                  0x1D4A, 0x04D9);
-    CASE         (stroke,                       0x002F);
-    CASE_COMBINE (tilde,                        0x0303, 0x007E);
-    CASE_COMBINE (voiced_sound,                 0x3099, 0x309B);
+    CASE_COMBINE (semivoiced_sound,             0x309A, 0x309C, 0);
+    CASE_COMBINE (small_schwa,                  0x1DEA, 0x1D4A, 0);
+    CASE         (stroke,                       0x0335, 1);
+    CASE_COMBINE (tilde,                        0x0303, 0x007E, 0);
+    CASE_COMBINE (voiced_sound,                 0x3099, 0x309B, 0);
     case IBUS_KEY_Multi_key:
+        if (need_space)
+            *need_space = FALSE;
         /* We only show the Compose key visibly when it is the
          * only glyph in the preedit, or when it occurs in the
          * middle of the sequence. Sadly, the official character,
@@ -1854,6 +1871,8 @@ ibus_keysym_to_unicode (guint16  keysym,
          */
         return 0x00B7;
     default:;
+        if (need_space)
+            *need_space = FALSE;
     }
     return 0x0;
 #undef CASE

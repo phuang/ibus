@@ -78,13 +78,14 @@ typedef struct {
 
 struct _IBusEngineSimplePrivate {
     guint16            *compose_buffer;
-    gunichar            tentative_match;
-    char               *tentative_emoji;
+    GString            *tentative_match;
     int                 tentative_match_len;
+    char               *tentative_emoji;
 
     guint               hex_mode_enabled : 1;
     guint               in_hex_sequence : 1;
     guint               in_emoji_sequence : 1;
+    guint               in_compose_sequence : 1;
     guint               modifiers_dropped : 1;
     IBusEngineDict     *emoji_dict;
     IBusLookupTable    *lookup_table;
@@ -178,6 +179,8 @@ ibus_engine_simple_init (IBusEngineSimple *simple)
     simple->priv->hex_mode_enabled =
         g_getenv("IBUS_ENABLE_CTRL_SHIFT_U") != NULL ||
         g_getenv("IBUS_ENABLE_CONTROL_SHIFT_U") != NULL;
+    simple->priv->tentative_match = g_string_new ("");
+    simple->priv->tentative_match_len = 0;
 }
 
 
@@ -196,6 +199,9 @@ ibus_engine_simple_destroy (IBusEngineSimple *simple)
     g_clear_object (&priv->lookup_table);
     g_clear_pointer (&priv->compose_buffer, g_free);
     g_clear_pointer (&priv->tentative_emoji, g_free);
+    g_string_free (priv->tentative_match, TRUE);
+    priv->tentative_match = NULL;
+    priv->tentative_match_len = 0;
 
     IBUS_OBJECT_CLASS(ibus_engine_simple_parent_class)->destroy (
         IBUS_OBJECT (simple));
@@ -222,15 +228,15 @@ ibus_engine_simple_reset (IBusEngine *engine)
 
     priv->compose_buffer[0] = 0;
 
-    if (priv->tentative_match || priv->in_hex_sequence) {
+    if (priv->tentative_match->len > 0 || priv->in_hex_sequence) {
         priv->in_hex_sequence = FALSE;
-        priv->tentative_match = 0;
+        g_string_set_size (priv->tentative_match, 0);
         priv->tentative_match_len = 0;
     } else if (priv->tentative_emoji || priv->in_emoji_sequence) {
         priv->in_emoji_sequence = FALSE;
         g_clear_pointer (&priv->tentative_emoji, g_free);
     } else if (!priv->in_hex_sequence && !priv->in_emoji_sequence) {
-        priv->tentative_match = 0;
+        g_string_set_size (priv->tentative_match, 0);
         priv->tentative_match_len = 0;
     }
     ibus_engine_hide_preedit_text ((IBusEngine *)simple);
@@ -244,10 +250,17 @@ ibus_engine_simple_commit_char (IBusEngineSimple *simple,
 
     IBusEngineSimplePrivate *priv = simple->priv;
 
-    if (priv->tentative_match || priv->in_hex_sequence) {
-        priv->in_hex_sequence = FALSE;
-        priv->tentative_match = 0;
+    if (priv->in_hex_sequence ||
+        priv->tentative_match_len > 0 ||
+        priv->compose_buffer[0] != 0) {
+        g_string_set_size (priv->tentative_match, 0);
         priv->tentative_match_len = 0;
+        priv->in_hex_sequence = FALSE;
+        priv->in_compose_sequence = FALSE;
+        priv->compose_buffer[0] = 0;
+        /* Don't call ibus_engine_simple_update_preedit_text() inside
+         * not to call it as duplilcated.
+         */
     }
     if (priv->tentative_emoji || priv->in_emoji_sequence) {
         priv->in_emoji_sequence = FALSE;
@@ -269,10 +282,17 @@ ibus_engine_simple_commit_str (IBusEngineSimple *simple,
 
     backup_str = g_strdup (str);
 
-    if (priv->tentative_match || priv->in_hex_sequence) {
-        priv->in_hex_sequence = FALSE;
-        priv->tentative_match = 0;
+    if (priv->in_hex_sequence ||
+        priv->tentative_match_len > 0 ||
+        priv->compose_buffer[0] != 0) {
+        g_string_set_size (priv->tentative_match, 0);
         priv->tentative_match_len = 0;
+        priv->in_hex_sequence = FALSE;
+        priv->in_compose_sequence = FALSE;
+        priv->compose_buffer[0] = 0;
+        /* Don't call ibus_engine_simple_update_preedit_text() inside
+         * not to call it as duplilcated.
+         */
     }
     if (priv->tentative_emoji || priv->in_emoji_sequence) {
         priv->in_emoji_sequence = FALSE;
@@ -288,8 +308,8 @@ static void
 ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
-
     GString *s = g_string_new ("");
+    int i, j;
 
     if (priv->in_hex_sequence || priv->in_emoji_sequence) {
         int hexchars = 0;
@@ -305,32 +325,59 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
                     ibus_keyval_to_unicode (priv->compose_buffer[hexchars++])
             );
         }
-    } else if (priv->tentative_match) {
-        g_string_append_unichar(s, priv->tentative_match);
     } else if (priv->tentative_emoji && *priv->tentative_emoji) {
         IBusText *text = ibus_text_new_from_string (priv->tentative_emoji);
         int len = strlen (priv->tentative_emoji);
         ibus_text_append_attribute (text,
                 IBUS_ATTR_TYPE_UNDERLINE, IBUS_ATTR_UNDERLINE_SINGLE, 0, len);
         ibus_engine_update_preedit_text ((IBusEngine *)simple, text, len, TRUE);
+        g_string_free (s, TRUE);
         return;
-    } else {
-        int hexchars = 0;
-        while (priv->compose_buffer[hexchars] != 0) {
-            guint16 keysym = priv->compose_buffer[hexchars];
-            gunichar unichar = ibus_keysym_to_unicode (keysym, FALSE);
-            if (unichar > 0) {
-                g_string_append_unichar(s, unichar);
-            } else {
-                unichar = ibus_keyval_to_unicode (keysym);
-                g_string_append_unichar(s, unichar);
-            }
-            if (!unichar) {
-                g_warning (
+    } else if (priv->in_compose_sequence) {
+        if (priv->tentative_match->len > 0 && priv->compose_buffer[0] != 0) {
+            g_string_append (s, priv->tentative_match->str);
+        } else {
+            for (i = 0; priv->compose_buffer[i]; ++i) {
+                guint16 keysym = priv->compose_buffer[i];
+                gboolean show_keysym = TRUE;
+                gboolean need_space = FALSE;
+                gunichar ch;
+
+                if (keysym == IBUS_KEY_Multi_key) {
+                    /* We only show the Compose key visibly when it is the
+                     * only glyph in the preedit, or when it occurs in the
+                     * middle of the sequence. Sadly, the official character,
+                     * U+2384, COMPOSITION SYMBOL, is bit too distracting, so
+                     * we use U+00B7, MIDDLE DOT.
+                     */
+                    for (j = i + 1; priv->compose_buffer[j]; j++) {
+                        if (priv->compose_buffer[j] != IBUS_KEY_Multi_key) {
+                            show_keysym = FALSE;
+                            break;
+                        }
+                    }
+                    if (!show_keysym)
+                        continue;
+                    ch = ibus_keysym_to_unicode (keysym, FALSE, NULL);
+                    g_string_append_unichar (s, ch);
+                } else if (IS_DEAD_KEY (keysym)) {
+                    ch = ibus_keysym_to_unicode (keysym, FALSE, &need_space);
+                    if (ch) {
+                        if (need_space)
+                            g_string_append_c (s, ' ');
+                        g_string_append_unichar (s, ch);
+                    }
+                } else {
+                    ch = ibus_keyval_to_unicode (keysym);
+                    if (ch)
+                        g_string_append_unichar(s, ch);
+                }
+                if (!ch) {
+                    g_warning (
                         "Not found alternative character of compose key 0x%X",
-                        priv->compose_buffer[hexchars]);
+                        priv->compose_buffer[i]);
+                }
             }
-            ++hexchars;
         }
     }
 
@@ -380,7 +427,7 @@ check_hex (IBusEngineSimple *simple,
 
     CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
-    priv->tentative_match = 0;
+    g_string_set_size (priv->tentative_match, 0);
     priv->tentative_match_len = 0;
 
     str = g_string_new (NULL);
@@ -421,7 +468,8 @@ check_hex (IBusEngineSimple *simple,
     }
 
     if (g_unichar_validate (n)) {
-        priv->tentative_match = n;
+        g_string_set_size (priv->tentative_match, 0);
+        g_string_append_unichar (priv->tentative_match, n);
         priv->tentative_match_len = n_compose;
     }
 
@@ -546,21 +594,31 @@ no_sequence_matches (IBusEngineSimple *simple,
 
     CHECK_COMPOSE_BUFFER_LENGTH (n_compose);
 
+    priv->in_compose_sequence = FALSE;
+
     /* No compose sequences found, check first if we have a partial
      * match pending.
      */
-    if (priv->tentative_match) {
+    if (priv->tentative_match_len > 0) {
+        guint16 *compose_buffer;
         int len = priv->tentative_match_len;
         int i;
+        char *str;
 
-        ibus_engine_simple_commit_char (simple, priv->tentative_match);
-        priv->compose_buffer[0] = 0;
+        compose_buffer = alloca (sizeof (guint16) * COMPOSE_BUFFER_SIZE);
+        memcpy (compose_buffer,
+                priv->compose_buffer,
+                sizeof (guint16) * COMPOSE_BUFFER_SIZE);
+
+        str = g_strdup (priv->tentative_match->str);
+        ibus_engine_simple_commit_str (simple, str);
+        g_free (str);
         ibus_engine_simple_update_preedit_text (simple);
 
         for (i=0; i < n_compose - len - 1; i++) {
             ibus_engine_simple_process_key_event (
                     (IBusEngine *)simple,
-                    priv->compose_buffer[len + i],
+                    compose_buffer[len + i],
                     0, 0);
         }
 
@@ -571,6 +629,26 @@ no_sequence_matches (IBusEngineSimple *simple,
         priv->compose_buffer[0] = 0;
         ibus_engine_simple_update_preedit_text (simple);
     } else {
+        if (n_compose == 2 && IS_DEAD_KEY (priv->compose_buffer[0])) {
+            gboolean need_space = FALSE;
+            GString *s = g_string_new ("");
+            /* dead keys are never *really* dead */
+            ch = ibus_keysym_to_unicode (priv->compose_buffer[0],
+                                         FALSE, &need_space);
+            if (ch) {
+                if (need_space)
+                    g_string_append_c (s, ' ');
+                g_string_append_unichar (s, ch);
+            }
+            ch = ibus_keyval_to_unicode (priv->compose_buffer[1]);
+            if (ch != 0 && !g_unichar_iscntrl (ch))
+                g_string_append_unichar (s, ch);
+            ibus_engine_simple_commit_str (simple, s->str);
+            g_string_free (s, TRUE);
+            ibus_engine_simple_update_preedit_text (simple);
+            return TRUE;
+        }
+
         priv->compose_buffer[0] = 0;
         if (n_compose > 1) {
             /* Invalid sequence */
@@ -695,19 +773,46 @@ ibus_engine_simple_set_number_on_lookup_table (IBusEngineSimple *simple,
     ibus_engine_simple_update_preedit_text (simple);
 }
 
+
 static gboolean
 ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
                                             int               n_compose)
 {
     IBusEngineSimplePrivate *priv = simple->priv;
+    GSList *tmp_list;
     gboolean compose_finish = FALSE;
     gboolean compose_match = FALSE;
     GString *output = g_string_new ("");
-    gboolean does_hit = FALSE;
+    gboolean success = FALSE;
     gboolean is_32bit = FALSE;
-    GSList *tmp_list;
     gunichar *output_chars = NULL;
-    gunichar output_char;
+    gunichar output_char = '\0';
+
+    if (n_compose == 2) {
+        /* Special-case deadkey-deadkey sequences.
+         * We are not doing chained deadkeys, so we
+         * want to commit the first key, and contine
+         * preediting with second.
+         */
+        if (IS_DEAD_KEY (priv->compose_buffer[0]) &&
+            IS_DEAD_KEY (priv->compose_buffer[1])) {
+            gboolean need_space = FALSE;
+            gunichar ch = ibus_keysym_to_unicode (priv->compose_buffer[0],
+                                                  FALSE, &need_space);
+            guint16 next = priv->compose_buffer[1];
+            if (ch) {
+                if (need_space)
+                    g_string_append_c (output, ' ');
+                g_string_append_unichar (output, ch);
+                ibus_engine_simple_commit_str (simple, output->str);
+                g_string_set_size (output, 0);
+
+                priv->compose_buffer[0] = next;
+                priv->compose_buffer[1] = 0;
+                n_compose = 1;
+            }
+        }
+    }
 
     G_LOCK (global_tables);
     tmp_list = global_tables;
@@ -721,7 +826,7 @@ ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
             &compose_match,
             output,
             is_32bit)) {
-            does_hit = TRUE;
+            success = TRUE;
             break;
         }
         is_32bit = TRUE;
@@ -733,14 +838,15 @@ ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
             &compose_match,
             output,
             is_32bit)) {
-            does_hit = TRUE;
+            success = TRUE;
             break;
         }
         tmp_list = tmp_list->next;
     }
     G_UNLOCK (global_tables);
 
-    if (does_hit) {
+    if (success) {
+        priv->in_compose_sequence = TRUE;
         if (compose_finish) {
             if (compose_match) {
                 if (is_32bit) {
@@ -750,65 +856,96 @@ ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
                                                     g_utf8_get_char (output->str));
                 }
             }
+            ibus_engine_simple_update_preedit_text (simple);
+            g_string_free (output, TRUE);
+            return TRUE;
         } else if (compose_match) {
-            priv->tentative_match = g_utf8_get_char (output->str);
+            g_string_assign (priv->tentative_match, output->str);
             priv->tentative_match_len = n_compose;
+            ibus_engine_simple_update_preedit_text (simple);
+            g_string_free (output, TRUE);
+            return TRUE;
         }
-        ibus_engine_simple_update_preedit_text (simple);
-        g_string_free (output, TRUE);
-        return TRUE;
     }
     g_string_free (output, TRUE);
+    output = NULL;
 
     if (ibus_compose_table_compact_check (&ibus_compose_table_compact,
                                           priv->compose_buffer,
                                           n_compose,
                                           &compose_finish,
                                           &output_chars)) {
+        priv->in_compose_sequence = TRUE;
         if (compose_finish) {
-            ibus_engine_simple_commit_char (simple, *output_chars);
+            if (success) {
+                g_string_append_unichar (priv->tentative_match, *output_chars);
+                priv->tentative_match_len = n_compose;
+            } else {
+                ibus_engine_simple_commit_char (simple, *output_chars);
+                priv->compose_buffer[0] = 0;
+            }
             g_free (output_chars);
-            priv->compose_buffer[0] = 0;
+            ibus_engine_simple_update_preedit_text (simple);
+            return TRUE;
         }
-        ibus_engine_simple_update_preedit_text (simple);
-        return TRUE;
+        success = TRUE;
     }
+    g_free (output_chars);
+    output_chars = NULL;
     if (ibus_compose_table_compact_check (&ibus_compose_table_compact_32bit,
                                           priv->compose_buffer,
                                           n_compose,
                                           &compose_finish,
                                           &output_chars)) {
+        priv->in_compose_sequence = TRUE;
         if (compose_finish) {
             GError *error = NULL;
             char *str = g_ucs4_to_utf8 (output_chars, -1, NULL, NULL, &error);
-            if (str) {
-                ibus_engine_simple_commit_str (simple, str);
-                g_free (str);
-            } else {
+            if (!str) {
                 g_warning ("Failed to output multiple characters: %s",
                            error->message);
                 g_error_free (error);
+            } else if (success) {
+                g_string_append (priv->tentative_match, str);
+                priv->tentative_match_len = n_compose;
+            } else {
+                ibus_engine_simple_commit_str (simple, str);
+                priv->compose_buffer[0] = 0;
             }
-            priv->compose_buffer[0] = 0;
+            g_free (str);
+            g_free (output_chars);
+            ibus_engine_simple_update_preedit_text (simple);
+            return TRUE;
         }
-        g_free (output_chars);
-        ibus_engine_simple_update_preedit_text (simple);
-        return TRUE;
+        success = TRUE;
     }
-    g_assert (!output_chars);
+    g_free (output_chars);
+    output_chars = NULL;
     if (ibus_check_algorithmically (priv->compose_buffer,
                                     n_compose,
                                     &output_char)) {
+        priv->in_compose_sequence = TRUE;
         if (output_char) {
-            ibus_engine_simple_commit_char (simple, output_char);
-            priv->compose_buffer[0] = 0;
+            if (success) {
+                g_string_append_unichar (priv->tentative_match, output_char);
+                priv->tentative_match_len = n_compose;
+            } else  {
+                ibus_engine_simple_commit_char (simple, output_char);
+                priv->compose_buffer[0] = 0;
+            }
+            ibus_engine_simple_update_preedit_text (simple);
+            return TRUE;
         }
+        success = TRUE;
+    }
+    if (success) {
         ibus_engine_simple_update_preedit_text (simple);
         return TRUE;
     }
 
     return FALSE;
 }
+
 
 static gboolean
 ibus_engine_simple_process_key_event (IBusEngine *engine,
@@ -841,16 +978,17 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         if (priv->in_hex_sequence &&
             (keyval == IBUS_KEY_Control_L || keyval == IBUS_KEY_Control_R ||
              keyval == IBUS_KEY_Shift_L || keyval == IBUS_KEY_Shift_R)) {
-            if (priv->tentative_match &&
-                g_unichar_validate (priv->tentative_match)) {
-                ibus_engine_simple_commit_char (simple, priv->tentative_match);
+            if (priv->tentative_match->len > 0) {
+                char *str = g_strdup (priv->tentative_match->str);
+                ibus_engine_simple_commit_str (simple, str);
+                g_free (str);
                 ibus_engine_simple_update_preedit_text (simple);
             } else if (n_compose == 0) {
                 priv->modifiers_dropped = TRUE;
             } else {
                 /* invalid hex sequence */
                 /* FIXME beep_window (event->window); */
-                priv->tentative_match = 0;
+                g_string_set_size (priv->tentative_match, 0);
                 g_clear_pointer (&priv->tentative_emoji, g_free);
                 priv->in_hex_sequence = FALSE;
                 priv->in_emoji_sequence = FALSE;
@@ -873,7 +1011,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
             } else {
                 /* invalid hex sequence */
                 /* FIXME beep_window (event->window); */
-                priv->tentative_match = 0;
+                g_string_set_size (priv->tentative_match, 0);
                 g_clear_pointer (&priv->tentative_emoji, g_free);
                 priv->in_hex_sequence = FALSE;
                 priv->in_emoji_sequence = FALSE;
@@ -921,7 +1059,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         else if (is_hex_end) {
             /* invalid hex sequence */
             // beep_window (event->window);
-            priv->tentative_match = 0;
+            g_string_set_size (priv->tentative_match, 0);
             g_clear_pointer (&priv->tentative_emoji, g_free);
             priv->in_hex_sequence = FALSE;
             priv->in_emoji_sequence = FALSE;
@@ -999,7 +1137,8 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         if (n_compose > 0) {
             n_compose--;
             priv->compose_buffer[n_compose] = 0;
-            priv->tentative_match = 0;
+            g_string_set_size (priv->tentative_match, 0);
+            priv->tentative_match_len = 0;
             ibus_engine_simple_check_all_compose_table (simple, n_compose);
             return TRUE;
         }
@@ -1007,16 +1146,17 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
     /* Check for hex sequence restart */
     if (priv->in_hex_sequence && have_hex_mods && is_hex_start) {
-        if (priv->tentative_match &&
-            g_unichar_validate (priv->tentative_match)) {
-            ibus_engine_simple_commit_char (simple, priv->tentative_match);
+        if (priv->tentative_match->len > 0 ) {
+            char *str = g_strdup (priv->tentative_match->str);
+            ibus_engine_simple_commit_str (simple, str);
+            g_free (str);
             ibus_engine_simple_update_preedit_text (simple);
         }
         else {
             /* invalid hex sequence */
             if (n_compose > 0) {
                 // FIXME beep_window (event->window);
-                priv->tentative_match = 0;
+                g_string_set_size (priv->tentative_match, 0);
                 priv->in_hex_sequence = FALSE;
                 priv->compose_buffer[0] = 0;
             }
@@ -1044,7 +1184,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         priv->in_hex_sequence = TRUE;
         priv->in_emoji_sequence = FALSE;
         priv->modifiers_dropped = FALSE;
-        priv->tentative_match = 0;
+        g_string_set_size (priv->tentative_match, 0);
         g_clear_pointer (&priv->tentative_emoji, g_free);
 
         // g_debug ("Start HEX MODE");
@@ -1058,7 +1198,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         priv->in_hex_sequence = FALSE;
         priv->in_emoji_sequence = TRUE;
         priv->modifiers_dropped = FALSE;
-        priv->tentative_match = 0;
+        g_string_set_size (priv->tentative_match, 0);
         g_clear_pointer (&priv->tentative_emoji, g_free);
 
         // g_debug ("Start HEX MODE");
@@ -1068,7 +1208,6 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         return TRUE;
     }
 
-    /* Then, check for compose sequences */
     if (priv->in_hex_sequence) {
         if (hex_keyval) {
             SET_COMPOSE_BUFFER_ELEMENT_NEXT (priv->compose_buffer,
@@ -1133,17 +1272,17 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
         if (have_hex_mods) {
             /* space or return ends the sequence, and we eat the key */
             if (n_compose > 0 && is_hex_end) {
-                if (priv->tentative_match &&
-                    g_unichar_validate (priv->tentative_match)) {
-                    ibus_engine_simple_commit_char (simple,
-                            priv->tentative_match);
-                    priv->compose_buffer[0] = 0;
+                if (priv->tentative_match->len > 0) {
+                    char *str = g_strdup (priv->tentative_match->str);
+                    ibus_engine_simple_commit_str (simple, str);
+                    g_free (str);
                     ibus_engine_simple_update_preedit_text (simple);
+                    return TRUE;
                 } else {
                     // FIXME
                     /* invalid hex sequence */
                     // beep_window (event->window);
-                    priv->tentative_match = 0;
+                    g_string_set_size (priv->tentative_match, 0);
                     priv->in_hex_sequence = FALSE;
                     priv->compose_buffer[0] = 0;
                 }
@@ -1234,7 +1373,7 @@ ibus_engine_simple_process_key_event (IBusEngine *engine,
 
             return TRUE;
         }
-    } else {
+    } else { /* Then, check for compose sequences */
         if (ibus_engine_simple_check_all_compose_table (simple, n_compose))
             return TRUE;
     }

@@ -26,6 +26,12 @@
 
 G_BEGIN_DECLS
 
+/* Checks if a keysym is a dead key. Dead key keysym values are defined in
+ * ibuskeysyms.h and the first is GDK_KEY_dead_grave.
+ */
+#define IS_DEAD_KEY(k) \
+      ((k) >= IBUS_KEY_dead_grave && (k) <= IBUS_KEY_dead_greek)
+
 extern const IBusComposeTableCompactEx ibus_compose_table_compact;
 extern const IBusComposeTableCompactEx ibus_compose_table_compact_32bit;
 
@@ -60,7 +66,8 @@ gboolean ibus_compose_table_compact_check
                                      gboolean                   *compose_finish,
                                      gunichar                  **output_chars);
 gunichar ibus_keysym_to_unicode     (guint16                     keysym,
-                                     gboolean                    combining);
+                                     gboolean                    combining,
+                                     gboolean                   *need_space);
 
 G_END_DECLS
 
