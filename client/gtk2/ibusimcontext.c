@@ -110,13 +110,15 @@ static guint    _signal_preedit_end_id = 0;
 static guint    _signal_delete_surrounding_id = 0;
 static guint    _signal_retrieve_surrounding_id = 0;
 
-#if !GTK_CHECK_VERSION (3, 98, 4)
+#if GTK_CHECK_VERSION (3, 98, 4)
+static gboolean _use_sync_mode = TRUE;
+#else
 static const gchar *_no_snooper_apps = NO_SNOOPER_APPS;
 static gboolean _use_key_snooper = ENABLE_SNOOPER;
 static guint    _key_snooper_id = 0;
-#endif
 
 static gboolean _use_sync_mode = FALSE;
+#endif
 
 static const gchar *_discard_password_apps  = "";
 static gboolean _use_discard_password = FALSE;
@@ -767,11 +769,13 @@ ibus_im_context_class_init (IBusIMContextClass *class)
         g_signal_lookup ("retrieve-surrounding", G_TYPE_FROM_CLASS (class));
     g_assert (_signal_retrieve_surrounding_id != 0);
 
-#if !GTK_CHECK_VERSION (3, 98, 4)
+#if GTK_CHECK_VERSION (3, 98, 4)
+    _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", TRUE);
+#else
     _use_key_snooper = !_get_boolean_env ("IBUS_DISABLE_SNOOPER",
                                           !(ENABLE_SNOOPER));
-#endif
     _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", FALSE);
+#endif
     _use_discard_password = _get_boolean_env ("IBUS_DISCARD_PASSWORD", FALSE);
 
 #define CHECK_APP_IN_CSV_ENV_VARIABLES(retval,                          \
@@ -1434,6 +1438,9 @@ static gboolean
 _set_cursor_location_internal (IBusIMContext *ibusimcontext)
 {
     GdkRectangle area;
+#if GTK_CHECK_VERSION (3, 98, 4)
+    GtkWidget *root;
+#endif
 
     if(ibusimcontext->client_window == NULL ||
        ibusimcontext->ibuscontext == NULL) {
@@ -1442,8 +1449,27 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
 
     area = ibusimcontext->cursor_area;
 
-#if !GTK_CHECK_VERSION (3, 98, 4)
 #ifdef GDK_WINDOWING_WAYLAND
+#if GTK_CHECK_VERSION (3, 98, 4)
+    root = GTK_WIDGET (gtk_widget_get_root (ibusimcontext->client_window));
+     /* FIXME: GTK_STYLE_CLASS_TITLEBAR is available in GTK3 but not GTK4.
+      * gtk_css_boxes_get_content_rect() is available in GTK4 but it's an
+      * internal API and calculate the window edge 32 in GTK3.
+      */
+    area.y += 32;
+    area.width = 50; /* FIXME: Why 50 meets the cursor position? */
+    area.height = gtk_widget_get_height (root);
+    area.height += 32;
+    if (GDK_IS_WAYLAND_DISPLAY (gdk_display_get_default ())) {
+        ibus_input_context_set_cursor_location_relative (
+            ibusimcontext->ibuscontext,
+            area.x,
+            area.y,
+            area.width,
+            area.height);
+        return FALSE;
+    }
+#else
     if (GDK_IS_WAYLAND_DISPLAY (gdk_display_get_default ())) {
         gdouble px, py;
         GdkWindow *parent;
@@ -1469,23 +1495,20 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
 #endif
 #endif
 
-    if (area.x == -1 && area.y == -1 && area.width == 0 && area.height == 0) {
 #if GTK_CHECK_VERSION (3, 98, 4)
-        area.x = 0;
-        area.y += gtk_widget_get_height (ibusimcontext->client_window);
 #elif GTK_CHECK_VERSION (2, 91, 0)
-        area.x = 0;
-        area.y += gdk_window_get_height (ibusimcontext->client_window);
+    area.y += gdk_window_get_height (ibusimcontext->client_window);
 #else
+    if (area.x == -1 && area.y == -1 && area.width == 0 && area.height == 0) {
         gint w, h;
         gdk_drawable_get_size (ibusimcontext->client_window, &w, &h);
         area.y += h;
         area.x = 0;
-#endif
     }
+#endif
 
 #if GTK_CHECK_VERSION (3, 98, 4)
-#ifdef GDK_WINDOWING_X11
+#if defined(GDK_WINDOWING_X11)
     GdkDisplay *display = gtk_widget_get_display (ibusimcontext->client_window);
     if (GDK_IS_X11_DISPLAY (display)) {
         Display *xdisplay = gdk_x11_display_get_xdisplay (display);
@@ -1505,21 +1528,10 @@ _set_cursor_location_internal (IBusIMContext *ibusimcontext)
         XGetWindowAttributes (xdisplay, window, &xwa);
         area.x = x - xwa.x + area.x;
         area.y = y - xwa.y + area.y;
-        area.width = xwa.width;
+        area.width = 50; /* FIXME: Why 50 meets the cursor position? */
         area.height = xwa.height;
     }
 #endif
-#elif GTK_CHECK_VERSION (3, 93, 0)
-    {
-        GtkNative *native = gtk_widget_get_native (
-                ibusimcontext->client_window);
-        GdkSurface *surface = gtk_native_get_surface (native);
-        int root_x = 0;
-        int root_y = 0;
-        gdk_surface_get_position (surface, &root_x, &root_y);
-        area.x += root_x;
-        area.y += root_y;
-    }
 #else
     gdk_window_get_root_coords (ibusimcontext->client_window,
                                 area.x, area.y,
@@ -1541,12 +1553,17 @@ ibus_im_context_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 
     IBusIMContext *ibusimcontext = IBUS_IM_CONTEXT (context);
 
+#if !GTK_CHECK_VERSION (3, 93, 0)
+    /* The area is the relative coordinates and this has to get the absolute
+     * ones in _set_cursor_location_internal() since GTK 4.0.
+     */
     if (ibusimcontext->cursor_area.x == area->x &&
         ibusimcontext->cursor_area.y == area->y &&
         ibusimcontext->cursor_area.width == area->width &&
         ibusimcontext->cursor_area.height == area->height) {
         return;
     }
+#endif
     ibusimcontext->cursor_area = *area;
     _set_cursor_location_internal (ibusimcontext);
     gtk_im_context_set_cursor_location (ibusimcontext->slave, area);
