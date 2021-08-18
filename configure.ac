@@ -618,6 +618,13 @@ PKG_CHECK_MODULES(XTEST,
 )
 AM_CONDITIONAL([ENABLE_XTEST], [test x"$enable_xtest" = x"yes"])
 
+PKG_CHECK_MODULES(XFIXES,
+    [x11 xfixes >= 6],
+    [AC_DEFINE([HAVE_XFIXES], [1], [Define to enable XFixes])
+     have_xfixes=yes],
+    [have_xfixes="no (libXfixes version is lower than 6)"]
+)
+
 # --enable-install-tests
 AC_ARG_ENABLE(install-tests,
     AS_HELP_STRING([--enable-install-tests],
@@ -843,6 +850,7 @@ Build options:
   Enable Unicode dict           $enable_unicode_dict
   UCD directory                 $UCD_DIR
   Socket directory              "$IBUS_SOCKET_DIR"
+  XFixes client disconnect      $have_xfixes
   Run test cases                $enable_tests
   Install tests                 $enable_install_tests
 ])
