@@ -3,7 +3,7 @@
     <name>org.freedesktop.IBus.Simple</name>
     <description>A table based simple engine</description>
     <exec>@libexecdir@/ibus-engine-simple</exec>
-    <version>1.5.23.20210221</version>
+    <version>1.5.25.20210819</version>
     <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
     <license>GPL</license>
     <homepage>https://github.com/ibus/ibus/wiki</homepage>
@@ -101,6 +101,18 @@
             <layout_variant>colemak_dh</layout_variant>
             <longname>English (Colemak-DH)</longname>
             <description>English (Colemak-DH)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:us:colemak_dh_iso:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>us</layout>
+            <layout_variant>colemak_dh_iso</layout_variant>
+            <longname>English (Colemak-DH ISO)</longname>
+            <description>English (Colemak-DH ISO)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1143,8 +1155,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>ben_inscript</layout_variant>
-            <longname>Bangla (India, Baishakhi Inscript)</longname>
-            <description>Bangla (India, Baishakhi Inscript)</description>
+            <longname>Bangla (India, Baishakhi InScript)</longname>
+            <description>Bangla (India, Baishakhi InScript)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1155,8 +1167,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>ben_inscript</layout_variant>
-            <longname>Bangla (India, Baishakhi Inscript)</longname>
-            <description>Bangla (India, Baishakhi Inscript)</description>
+            <longname>Bangla (India, Baishakhi InScript)</longname>
+            <description>Bangla (India, Baishakhi InScript)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1263,8 +1275,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>mal_enhanced</layout_variant>
-            <longname>Malayalam (enhanced Inscript, with rupee)</longname>
-            <description>Malayalam (enhanced Inscript, with rupee)</description>
+            <longname>Malayalam (enhanced InScript, with rupee)</longname>
+            <description>Malayalam (enhanced InScript, with rupee)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1289,6 +1301,54 @@
             <layout_variant>ori</layout_variant>
             <longname>Oriya</longname>
             <description>Oriya</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:in:ori-bolnagri:ori</name>
+            <language>or</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <layout_variant>ori-bolnagri</layout_variant>
+            <longname>Oriya (Bolnagri)</longname>
+            <description>Oriya (Bolnagri)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:in:ori-bolnagri:sat</name>
+            <language>sat</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <layout_variant>ori-bolnagri</layout_variant>
+            <longname>Oriya (Bolnagri)</longname>
+            <description>Oriya (Bolnagri)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:in:ori-wx:ori</name>
+            <language>or</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <layout_variant>ori-wx</layout_variant>
+            <longname>Oriya (Wx)</longname>
+            <description>Oriya (Wx)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:in:ori-wx:sat</name>
+            <language>sat</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <layout_variant>ori-wx</layout_variant>
+            <longname>Oriya (Wx)</longname>
+            <description>Oriya (Wx)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1359,8 +1419,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>tam</layout_variant>
-            <longname>Tamil (Inscript)</longname>
-            <description>Tamil (Inscript)</description>
+            <longname>Tamil (InScript)</longname>
+            <description>Tamil (InScript)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1509,8 +1569,8 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:in:iipa:inc</name>
-            <language>inc</language>
+            <name>xkb:in:iipa:eng</name>
+            <language>en</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
@@ -1527,8 +1587,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>in</layout>
             <layout_variant>marathi</layout_variant>
-            <longname>Marathi (enhanced Inscript)</longname>
-            <description>Marathi (enhanced Inscript)</description>
+            <longname>Marathi (enhanced InScript)</longname>
+            <description>Marathi (enhanced InScript)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1728,8 +1788,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>azerty-deadkeys</layout_variant>
-            <longname>Kabyle (azerty layout, dead keys)</longname>
-            <description>Kabyle (azerty layout, dead keys)</description>
+            <longname>Kabyle (AZERTY, with dead keys)</longname>
+            <description>Kabyle (AZERTY, with dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1740,8 +1800,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>qwerty-gb-deadkeys</layout_variant>
-            <longname>Kabyle (qwerty-gb layout, dead keys)</longname>
-            <description>Kabyle (qwerty-gb layout, dead keys)</description>
+            <longname>Kabyle (QWERTY, UK, with dead keys)</longname>
+            <description>Kabyle (QWERTY, UK, with dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1752,8 +1812,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>dz</layout>
             <layout_variant>qwerty-us-deadkeys</layout_variant>
-            <longname>Kabyle (qwerty-us layout, dead keys)</longname>
-            <description>Kabyle (qwerty-us layout, dead keys)</description>
+            <longname>Kabyle (QWERTY, US, with dead keys)</longname>
+            <description>Kabyle (QWERTY, US, with dead keys)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2974,6 +3034,18 @@
             <rank>50</rank>
         </engine>
         <engine>
+            <name>xkb:nl:us:nld</name>
+            <language>nl</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>nl</layout>
+            <layout_variant>us</layout_variant>
+            <longname>Dutch (US)</longname>
+            <description>Dutch (US)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
             <name>xkb:nl:mac:nld</name>
             <language>nl</language>
             <license>GPL</license>
@@ -3618,8 +3690,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>gn</layout>
-            <longname>N'Ko (azerty)</longname>
-            <description>N'Ko (azerty)</description>
+            <longname>N'Ko (AZERTY)</longname>
+            <description>N'Ko (AZERTY)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -3886,7 +3958,7 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:de:tr:tr</name>
+            <name>xkb:de:tr:tur</name>
             <language>tr</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
@@ -5076,8 +5148,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>mt</layout>
             <layout_variant>alt-us</layout_variant>
-            <longname>Maltese (US layout with AltGr overrides)</longname>
-            <description>Maltese (US layout with AltGr overrides)</description>
+            <longname>Maltese (US, with AltGr overrides)</longname>
+            <description>Maltese (US, with AltGr overrides)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6750,6 +6822,42 @@
             <layout_variant>crh_alt</layout_variant>
             <longname>Crimean Tatar (Turkish Alt-Q)</longname>
             <description>Crimean Tatar (Turkish Alt-Q)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:tr:ot:tur</name>
+            <language>tr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>tr</layout>
+            <layout_variant>ot</layout_variant>
+            <longname>Ottoman</longname>
+            <description>Ottoman</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:tr:otf:tur</name>
+            <language>tr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>tr</layout>
+            <layout_variant>otf</layout_variant>
+            <longname>Ottoman (F)</longname>
+            <description>Ottoman (F)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:tr:otk:tur</name>
+            <language>tr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>tr</layout>
+            <layout_variant>otk</layout_variant>
+            <longname>Old Turkic</longname>
+            <description>Old Turkic</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9108,8 +9216,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
-            <longname>Indonesian (Arab Melayu, phonetic)</longname>
-            <description>Indonesian (Arab Melayu, phonetic)</description>
+            <longname>Indonesian (Latin)</longname>
+            <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -9119,8 +9227,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
-            <longname>Indonesian (Arab Melayu, phonetic)</longname>
-            <description>Indonesian (Arab Melayu, phonetic)</description>
+            <longname>Indonesian (Latin)</longname>
+            <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -9130,8 +9238,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
-            <longname>Indonesian (Arab Melayu, phonetic)</longname>
-            <description>Indonesian (Arab Melayu, phonetic)</description>
+            <longname>Indonesian (Latin)</longname>
+            <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -9141,8 +9249,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
-            <longname>Indonesian (Arab Melayu, phonetic)</longname>
-            <description>Indonesian (Arab Melayu, phonetic)</description>
+            <longname>Indonesian (Latin)</longname>
+            <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -9152,8 +9260,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
-            <longname>Indonesian (Arab Melayu, phonetic)</longname>
-            <description>Indonesian (Arab Melayu, phonetic)</description>
+            <longname>Indonesian (Latin)</longname>
+            <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -9163,8 +9271,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
-            <longname>Indonesian (Arab Melayu, phonetic)</longname>
-            <description>Indonesian (Arab Melayu, phonetic)</description>
+            <longname>Indonesian (Latin)</longname>
+            <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -9174,8 +9282,8 @@
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
-            <longname>Indonesian (Arab Melayu, phonetic)</longname>
-            <description>Indonesian (Arab Melayu, phonetic)</description>
+            <longname>Indonesian (Latin)</longname>
+            <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
         </engine>
@@ -9186,8 +9294,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
-            <description>Indonesian (Arab Melayu, extended phonetic)</description>
+            <longname>Indonesian (Arab Pegon, extended phonetic)</longname>
+            <description>Indonesian (Arab Pegon, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9198,8 +9306,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
-            <description>Indonesian (Arab Melayu, extended phonetic)</description>
+            <longname>Indonesian (Arab Pegon, extended phonetic)</longname>
+            <description>Indonesian (Arab Pegon, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9210,8 +9318,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
-            <description>Indonesian (Arab Melayu, extended phonetic)</description>
+            <longname>Indonesian (Arab Pegon, extended phonetic)</longname>
+            <description>Indonesian (Arab Pegon, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9222,8 +9330,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
-            <description>Indonesian (Arab Melayu, extended phonetic)</description>
+            <longname>Indonesian (Arab Pegon, extended phonetic)</longname>
+            <description>Indonesian (Arab Pegon, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9234,8 +9342,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
-            <description>Indonesian (Arab Melayu, extended phonetic)</description>
+            <longname>Indonesian (Arab Pegon, extended phonetic)</longname>
+            <description>Indonesian (Arab Pegon, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9246,8 +9354,8 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
-            <description>Indonesian (Arab Melayu, extended phonetic)</description>
+            <longname>Indonesian (Arab Pegon, extended phonetic)</longname>
+            <description>Indonesian (Arab Pegon, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9258,13 +9366,13 @@
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>id</layout>
             <layout_variant>phoneticx</layout_variant>
-            <longname>Indonesian (Arab Melayu, extended phonetic)</longname>
-            <description>Indonesian (Arab Melayu, extended phonetic)</description>
+            <longname>Indonesian (Arab Pegon, extended phonetic)</longname>
+            <description>Indonesian (Arab Pegon, extended phonetic)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:jv::jv</name>
+            <name>xkb:jv::jav</name>
             <language>jv</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
