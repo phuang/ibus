@@ -13,10 +13,14 @@ src/ibusunicodegen.h
 FEDORA_PKG1='autoconf automake libtool gettext-devel'
 FEDORA_PKG2='glib2-devel gtk2-devel gtk3-devel
  wayland-devel'
-FEDORA_PKG3='cldr-emoji-annotation iso-codes-devel unicode-emoji unicode-ucd'
+FEDORA_PKG3='cldr-emoji-annotation iso-codes-devel unicode-emoji unicode-ucd
+ xkeyboard-config-devel'
 
 (test -z "$DISABLE_INSTALL_PKGS") && {
     (test -f /etc/fedora-release ) && {
+        rpm -q $FEDORA_PKG1 || exit 1
+        rpm -q $FEDORA_PKG2 || exit 1
+        rpm -q $FEDORA_PKG3 || exit 1
         dnf update --assumeno $FEDORA_PKG1 || exit 1
         dnf update --assumeno $FEDORA_PKG2 || exit 1
         dnf update --assumeno $FEDORA_PKG3 || exit 1
