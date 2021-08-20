@@ -514,7 +514,7 @@ ibus_compose_list_check_duplicated (GList *compose_list,
     for (list = compose_list; list != NULL; list = list->next) {
         int i;
         int n_compose = 0;
-        gboolean compose_finish;
+        gboolean compose_finish = FALSE;
         gunichar *output_chars = NULL;
         gunichar output_char = 0;
         guint n_outputs;

@@ -788,31 +788,11 @@ ibus_engine_simple_check_all_compose_table (IBusEngineSimple *simple,
     gunichar *output_chars = NULL;
     gunichar output_char = '\0';
 
-    if (n_compose == 2) {
-        /* Special-case deadkey-deadkey sequences.
-         * We are not doing chained deadkeys, so we
-         * want to commit the first key, and contine
-         * preediting with second.
-         */
-        if (IS_DEAD_KEY (priv->compose_buffer[0]) &&
-            IS_DEAD_KEY (priv->compose_buffer[1])) {
-            gboolean need_space = FALSE;
-            gunichar ch = ibus_keysym_to_unicode (priv->compose_buffer[0],
-                                                  FALSE, &need_space);
-            guint16 next = priv->compose_buffer[1];
-            if (ch) {
-                if (need_space)
-                    g_string_append_c (output, ' ');
-                g_string_append_unichar (output, ch);
-                ibus_engine_simple_commit_str (simple, output->str);
-                g_string_set_size (output, 0);
-
-                priv->compose_buffer[0] = next;
-                priv->compose_buffer[1] = 0;
-                n_compose = 1;
-            }
-        }
-    }
+    /* GtkIMContextSimple output the first compose char in case of
+     * n_compose == 2 but it does not work in fi_FI copmose to output U+1EDD
+     * with the following sequence:
+     * <dead_hook> <dead_horn> <o> : "ờ" U1EDD
+     */
 
     G_LOCK (global_tables);
     tmp_list = global_tables;
