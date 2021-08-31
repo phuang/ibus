@@ -46,12 +46,12 @@ call_basic_ipcs (IBusInputContext *context)
     ibus_input_context_reset (context);
 
     /* When enable() is called, ibus-daemon may start a global (or preloaded,
-     * or default) engine in an asynchrnous manner and return immediately.
+     * or default) engine in an asynchronous manner and return immediately.
      * Therefore, it is not guaranteed that ibus_input_context_is_enabled()
      * returns TRUE. */
 
     ibus_input_context_focus_in (context);
-} 
+}
 
 static void
 test_input_context (void)

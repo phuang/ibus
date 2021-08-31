@@ -17,7 +17,7 @@
 .PP
 IBus is an Intelligent Input Bus. It is a new input framework for Linux
 OS. It provides full featured and user friendly input method user
-interface.  It also may help developers to develop input method easily.  
+interface.  It also may help developers to develop input method easily.
 
 .PP
 .B ibus-setup
@@ -44,7 +44,7 @@ If this option is disabled, You can choose an input metod engine
 by input context.
 
 .SH BUGS
-If you find a bug, please report it at http://code.google.com/p/ibus/issues/list
+If you find a bug, please report it at https://github.com/ibus/ibus/issues
 
 .SH "SEE ALSO"
 .BR ibus (1)

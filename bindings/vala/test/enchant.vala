@@ -151,7 +151,7 @@ class TestEngine : Engine {
                                 "org.freedesktop.IBus.Vala",
                                 "ValaTest", "0.0.1", "GPL",
                                 "Peng Huang <shawn.p.huang@gmail.com>",
-                                "http://code.google.com/p/ibus/",
+                                "https://github.com/ibus/ibus/",
                                 "",
                                 "ibus-vala");
         var engine = new EngineDesc ("vala-debug",
