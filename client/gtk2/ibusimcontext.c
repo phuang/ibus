@@ -1270,6 +1270,8 @@ ibus_im_context_reset (GtkIMContext *context)
          * IBus uses button-press-event instead until GTK is fixed.
          * https://gitlab.gnome.org/GNOME/gtk/issues/1534
          */
+        if (_use_sync_mode)
+            ibus_im_context_clear_preedit_text (ibusimcontext);
         ibus_input_context_reset (ibusimcontext->ibuscontext);
     }
     gtk_im_context_reset (ibusimcontext->slave);
@@ -1383,7 +1385,7 @@ ibus_im_context_set_client_window (GtkIMContext *context,
 
     if (ibusimcontext->client_window) {
 #if !GTK_CHECK_VERSION (3, 98, 4)
-        if (ibusimcontext->use_button_press_event)
+        if (ibusimcontext->use_button_press_event && !_use_sync_mode)
             _connect_button_press_event (ibusimcontext, FALSE);
 #endif
         g_object_unref (ibusimcontext->client_window);
@@ -1393,7 +1395,7 @@ ibus_im_context_set_client_window (GtkIMContext *context,
     if (client != NULL) {
         ibusimcontext->client_window = g_object_ref (client);
 #if !GTK_CHECK_VERSION (3, 98, 4)
-        if (!ibusimcontext->use_button_press_event)
+        if (!ibusimcontext->use_button_press_event && !_use_sync_mode)
             _connect_button_press_event (ibusimcontext, TRUE);
 #endif
     }
@@ -1994,7 +1996,8 @@ _ibus_context_update_preedit_text_cb (IBusInputContext  *ibuscontext,
 
 #if !GTK_CHECK_VERSION (3, 98, 4)
     if (!ibusimcontext->use_button_press_event &&
-        mode == IBUS_ENGINE_PREEDIT_COMMIT) {
+        mode == IBUS_ENGINE_PREEDIT_COMMIT &&
+        !_use_sync_mode) {
         if (ibusimcontext->client_window) {
             _connect_button_press_event (ibusimcontext, TRUE);
         }
