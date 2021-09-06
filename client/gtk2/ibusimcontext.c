@@ -1939,13 +1939,16 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
     int group = 0;
     g_return_if_fail (GTK_IS_IM_CONTEXT (ibusimcontext));
     if (keycode == 0 && ibusimcontext->client_window) {
-        GdkDisplay *display = gtk_widget_get_display (ibusimcontext->client_window);
+        GdkDisplay *display =
+                gtk_widget_get_display (ibusimcontext->client_window);
         GdkKeymapKey *keys = NULL;
         gint n_keys = 0;
-        if (!gdk_display_map_keyval (display, keyval, &keys, &n_keys))
+        if (gdk_display_map_keyval (display, keyval, &keys, &n_keys)) {
+            keycode = keys->keycode;
+            group = keys->group;
+        } else {
             g_warning ("Failed to parse keycode from keyval %x", keyval);
-       keycode = keys->keycode;
-       group = keys->group;
+        }
     }
     gtk_im_context_filter_key (
         GTK_IM_CONTEXT (ibusimcontext),
@@ -1957,6 +1960,17 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
         (GdkModifierType)state,
         group);
 #else
+    if (keycode == 0 && ibusimcontext->client_window) {
+        GdkDisplay *display =
+                gdk_window_get_display (ibusimcontext->client_window);
+        GdkKeymap *keymap = gdk_keymap_get_for_display (display);
+        GdkKeymapKey *keys = NULL;
+        gint n_keys = 0;
+        if (gdk_keymap_get_entries_for_keyval (keymap, keyval, &keys, &n_keys))
+            keycode = keys->keycode;
+        else
+            g_warning ("Failed to parse keycode from keyval %x", keyval);
+    }
     GdkEventKey *event = _create_gdk_event (ibusimcontext, keyval, keycode, state);
     gdk_event_put ((GdkEvent *)event);
     gdk_event_free ((GdkEvent *)event);
