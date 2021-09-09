@@ -366,6 +366,10 @@ ibus_im_context_commit_event (IBusIMContext *ibusimcontext,
         g_signal_emit (ibusimcontext, _signal_commit_id, 0, text->text);
         g_object_unref (text);
         _request_surrounding_text (ibusimcontext);
+#if !GTK_CHECK_VERSION (3, 98, 4)
+        /* Avoid a loop with _ibus_context_forward_key_event_cb() */
+        event->state |= IBUS_HANDLED_MASK;
+#endif
         return TRUE;
     }
    return FALSE;
@@ -643,12 +647,15 @@ _key_snooper_cb (GtkWidget   *widget,
 
     } while (0);
 
-    if (ibusimcontext != NULL) {
+    if (ibusimcontext != NULL && event->type == GDK_KEY_PRESS) {
         /* "retrieve-surrounding" signal sometimes calls unref by
          * gtk_im_multicontext_get_slave() because priv->context_id is not
          * the latest than global_context_id in GtkIMMulticontext.
          * Since _focus_im_context is gotten by the focus_in event,
          * it would be good to call ref here.
+         *
+         * Most release key events would be redundant from
+         * _ibus_context_forward_key_event_cb ().
          */
         g_object_ref (ibusimcontext);
         _request_surrounding_text (ibusimcontext);
@@ -657,7 +664,7 @@ _key_snooper_cb (GtkWidget   *widget,
 
     retval = _process_key_event (ibuscontext, event, ibusimcontext);
 
-    if (ibusimcontext != NULL) {
+    if (ibusimcontext != NULL && event->type == GDK_KEY_PRESS) {
         /* unref ibusimcontext could call ibus_im_context_finalize here
          * because "retrieve-surrounding" signal could call unref.
          */
