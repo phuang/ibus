@@ -99,7 +99,7 @@ simple.xml: simple.xml.in
 	    mv $@.tmp $@
 
 simple.xml.in:
-	$(srcdir)/gensimple.py \
+	$(PYTHON) $(srcdir)/gensimple.py \
 	    --input=$(XKBCONFIG_BASE)/rules/evdev.xml \
 	    --output=$@ \
 	    --version=$(VERSION).`date '+%Y%m%d'` \

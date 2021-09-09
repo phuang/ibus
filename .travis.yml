@@ -46,6 +46,8 @@ jobs:
   - name: Build in Ubuntu
     before_script:
     - sudo apt-get -qq update
+    env:
+    - SAVE_DIST_FILES=1
     script:
     - set -e
     - git pull --depth=200
@@ -54,6 +56,7 @@ jobs:
     - >
       ./autogen.sh
       --with-ucd-dir='/usr/share/unicode'
+      --enable-install-tests
     # Set the cutom DESTDIR because the default DESTDIR
     # /home/travis/bulid/fujiwarat/$PKG/ibus/ibus-$VERSION/_inst seems to be
     # too long and failed to set DESTDIR to install bindings/pygobject/IBus.py
@@ -64,6 +67,7 @@ jobs:
       --disable-schemas-install
       --enable-memconf
       --with-ucd-dir='/usr/share/unicode'
+      --enable-install-tests
       "
       DISABLE_GUI_TESTS="ibus-compose ibus-keypress test-stress"
       VERBOSE=1

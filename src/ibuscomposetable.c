@@ -18,6 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  * USA
  */
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -1606,6 +1609,7 @@ ibus_compose_table_compact_check (const IBusComposeTableCompactEx
             row_stride = i + 1;
 
             if (seq_index[i + 1] - seq_index[i] > 0) {
+                g_assert (row_stride);
                 seq = bsearch (compose_buffer + 1,
                                table->data + seq_index[i],
                                (seq_index[i + 1] - seq_index[i]) / row_stride,

@@ -162,6 +162,15 @@ PKG_CHECK_MODULES(GIO2, [
 PKG_CHECK_MODULES(GTHREAD2, [
     gthread-2.0 >= glib_required_version
 ])
+PKG_CHECK_EXISTS(
+    [glib-2.0 >= 2.65.0],
+    [AC_DEFINE(GLIB2_EMBED_ERRNO_H, TRUE, [glib2 include errno.h])]
+)
+AH_BOTTOM([
+#ifndef GLIB2_EMBED_ERRNO_H
+#  include <errno.h>
+#endif
+])
 
 # --disable-tests option.
 AC_ARG_ENABLE(tests,
