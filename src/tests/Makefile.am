@@ -96,6 +96,7 @@ test_sourcesdir = $(datadir)/installed-tests/ibus
 CLEANFILES += \
     $(test_metas) \
     ibus-desktop-testing-runner \
+    org.freedesktop.IBus.Desktop.Testing.desktop \
     $(NULL)
 
 test_execs_PROGRAMS = $(TESTS)
@@ -106,6 +107,14 @@ CLEANFILES += \
     $(NULL)
 endif
 test_execsdir = $(libexecdir)/installed-tests/ibus
+libexec_SCRIPTS = ibus-desktop-testing-autostart
+
+test_frame_DATA = org.freedesktop.IBus.Desktop.Testing.desktop
+test_framedir = $(pkgdatadir)/tests
+org.freedesktop.IBus.Desktop.Testing.desktop: ibus-desktop-testing.desktop.in
+	$(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|g" \
+	$< > $@.tmp && \
+	mv $@.tmp $@
 endif
 
 $(test_metas): $(test_metas_in) $(test_programs)
@@ -133,6 +142,8 @@ EXTRA_DIST = \
     ibus-compose.emoji \
     ibus-compose.env \
     ibus-compose-locales.in \
+    ibus-desktop-testing.desktop.in \
+    ibus-desktop-testing-autostart \
     ibus-desktop-testing-runner.in \
     $(NULL)
 
