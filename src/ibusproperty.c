@@ -336,17 +336,20 @@ ibus_property_destroy (IBusProperty *prop)
     prop->priv->icon = NULL;
 
     if (prop->priv->label) {
-        g_object_unref (prop->priv->label);
+        if (!ibus_text_get_is_static (prop->priv->label))
+            g_object_unref (prop->priv->label);
         prop->priv->label = NULL;
     }
 
     if (prop->priv->symbol) {
-        g_object_unref (prop->priv->symbol);
+        if (!ibus_text_get_is_static (prop->priv->symbol))
+            g_object_unref (prop->priv->symbol);
         prop->priv->symbol = NULL;
     }
 
     if (prop->priv->tooltip) {
-        g_object_unref (prop->priv->tooltip);
+        if (!ibus_text_get_is_static (prop->priv->tooltip))
+            g_object_unref (prop->priv->tooltip);
         prop->priv->tooltip = NULL;
     }
 
@@ -401,7 +404,7 @@ ibus_property_deserialize (IBusProperty *prop,
     g_variant_get_child (variant, retval++, "u", &prop->priv->type);
 
     GVariant *subvar = g_variant_get_child_value (variant, retval++);
-    if (prop->priv->label != NULL) {
+    if (prop->priv->label && !ibus_text_get_is_static (prop->priv->label)) {
         g_object_unref (prop->priv->label);
     }
     prop->priv->label = IBUS_TEXT (ibus_serializable_deserialize (subvar));
@@ -411,7 +414,7 @@ ibus_property_deserialize (IBusProperty *prop,
     ibus_g_variant_get_child_string (variant, retval++, &prop->priv->icon);
 
     subvar = g_variant_get_child_value (variant, retval++);
-    if (prop->priv->tooltip != NULL) {
+    if (prop->priv->tooltip && !ibus_text_get_is_static (prop->priv->tooltip)) {
         g_object_unref (prop->priv->tooltip);
     }
     prop->priv->tooltip = IBUS_TEXT (ibus_serializable_deserialize (subvar));
@@ -432,7 +435,7 @@ ibus_property_deserialize (IBusProperty *prop,
 
     /* Keep the serialized order for the compatibility when add new members. */
     subvar = g_variant_get_child_value (variant, retval++);
-    if (prop->priv->symbol != NULL) {
+    if (prop->priv->symbol && !ibus_text_get_is_static (prop->priv->symbol)) {
         g_object_unref (prop->priv->symbol);
     }
     prop->priv->symbol = IBUS_TEXT (ibus_serializable_deserialize (subvar));
@@ -564,7 +567,7 @@ ibus_property_set_label (IBusProperty *prop,
     g_assert (IBUS_IS_PROPERTY (prop));
     g_return_if_fail (label == NULL || IBUS_IS_TEXT (label));
 
-    if (prop->priv->label) {
+    if (prop->priv->label && !ibus_text_get_is_static (prop->priv->label)) {
         g_object_unref (prop->priv->label);
     }
 
@@ -583,7 +586,7 @@ ibus_property_set_symbol (IBusProperty *prop,
     g_assert (IBUS_IS_PROPERTY (prop));
     g_return_if_fail (symbol == NULL || IBUS_IS_TEXT (symbol));
 
-    if (prop->priv->symbol) {
+    if (prop->priv->symbol && !ibus_text_get_is_static (prop->priv->symbol)) {
         g_object_unref (prop->priv->symbol);
     }
 
@@ -612,19 +615,16 @@ ibus_property_set_tooltip (IBusProperty *prop,
     g_assert (IBUS_IS_PROPERTY (prop));
     g_assert (tooltip == NULL || IBUS_IS_TEXT (tooltip));
 
-    IBusPropertyPrivate *priv = prop->priv;
-
-    if (priv->tooltip) {
-        g_object_unref (priv->tooltip);
+    if (prop->priv->tooltip && !ibus_text_get_is_static (prop->priv->tooltip)) {
+        g_object_unref (prop->priv->tooltip);
     }
 
     if (tooltip == NULL) {
-        priv->tooltip = ibus_text_new_from_static_string ("");
-        g_object_ref_sink (priv->tooltip);
+        prop->priv->tooltip = ibus_text_new_from_static_string ("");
     }
     else {
-        priv->tooltip = tooltip;
-        g_object_ref_sink (priv->tooltip);
+        prop->priv->tooltip = tooltip;
+        g_object_ref_sink (prop->priv->tooltip);
     }
 }
 
