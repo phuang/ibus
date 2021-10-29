@@ -2,7 +2,7 @@
  *
  * ibus - The Input Bus
  *
- * Copyright (c) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (c) 2017-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -227,6 +227,8 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         BACKWARD,
     }
 
+    public bool is_wayland { get; set; }
+
     public const uint BUTTON_CLOSE_BUTTON = 1000;
 
     private const uint EMOJI_GRID_PAGE = 10;
@@ -317,15 +319,18 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     private Gdk.Rectangle m_cursor_location;
     private bool m_is_up_side_down = false;
     private uint m_redraw_window_id;
+    private bool m_rebuilding_gui = false;
+    private uint m_rebuilding_gui_timeout_id;
 
     public signal void candidate_clicked(uint index, uint button, uint state);
     public signal void commit_text(string text);
     public signal void cancel();
 
-    public IBusEmojier() {
+    public IBusEmojier(bool is_wayland) {
         GLib.Object(
             type : Gtk.WindowType.POPUP
         );
+        this.is_wayland = is_wayland;
 
         // GLib.ActionEntry accepts const variables only.
         var action = new GLib.SimpleAction.stateful(
@@ -1002,6 +1007,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
         button.button_press_event.connect((w, e) => {
             m_category_active_index = -1;
             m_show_unicode = false;
+            start_rebuild_gui(false);
             hide_candidate_panel();
             show_all();
             return true;
@@ -1458,6 +1464,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                     show_emoji_for_category(m_backward);
                     show_candidate_panel();
                 } else {
+                    start_rebuild_gui(false);
                     hide_candidate_panel();
                     show_all();
                 }
@@ -1778,6 +1785,34 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
+    private void start_rebuild_gui(bool initial_launching) {
+        if (!this.is_wayland)
+            return;
+        if (!initial_launching && !base.get_visible())
+            return;
+        if (initial_launching && base.get_visible())
+            return;
+        if (m_rebuilding_gui_timeout_id != 0) {
+            GLib.Source.remove(m_rebuilding_gui_timeout_id);
+            m_rebuilding_gui_timeout_id = 0;
+        }
+
+        m_rebuilding_gui = true;
+        m_rebuilding_gui_timeout_id =
+                GLib.Timeout.add_seconds(10, () => {
+                    if (!m_rebuilding_gui) {
+                        m_rebuilding_gui_timeout_id = 0;
+                        return false;
+                    }
+                    warning("Rebuilding GUI is time out.");
+                    m_rebuilding_gui = false;
+                    m_rebuilding_gui_timeout_id = 0;
+                    return false;
+                },
+                GLib.Priority.DEFAULT_IDLE);
+    }
+
+
     public bool has_variants(uint index,
                              bool need_commit_signal) {
         if (index >= m_lookup_table.get_number_of_candidates())
@@ -1880,12 +1915,17 @@ public class IBusEmojier : Gtk.ApplicationWindow {
                 m_show_unicode = false;
                 m_category_active_index = -1;
             }
+            start_rebuild_gui(false);
             hide_candidate_panel();
             return true;
         } else if (m_backward_index >= 0 && m_backward != null) {
+            // Escape on Emoji variants window does not call focus-out events
+            // because hide() is not called here so start_rebuild_gui()
+            // is not called.
             show_emoji_for_category(m_backward);
             return true;
         } else if (m_candidate_panel_is_visible && m_backward != null) {
+            start_rebuild_gui(false);
             hide_candidate_panel();
             return true;
         }
@@ -2218,7 +2258,7 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 
         /* Some window managers, e.g. MATE, GNOME, Plasma desktops,
          * does not give the keyboard focus when Emojier is lauched
-         * twice with Ctrl-Shift-e via XIEvent, if present_with_time()
+         * twice with Ctrl-period via XIEvent, if present_with_time()
          * is not applied.
          * But XFCE4 desktop does not effect this bug.
          * Seems this is caused by the window manager's focus stealing
@@ -2265,8 +2305,10 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 #endif
 
 
-    /* override virtual functions */
+    // override virtual functions
     public override void show_all() {
+        // Ctrl-period, space keys causes focus-out/in events in GNOME Wayland.
+        start_rebuild_gui(true);
         base.show_all();
         if (m_candidate_panel_mode)
             show_candidate_panel();
@@ -2416,6 +2458,17 @@ public class IBusEmojier : Gtk.ApplicationWindow {
     }
 
 
+    public override bool focus_in_event(Gdk.EventFocus event) {
+        m_rebuilding_gui = false;
+        return base.focus_in_event(event);
+    }
+
+
+    public override bool focus_out_event(Gdk.EventFocus event) {
+        return base.focus_out_event(event);
+    }
+
+
     public bool is_running() {
         return m_is_running;
     }
@@ -2508,6 +2561,14 @@ public class IBusEmojier : Gtk.ApplicationWindow {
 
     public bool is_candidate_panel_mode() {
         return m_candidate_panel_mode;
+    }
+
+
+    public bool is_rebuilding_gui() {
+        /* The candidate window and preedit text should not be closed
+         * when the GUI is rebuilding.
+         */
+        return m_rebuilding_gui;
     }
 
 

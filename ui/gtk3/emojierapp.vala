@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright (c) 2017 Peng Wu <alexepico@gmail.com>
- * Copyright (c) 2017-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (c) 2017-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -208,7 +208,15 @@ public class EmojiApplication : Gtk.Application {
         IBusEmojier.load_unicode_dict();
 
         if (m_emojier == null) {
-            m_emojier = new IBusEmojier();
+            bool is_wayland = false;
+#if USE_GDK_WAYLAND
+            Type instance_type = Gdk.Display.get_default().get_type();
+            Type wayland_type = typeof(GdkWayland.Display);
+            is_wayland = instance_type.is_a(wayland_type);
+#else
+            warning("Checking Wayland is disabled");
+#endif
+            m_emojier = new IBusEmojier(is_wayland);
             // For title handling in gnome-shell
             add_window(m_emojier);
             m_emojier.candidate_clicked.connect((i, b, s) => {

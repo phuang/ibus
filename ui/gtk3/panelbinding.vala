@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2018 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2018-2020 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2018-2021 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -799,6 +799,23 @@ class PanelBinding : IBus.PanelService {
 
     public override void focus_out(string input_context_path) {
         m_current_context_path = "";
+        /* Close emoji typing when the focus out happens but it's not a
+         * rebuilding GUI.
+         * Emojier rebuilding GUI happens when Escape key is pressed on
+         * Emojier candidate list and the rebuilding also causes focus-out/in
+         * events in GNOME Wayland but not Xorg desktops.
+         * The rebuilding GUI can be checked with m_emojier.is_rebuilding_gui()
+         * in Wayland.
+         * m_emojier.is_rebuilding_gui() always returns false in Xorg desktops
+         * since focus-out/in events does not happen.
+         */
+        if (m_emojier != null && !m_emojier.is_rebuilding_gui()) {
+            m_preedit.reset();
+            m_emojier.set_annotation("");
+            if (m_wayland_lookup_table_is_visible)
+                hide_wayland_lookup_table();
+            key_press_escape();
+        }
     }
 
 
@@ -822,7 +839,7 @@ class PanelBinding : IBus.PanelService {
             m_loaded_unicode = true;
         }
         if (m_emojier == null) {
-            m_emojier = new IBusEmojier();
+            m_emojier = new IBusEmojier(m_is_wayland);
             // For title handling in gnome-shell
             m_application.add_window(m_emojier);
             m_emojier.candidate_clicked.connect((i, b, s) => {
