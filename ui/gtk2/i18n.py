@@ -3,7 +3,9 @@
 # ibus - The Input Bus
 #
 # Copyright(c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright(c) 2012-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright(c) 2007-2015 Google, Inc.
+# Copyright(c) 2012-2021 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,12 +25,14 @@
 import locale
 import gettext
 import os
+import sys
 
 DOMAINNAME = "ibus10"
 
 _ = lambda a: gettext.dgettext(DOMAINNAME, a)
 N_ = lambda a: a
 
+PY3K = sys.version_info >= (3, 0)
 LOCALEDIR = os.getenv("IBUS_LOCALEDIR")
 
 def init_textdomain(domainname):
@@ -42,7 +46,9 @@ def init_textdomain(domainname):
     except AttributeError:
         pass
     gettext.bindtextdomain(domainname, LOCALEDIR)
-    gettext.bind_textdomain_codeset(domainname, 'UTF-8')
+    # https://docs.python.org/3/library/gettext.html#gettext.lgettext
+    if not PY3K:
+        gettext.bind_textdomain_codeset(domainname, 'UTF-8')
 
 def gettext_engine_longname(engine):
     name = engine.get_name()
