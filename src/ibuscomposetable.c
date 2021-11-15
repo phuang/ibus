@@ -1040,9 +1040,13 @@ ibus_compose_table_load_cache (const gchar *compose_file)
         if (!g_file_test (path, G_FILE_TEST_EXISTS))
             break;
 
-        if (g_stat (compose_file, &original_buf))
-            break;
         if (g_stat (path, &cache_buf))
+            break;
+        if (g_lstat (compose_file, &original_buf))
+            break;
+        if (original_buf.st_mtime > cache_buf.st_mtime)
+            break;
+        if (g_stat (compose_file, &original_buf))
             break;
         if (original_buf.st_mtime > cache_buf.st_mtime)
             break;
