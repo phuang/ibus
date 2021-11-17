@@ -50,6 +50,7 @@ jobs:
     - SAVE_DIST_FILES=1
     script:
     - set -e
+    - git config pull.rebase false
     - git pull --depth=200
     # configure options from
     # https://salsa.debian.org/debian/ibus/-/blob/master/debian/rules
