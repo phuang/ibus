@@ -19,6 +19,8 @@ arch:
 addons:
   apt:
     packages:
+    # For autogen.sh
+    - autopoint
     # For make from
     # https://packages.ubuntu.com/search?searchon=sourcenames&keywords=ibus
     - desktop-file-utils
