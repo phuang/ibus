@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -296,8 +296,8 @@ dicts/emoji-%.dict: emoji-parser
 	    echo "Skip $$plus_comment $@"; \
 	fi;
 
-ibusemojigen.h: dicts/emoji-en.dict
-	$(NULL)
+ibusemojigen.h:
+	$(MAKE) $(AM_MAKEFLAGS) dicts/emoji-en.dict
 
 # We put dicts/emoji-%.dict as the make target for the parallel build
 # and the make target has to be genarated even if the file size is zero.
@@ -364,8 +364,8 @@ dicts/unicode-blocks.dict: unicode-parser
 	    echo "Generated $@"; \
 	fi;
 
-ibusunicodegen.h: dicts/unicode-blocks.dict
-	$(NULL)
+ibusunicodegen.h:
+	$(MAKE) $(AM_MAKEFLAGS) dicts/unicode-blocks.dict
 
 unicode_parser_SOURCES =        \
     unicode-parser.c            \
@@ -398,9 +398,15 @@ CLEANFILES +=                   \
     stamp-ibusenumtypes.h       \
     $(NULL)
 
-DISTCLEANFILES =                \
+MAINTAINERCLEANFILES =          \
     ibusemojigen.h              \
     ibusunicodegen.h            \
+    dicts/emoji-en.dict         \
+    dicts/unicode-blocks.dict   \
+    $(NULL)
+
+DISTCLEANFILES =                \
+    $(MAINTAINERCLEANFILES)     \
     ibusversion.h               \
     $(NULL)
 

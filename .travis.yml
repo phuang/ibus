@@ -19,13 +19,11 @@ arch:
 addons:
   apt:
     packages:
-    # For autogen.sh
-    - gnome-common
-    - gtk-doc-tools
     # For make from
     # https://packages.ubuntu.com/search?searchon=sourcenames&keywords=ibus
     - desktop-file-utils
     - gobject-introspection
+    - gtk-doc-tools
     - iso-codes
     - libdconf-dev
     - libgirepository1.0-dev
@@ -47,7 +45,7 @@ jobs:
     before_script:
     - sudo apt-get -qq update
     env:
-    - SAVE_DIST_FILES=1
+    - SAVE_DIST_FILES=0
     script:
     - set -e
     - git config pull.rebase false
@@ -56,6 +54,7 @@ jobs:
     # https://salsa.debian.org/debian/ibus/-/blob/master/debian/rules
     - >
       ./autogen.sh
+      --enable-gtk-doc
       --with-python=/usr/bin/python3
       --with-ucd-dir='/usr/share/unicode'
       --enable-install-tests
