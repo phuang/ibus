@@ -56,6 +56,7 @@ jobs:
     # https://salsa.debian.org/debian/ibus/-/blob/master/debian/rules
     - >
       ./autogen.sh
+      --with-python=/usr/bin/python3
       --with-ucd-dir='/usr/share/unicode'
       --enable-install-tests
     # Set the cutom DESTDIR because the default DESTDIR
@@ -67,6 +68,7 @@ jobs:
       --enable-gtk-doc
       --disable-schemas-install
       --enable-memconf
+      --with-python=/usr/bin/python3
       --with-ucd-dir='/usr/share/unicode'
       --enable-install-tests
       "
