@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2018-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2019 Red Hat, Inc.
+ * Copyright (C) 2018-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -954,6 +954,10 @@ ibus_engine_filter_key_event (IBusEngine *engine,
         return FALSE;
     for (n = names; n; n = n->next) {
         const gchar *name = (const gchar *)n->data;
+        if (!g_strcmp0 (name, "emoji") &&
+            (engine->priv->content_hints & IBUS_INPUT_HINT_NO_EMOJI)) {
+            continue;
+        }
         keys = g_hash_table_lookup (priv->extension_keybindings, name);
         for (; keys; keys++) {
             if (keys->keyval == 0 && keys->keycode == 0 && keys->state == 0)
