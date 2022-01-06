@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2015-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2014-2017 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -386,7 +386,7 @@ ibus_engine_simple_update_preedit_text (IBusEngineSimple *simple)
     } else if (s->len >= G_MAXINT) {
         g_warning ("%s is too long compose length: %lu", s->str, s->len);
     } else {
-        int len = (int)s->len;
+        guint len = (guint)g_utf8_strlen (s->str, -1);
         IBusText *text = ibus_text_new_from_string (s->str);
         ibus_text_append_attribute (text,
                 IBUS_ATTR_TYPE_UNDERLINE, IBUS_ATTR_UNDERLINE_SINGLE, 0, len);
