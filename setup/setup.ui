@@ -1339,6 +1339,7 @@
                             <child>
                               <object class="GtkCheckButton" id="checkbutton_custom_theme">
                                 <property name="label" translatable="yes">Use custom theme:</property>
+                                <property name="tooltip_text" translatable="yes">Choose a theme of the candidate window</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -1375,6 +1376,7 @@
                             <child>
                               <object class="GtkCheckButton" id="checkbutton_custom_icon">
                                 <property name="label" translatable="yes">Use custom icon:</property>
+                                <property name="tooltip_text" translatable="yes">Choose a theme of the arrow buttons on the candidate window</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
