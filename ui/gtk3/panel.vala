@@ -211,6 +211,22 @@ class Panel : IBus.PanelService {
                                               ref m_css_provider);
         });
 
+        m_settings_panel.changed["custom-theme"].connect((key) => {
+                BindingCommon.set_custom_theme(m_settings_panel);
+        });
+
+        m_settings_panel.changed["use-custom-theme"].connect((key) => {
+                BindingCommon.set_custom_theme(m_settings_panel);
+        });
+
+        m_settings_panel.changed["custom-icon"].connect((key) => {
+                BindingCommon.set_custom_icon(m_settings_panel);
+        });
+
+        m_settings_panel.changed["use-custom-icon"].connect((key) => {
+                BindingCommon.set_custom_icon(m_settings_panel);
+        });
+
         m_settings_panel.changed["use-glyph-from-engine-lang"].connect((key) =>
         {
                 m_use_engine_lang = m_settings_panel.get_boolean(
@@ -816,6 +832,8 @@ class Panel : IBus.PanelService {
         BindingCommon.set_custom_font(m_settings_panel,
                                       null,
                                       ref m_css_provider);
+        BindingCommon.set_custom_theme(m_settings_panel);
+        BindingCommon.set_custom_icon(m_settings_panel);
         set_show_icon_on_systray();
         set_lookup_table_orientation();
         set_show_property_panel();
