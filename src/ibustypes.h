@@ -2,7 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2020 Red Hat, Inc.
+ * Copyright (C) 2010-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2022 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -300,6 +301,8 @@ typedef enum
  * @IBUS_INPUT_HINT_VERTICAL_WRITING: The text is vertical. Since 1.5.11
  * @IBUS_INPUT_HINT_EMOJI: Suggest offering Emoji support. Since 1.5.24
  * @IBUS_INPUT_HINT_NO_EMOJI: Suggest not offering Emoji support. Since 1.5.24
+ * @IBUS_INPUT_HINT_PRIVATE: Request that the input method should not
+ *     update personalized data (like typing history). Since 1.5.26
  *
  * Describes hints that might be taken into account by engines.  Note
  * that engines may already tailor their behaviour according to the
@@ -326,7 +329,8 @@ typedef enum
     IBUS_INPUT_HINT_INHIBIT_OSK         = 1 << 7,
     IBUS_INPUT_HINT_VERTICAL_WRITING    = 1 << 8,
     IBUS_INPUT_HINT_EMOJI               = 1 << 9,
-    IBUS_INPUT_HINT_NO_EMOJI            = 1 << 10
+    IBUS_INPUT_HINT_NO_EMOJI            = 1 << 10,
+    IBUS_INPUT_HINT_PRIVATE             = 1 << 11
 } IBusInputHints;
 
 #endif
