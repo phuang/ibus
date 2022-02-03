@@ -2,7 +2,7 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2011-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2011-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
  * Copyright (C) 2008-2021 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
@@ -38,14 +38,14 @@ static GDBusServer *server = NULL;
 static GMainLoop *mainloop = NULL;
 static BusDBusImpl *dbus = NULL;
 static BusIBusImpl *ibus = NULL;
-static gchar *address = NULL;
+static char *address = NULL;
 static gboolean _restart = FALSE;
 
 static void
 _restart_server (void)
 {
-    gchar *exe;
-    gint fd;
+    char *exe;
+    int fd;
     ssize_t r;
     int MAXSIZE = 0xFFF;
     char proclnk[MAXSIZE];
@@ -201,11 +201,11 @@ bus_acquired_handler (GDBusConnection       *connection,
                             NULL);
 }
 
-static gchar *
+static char *
 _bus_extract_address (void)
 {
-    gchar *socket_address = g_strdup (g_address);
-    gchar *p;
+    char *socket_address = g_strdup (g_address);
+    char *p;
 
 #define IF_REPLACE_VARIABLE_WITH_FUNC(variable, func, format)           \
     if ((p = g_strstr_len (socket_address, -1, (variable)))) {          \
@@ -242,12 +242,12 @@ bus_server_init (void)
 #define IBUS_UNIX_ABSTRACT      "unix:abstract="
 #define IBUS_UNIX_DIR           "unix:dir="
 
-    gchar *socket_address;
+    char *socket_address;
     GDBusServerFlags flags = G_DBUS_SERVER_FLAGS_NONE;
-    gchar *guid;
+    char *guid;
     GDBusAuthObserver *observer;
     GError *error = NULL;
-    gchar *unix_dir = NULL;
+    char *unix_dir = NULL;
 
     dbus = bus_dbus_impl_get_default ();
     ibus = bus_ibus_impl_get_default ();
@@ -256,18 +256,24 @@ bus_server_init (void)
     /* init server */
     socket_address = _bus_extract_address ();
 
-#define IF_GET_UNIX_DIR(prefix)                                         \
+#define IF_GET_UNIX_DIR_FROM_DIR(prefix)                                \
     if (g_str_has_prefix (socket_address, (prefix))) {                  \
         unix_dir = g_strdup (socket_address + strlen (prefix));         \
     }
+#define IF_GET_UNIX_DIR_FROM_PATH(prefix)                               \
+    if (g_str_has_prefix (socket_address, (prefix))) {                  \
+        const char *unix_path = socket_address + strlen (prefix);       \
+        unix_dir = g_path_get_dirname (unix_path);                      \
+    }
 
-    IF_GET_UNIX_DIR (IBUS_UNIX_TMPDIR)
+
+    IF_GET_UNIX_DIR_FROM_DIR (IBUS_UNIX_TMPDIR)
     else
-    IF_GET_UNIX_DIR (IBUS_UNIX_PATH)
+    IF_GET_UNIX_DIR_FROM_PATH (IBUS_UNIX_PATH)
     else
-    IF_GET_UNIX_DIR (IBUS_UNIX_ABSTRACT)
+    IF_GET_UNIX_DIR_FROM_PATH (IBUS_UNIX_ABSTRACT)
     else
-    IF_GET_UNIX_DIR (IBUS_UNIX_DIR)
+    IF_GET_UNIX_DIR_FROM_DIR (IBUS_UNIX_DIR)
     else {
         g_error ("Your socket address \"%s\" does not correspond with "
                  "one of the following formats; "
@@ -329,7 +335,8 @@ bus_server_init (void)
                     bus_acquired_handler,
                     NULL, NULL, NULL, NULL);
 
-#undef IF_GET_UNIX_DIR
+#undef IF_GET_UNIX_DIR_FROM_DIR
+#undef IF_GET_UNIX_DIR_FROM_PATH
 #undef IBUS_UNIX_TMPDIR
 #undef IBUS_UNIX_PATH
 #undef IBUS_UNIX_ABSTRACT
