@@ -265,13 +265,15 @@ bus_server_init (void)
         const char *unix_path = socket_address + strlen (prefix);       \
         unix_dir = g_path_get_dirname (unix_path);                      \
     }
+#define IF_GET_UNIX_DIR_FROM_ABSTRACT(prefix)                           \
+    if (g_str_has_prefix (socket_address, (prefix))) {}
 
 
     IF_GET_UNIX_DIR_FROM_DIR (IBUS_UNIX_TMPDIR)
     else
     IF_GET_UNIX_DIR_FROM_PATH (IBUS_UNIX_PATH)
     else
-    IF_GET_UNIX_DIR_FROM_PATH (IBUS_UNIX_ABSTRACT)
+    IF_GET_UNIX_DIR_FROM_ABSTRACT (IBUS_UNIX_ABSTRACT)
     else
     IF_GET_UNIX_DIR_FROM_DIR (IBUS_UNIX_DIR)
     else {
@@ -281,7 +283,8 @@ bus_server_init (void)
                  IBUS_UNIX_ABSTRACT "FILE, " IBUS_UNIX_DIR "DIR.",
                  socket_address);
     }
-    if (!g_file_test (unix_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+    if (unix_dir &&
+        !g_file_test (unix_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
         /* Require mkdir for BSD system.
          * The mode 0700 can eliminate malicious users change the mode.
          * `chmod` runs for the last directory only not to change the modes
@@ -337,6 +340,7 @@ bus_server_init (void)
 
 #undef IF_GET_UNIX_DIR_FROM_DIR
 #undef IF_GET_UNIX_DIR_FROM_PATH
+#undef IF_GET_UNIX_DIR_FROM_ABSTRACT
 #undef IBUS_UNIX_TMPDIR
 #undef IBUS_UNIX_PATH
 #undef IBUS_UNIX_ABSTRACT
