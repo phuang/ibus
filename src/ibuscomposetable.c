@@ -1,7 +1,7 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* ibus - The Input Bus
  * Copyright (C) 2013-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2013-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2013-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,6 +46,7 @@
 #define IBUS_COMPOSE_TABLE_MAGIC "IBusComposeTable"
 #define IBUS_COMPOSE_TABLE_VERSION (4)
 #define X11_DATADIR X11_DATA_PREFIX "/share/X11/locale"
+#define IBUS_MAX_COMPOSE_ALGORITHM_LEN 9
 
 typedef struct {
   gunichar     *sequence;
@@ -1659,7 +1660,7 @@ ibus_compose_table_compact_check (const IBusComposeTableCompactEx
 static gboolean
 check_normalize_nfc (gunichar* combination_buffer, int n_compose)
 {
-    gunichar combination_buffer_temp[IBUS_MAX_COMPOSE_LEN];
+    gunichar combination_buffer_temp[IBUS_MAX_COMPOSE_ALGORITHM_LEN + 1];
     char *combination_utf8_temp = NULL;
     char *nfc_temp = NULL;
     int n_combinations;
@@ -1682,7 +1683,7 @@ check_normalize_nfc (gunichar* combination_buffer, int n_compose)
 
     memcpy (combination_buffer_temp,
             combination_buffer,
-            IBUS_MAX_COMPOSE_LEN * sizeof (gunichar) );
+            IBUS_MAX_COMPOSE_ALGORITHM_LEN * sizeof (gunichar) );
 
     for (i = 0; i < n_combinations; i++ ) {
         g_unicode_canonical_ordering (combination_buffer_temp, n_compose);
@@ -1694,7 +1695,7 @@ check_normalize_nfc (gunichar* combination_buffer, int n_compose)
         if (g_utf8_strlen (nfc_temp, -1) == 1) {
             memcpy (combination_buffer,
                     combination_buffer_temp,
-                    IBUS_MAX_COMPOSE_LEN * sizeof (gunichar) );
+                    IBUS_MAX_COMPOSE_ALGORITHM_LEN * sizeof (gunichar) );
 
             g_free (combination_utf8_temp);
             g_free (nfc_temp);
@@ -1708,14 +1709,14 @@ check_normalize_nfc (gunichar* combination_buffer, int n_compose)
         if (n_compose > 2) {
             int j = i % (n_compose - 1) + 1;
             int k = (i+1) % (n_compose - 1) + 1;
-            if (j >= IBUS_MAX_COMPOSE_LEN) {
-                g_warning ("j >= IBUS_MAX_COMPOSE_LEN for " \
-                           "combination_buffer_temp");
+            if (j >= IBUS_MAX_COMPOSE_ALGORITHM_LEN) {
+                g_warning ("j >= %d for combination_buffer_temp",
+                           IBUS_MAX_COMPOSE_ALGORITHM_LEN);
                 break;
             }
-            if (k >= IBUS_MAX_COMPOSE_LEN) {
-                g_warning ("k >= IBUS_MAX_COMPOSE_LEN for " \
-                           "combination_buffer_temp");
+            if (k >= IBUS_MAX_COMPOSE_ALGORITHM_LEN) {
+                g_warning ("k >= %d for combination_buffer_temp",
+                           IBUS_MAX_COMPOSE_ALGORITHM_LEN);
                 break;
             }
             temp_swap = combination_buffer_temp[j];
@@ -1737,13 +1738,23 @@ ibus_check_algorithmically (const guint16 *compose_buffer,
 
 {
     int i;
-    gunichar combination_buffer[IBUS_MAX_COMPOSE_LEN];
+    gunichar combination_buffer[IBUS_MAX_COMPOSE_ALGORITHM_LEN + 1];
     char *combination_utf8, *nfc;
 
     if (output_char)
         *output_char = 0;
 
-    if (n_compose >= IBUS_MAX_COMPOSE_LEN)
+    /* Check the IBUS_MAX_COMPOSE_ALGORITHM_LEN length only here instead of
+     * IBUS_MAX_COMPOSE_LEN length.
+     * Because this API calls check_normalize_nfc() which calculates the factorial
+     * of `n_compose` and assigns the value to `n_combinations`.
+     * I.e. 9! == 40320 <= SHRT_MAX == 32767
+     * The factorial of exceeding INT_MAX spends a long time in check_normalize_nfc()
+     * and causes a D-Bus timeout between GTK clients and IBusEngineSimple.
+     * Currenlty IBUS_MAX_COMPOSE_LEN is much larger and supports the long compose
+     * sequence however the max 9 would be enough for this mechanical compose.
+     */
+    if (n_compose > IBUS_MAX_COMPOSE_ALGORITHM_LEN)
         return FALSE;
 
     for (i = 0; i < n_compose && IS_DEAD_KEY (compose_buffer[i]); i++)
