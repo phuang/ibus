@@ -1448,8 +1448,16 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
             g_free (path);
             return retval;
         }
-        g_free (path);
-        path = NULL;
+        g_clear_pointer(&path, g_free);
+
+        path = g_build_filename (g_get_user_config_dir (),
+                                 "gtk-4.0", "Compose", NULL);
+        if (g_file_test (path, G_FILE_TEST_EXISTS)) {
+            ibus_engine_simple_add_compose_file (simple, path);
+            g_free (path);
+            return retval;
+        }
+        g_clear_pointer(&path, g_free);
 
         path = g_build_filename (g_get_user_config_dir (),
                                  "gtk-3.0", "Compose", NULL);
@@ -1458,8 +1466,7 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
             g_free (path);
             return retval;
         }
-        g_free (path);
-        path = NULL;
+        g_clear_pointer(&path, g_free);
 
         home = g_get_home_dir ();
         if (home == NULL)
@@ -1471,8 +1478,7 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
             g_free (path);
             return retval;
         }
-        g_free (path);
-        path = NULL;
+        g_clear_pointer(&path, g_free);
 
 #if GLIB_CHECK_VERSION (2, 58, 0)
         langs = g_get_language_names_with_category ("LC_CTYPE");
@@ -1508,8 +1514,7 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
 
             if (g_file_test (path, G_FILE_TEST_EXISTS))
                 break;
-            g_free (path);
-            path = NULL;
+            g_clear_pointer(&path, g_free);
         }
 
 #if !GLIB_CHECK_VERSION (2, 58, 0)
@@ -1518,15 +1523,13 @@ ibus_engine_simple_add_table_by_locale (IBusEngineSimple *simple,
 
         if (path != NULL)
             ibus_engine_simple_add_compose_file (simple, path);
-        g_free (path);
-        path = NULL;
+        g_clear_pointer(&path, g_free);
     } else {
         path = g_build_filename (X11_DATADIR, locale, "Compose", NULL);
         do {
             if (g_file_test (path, G_FILE_TEST_EXISTS))
                 break;
-            g_free (path);
-            path = NULL;
+            g_clear_pointer(&path, g_free);
         } while (0);
         if (path == NULL)
             return retval;
