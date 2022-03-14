@@ -3,7 +3,7 @@
  * ibus - The Input Bus
  *
  * Copyright(c) 2011-2014 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright(c) 2015-2020 Takao Fujwiara <takao.fujiwara1@gmail.com>
+ * Copyright(c) 2015-2022 Takao Fujwiara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -260,8 +260,23 @@ class Panel : IBus.PanelService {
 
 #if INDICATOR
     private static bool is_kde() {
-        if (Environment.get_variable("XDG_CURRENT_DESKTOP") == "KDE")
+        unowned string? desktop =
+            Environment.get_variable("XDG_CURRENT_DESKTOP");
+        if (desktop == "KDE")
             return true;
+        /* If ibus-dameon is launched from systemd, XDG_CURRENT_DESKTOP
+         * environment variable could be set after ibus-dameon would be
+         * launched and XDG_CURRENT_DESKTOP could be "(null)".
+         * But XDG_SESSION_DESKTOP can be set with systemd's PAM.
+         */
+        if (desktop == null || desktop == "(null)")
+            desktop = Environment.get_variable("XDG_SESSION_DESKTOP");
+        if (desktop == "plasma" || desktop == "KDE-wayland")
+            return true;
+        if (desktop == null) {
+            warning ("XDG_CURRENT_DESKTOP is not exported in your desktop " +
+                     "session.");
+        }
         warning ("If you launch KDE5 on xterm, " +
                  "export XDG_CURRENT_DESKTOP=KDE before launch KDE5.");
         return false;
