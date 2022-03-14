@@ -1,6 +1,6 @@
 # Korean translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2015-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -24,8 +24,8 @@ msgstr ""
 "Project-Id-Version: ibus 1.5.21\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2020-09-03 21:21+0900\n"
-"PO-Revision-Date: 2021-07-22 07:04+0000\n"
-"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
+"PO-Revision-Date: 2021-11-11 00:05+0000\n"
+"Last-Translator: simmon <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/ibus/"
 "ibus/ko/>\n"
 "Language: ko\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.8.1\n"
 
 #. Translators: Here “Preload” is a verb
 #: data/dconf/org.freedesktop.ibus.gschema.xml:11
@@ -130,11 +130,11 @@ msgstr "응용프로그램의 입력창에 포커스가 가면 기본적으로 �
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:62
 msgid "DConf preserve name prefixes"
-msgstr "DConf는 이름 프리픽스를 보존합니다"
+msgstr "DConf는 이름 접두사를 보존합니다"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:63
 msgid "Prefixes of DConf keys to stop name conversion"
-msgstr "DConf 키 프리픽스는 이름 변환을 중지합니다"
+msgstr "DConf 키 접두사는 이름 변환을 중지합니다"
 
 #: data/dconf/org.freedesktop.ibus.gschema.xml:70
 msgid "Trigger shortcut keys"
@@ -454,7 +454,7 @@ msgstr "_취소"
 
 #: setup/emojilang.py:71 setup/keyboardshortcut.py:340 setup/main.py:561
 msgid "_OK"
-msgstr "_오케이"
+msgstr "확인(_O)"
 
 #: setup/emojilang.py:235 setup/enginedialog.py:205
 msgid "More…"
@@ -462,7 +462,7 @@ msgstr "더 보기…"
 
 #: setup/engineabout.py:37 setup/setup.ui:1368 ui/gtk3/panel.vala:1184
 msgid "About"
-msgstr "대하여"
+msgstr "정보"
 
 #: setup/engineabout.py:40 setup/setup.ui:1391
 msgid "_Close"
@@ -559,8 +559,8 @@ msgid ""
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
 msgstr ""
-"IBus를 시작했습니다! IBus를 사용할 수 없는 경우 다음과 같은 행을 $HOME/."
-"bashrc 파일에 추가하고, 데스크톱에 다시 로그인하십시오.\n"
+"IBus를 시작했습니다! IBus를 사용 할 수 으면, 다음 행을 자신의 $HOME/.bashrc 파일에 추가; 그런 후에 자신의 "
+"데스크탑에 다시 로그인하세요.\n"
 "  export GTK_IM_MODULE=ibus\n"
 "  export XMODIFIERS=@im=ibus\n"
 "  export QT_IM_MODULE=ibus"
@@ -591,19 +591,19 @@ msgstr "세로"
 
 #: setup/setup.ui:25
 msgid "Top left corner"
-msgstr "왼쪽 위 구석"
+msgstr "상단 왼쪽 모서리"
 
 #: setup/setup.ui:28
 msgid "Top right corner"
-msgstr "오른쪽 위 구석"
+msgstr "상단 오른쪽 모서리"
 
 #: setup/setup.ui:31
 msgid "Bottom left corner"
-msgstr "왼쪽 아래 구석"
+msgstr "하단 왼쪽 모서리"
 
 #: setup/setup.ui:34
 msgid "Bottom right corner"
-msgstr "오른쪽 아래 구석"
+msgstr "하단 오른쪽 모서리"
 
 #: setup/setup.ui:37
 msgid "Custom"
@@ -761,8 +761,8 @@ msgid ""
 "ones in the above list by pressing the keyboard shortcut keys or clicking "
 "the panel icon.</i></small>"
 msgstr ""
-"<small><i>위의 목록에서 선택한 후 키보드 단축키를 누르거나 패널 아이콘을 눌"
-"러 활성 입력기를 전환할 수 있습니다.</i></small>"
+"<small><i>위의 목록에서 선택한 후 키보드 단축키를 누르거나 패널 아이콘을 눌러 활성 입력기를 전환 할 수 "
+"있습니다.</i></small>"
 
 # tooltip
 #: setup/setup.ui:873
@@ -1515,14 +1515,14 @@ msgstr "딩뱃 기호"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:385
 msgid "Miscellaneous Mathematical Symbols-A"
-msgstr "여러가지 수학기호 A"
+msgstr "여러가지 수학기호-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:389
 msgid "Supplemental Arrows-A"
-msgstr "화살표 추가영역 A"
+msgstr "화살표 추가영역-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1536,14 +1536,14 @@ msgstr "점자 모양"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:397
 msgid "Supplemental Arrows-B"
-msgstr "화살표 추가영역 B"
+msgstr "화살표 추가영역-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:401
 msgid "Miscellaneous Mathematical Symbols-B"
-msgstr "여러가지 수학기호 B"
+msgstr "여러가지 수학기호-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1572,7 +1572,7 @@ msgstr "글라골 문자"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:417
 msgid "Latin Extended-C"
-msgstr "라틴문자 확장영역 C"
+msgstr "라틴문자 확장영역-C"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1770,7 +1770,7 @@ msgstr "바이 문자"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:529
 msgid "Cyrillic Extended-B"
-msgstr "키릴 문자 확장영역 B"
+msgstr "키릴 문자 확장영역-B"
 
 # 아프리카
 #. TRANSLATORS: You might refer the translations from gucharmap with
@@ -1848,7 +1848,7 @@ msgstr "레장 문자"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:573
 msgid "Hangul Jamo Extended-A"
-msgstr "한글 자모 확장영역 A"
+msgstr "한글 자모 확장영역-A"
 
 # 인도네시아
 #. TRANSLATORS: You might refer the translations from gucharmap with
@@ -1863,7 +1863,7 @@ msgstr "자와어"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:581
 msgid "Myanmar Extended-B"
-msgstr "미얀마 확장영역 B"
+msgstr "미얀마 확장영역-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1877,7 +1877,7 @@ msgstr "참 문자"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:589
 msgid "Myanmar Extended-A"
-msgstr "미얀마 확장영역 A"
+msgstr "미얀마 확장영역-A"
 
 # 태국
 #. TRANSLATORS: You might refer the translations from gucharmap with
@@ -1899,14 +1899,14 @@ msgstr "메이테이 문자 확장영역"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:601
 msgid "Ethiopic Extended-A"
-msgstr "에티오피아 문자 확장영역 A"
+msgstr "에티오피아 문자 확장영역-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:605
 msgid "Latin Extended-E"
-msgstr "라틴문자 확장영역 E"
+msgstr "라틴문자 확장영역-E"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1934,7 +1934,7 @@ msgstr "한글 음절"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:621
 msgid "Hangul Jamo Extended-B"
-msgstr "한글 자모 확장영역 B"
+msgstr "한글 자모 확장영역-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -1976,14 +1976,14 @@ msgstr "한중일 호환 한자"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:645
 msgid "Alphabetic Presentation Forms"
-msgstr "알파벳 표시 꼴"
+msgstr "알파벳 표시 양식"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:649
 msgid "Arabic Presentation Forms-A"
-msgstr "아랍 문자 표시 꼴 A"
+msgstr "아랍 문자 표시 양식-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2011,7 +2011,7 @@ msgstr "조합 반각 표시"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:665
 msgid "CJK Compatibility Forms"
-msgstr "한중일 호환 꼴"
+msgstr "한중일 호환 양식"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2025,14 +2025,14 @@ msgstr "작은꼴 변형"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:673
 msgid "Arabic Presentation Forms-B"
-msgstr "아랍 문자 표시 꼴 B"
+msgstr "아랍 문자 표시 양식-B"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:677
 msgid "Halfwidth and Fullwidth Forms"
-msgstr "반각 및 전각 꼴"
+msgstr "반각 및 전각 양식"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2756,14 +2756,14 @@ msgstr "가나 추가영역"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1073
 msgid "Kana Extended-A"
-msgstr "가나 확장영역 A"
+msgstr "가나 확장영역-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1077
 msgid "Small Kana Extension"
-msgstr "작은 가나꼴 확장영역"
+msgstr "작은 가나 확장영역"
 
 # 뉘수 문자(女书, 女書, Nǚshū) 음절 문자이며, 중국의 소수민족인 야오족 여성들만이 사용함.
 #. TRANSLATORS: You might refer the translations from gucharmap with
@@ -2986,7 +2986,7 @@ msgstr "도형 확장영역"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1201
 msgid "Supplemental Arrows-C"
-msgstr "화살표 추가영역 C"
+msgstr "화살표 추가영역-C"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -3084,14 +3084,14 @@ msgstr "여러가지 선택자 추가영역"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1257
 msgid "Supplementary Private Use Area-A"
-msgstr "사용자 추가영역 A"
+msgstr "사용자 추가영역-A"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1261
 msgid "Supplementary Private Use Area-B"
-msgstr "사용자 추가영역 B"
+msgstr "사용자 추가영역-B"
 
 #: tools/main.vala:51
 msgid "List engine name only"
@@ -3099,7 +3099,7 @@ msgstr "엔진 이름만 나열합니다"
 
 #: tools/main.vala:67 tools/main.vala:192 tools/main.vala:202
 msgid "Can't connect to IBus.\n"
-msgstr "IBus에 연결할 수 없습니다.\n"
+msgstr "IBus에 연결 할 수 없습니다.\n"
 
 #: tools/main.vala:93
 #, c-format
@@ -3221,7 +3221,7 @@ msgstr "명령:\n"
 #: tools/main.vala:494
 #, c-format
 msgid "%s is unknown command!\n"
-msgstr "%s은(는) 알 수 없는 명령입니다!\n"
+msgstr "%s는 알 수 없는 명령입니다!\n"
 
 #: ui/gtk3/emojier.vala:233
 msgid "Favorites"
@@ -3315,9 +3315,8 @@ msgid ""
 "application. E.g. Press Esc key several times to release the emoji typing "
 "mode, click your desktop and click your text application again."
 msgstr ""
-"현재 텍스트 응용 프로그램을 알아낼 수 없습니다. 응용 프로그램의 포커스를 다"
-"시 맞춰 보십시오. 예를 들어 Esc 키를 여러번 눌러 이모지 입력 모드를 벗어나거"
-"나, 바탕 화면을 누르고 텍스트 응용 프로그램을 다시 눌러 보십시오."
+"현재 텍스트 응용 프로그램을 가져 올 수 없습니다. 응용 프로그램에 다시 초점을 맞춰보세요. 예를 들어 Esc 키를 여러 번 눌러서 "
+"이모지 입력 방식을 벗어나거나, 바탕 화면을 누르고 텍스트 응용 프로그램을 다시 눌러 보세요."
 
 #: ui/gtk3/emojierapp.vala:47
 msgid "Canceled to choose an emoji."
@@ -3394,10 +3393,7 @@ msgstr "IBus는 리눅스/유닉스를 위한 지능형 입력 버스입니다."
 
 #: ui/gtk3/panel.vala:1145
 msgid "translator-credits"
-msgstr ""
-"김은주 <eukim@redhat.com>\n"
-"류창우 <cwryu@debian.org>\n"
-"simmon <simmon@nplob.com>"
+msgstr "simmon <simmon@nplob.com> 2021"
 
 #: ui/gtk3/panel.vala:1164
 msgid "Preferences"
