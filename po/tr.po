@@ -1,6 +1,6 @@
 # Turkish translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2015-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Serdar Sağlam <teknomobil@msn.com>, 2019. #zanata
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: ibus 1.5.20\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2020-12-11 16:21+0900\n"
-"PO-Revision-Date: 2021-01-17 12:37+0000\n"
+"PO-Revision-Date: 2021-09-19 16:04+0000\n"
 "Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
 "Language-Team: Turkish <https://translate.fedoraproject.org/projects/ibus/"
 "ibus/tr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.8\n"
 
 #. Translators: Here “Preload” is a verb
 #: data/dconf/org.freedesktop.ibus.gschema.xml:11
@@ -1462,7 +1462,7 @@ msgstr "Optik Karakter Tanıma"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:361
 msgid "Enclosed Alphanumerics"
-msgstr "Kapalı Alfanumerik"
+msgstr "Kapalı Alfasayısal"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2785,7 +2785,7 @@ msgstr "Sayma Çubuğu Sayıları"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1117
 msgid "Mathematical Alphanumeric Symbols"
-msgstr "Matematiksel Alfanumerik Semboller"
+msgstr "Matematiksel Alfasayısal Semboller"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -2876,7 +2876,7 @@ msgstr "İskambil Kağıtları"
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1169
 msgid "Enclosed Alphanumeric Supplement"
-msgstr "Kapalı Alfanumerik İlave"
+msgstr "Kapalı Alfasayısal İlave"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
