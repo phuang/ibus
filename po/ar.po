@@ -7,13 +7,14 @@
 # Translators:
 # Muayyad Alsadi <alsadi@ojuba.org>, 2009
 # Abdullah Albaroty <albaroty@gmail.com>, 2022.
+# Zayed Al-Saidi <zayed.alsaidi@gmail.com>, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2014-02-18 13:46+0900\n"
 "PO-Revision-Date: 2022-01-11 09:16+0000\n"
-"Last-Translator: Abdullah Albaroty <albaroty@gmail.com>\n"
+"Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: Arabic <https://translate.fedoraproject.org/projects/ibus/"
 "ibus/ar/>\n"
 "Language: ar\n"
@@ -26,11 +27,11 @@ msgstr ""
 
 #: ../setup/setup.ui.h:1
 msgid "Horizontal"
-msgstr ""
+msgstr "أفقي"
 
 #: ../setup/setup.ui.h:2
 msgid "Vertical"
-msgstr ""
+msgstr "عمودي"
 
 #: ../setup/setup.ui.h:3
 msgid "Top left corner"
@@ -50,11 +51,11 @@ msgstr ""
 
 #: ../setup/setup.ui.h:7
 msgid "Custom"
-msgstr ""
+msgstr "مخصّصة"
 
 #: ../setup/setup.ui.h:8
 msgid "Do not show"
-msgstr ""
+msgstr "لا تعرض"
 
 #: ../setup/setup.ui.h:9
 msgid "Hide automatically"
@@ -98,11 +99,11 @@ msgstr "تفعيّل أو تثبيط:"
 
 #: ../setup/setup.ui.h:19
 msgid "Enable:"
-msgstr ""
+msgstr "مكّن %1"
 
 #: ../setup/setup.ui.h:20
 msgid "Disable:"
-msgstr ""
+msgstr "عطّل %1"
 
 #: ../setup/setup.ui.h:21
 msgid "<b>Keyboard Shortcuts</b>"
@@ -150,7 +151,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:32
 msgid "Use custom font:"
-msgstr ""
+msgstr "استعمال خط مخصص"
 
 #: ../setup/setup.ui.h:33
 msgid "<b>Font and Style</b>"
@@ -231,7 +232,7 @@ msgstr ""
 
 #: ../setup/setup.ui.h:51
 msgid "<b>Keyboard Layout</b>"
-msgstr ""
+msgstr "<b>تخطيط لوحة مفاتيح</b>"
 
 #: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:42
 msgid "Share the same input method among all applications"
@@ -243,7 +244,7 @@ msgstr "اختر طريقة الإدخال"
 
 #: ../setup/setup.ui.h:54
 msgid "Advanced"
-msgstr ""
+msgstr "متقدّم"
 
 #: ../setup/setup.ui.h:55
 msgid ""
@@ -350,7 +351,7 @@ msgstr ""
 
 #: ../data/ibus.schemas.in.h:20
 msgid "Auto hide"
-msgstr ""
+msgstr "أخف آليًّا"
 
 #: ../data/ibus.schemas.in.h:21
 msgid ""
@@ -410,7 +411,7 @@ msgstr "استخدم خط مخصص في لوحة اللغة"
 
 #: ../data/ibus.schemas.in.h:37
 msgid "Custom font"
-msgstr ""
+msgstr "خطّ مخصّص"
 
 #: ../data/ibus.schemas.in.h:38
 msgid "Custom font name for language panel"
@@ -495,7 +496,7 @@ msgstr "كود المفتاح"
 
 #: ../setup/keyboardshortcut.py:81
 msgid "Modifiers:"
-msgstr ""
+msgstr "المعدِّلات:"
 
 #. apply button
 #: ../setup/keyboardshortcut.py:133
