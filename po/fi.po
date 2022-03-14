@@ -1,6 +1,6 @@
 # Finnish translation of ibus.
 # Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (C) 2015-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
 #
 # Translators:
@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: IBus\n"
 "Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
 "POT-Creation-Date: 2020-12-11 16:21+0900\n"
-"PO-Revision-Date: 2021-04-30 13:02+0000\n"
+"PO-Revision-Date: 2021-10-05 11:05+0000\n"
 "Last-Translator: Jan Kuparinen <copper_fin@hotmail.com>\n"
 "Language-Team: Finnish <https://translate.fedoraproject.org/projects/ibus/"
 "ibus/fi/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.6\n"
+"X-Generator: Weblate 4.8\n"
 
 #. Translators: Here “Preload” is a verb
 #: data/dconf/org.freedesktop.ibus.gschema.xml:11
@@ -2962,7 +2962,7 @@ msgstr ""
 #. msgmerge -C gucharmap.po ibus.po ibus.pot
 #: src/ibusunicodegen.h:1249
 msgid "Tags"
-msgstr ""
+msgstr "Tunnisteet"
 
 #. TRANSLATORS: You might refer the translations from gucharmap with
 #. the following command:
@@ -3146,7 +3146,7 @@ msgstr "Sulje"
 
 #: ui/gtk3/emojier.vala:1118
 msgid "Menu"
-msgstr ""
+msgstr "Valikko"
 
 #: ui/gtk3/emojier.vala:1129
 msgid "Click to view a warning message"
