@@ -3,7 +3,7 @@
     <name>org.freedesktop.IBus.Simple</name>
     <description>A table based simple engine</description>
     <exec>@libexecdir@/ibus-engine-simple</exec>
-    <version>1.5.25.20210819</version>
+    <version>1.5.26.20220314</version>
     <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
     <license>GPL</license>
     <homepage>https://github.com/ibus/ibus/wiki</homepage>
@@ -201,6 +201,18 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:us:dvorak-mac:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>us</layout>
+            <layout_variant>dvorak-mac</layout_variant>
+            <longname>English (Dvorak, Macintosh)</longname>
+            <description>English (Dvorak, Macintosh)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
             <name>xkb:us:symbolic:eng</name>
             <language>en</language>
             <license>GPL</license>
@@ -381,6 +393,17 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:af::drs</name>
+            <language>drs</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>af</layout>
+            <longname>Dari</longname>
+            <description>Dari</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
             <name>xkb:af:ps:pus</name>
             <language>ps</language>
             <license>GPL</license>
@@ -405,14 +428,26 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:af:olpc-ps:pus</name>
+            <name>xkb:af:ps-olpc:pus</name>
             <language>ps</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>af</layout>
-            <layout_variant>olpc-ps</layout_variant>
+            <layout_variant>ps-olpc</layout_variant>
             <longname>Pashto (Afghanistan, OLPC)</longname>
             <description>Pashto (Afghanistan, OLPC)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:af:fa-olpc:drs</name>
+            <language>drs</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>af</layout>
+            <layout_variant>fa-olpc</layout_variant>
+            <longname>Dari (Afghanistan, OLPC)</longname>
+            <description>Dari (Afghanistan, OLPC)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -1027,6 +1062,589 @@
             <description>Bangla (Probhat)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::hin</name>
+            <language>hi</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::anp</name>
+            <language>anp</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::awa</name>
+            <language>awa</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bap</name>
+            <language>bap</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bfy</name>
+            <language>bfy</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bgc</name>
+            <language>bgc</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bhb</name>
+            <language>bhb</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bhi</name>
+            <language>bhi</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bho</name>
+            <language>bho</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bjj</name>
+            <language>bjj</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::bra</name>
+            <language>bra</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::brx</name>
+            <language>brx</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::btv</name>
+            <language>btv</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::doi</name>
+            <language>doi</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::dty</name>
+            <language>dty</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::gbm</name>
+            <language>gbm</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::gom</name>
+            <language>gom</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::gvr</name>
+            <language>gvr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::hne</name>
+            <language>hne</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::hoc</name>
+            <language>hoc</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::hoj</name>
+            <language>hoj</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::jml</name>
+            <language>jml</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::kfr</name>
+            <language>kfr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::kfy</name>
+            <language>kfy</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::khn</name>
+            <language>khn</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::kok</name>
+            <language>kok</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::kru</name>
+            <language>kru</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::mag</name>
+            <language>mag</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::mai</name>
+            <language>mai</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::mar</name>
+            <language>mr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::mgp</name>
+            <language>mgp</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::mrd</name>
+            <language>mrd</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::mtr</name>
+            <language>mtr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::mwr</name>
+            <language>mwr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::nep</name>
+            <language>ne</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::new</name>
+            <language>new</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::noe</name>
+            <language>noe</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::raj</name>
+            <language>raj</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::rjs</name>
+            <language>rjs</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::sck</name>
+            <language>sck</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::srx</name>
+            <language>srx</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::swv</name>
+            <language>swv</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::taj</name>
+            <language>taj</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::tdg</name>
+            <language>tdg</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::tdh</name>
+            <language>tdh</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::thl</name>
+            <language>thl</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::thq</name>
+            <language>thq</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::thr</name>
+            <language>thr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::tkt</name>
+            <language>tkt</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::wbr</name>
+            <language>wbr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::wtm</name>
+            <language>wtm</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::xnr</name>
+            <language>xnr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:in::xsr</name>
+            <language>xsr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>in</layout>
+            <longname>Indian</longname>
+            <description>Indian</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
         </engine>
         <engine>
             <name>xkb:in:ben:ben</name>
@@ -1782,6 +2400,28 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:dz::tzm</name>
+            <language>tzm</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>dz</layout>
+            <longname>Berber (Algeria, Latin)</longname>
+            <description>Berber (Algeria, Latin)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:dz::fra</name>
+            <language>fr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>dz</layout>
+            <longname>Berber (Algeria, Latin)</longname>
+            <description>Berber (Algeria, Latin)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
+        </engine>
+        <engine>
             <name>xkb:dz:azerty-deadkeys:kab</name>
             <language>kab</language>
             <license>GPL</license>
@@ -1840,6 +2480,17 @@
             <description>Arabic (Algeria)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:ma::ary</name>
+            <language>ary</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>ma</layout>
+            <longname>Arabic (Morocco)</longname>
+            <description>Arabic (Morocco)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>50</rank>
         </engine>
         <engine>
             <name>xkb:ma:french:fra</name>
@@ -1922,6 +2573,18 @@
             <layout_variant>tifinagh-extended-phonetic</layout_variant>
             <longname>Berber (Morocco, Tifinagh extended phonetic)</longname>
             <description>Berber (Morocco, Tifinagh extended phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:ma:rif:rif</name>
+            <language>rif</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>ma</layout>
+            <layout_variant>rif</layout_variant>
+            <longname>Tarifit</longname>
+            <description>Tarifit</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -2688,6 +3351,102 @@
             <layout_variant>zawgyi</layout_variant>
             <longname>Burmese Zawgyi</longname>
             <description>Burmese Zawgyi</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:shn:shn</name>
+            <language>shn</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>shn</layout_variant>
+            <longname>Shan</longname>
+            <description>Shan</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:shn:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>shn</layout_variant>
+            <longname>Shan</longname>
+            <description>Shan</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:zgt:shn</name>
+            <language>shn</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>zgt</layout_variant>
+            <longname>Shan (Zawgyi Tai)</longname>
+            <description>Shan (Zawgyi Tai)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:zgt:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>zgt</layout_variant>
+            <longname>Shan (Zawgyi Tai)</longname>
+            <description>Shan (Zawgyi Tai)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:mnw:mnw</name>
+            <language>mnw</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>mnw</layout_variant>
+            <longname>Mon</longname>
+            <description>Mon</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:mnw:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>mnw</layout_variant>
+            <longname>Mon</longname>
+            <description>Mon</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:mnw-a1:mnw</name>
+            <language>mnw</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>mnw-a1</layout_variant>
+            <longname>Mon (A1)</longname>
+            <description>Mon (A1)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:mm:mnw-a1:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>mm</layout>
+            <layout_variant>mnw-a1</layout_variant>
+            <longname>Mon (A1)</longname>
+            <description>Mon (A1)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6790,50 +7549,14 @@
             <rank>1</rank>
         </engine>
         <engine>
-            <name>xkb:tr:crh:crh</name>
-            <language>crh</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>tr</layout>
-            <layout_variant>crh</layout_variant>
-            <longname>Crimean Tatar (Turkish Q)</longname>
-            <description>Crimean Tatar (Turkish Q)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:tr:crh_f:crh</name>
-            <language>crh</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>tr</layout>
-            <layout_variant>crh_f</layout_variant>
-            <longname>Crimean Tatar (Turkish F)</longname>
-            <description>Crimean Tatar (Turkish F)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
-            <name>xkb:tr:crh_alt:crh</name>
-            <language>crh</language>
-            <license>GPL</license>
-            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
-            <layout>tr</layout>
-            <layout_variant>crh_alt</layout_variant>
-            <longname>Crimean Tatar (Turkish Alt-Q)</longname>
-            <description>Crimean Tatar (Turkish Alt-Q)</description>
-            <icon>ibus-keyboard</icon>
-            <rank>1</rank>
-        </engine>
-        <engine>
             <name>xkb:tr:ot:tur</name>
             <language>tr</language>
             <license>GPL</license>
             <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
             <layout>tr</layout>
             <layout_variant>ot</layout_variant>
-            <longname>Ottoman</longname>
-            <description>Ottoman</description>
+            <longname>Ottoman (Q)</longname>
+            <description>Ottoman (Q)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -6858,6 +7581,18 @@
             <layout_variant>otk</layout_variant>
             <longname>Old Turkic</longname>
             <description>Old Turkic</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:tr:otkf:tur</name>
+            <language>tr</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>tr</layout>
+            <layout_variant>otkf</layout_variant>
+            <longname>Old Turkic (F)</longname>
+            <description>Old Turkic (F)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7124,6 +7859,18 @@
             <rank>1</rank>
         </engine>
         <engine>
+            <name>xkb:ua:macOS:ukr</name>
+            <language>uk</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>ua</layout>
+            <layout_variant>macOS</layout_variant>
+            <longname>Ukrainian (macOS)</longname>
+            <description>Ukrainian (macOS)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
             <name>xkb:ua:legacy:ukr</name>
             <language>uk</language>
             <license>GPL</license>
@@ -7168,6 +7915,42 @@
             <layout_variant>homophonic</layout_variant>
             <longname>Ukrainian (homophonic)</longname>
             <description>Ukrainian (homophonic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:ua:crh:crh</name>
+            <language>crh</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>ua</layout>
+            <layout_variant>crh</layout_variant>
+            <longname>Crimean Tatar (Turkish Q)</longname>
+            <description>Crimean Tatar (Turkish Q)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:ua:crh_f:crh</name>
+            <language>crh</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>ua</layout>
+            <layout_variant>crh_f</layout_variant>
+            <longname>Crimean Tatar (Turkish F)</longname>
+            <description>Crimean Tatar (Turkish F)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:ua:crh_alt:crh</name>
+            <language>crh</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>ua</layout>
+            <layout_variant>crh_alt</layout_variant>
+            <longname>Crimean Tatar (Turkish Alt-Q)</longname>
+            <description>Crimean Tatar (Turkish Alt-Q)</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -7287,6 +8070,30 @@
             <layout_variant>pl</layout_variant>
             <longname>Polish (British keyboard)</longname>
             <description>Polish (British keyboard)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:gb:gla:eng</name>
+            <language>en</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>gb</layout>
+            <layout_variant>gla</layout_variant>
+            <longname>Scottish Gaelic</longname>
+            <description>Scottish Gaelic</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:gb:gla:gla</name>
+            <language>gd</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>gb</layout>
+            <layout_variant>gla</layout_variant>
+            <longname>Scottish Gaelic</longname>
+            <description>Scottish Gaelic</description>
             <icon>ibus-keyboard</icon>
             <rank>1</rank>
         </engine>
@@ -9286,6 +10093,90 @@
             <description>Indonesian (Latin)</description>
             <icon>ibus-keyboard</icon>
             <rank>50</rank>
+        </engine>
+        <engine>
+            <name>xkb:id:phonetic:ind</name>
+            <language>id</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>id</layout>
+            <layout_variant>phonetic</layout_variant>
+            <longname>Indonesian (Arab Pegon, phonetic)</longname>
+            <description>Indonesian (Arab Pegon, phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:id:phonetic:msa</name>
+            <language>ms</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>id</layout>
+            <layout_variant>phonetic</layout_variant>
+            <longname>Indonesian (Arab Pegon, phonetic)</longname>
+            <description>Indonesian (Arab Pegon, phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:id:phonetic:min</name>
+            <language>min</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>id</layout>
+            <layout_variant>phonetic</layout_variant>
+            <longname>Indonesian (Arab Pegon, phonetic)</longname>
+            <description>Indonesian (Arab Pegon, phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:id:phonetic:ace</name>
+            <language>ace</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>id</layout>
+            <layout_variant>phonetic</layout_variant>
+            <longname>Indonesian (Arab Pegon, phonetic)</longname>
+            <description>Indonesian (Arab Pegon, phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:id:phonetic:bjn</name>
+            <language>bjn</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>id</layout>
+            <layout_variant>phonetic</layout_variant>
+            <longname>Indonesian (Arab Pegon, phonetic)</longname>
+            <description>Indonesian (Arab Pegon, phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:id:phonetic:tsg</name>
+            <language>tsg</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>id</layout>
+            <layout_variant>phonetic</layout_variant>
+            <longname>Indonesian (Arab Pegon, phonetic)</longname>
+            <description>Indonesian (Arab Pegon, phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
+        </engine>
+        <engine>
+            <name>xkb:id:phonetic:mfa</name>
+            <language>mfa</language>
+            <license>GPL</license>
+            <author>Peng Huang &lt;shawn.p.huang@gmail.com&gt;</author>
+            <layout>id</layout>
+            <layout_variant>phonetic</layout_variant>
+            <longname>Indonesian (Arab Pegon, phonetic)</longname>
+            <description>Indonesian (Arab Pegon, phonetic)</description>
+            <icon>ibus-keyboard</icon>
+            <rank>1</rank>
         </engine>
         <engine>
             <name>xkb:id:phoneticx:ind</name>
