@@ -549,9 +549,10 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
         g_variant_unref (variant);
         g_signal_emit (context, context_signals[COMMIT_TEXT], 0, text);
 
-        if (g_object_is_floating (text))
+        if (g_object_is_floating (text)) {
             g_object_ref_sink (text);
-        g_object_unref (text);
+            g_object_unref (text);
+        }
         return;
     }
     if (g_strcmp0 (signal_name, "UpdatePreeditText") == 0) {
@@ -569,9 +570,10 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                        cursor_pos,
                        visible);
 
-        if (g_object_is_floating (text))
+        if (g_object_is_floating (text)) {
             g_object_ref_sink (text);
-        g_object_unref (text);
+            g_object_unref (text);
+        }
         return;
     }
     if (g_strcmp0 (signal_name, "UpdatePreeditTextWithMode") == 0) {
@@ -592,9 +594,10 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                        visible,
                        mode);
 
-        if (g_object_is_floating (text))
+        if (g_object_is_floating (text)) {
             g_object_ref_sink (text);
-        g_object_unref (text);
+            g_object_unref (text);
+        }
         return;
     }
 
@@ -621,9 +624,10 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                        0,
                        text,
                        visible);
-        if (g_object_is_floating (text))
+        if (g_object_is_floating (text)) {
             g_object_ref_sink (text);
-        g_object_unref (text);
+            g_object_unref (text);
+        }
         return;
     }
 
@@ -640,9 +644,10 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                        0,
                        table,
                        visible);
-        if (g_object_is_floating (table))
+        if (g_object_is_floating (table)) {
             g_object_ref_sink (table);
-        g_object_unref (table);
+            g_object_unref (table);
+        }
         return;
 
     }
@@ -659,9 +664,10 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
                        0,
                        prop_list);
 
-        if (g_object_is_floating (prop_list))
+        if (g_object_is_floating (prop_list)) {
             g_object_ref_sink (prop_list);
-        g_object_unref (prop_list);
+            g_object_unref (prop_list);
+        }
         return;
     }
 
@@ -673,9 +679,10 @@ ibus_input_context_g_signal (GDBusProxy  *proxy,
 
         g_signal_emit (context, context_signals[UPDATE_PROPERTY], 0, prop);
 
-        if (g_object_is_floating (prop))
+        if (g_object_is_floating (prop)) {
             g_object_ref_sink (prop);
-        g_object_unref (prop);
+            g_object_unref (prop);
+        }
         return;
     }
 
