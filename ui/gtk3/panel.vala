@@ -1207,7 +1207,7 @@ class Panel : IBus.PanelService {
 
             string copyright =
                 "Copyright © 2007-2015 Peng Huang\n" +
-                "Copyright © 2015-2019 Takao Fujiwara\n" +
+                "Copyright © 2015-2022 Takao Fujiwara\n" +
                 "Copyright © 2007-2015 Red Hat, Inc.\n";
 
             m_about_dialog.set_copyright(copyright);
