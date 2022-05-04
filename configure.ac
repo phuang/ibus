@@ -636,6 +636,21 @@ if test x"$enable_engine" = x"yes"; then
     enable_engine="yes (enabled, use --disable-engine to disable)"
 fi
 
+# --disable-libnotify
+AC_ARG_ENABLE(libnotify,
+    AS_HELP_STRING([--disable-libnotify],
+                   [Disable to link libnotify]),
+    [enable_libnotify=$enableval],
+    [enable_libnotify=yes]
+)
+AM_CONDITIONAL([ENABLE_LIBNOTIFY], [test x"$enable_libnotify" = x"yes"])
+if test x"$enable_libnotify" = x"yes"; then
+    PKG_CHECK_MODULES(LIBNOTIFY, [
+        libnotify >= 0.7
+    ])
+    enable_libnotify="yes (enabled, use --disable-libnotify to disable)"
+fi
+
 PKG_CHECK_MODULES(XTEST,
     [x11 xtst],
     [enable_xtest=yes],
@@ -871,6 +886,7 @@ Build options:
   No snooper regexes            "$NO_SNOOPER_APPS"
   Panel icon                    "$IBUS_ICON_KEYBOARD"
   Enable surrounding-text       $enable_surrounding_text
+  Enable libnotify              $enable_libnotify
   Enable Emoji dict             $enable_emoji_dict
   Unicode Emoji directory       $UNICODE_EMOJI_DIR
   CLDR annotation directory     $EMOJI_ANNOTATION_DIR

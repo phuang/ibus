@@ -3,7 +3,7 @@
 # ibus - The Input Bus
 #
 # Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2015-2020 Takao Fujwiara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2015-2022 Takao Fujwiara <takao.fujiwara1@gmail.com>
 # Copyright (c) 2007-2020 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
@@ -80,6 +80,21 @@ AM_VALAFLAGS = \
 	--pkg=xi \
 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
 	$(NULL)
+
+if ENABLE_LIBNOTIFY
+AM_CFLAGS += \
+       @LIBNOTIFY_CFLAGS@ \
+       $(NULL)
+
+AM_LDADD += \
+       @LIBNOTIFY_LIBS@ \
+       $(NULL)
+
+AM_VALAFLAGS += \
+       --pkg=libnotify \
+       -D ENABLE_LIBNOTIFY \
+       $(NULL)
+endif
 
 if ENABLE_APPINDICATOR
 AM_VALAFLAGS += --define=INDICATOR

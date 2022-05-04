@@ -73,6 +73,7 @@ class Panel : IBus.PanelService {
     private string m_icon_prop_key = "";
     private int m_property_icon_delay_time = 500;
     private uint m_property_icon_delay_time_id;
+    private bool m_is_wayland;
 #if INDICATOR
     private bool m_is_kde = is_kde();
 #else
@@ -92,6 +93,18 @@ class Panel : IBus.PanelService {
                     object_path : "/org/freedesktop/IBus/Panel");
 
         m_bus = bus;
+
+#if USE_GDK_WAYLAND
+        Gdk.set_allowed_backends("*");
+        var display = Gdk.DisplayManager.get().open_display(null);
+        Type instance_type = display.get_type();
+        Type wayland_type = typeof(GdkWayland.Display);
+        m_is_wayland = instance_type.is_a(wayland_type);
+        Gdk.set_allowed_backends("x11");
+#else
+        m_is_wayland = false;
+        warning("Checking Wayland is disabled");
+#endif
 
         init_settings();
 
@@ -553,6 +566,11 @@ class Panel : IBus.PanelService {
         GLib.List<IBus.EngineDesc> im_engines =
                 get_engines_from_locale(engines);
 
+        if (m_is_wayland) {
+            if (xkb_engines.length() > 0)
+                xkb_engines = new GLib.List<IBus.EngineDesc>();
+        }
+
         string[] names = {};
         foreach (unowned IBus.EngineDesc engine in xkb_engines)
             names += engine.get_name();
@@ -728,12 +746,40 @@ class Panel : IBus.PanelService {
         inited_engines_order = false;
     }
 
+    private void update_version_1_5_26() {
+        var message = _("Keymap changes do not work in Plasma Wayland at " +
+                        "present. Please use systemsettings5 instead.");
+#if ENABLE_LIBNOTIFY
+        if (!Notify.is_initted()) {
+            Notify.init ("ibus");
+        }
+
+        var notification = new Notify.Notification(
+                _("IBus Notification"),
+                message,
+                "ibus");
+        notification.set_timeout(30 * 1000);
+        notification.set_category("hotkey");
+
+        try {
+            notification.show();
+        } catch (GLib.Error e) {
+            warning (message);
+        }
+#else
+        warning (message);
+#endif
+    }
+
     private void set_version() {
         string prev_version = m_settings_general.get_string("version");
         string current_version = null;
 
         if (compare_versions(prev_version, "1.5.8") < 0)
             update_version_1_5_8();
+
+        if (compare_versions(prev_version, "1.5.26") < 0)
+            update_version_1_5_26();
 
         current_version = "%d.%d.%d".printf(IBus.MAJOR_VERSION,
                                             IBus.MINOR_VERSION,
@@ -856,7 +902,7 @@ class Panel : IBus.PanelService {
         m_icon_prop_key = "";
 
         // set xkb layout
-        if (!m_use_system_keyboard_layout)
+        if (!m_use_system_keyboard_layout && !m_is_wayland)
             m_xkblayout.set_layout(engine);
 
         set_language_from_engine(engine);
@@ -960,17 +1006,25 @@ class Panel : IBus.PanelService {
                                 string[]? order_names) {
         string[]? engine_names = unowned_engine_names;
 
-        if (engine_names == null || engine_names.length == 0)
-            engine_names = {"xkb:us::eng"};
+        if (engine_names == null || engine_names.length == 0) {
+            if (m_is_wayland)
+                engine_names = {};
+            else
+                engine_names = {"xkb:us::eng"};
+        }
 
         string[] names = {};
 
         foreach (var name in order_names) {
+            if (m_is_wayland && name.has_prefix("xkb:"))
+                continue;
             if (name in engine_names)
                 names += name;
         }
 
         foreach (var name in engine_names) {
+            if (m_is_wayland && name.has_prefix("xkb:"))
+                continue;
             if (name in names)
                 continue;
             names += name;
@@ -1011,9 +1065,14 @@ class Panel : IBus.PanelService {
 	}
 
         if (m_engines.length == 0) {
-            m_engines = engines;
-            switch_engine(0, true);
-            run_preload_engines(engines, 1);
+            if (engines.length > 0) {
+                m_engines = engines;
+                switch_engine(0, true);
+                run_preload_engines(engines, 1);
+            } else {
+                m_candidate_panel.set_language(new Pango.AttrLanguage(
+                        Pango.Language.from_string(null)));
+            }
         } else {
             var current_engine = m_engines[0];
             m_engines = engines;
@@ -1477,6 +1536,8 @@ class Panel : IBus.PanelService {
     public override void state_changed() {
         /* Do not change the order of m_engines during running switcher. */
         if (m_switcher.is_running())
+            return;
+        if (m_engines.length == 0)
             return;
 
         if (m_icon_type == IconType.INDICATOR) {
