@@ -33,6 +33,7 @@ addons:
     - libgtk-3-bin
     - libgtk-3-dev
     - libgtk2.0-dev
+    - libnotify-dev
     - libtool
     - libwayland-dev
     - python-gi-dev
