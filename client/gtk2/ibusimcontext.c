@@ -2,8 +2,8 @@
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
  * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
- * Copyright (C) 2008-2021 Red Hat, Inc.
+ * Copyright (C) 2015-2022 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2022 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1980,6 +1980,9 @@ _ibus_context_forward_key_event_cb (IBusInputContext  *ibuscontext,
             keycode = keys->keycode;
         else
             g_warning ("Failed to parse keycode from keyval %x", keyval);
+        /* _create_gdk_event() will add 8 to keycode. */
+        if (keycode != 0)
+            keycode -= 8;
     }
     GdkEventKey *event = _create_gdk_event (ibusimcontext, keyval, keycode, state);
     gdk_event_put ((GdkEvent *)event);
