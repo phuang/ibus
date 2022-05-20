@@ -874,33 +874,6 @@ ibus_im_context_class_fini (IBusIMContextClass *class)
     g_bus_unwatch_name (_daemon_name_watch_id);
 }
 
-/* Copied from gtk+2.0-2.20.1/modules/input/imcedilla.c to fix crosbug.com/11421.
- * Overwrite the original Gtk+'s compose table in gtk+-2.x.y/gtk/gtkimcontextsimple.c. */
-
-/* The difference between this and the default input method is the handling
- * of C+acute - this method produces C WITH CEDILLA rather than C WITH ACUTE.
- * For languages that use CCedilla and not acute, this is the preferred mapping,
- * and is particularly important for pt_BR, where the us-intl keyboard is
- * used extensively.
- */
-static guint16 cedilla_compose_seqs[] = {
-#ifdef DEPRECATED_GDK_KEYSYMS
-  GDK_dead_acute,	GDK_C,	0,	0,	0,	0x00C7,	/* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  GDK_dead_acute,	GDK_c,	0,	0,	0,	0x00E7,	/* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-  GDK_Multi_key,	GDK_apostrophe,	GDK_C,  0,      0,      0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  GDK_Multi_key,	GDK_apostrophe,	GDK_c,  0,      0,      0x00E7, /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-  GDK_Multi_key,	GDK_C,  GDK_apostrophe,	0,      0,      0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  GDK_Multi_key,	GDK_c,  GDK_apostrophe,	0,      0,      0x00E7, /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-#else
-  GDK_KEY_dead_acute,	GDK_KEY_C,	0,	0,	0,	0x00C7,	/* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  GDK_KEY_dead_acute,	GDK_KEY_c,	0,	0,	0,	0x00E7,	/* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-  GDK_KEY_Multi_key,	GDK_KEY_apostrophe,	GDK_KEY_C,  0,      0,      0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  GDK_KEY_Multi_key,	GDK_KEY_apostrophe,	GDK_KEY_c,  0,      0,      0x00E7, /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-  GDK_KEY_Multi_key,	GDK_KEY_C,  GDK_KEY_apostrophe,	0,      0,      0x00C7, /* LATIN_CAPITAL_LETTER_C_WITH_CEDILLA */
-  GDK_KEY_Multi_key,	GDK_KEY_c,  GDK_KEY_apostrophe,	0,      0,      0x00E7, /* LATIN_SMALL_LETTER_C_WITH_CEDILLA */
-#endif
-};
-
 static void
 ibus_im_context_init (GObject *obj)
 {
@@ -936,10 +909,6 @@ ibus_im_context_init (GObject *obj)
 
     // Create slave im context
     ibusimcontext->slave = gtk_im_context_simple_new ();
-    gtk_im_context_simple_add_table (GTK_IM_CONTEXT_SIMPLE (ibusimcontext->slave),
-                                     cedilla_compose_seqs,
-                                     4,
-                                     G_N_ELEMENTS (cedilla_compose_seqs) / (4 + 2));
 
     g_signal_connect (ibusimcontext->slave,
                       "commit",
