@@ -55,6 +55,7 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+
 print_log()
 {
     if [ x"$RESULT_LOG" != x ] ; then
@@ -68,6 +69,7 @@ print_log()
         $ECHO "$@"
     fi
 }
+
 
 usage()
 {
@@ -94,6 +96,7 @@ usage()
 "-S, --screendump=DUMP_FILE       OUtput the screen to DUMP_FILE ('STDOUT' can be stdout)\n" \
 ""
 }
+
 
 parse_args()
 {
@@ -128,6 +131,7 @@ parse_args()
         DESKTOP_COMMAND="dbus-launch --exit-with-session $DESKTOP_COMMAND"
     fi
 }
+
 
 init_desktop()
 {
@@ -207,6 +211,7 @@ _EOF
     #export XDG_SEAT=seat0
 }
 
+
 run_dbus_daemon()
 {
     # Use dbus-launch --exit-with-session later instead of --sh-syntax
@@ -215,6 +220,7 @@ run_dbus_daemon()
     # TODO: Should we comment out this line?
     export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus"
 }
+
 
 init_gnome()
 {
@@ -258,6 +264,7 @@ init_gnome()
     fi
 }
 
+
 run_desktop()
 {
     echo "$DESKTOP_COMMAND" | grep gnome-session > /dev/null
@@ -278,11 +285,27 @@ run_desktop()
     $DESKTOP_COMMAND &
     PID_GNOME_SESSION=$!
     sleep 30
-    if [  $HAS_GNOME -ne 0 ] ; then
-        ibus-daemon --daemonize --verbose
-        sleep 3
-    fi
+
+    # gnome-shell 42 checks if org.freedesktop.IBus.session.GNOME.service
+    # systemd file is available with org.freedesktop.systemd1.Manager.GetUnit
+    # D-Bus method, which is provided by IBus 1.5.26, and if the file
+    # is available, gnome-shell no longer launch ibus-daemon
+    # because gnome-shell assumes gnome-session would launch ibus-daemon
+    # with org.freedesktop.systemd1.Manager.StartUnit D-Bus method.
+    # But actually gnome-session failed to launch ibus-daemon
+    # because the IBus systemd file depends on gnome-session.target
+    # but this CI launches gnome-session directly.
+    #
+    # So ibus-dameon is now always called here after gnome-shell fails to
+    # launch ibus-daemon.
+    # It may be better this CI launches GDM autologin to run gnome-session
+    # with gnome-session.target systemd file.
+    # But `systemctl start gdm` terminates the parent script forcibly
+    # and the script cannot get the CI result.
+    ibus-daemon --daemonize --verbose
+    sleep 3
 }
+
 
 count_case_result()
 {
@@ -298,6 +321,7 @@ count_case_result()
     echo $pass $fail
 }
 
+
 echo_case_result()
 {
     retval=$1
@@ -310,6 +334,7 @@ echo_case_result()
         echo "FAIL: $tst $subtst" >>$TEST_LOG
     fi
 }
+
 
 run_direct_test_cases()
 {
@@ -363,6 +388,7 @@ EOF_ENVS
     echo $pass $fail
 }
 
+
 run_gnome_desktop_testing_runner()
 {
     pass=0
@@ -396,6 +422,7 @@ EOF
     fi
     echo $pass $fail
 }
+
 
 run_test_suite()
 {
@@ -435,6 +462,7 @@ EOF_RUNNER
     fi
 }
 
+
 finit()
 {
     echo "# Killing left gnome-session and Xorg"
@@ -450,6 +478,7 @@ finit()
 
     echo "# Finished $PROGNAME testing"
 }
+
 
 main()
 {
@@ -469,6 +498,7 @@ main()
     run_test_suite
     finit
 }
+
 
 # Need to enclose $@ with double quotes not to split the array.
 main "$@"
