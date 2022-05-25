@@ -74,6 +74,6 @@ jobs:
       --with-ucd-dir='/usr/share/unicode'
       --enable-install-tests
       "
-      DISABLE_GUI_TESTS="ibus-compose ibus-keypress test-stress"
+      DISABLE_GUI_TESTS="ibus-compose ibus-keypress test-stress xkb-latin-layouts"
       VERBOSE=1
       DESTDIR="$HOME/build/$USER/dest"

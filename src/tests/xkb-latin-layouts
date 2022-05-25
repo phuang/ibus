@@ -1,0 +1,130 @@
+#!/bin/bash
+
+PROGNAME=`basename $0`
+VERSION=0.1
+# POSIX sh has no 'echo -e'
+: ${ECHO:='/usr/bin/echo'}
+TMPDIR=
+INSTALLED_SCHEMAS_DIR=
+
+
+usage()
+{
+    $ECHO -e \
+"This test runs setxkbmap command for gsettings xkb-latin-layouts value\n"     \
+"$PROGNAME [OPTIONS…]\n"                                                       \
+"\n"                                                                           \
+"OPTIONS:\n"                                                                   \
+"-h, --help                       This help\n"                                 \
+"-v, --version                    Show version\n"                              \
+"-D, --schemasdir=DIR             Load the latest schema file in DIR\n"        \
+""
+}
+
+
+parse_args()
+{
+    # This is GNU getopt. "sudo port getopt" in BSD?
+    ARGS=`getopt -o hD:Tv --long \
+          help,schemasdir:,tap,version\
+        -- "$@"`;
+    eval set -- "$ARGS"
+    while [ 1 ] ; do
+        case "$1" in
+        -h | --help )        usage; exit 0;;
+        -D | --schemasdir )  INSTALLED_SCHEMAS_DIR="$2"; shift 2;;
+        -T | --tap )         shift;; # ignore the option
+        -v | --version )     $ECHO -e "$VERSION"; exit 0;;
+        -- )                 shift; break;;
+        * )                  shift;;
+        esac
+    done
+}
+
+
+init()
+{
+    set -e
+
+    # gnome-continuous doesn't have a machine-id set, which
+    # breaks dbus-launch.  There's dbus-run-session which is
+    # better, but not everyone has it yet.
+    export DBUS_FATAL_WARNINGS=0
+    export TMPDIR=$(mktemp -d --tmpdir="$PWD")
+    export XDG_CONFIG_HOME="$TMPDIR/config"
+    export XDG_CACHE_HOME="$TMPDIR/cache"
+    export GSETTINGS_SCHEMA_DIR="$TMPDIR/schemas"
+    mkdir -p $XDG_CONFIG_HOME $XDG_CACHE_HOME $GSETTINGS_SCHEMA_DIR
+
+    eval `dbus-launch --sh-syntax`
+
+    trap 'rm -rf $TMPDIR; kill $DBUS_SESSION_BUS_PID; setxkbmap -layout us' ERR
+
+    # in case that schema is not installed on the system
+    glib-compile-schemas --targetdir "$GSETTINGS_SCHEMA_DIR" "$INSTALLED_SCHEMAS_DIR"
+}
+
+
+finit()
+{
+    # dbus-launch and gsettings run /usr/lib*/gvfsd-fuse $TMPDIR/cache/gvfs -f
+    # via systemd since gvfs 1.45.90 in Fedora 33
+    # and rm $TMPDIR could be failed until umount would be called.
+    if [ -d $TMPDIR/cache/gvfs ] ; then
+        umount $TMPDIR/cache/gvfs
+    fi
+    rm -rf $TMPDIR
+
+    kill $DBUS_SESSION_BUS_PID
+    exit 0
+}
+
+
+test_xkb_keymaps()
+{
+    # Loop over top level schemas since "gsettings list-recursively" only
+    # looks for direct children.
+    xkb_latin_layouts=`gsettings get org.freedesktop.ibus.general xkb-latin-layouts`
+    while read keymap ; do
+        eval keymap="$keymap"
+        HAS_VARIANT=$($ECHO "$keymap" | grep '(' 2> /dev/null) ||:
+        if [ "x$HAS_VARIANT" != "x" ] ; then
+            layout=$($ECHO "$keymap" | sed -e 's/\([^(]*\)([^)]*)/\1/')
+            variant=$($ECHO "$keymap" | sed -e 's/[^(]*(\([^)]*\))/\1/')
+            $ECHO setxkbmap -layout $layout -variant $variant
+            setxkbmap -layout $layout -variant $variant
+        else
+            layout="$keymap"
+            $ECHO setxkbmap -layout $layout
+            setxkbmap -layout $layout
+        fi
+        if [ $? -ne 0 ] ; then
+            $ECHO "Error in layout $layout variant $variant"
+            setxkbmap -layout us
+            exit 1
+        fi
+    done << EOF_READ_XKB
+    `$ECHO $xkb_latin_layouts | sed -e 's/^\[//' -e 's/\]$//' | tr "," "\n"`
+EOF_READ_XKB
+
+    setxkbmap -layout us
+}
+
+
+main()
+{
+    parse_args "$@"
+
+    if [ x"$INSTALLED_SCHEMAS_DIR" != x ] ; then
+        init
+    fi
+
+    test_xkb_keymaps
+
+    if [ x"$INSTALLED_SCHEMAS_DIR" != x ] ; then
+        finit
+    fi
+}
+
+
+main "$@"

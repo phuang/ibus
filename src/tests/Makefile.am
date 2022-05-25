@@ -41,8 +41,9 @@ prog_ldadd =\
     $(top_builddir)/src/libibus-@IBUS_API_VERSION@.la                   \
     $(NULL)
 
-noinst_PROGRAMS = $(TESTS)
-TESTS = \
+noinst_PROGRAMS = $(TESTS_C)
+noinst_SCRIPTS = $(TESTS_SCRIPT)
+TESTS_C = \
     ibus-bus                        \
     ibus-config                     \
     ibus-configservice              \
@@ -56,16 +57,25 @@ TESTS = \
     ibus-util                       \
     $(NULL)
 
+TESTS_SCRIPT = \
+    xkb-latin-layouts               \
+    $(NULL)
+
+TESTS = \
+    $(TESTS_C)                      \
+    $(TESTS_SCRIPT)                 \
+    $(NULL)
+
 CLEANFILES =
 
 if ENABLE_ENGINE
-TESTS += ibus-engine-switch
+TESTS_C += ibus-engine-switch
 endif
 
 if ENABLE_GTK3
-TESTS += ibus-compose
+TESTS_C += ibus-compose
 if ENABLE_XTEST
-TESTS += ibus-keypress
+TESTS_C += ibus-keypress
 endif
 endif
 
@@ -99,9 +109,10 @@ CLEANFILES += \
     org.freedesktop.IBus.Desktop.Testing.desktop \
     $(NULL)
 
-test_execs_PROGRAMS = $(TESTS)
+test_execs_PROGRAMS = $(TESTS_C)
+test_execs_SCRIPTS = $(TESTS_SCRIPT)
 if ENABLE_GTK3
-test_execs_SCRIPTS = ibus-compose-locales
+test_execs_SCRIPTS += ibus-compose-locales
 CLEANFILES += \
     ibus-compose-locales \
     $(NULL)
@@ -138,6 +149,7 @@ ibus-desktop-testing-runner: ibus-desktop-testing-runner.in
 
 EXTRA_DIST = \
     $(test_metas_in) \
+    $(TESTS_SCRIPT) \
     runtest \
     ibus-compose.emoji \
     ibus-compose.env \

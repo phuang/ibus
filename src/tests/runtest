@@ -35,6 +35,7 @@ ibus-engine-switch
 ibus-compose
 ibus-keypress
 test-stress
+xkb-latin-layouts
 "
 IBUS_SCHEMA_FILE='org.freedesktop.ibus.gschema.xml'
 GTK_QUERY_MODULE=gtk-query-immodules-3.0-32
