@@ -41,6 +41,7 @@ class Panel : IBus.PanelService {
     private Gtk.Menu m_ime_menu;
     private Gtk.Menu m_sys_menu;
     private IBus.EngineDesc[] m_engines = {};
+    private IBus.EngineDesc m_en_engine;
     private GLib.HashTable<string, IBus.EngineDesc> m_engine_contexts =
             new GLib.HashTable<string, IBus.EngineDesc>(GLib.str_hash,
                                                         GLib.str_equal);
@@ -928,13 +929,20 @@ class Panel : IBus.PanelService {
     }
 
     private void switch_engine(int i, bool force = false) {
-        GLib.assert(i >= 0 && i < m_engines.length);
+        if (m_is_wayland)
+            GLib.assert(i >= 0 && i <= m_engines.length);
+        else
+            GLib.assert(i >= 0 && i < m_engines.length);
 
         // Do not need switch
         if (i == 0 && !force)
             return;
 
-        IBus.EngineDesc engine = m_engines[i];
+        IBus.EngineDesc engine;
+        if (m_is_wayland && m_engines.length == 0)
+            engine = m_en_engine;
+        else
+            engine = m_engines[i];
 
         set_engine(engine);
     }
@@ -1024,17 +1032,15 @@ class Panel : IBus.PanelService {
                                 string[]? order_names) {
         string[]? engine_names = unowned_engine_names;
 
-        if (engine_names == null || engine_names.length == 0) {
-            if (m_is_wayland)
-                engine_names = {};
-            else
-                engine_names = {"xkb:us::eng"};
-        }
+        if (engine_names == null || engine_names.length == 0)
+            engine_names = {"xkb:us::eng"};
 
         string[] names = {};
 
         foreach (var name in order_names) {
             if (m_is_wayland && name.has_prefix("xkb:"))
+                name = "xkb:us::eng";
+            if (name in names)
                 continue;
             if (name in engine_names)
                 names += name;
@@ -1042,7 +1048,7 @@ class Panel : IBus.PanelService {
 
         foreach (var name in engine_names) {
             if (m_is_wayland && name.has_prefix("xkb:"))
-                continue;
+                name = "xkb:us::eng";
             if (name in names)
                 continue;
             names += name;
@@ -1083,14 +1089,20 @@ class Panel : IBus.PanelService {
 	}
 
         if (m_engines.length == 0) {
-            if (engines.length > 0) {
-                m_engines = engines;
-                switch_engine(0, true);
-                run_preload_engines(engines, 1);
-            } else {
-                m_candidate_panel.set_language(new Pango.AttrLanguage(
-                        Pango.Language.from_string(null)));
+            m_engines = engines;
+            // Do not show engines in panel icon and suggest systemsettings5
+            // in Plasma Wayland in case all engines are XKB.
+            if (m_is_wayland && m_engines.length == 1 &&
+                m_engines[0].get_name() == "xkb:us::eng") {
+                m_engines = {};
+                if (m_en_engine == null) {
+                    m_en_engine =
+                            m_bus.get_engines_by_names({"xkb:us::eng"})[0];
+                }
             }
+            switch_engine(0, true);
+            if (m_engines.length > 0)
+                run_preload_engines(m_engines, 1);
         } else {
             var current_engine = m_engines[0];
             m_engines = engines;
@@ -1307,6 +1319,10 @@ class Panel : IBus.PanelService {
             var longname = engine.get_longname();
             var textdomain = engine.get_textdomain();
             var transname = GLib.dgettext(textdomain, longname);
+            if (m_is_wayland && engine.get_name().has_prefix("xkb:")) {
+                language = _("Other");
+                transname = _("No input method");
+            }
             var item = new Gtk.MenuItem.with_label(
                 "%s - %s".printf (IBus.get_language_name(language), transname));
             // Make a copy of engine to workaround a bug in vala.
@@ -1584,7 +1600,7 @@ class Panel : IBus.PanelService {
 
             if (engine != null) {
                 var name = engine.get_name();
-                if (name.length >= 4 && name[0:4] == "xkb:")
+                if (!m_is_wayland && name.length >= 4 && name[0:4] == "xkb:")
                     language = m_switcher.get_xkb_language(engine);
             }
 

@@ -223,12 +223,12 @@
     <key name="use-custom-icon" type="b">
       <default>false</default>
       <summary>Use custom icon</summary>
-      <description>Use custom icon name for language panel</description>
+      <description>Use custom icon name for arrow buttons on candidate window</description>
     </key>
     <key name="custom-icon" type="s">
       <default>'Adwaita'</default>
       <summary>Custom icon</summary>
-      <description>Custom icon name for language panel</description>
+      <description>Custom icon name for arrow buttons on candidate window</description>
     </key>
     <key name="use-glyph-from-engine-lang" type="b">
       <default>true</default>
