@@ -267,14 +267,14 @@ is_keycode (const gchar *string)
  *     modifier mask, %NULL
  *
  * Parses a string representing an accelerator. The format looks like
- * “<Control>a” or “<Shift><Alt>F1” or “<Release>z” (the last one is
- * for key release).
+ * “&lt;Control&gt;a” or “&lt;Shift&gt;&lt;Alt&gt;F1” or “&lt;Release%gt;z”
+ * (the last one is for key release).
  *
  * The parser is fairly liberal and allows lower or upper case, and also
- * abbreviations such as “<Ctl>” and “<Ctrl>”. Key names are parsed using
- * gdk_keyval_from_name(). For character keys the name is not the symbol,
- * but the lowercase name, e.g. one would use “<Ctrl>minus” instead of
- * “<Ctrl>-”.
+ * abbreviations such as “&lt;Ctl&gt;” and “&lt;Ctrl&gt;”. Key names are
+ * parsed using gdk_keyval_from_name(). For character keys the name is not the
+ * symbol, but the lowercase name, e.g. one would use “&lt;Ctrl&gt;minus”
+ * instead of “&lt;Ctrl&gt;-”.
  *
  * If the parse fails, @accelerator_key and @accelerator_mods will
  * be set to 0 (zero).
@@ -403,7 +403,7 @@ out:
  *
  * Converts an accelerator keyval and modifier mask into a string
  * parseable by gtk_accelerator_parse(). For example, if you pass in
- * #IBUS_KEY_q and #IBUS_CONTROL_MASK, this function returns “<Control>q”.
+ * #IBUS_KEY_q and #IBUS_CONTROL_MASK, this function returns “&lt;Control&gt;q”.
  *
  * If you need to display accelerators in the user interface,
  * see gtk_accelerator_get_label().

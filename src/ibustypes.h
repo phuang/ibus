@@ -108,6 +108,7 @@ typedef enum
  * @IBUS_CAP_PROPERTY: UI is capable to have property.
  * @IBUS_CAP_SURROUNDING_TEXT: Client can provide surround text,
  *  or IME can handle surround text.
+ * @IBUS_CAP_OSK: UI is owned by on-screen keyboard.
  *
  * Capability flags of UI.
  */
@@ -118,6 +119,7 @@ typedef enum {
     IBUS_CAP_FOCUS              = 1 << 3,
     IBUS_CAP_PROPERTY           = 1 << 4,
     IBUS_CAP_SURROUNDING_TEXT   = 1 << 5,
+    IBUS_CAP_OSK                = 1 << 6,
 } IBusCapabilite;
 
 /**
