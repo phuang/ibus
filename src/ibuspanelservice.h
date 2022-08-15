@@ -1,27 +1,31 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (c) 2009, Google Inc. All rights reserved.
+ * Copyright (c) 2009-2014 Google Inc. All rights reserved.
+ * Copyright (c) 2017-2018 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_PANEL_SERVICE_H_
+#define __IBUS_PANEL_SERVICE_H_
 
 /**
  * SECTION: ibuspanelservice
@@ -31,12 +35,10 @@
  * An IBusPanelService is a base class for UI services.
  * Developers can "extend" this class for panel UI development.
  */
-#ifndef __IBUS_PANEL_SERVICE_H_
-#define __IBUS_PANEL_SERVICE_H_
-
 #include "ibuslookuptable.h"
 #include "ibusservice.h"
 #include "ibusproplist.h"
+#include "ibusxevent.h"
 
 /*
  * Type macros.
@@ -76,9 +78,11 @@ struct _IBusPanelServiceClass {
 
     /* class members */
     void     (* focus_in)                  (IBusPanelService       *panel,
-                                            const gchar            *input_context_path);
+                                            const gchar
+                                                   *input_context_path);
     void     (* focus_out)                 (IBusPanelService       *panel,
-                                            const gchar            *input_context_path);
+                                            const gchar
+                                                   *input_context_path);
     void     (* register_properties)       (IBusPanelService       *panel,
                                             IBusPropList           *prop_list);
     void     (* set_cursor_location)       (IBusPanelService       *panel,
@@ -93,7 +97,7 @@ struct _IBusPanelServiceClass {
                                             IBusLookupTable        *lookup_table,
                                             gboolean                visible);
     void     (* update_preedit_text)       (IBusPanelService       *panel,
-                                            IBusText              *text,
+                                            IBusText               *text,
                                             guint                  cursor_pos,
                                             gboolean               visible);
     void     (* update_property)           (IBusPanelService       *panel,
@@ -113,10 +117,38 @@ struct _IBusPanelServiceClass {
     void     (* show_preedit_text)         (IBusPanelService       *panel);
     void     (* start_setup)               (IBusPanelService       *panel);
     void     (* state_changed)             (IBusPanelService       *panel);
+    void     (* destroy_context)           (IBusPanelService       *panel,
+                                            const gchar
+                                                   *input_context_path);
+    void     (* set_content_type)          (IBusPanelService       *panel,
+                                            guint                   purpose,
+                                            guint                   hints);
+    void     (* set_cursor_location_relative)
+                                           (IBusPanelService       *panel,
+                                            gint                    x,
+                                            gint                    y,
+                                            gint                    w,
+                                            gint                    h);
+    void     (* panel_extension_received)
+                                           (IBusPanelService       *panel,
+                                            IBusExtensionEvent     *event);
+    gboolean (* process_key_event)
+                                           (IBusPanelService       *panel,
+                                            guint                   keyval,
+                                            guint                   keycode,
+                                            guint                   state);
+    void     (* commit_text_received)
+                                           (IBusPanelService       *panel,
+                                            IBusText               *text);
+    void     (* candidate_clicked_lookup_table)
+                                           (IBusPanelService       *panel,
+                                            guint                   index,
+                                            guint                   button,
+                                            guint                   state);
 
     /*< private >*/
     /* padding */
-    gpointer pdummy[8];  // We can add 8 pointers without breaking the ABI.
+    gpointer pdummy[2];  // We can add 8 pointers without breaking the ABI.
 };
 
 GType            ibus_panel_service_get_type  (void);
@@ -124,14 +156,15 @@ GType            ibus_panel_service_get_type  (void);
 /**
  * ibus_panel_service_new:
  * @connection: An GDBusConnection.
- * @returns: A newly allocated IBusPanelService.
  *
- * New an IBusPanelService from an GDBusConnection.
+ * Creates a new #IBusPanelService from an #GDBusConnection.
+ *
+ * Returns: A newly allocated #IBusPanelService.
  */
 IBusPanelService *ibus_panel_service_new (GDBusConnection    *connection);
 
 /**
- * ibus_panel_service_candidate_clicked
+ * ibus_panel_service_candidate_clicked:
  * @panel: An IBusPanelService
  * @index: Index in the Lookup table
  * @button: GdkEventButton::button (1: left button, etc.)
@@ -146,7 +179,7 @@ void ibus_panel_service_candidate_clicked (IBusPanelService *panel,
                                            guint             state);
 
 /**
- * ibus_panel_service_cursor_down
+ * ibus_panel_service_cursor_down:
  * @panel: An IBusPanelService
  *
  * Notify that the cursor is down
@@ -155,7 +188,7 @@ void ibus_panel_service_candidate_clicked (IBusPanelService *panel,
 void ibus_panel_service_cursor_down       (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_cursor_up
+ * ibus_panel_service_cursor_up:
  * @panel: An IBusPanelService
  *
  * Notify that the cursor is up
@@ -164,7 +197,7 @@ void ibus_panel_service_cursor_down       (IBusPanelService *panel);
 void ibus_panel_service_cursor_up         (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_page_down
+ * ibus_panel_service_page_down:
  * @panel: An IBusPanelService
  *
  * Notify that the page is down
@@ -173,7 +206,7 @@ void ibus_panel_service_cursor_up         (IBusPanelService *panel);
 void ibus_panel_service_page_down         (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_page_up
+ * ibus_panel_service_page_up:
  * @panel: An IBusPanelService
  *
  * Notify that the page is up
@@ -182,7 +215,7 @@ void ibus_panel_service_page_down         (IBusPanelService *panel);
 void ibus_panel_service_page_up           (IBusPanelService *panel);
 
 /**
- * ibus_panel_service_property_activate
+ * ibus_panel_service_property_activate:
  * @panel: An IBusPanelService
  * @prop_name: A property name
  * @prop_state: State of the property
@@ -194,7 +227,7 @@ void ibus_panel_service_property_activate (IBusPanelService *panel,
                                            const gchar      *prop_name,
                                            guint             prop_state);
 /**
- * ibus_panel_service_property_show
+ * ibus_panel_service_property_show:
  * @panel: An IBusPanelService
  * @prop_name: A property name
  *
@@ -205,7 +238,7 @@ void ibus_panel_service_property_show     (IBusPanelService *panel,
                                            const gchar      *prop_name);
 
 /**
- * ibus_panel_service_property_hide
+ * ibus_panel_service_property_hide:
  * @panel: An IBusPanelService
  * @prop_name: A property name
  *
@@ -215,6 +248,119 @@ void ibus_panel_service_property_show     (IBusPanelService *panel,
 void ibus_panel_service_property_hide     (IBusPanelService *panel,
                                            const gchar      *prop_name);
 
+/**
+ * ibus_panel_service_commit_text:
+ * @panel: An #IBusPanelService
+ * @text: An #IBusText
+ *
+ * Notify that a text is sent
+ * by sending a "CommitText" message to IBus service.
+ */
+void ibus_panel_service_commit_text       (IBusPanelService *panel,
+                                           IBusText         *text);
 
+/**
+ * ibus_panel_service_panel_extension:
+ * @panel: An #IBusPanelService
+ * @event: (transfer full): A #PanelExtensionEvent which is sent to a
+ *                          panel extension. 
+ *
+ * Enable or disable a panel extension with #IBusExtensionEvent.
+ * Notify that a data is sent
+ * by sending a "PanelExtension" message to IBus panel extension service.
+ */
+void ibus_panel_service_panel_extension   (IBusPanelService   *panel,
+                                           IBusExtensionEvent *event);
+
+/**
+ * ibus_panel_service_panel_extension_register_keys:
+ * @panel: An #IBusPanelService
+ * @first_property_name: the first name of the shortcut keys. This is %NULL
+ " terminated.
+ *
+ * Register shortcut keys to enable panel extensions with #IBusExtensionEvent.
+ * Notify that a data is sent
+ * by sending a "PanelExtensionRegisterKeys" message to IBus panel extension
+ * service. Seems Vala does not support uint[][3] and use
+ * IBusProcessKeyEventData[]. E.g.
+ * IBusProcessKeyEventData[] keys = {{
+ *         IBUS_KEY_e, 0, IBUS_SHIFT_MASK | IBUS_SUPER_MASK }};
+ * ibus_panel_service_panel_extension_register_keys(panel, "emoji", keys, NULL);
+ */
+void ibus_panel_service_panel_extension_register_keys
+                                           (IBusPanelService  *panel,
+                                            const gchar       *first_property_name,
+                                            ...);
+
+/**
+ * ibus_panel_service_update_preedit_text_received:
+ * @panel: An #IBusPanelService
+ * @text: Update content.
+ * @cursor_pos: Current position of cursor
+ * @visible: Whether the pre-edit buffer is visible.
+ *
+ * Notify that the preedit is updated by the panel extension
+ *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
+ */
+void ibus_panel_service_update_preedit_text_received
+                                          (IBusPanelService *panel,
+                                           IBusText         *text,
+                                           guint             cursor_pos,
+                                           gboolean          visible);
+
+/**
+ * ibus_panel_service_show_preedit_text_received:
+ * @panel: An IBusPanelService
+ *
+ * Notify that the preedit is shown by the panel extension
+ */
+void ibus_panel_service_show_preedit_text_received
+                                          (IBusPanelService *panel);
+
+/**
+ * ibus_panel_service_hide_preedit_text_received:
+ * @panel: An IBusPanelService
+ *
+ * Notify that the preedit is hidden by the panel extension
+ */
+void ibus_panel_service_hide_preedit_text_received
+                                          (IBusPanelService *panel);
+
+/**
+ * ibus_panel_service_update_auxiliary_text_received:
+ * @panel: An #IBusPanelService
+ * @text: An #IBusText
+ * @visible: Whether the auxilirary text is visible.
+ *
+ * Notify that the auxilirary is updated by the panel extension.
+ *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
+ */
+void ibus_panel_service_update_auxiliary_text_received
+                                          (IBusPanelService *panel,
+                                           IBusText         *text,
+                                           gboolean          visible);
+
+/**
+ * ibus_panel_service_update_lookup_table_received:
+ * @panel: An #IBusPanelService
+ * @table: An #IBusLookupTable
+ * @visible: Whether the lookup table is visible.
+ *
+ * Notify that the lookup table is updated by the panel extension.
+ *
+ * (Note: The table object will be released, if it is floating.
+ *  If caller want to keep the object, caller should make the object
+ *  sink by g_object_ref_sink.)
+ */
+void ibus_panel_service_update_lookup_table_received
+                                          (IBusPanelService *panel,
+                                           IBusLookupTable  *table,
+                                           gboolean          visible);
 G_END_DECLS
 #endif

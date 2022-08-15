@@ -8,17 +8,17 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 __all__ = (
         "EngineDesc",
@@ -31,7 +31,11 @@ from serializable import *
 class EngineDesc(Serializable):
     __gtype_name__ = "PYIBusEngineDesc"
     __NAME__ = "IBusEngineDesc"
-    def __init__(self, name="", longname="", description="", language="", license="", author="", icon="", layout="", hotkeys="", rank=0, symbol="", setup=""):
+    def __init__(self, name="", longname="", description="", language="",
+                 license="", author="", icon="", layout="us", hotkeys="",
+                 rank=0, symbol="", setup="",
+                 layout_variant="", layout_option="",
+                 version=""):
         super(EngineDesc, self).__init__()
         self.__name = name
         self.__longname = longname
@@ -41,10 +45,13 @@ class EngineDesc(Serializable):
         self.__author = author
         self.__icon = icon
         self.__layout = layout
+        self.__layout_variant = layout_variant
+        self.__layout_option = layout_option
         self.__rank = rank
         self.__hotkeys = hotkeys
         self.__symbol = symbol
         self.__setup = setup
+        self.__version = version
 
     def get_name(self):
         return self.__name
@@ -70,6 +77,12 @@ class EngineDesc(Serializable):
     def get_layout(self):
         return self.__layout
 
+    def get_layout_variant(self):
+        return self.__layout_variant
+
+    def get_layout_option(self):
+        return self.__layout_option
+
     def get_rank(self):
         return self.__rank
 
@@ -82,18 +95,24 @@ class EngineDesc(Serializable):
     def get_setup(self):
         return self.__setup
 
-    name        = property(get_name)
-    longname    = property(get_longname)
-    description = property(get_description)
-    language    = property(get_language)
-    license     = property(get_license)
-    author      = property(get_author)
-    icon        = property(get_icon)
-    layout      = property(get_layout)
-    rank        = property(get_rank)
-    hotkeys     = property(get_hotkeys)
-    symbol      = property(get_symbol)
-    setup       = property(get_setup)
+    def get_version(self):
+        return self.__version
+
+    name                = property(get_name)
+    longname            = property(get_longname)
+    description         = property(get_description)
+    language            = property(get_language)
+    license             = property(get_license)
+    author              = property(get_author)
+    icon                = property(get_icon)
+    layout              = property(get_layout)
+    layout_variant      = property(get_layout_variant)
+    layout_option       = property(get_layout_option)
+    rank                = property(get_rank)
+    hotkeys             = property(get_hotkeys)
+    symbol              = property(get_symbol)
+    setup               = property(get_setup)
+    version             = property(get_version)
 
     def serialize(self, struct):
         super(EngineDesc, self).serialize(struct)
@@ -106,24 +125,36 @@ class EngineDesc(Serializable):
         struct.append(dbus.String(self.__icon))
         struct.append(dbus.String(self.__layout))
         struct.append(dbus.UInt32(self.__rank))
+        # Keep the serialize order.
         struct.append(dbus.String(self.__hotkeys))
         struct.append(dbus.String(self.__symbol))
         struct.append(dbus.String(self.__setup))
+        struct.append(dbus.String(self.__layout_variant))
+        struct.append(dbus.String(self.__layout_option))
+        struct.append(dbus.String(self.__version))
 
     def deserialize(self, struct):
         super(EngineDesc, self).deserialize(struct)
-        self.__name = struct.pop(0)
-        self.__longname = struct.pop(0)
-        self.__description = struct.pop(0)
-        self.__language = struct.pop(0)
-        self.__license = struct.pop(0)
-        self.__author = struct.pop(0)
-        self.__icon = struct.pop(0)
-        self.__layout = struct.pop(0)
-        self.__rank = struct.pop(0)
-        self.__hotkeys = struct.pop(0)
-        self.__symbol = struct.pop(0)
-        self.__setup  = struct.pop(0)
+        self.__name             = struct.pop(0)
+        self.__longname         = struct.pop(0)
+        self.__description      = struct.pop(0)
+        self.__language         = struct.pop(0)
+        self.__license          = struct.pop(0)
+        self.__author           = struct.pop(0)
+        self.__icon             = struct.pop(0)
+        self.__layout           = struct.pop(0)
+        self.__rank             = struct.pop(0)
+        # Keep the serialize order.
+        self.__hotkeys          = struct.pop(0)
+        self.__symbol           = struct.pop(0)
+        self.__setup            = struct.pop(0)
+        if len(struct) < 2:
+            return
+        self.__layout_variant   = struct.pop(0)
+        self.__layout_option    = struct.pop(0)
+        if len(struct) < 1:
+            return
+        self.__version          = struct.pop(0)
 
 def test():
     engine = EngineDesc("Hello", "", "", "", "", "", "", "", "", 0, "", "")

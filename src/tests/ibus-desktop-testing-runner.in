@@ -1,0 +1,504 @@
+#!/bin/sh
+# -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*-
+# vim:set noet ts=4:
+#
+# ibus - The Input Bus
+#
+# Copyright (c) 2018-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2018 Red Hat, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# This test runs /usr/bin/ibus-daemon after install ibus
+#
+# # init 3
+# Login as root
+# # /root/ibus/tests/test-console.sh --tests ibus-compose \
+#   --builddir /root/ibus/src/tests --srcdir /root/ibus/src/tests
+
+# POSIX sh has no 'echo -e'
+: ${ECHO:='/usr/bin/echo'}
+# POSIX sh has $UID
+# DASH saves the graves in '``' as characters not to be extracted
+: ${UID:=`id -u`}
+
+
+PROGNAME=`basename $0`
+VERSION=0.3
+DISPLAY=:99.0
+BUILDDIR="."
+SRCDIR="."
+TEST_LOG="test-suite.log"
+TEST_LOG_STDOUT=0
+RESULT_LOG=""
+SCREEN_LOG=""
+HAVE_GRAPHICS=1
+DESKTOP_COMMAND="dbus-launch --exit-with-session gnome-session"
+PID_XORG=0
+PID_GNOME_SESSION=0
+TESTING_RUNNER="default"
+TESTS=""
+TIMEOUT=300
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+
+print_log()
+{
+    if [ x"$RESULT_LOG" != x ] ; then
+        # avoid 'echo -e' before call 'sed'.
+        if [ x"$1" = x'-e' ] ; then
+            shift
+        fi
+        NO_ESCAPE=`echo "$@" | sed -e 's/\\\033\\[0;3.m//g' -e 's/\\\033\\[0m//g'`
+        $ECHO $NO_ESCAPE >> $RESULT_LOG
+    else
+        $ECHO "$@"
+    fi
+}
+
+
+usage()
+{
+    $ECHO -e \
+"This test runs /usr/bin/ibus-daemon after install ibus\n"                     \
+"$PROGNAME [OPTIONS…]\n"                                                       \
+"\n"                                                                           \
+"OPTIONS:\n"                                                                   \
+"-h, --help                       This help\n"                                 \
+"-v, --version                    Show version\n"                              \
+"-b, --builddir=BUILDDIR          Set the BUILDDIR\n"                          \
+"-s, --srcdir=SOURCEDIR           Set the SOURCEDIR\n"                         \
+"-c, --no-graphics                Use Xvfb instead of Xorg\n"                  \
+"-d, --desktop=DESKTOP            Run DESTKTOP. The default is gnome-session.\n" \
+"                                 Suffix '-with-dbus' can run DESKTOP with dbus session." \
+"                                 E.g. --desktop=mutter-with-dbus"             \
+"-t, --tests=\"TESTS...\"           Run TESTS programs which is separated by space\n" \
+"-r, --runner=RUNNER              Run TESTS programs with a test RUNNER.\n"    \
+"                                 RUNNDER = gnome or default.\n"               \
+"                                 default is an embedded runner.\n"            \
+"-T, --timeout=TIMEOUT            Set timeout (default TIMEOUT is 300 sec).\n" \
+"-o, --output=OUTPUT_FILE         OUtput the log to OUTPUT_FILE\n"             \
+"-O, --result=RESULT_FILE         OUtput the result to RESULT_FILE\n"          \
+"-S, --screendump=DUMP_FILE       OUtput the screen to DUMP_FILE ('STDOUT' can be stdout)\n" \
+""
+}
+
+
+parse_args()
+{
+    # This is GNU getopt. "sudo port getopt" in BSD?
+    ARGS=`getopt -o hvb:s:cd:t:r:T:o:O:S: --long \
+          help,version,builddir:,srcdir:,no-graphics,desktop:,tests:,runner:,timeout:,output:,result:,screendump:\
+        -- "$@"`;
+    eval set -- "$ARGS"
+    while [ 1 ] ; do
+        case "$1" in
+        -h | --help )        usage; exit 0;;
+        -v | --version )     $ECHO -e "$VERSION"; exit 0;;
+        -b | --builddir )    BUILDDIR="$2"; shift 2;;
+        -s | --srcdir )      SRCDIR="$2"; shift 2;;
+        -c | --no-graphics ) HAVE_GRAPHICS=0; shift;;
+        -d | --desktop )     DESKTOP_COMMAND="$2"; shift 2;;
+        -t | --tests )       TESTS="$2"; shift 2;;
+        -r | --runner )      TESTING_RUNNER="$2"; shift 2;;
+        -T | --timeout )     TIMEOUT="$2"; shift 2;;
+        -o | --output )      TEST_LOG="$2"; shift 2;;
+        -O | --result )      RESULT_LOG="$2"; shift 2;;
+        -S | --screendump )  SCREEN_LOG="$2"; shift 2;;
+        -- )                 shift; break;;
+        * )                  usage; exit 1;;
+        esac
+    done
+    DL='$'
+    echo "$DESKTOP_COMMAND" | grep "\-with\-dbus$DL" > /dev/null
+    HAS_DBUS_SUFFIX=$?
+    if [ $HAS_DBUS_SUFFIX -eq 0 ] ; then
+        DESKTOP_COMMAND=`echo "$DESKTOP_COMMAND" | sed -e 's/-with-dbus$//'`
+        DESKTOP_COMMAND="dbus-launch --exit-with-session $DESKTOP_COMMAND"
+    fi
+}
+
+
+init_desktop()
+{
+    if [ "$RESULT_LOG" != "" ] ; then
+        if [ -f $RESULT_LOG ] ; then
+            rm $RESULT_LOG
+        fi
+    fi
+    echo "$TEST_LOG" | grep ':stdout' > /dev/null
+    HAS_STDOUT=$?
+    if [ $HAS_STDOUT -eq 0 ] ; then
+        TEST_LOG=`echo "$TEST_LOG" | sed -e 's|:stdout||'`
+        TEST_LOG_STDOUT=1
+    fi
+    if [ "$TEST_LOG" = "" ] ; then
+        print_log -e "${RED}FAIL${NC}: ${RED}ERROR${NC}: a log file is required to get return value with 'read' command"
+        exit 255
+    elif [ -f $TEST_LOG ] ; then
+        rm $TEST_LOG
+    fi
+    if [ x$FORCE_TEST != x ] ; then
+        RUN_ARGS="$RUN_ARGS --force"
+    fi
+
+    if [ ! -f $HOME/.config/gnome-initial-setup-done ] ; then
+        IS_SYSTEM_ACCOUNT=false
+        if [ "$USER" = "root" ] ; then
+            IS_SYSTEM_ACCOUNT=true
+        fi
+        if test ! -f /var/lib/AccountsService/users/$USER ; then
+            mkdir -p /var/lib/AccountsService/users
+            cat >> /var/lib/AccountsService/users/$USER << _EOF
+[User]
+Language=ja_JP.UTF-8
+XSession=gnome
+SystemAccount=$IS_SYSTEM_ACCOUNT
+_EOF
+        fi
+        mkdir -p $HOME/.config
+        touch $HOME/.config/gnome-initial-setup-done
+    fi
+
+    # Prevent from launching a XDG dialog
+    XDG_LOCALE_FILE="$HOME/.config/user-dirs.locale"
+    if [ -f $XDG_LOCALE_FILE ] ; then
+        XDG_LANG_ORIG=`cat $XDG_LOCALE_FILE`
+        XDG_LANG_NEW=`echo $LANG | sed -e 's/\(.*\)\..*/\1/'`
+        if [ "$XDG_LANG_ORIG" != "$XDG_LANG_NEW" ] ; then
+            echo "# Overriding XDG locale $XDG_LANG_ORIG with $XDG_LANG_NEW"
+            echo "$XDG_LANG_NEW" > $XDG_LOCALE_FILE
+        fi
+    fi
+    # `su` command does not run loginctl
+    export XDG_SESSION_TYPE='x11'
+    export XDG_SESSION_CLASS=user
+    # `su` command does not get focus in events without this variable.
+    # Need to restart sshd after set "PermitRootLogin yes" in sshd_config
+    if [ "x$XDG_RUNTIME_DIR" = x ] ; then
+        export XDG_RUNTIME_DIR="/run/user/$UID"
+        is_root_login=`grep "^PermitRootLogin" /etc/ssh/sshd_config | grep yes`
+        if [ "x$ANSIBLE" != x ] && [ "x$is_root_login" = x ] ; then
+            print_log -e "${RED}FAIL${NC}: No permission to get focus-in events in GtkWindow with ansible"
+            echo "su command does not configure necessary login info "         \
+                 "with systemd and GtkWindow cannot receive focus-events "     \
+                 "when ibus-desktop-testing-runner is executed by "            \
+                 "ansible-playbook." >> $TEST_LOG
+            echo "Enabling root login via sshd, restarting sshd, set "         \
+                 "XDG_RUNTIME_DIR can resolve the problem under "              \
+                 "ansible-playbook." >> $TEST_LOG
+            exit 255
+        fi
+    fi
+    #  Do we need XDG_SESSION_ID and XDG_SEAT?
+    #export XDG_CONFIG_DIRS=/etc/xdg
+    #export XDG_SESSION_ID=10
+    #export XDG_SESSION_DESKTOP=gnome
+    #export XDG_SEAT=seat0
+}
+
+
+run_dbus_daemon()
+{
+    # Use dbus-launch --exit-with-session later instead of --sh-syntax
+    # GNOME uses a unix:abstract address and it effects gsettings set values
+    # in each test case.
+    # TODO: Should we comment out this line?
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UID/bus"
+}
+
+
+init_gnome()
+{
+    # gsettings set command needs dconf-service with the same $DISPLAY
+    pkill dconf-service
+    # G_MESSAGES_DEBUG=all or G_MESSAGES_DEBUG=GLib-GIO-DEBUG would append
+    # debug messages to gsettings output and could not get the result correctly.
+    backup_G_MESSAGES_DEBUG="$G_MESSAGES_DEBUG"
+    unset G_MESSAGES_DEBUG
+    # Disable Tour dialog to get focus
+    V=`gsettings get org.gnome.shell welcome-dialog-last-shown-version`
+    if [ x"$V" = x"''" ] ; then
+        gsettings set org.gnome.shell welcome-dialog-last-shown-version '100'
+    fi
+    # gnome-shell now starts overview mode by login.
+    # https://extensions.gnome.org/extension/4099/no-overview/
+    NO_SYS_DIR=/usr/share/gnome-shell/extensions/no-overview@fthx
+    NO_USER_DIR=$HOME/.local/share/gnome-shell/extensions/no-overview@fthx
+    if [ ! -d $NO_SYS_DIR ] && [ ! -d $NO_USER_DIR ] ; then
+        mkdir -p "`dirname $NO_USER_DIR`"
+        cp -R "no-overview@fthx" "`dirname $NO_USER_DIR`"
+    fi
+    V=`gsettings get org.gnome.shell disable-user-extensions`
+    if [ x"$V" = x"true" ] ; then
+        gsettings set org.gnome.shell disable-user-extensions false
+    fi
+    V=`gsettings get org.gnome.shell enabled-extensions`
+    echo "$V" | grep "no-overview" > /dev/null
+    V2=$?
+    if [ $V2 -ne 0 ] ; then
+        V3=`echo "$V" | sed -e 's/@as //' -e 's/\[//' -e 's/\]//'`
+        if [ x"$V3" = x"''" ] || [ x"$V3" = x"" ]; then
+            V4="['no-overview@fthx']"
+        else
+            V4="[$V3, 'no-overview@fthx']"
+        fi
+        gsettings set org.gnome.shell enabled-extensions "$V4"
+    fi
+    if [ x"$backup_G_MESSAGES_DEBUG" != x ] ; then
+        export G_MESSAGES_DEBUG="$backup_G_MESSAGES_DEBUG"
+    fi
+}
+
+
+run_desktop()
+{
+    echo "$DESKTOP_COMMAND" | grep gnome-session > /dev/null
+    HAS_GNOME=$?
+    export DISPLAY=$DISPLAY
+    if test $HAVE_GRAPHICS -eq 1 ; then
+        /usr/libexec/Xorg.wrap -noreset +extension GLX +extension RANDR +extension RENDER -logfile ./xorg.log -config ./xorg.conf -configdir . $DISPLAY &
+    else
+        /usr/bin/Xvfb $DISPLAY -noreset +extension GLX +extension RANDR +extension RENDER -screen 0 1280x1024x24 &
+    fi
+    PID_XORG=$!
+    sleep 1
+    # init_gnome need to be called with $DISPLAY before gnome-session is called
+    if [  $HAS_GNOME -eq 0 ] ; then
+        init_gnome
+    fi
+    echo "Running $DESKTOP_COMMAND with $USER in `tty`"
+    $DESKTOP_COMMAND &
+    PID_GNOME_SESSION=$!
+    sleep 30
+
+    # gnome-shell 42 checks if org.freedesktop.IBus.session.GNOME.service
+    # systemd file is available with org.freedesktop.systemd1.Manager.GetUnit
+    # D-Bus method, which is provided by IBus 1.5.26, and if the file
+    # is available, gnome-shell no longer launch ibus-daemon
+    # because gnome-shell assumes gnome-session would launch ibus-daemon
+    # with org.freedesktop.systemd1.Manager.StartUnit D-Bus method.
+    # But actually gnome-session failed to launch ibus-daemon
+    # because the IBus systemd file depends on gnome-session.target
+    # but this CI launches gnome-session directly.
+    #
+    # So ibus-dameon is now always called here after gnome-shell fails to
+    # launch ibus-daemon.
+    # It may be better this CI launches GDM autologin to run gnome-session
+    # with gnome-session.target systemd file.
+    # But `systemctl start gdm` terminates the parent script forcibly
+    # and the script cannot get the CI result.
+    ibus-daemon --daemonize --verbose
+    sleep 3
+}
+
+
+count_case_result()
+{
+    retval=$1
+    pass=$2
+    fail=$3
+
+    if test $retval -eq  0 ; then
+        pass=`expr $pass + 1`
+    else
+        fail=`expr $fail + 1`
+    fi
+    echo $pass $fail
+}
+
+
+echo_case_result()
+{
+    retval=$1
+    tst=$2
+    subtst=${3:-''}
+
+    if test $retval -eq  0 ; then
+        echo "PASS: $tst $subtst" >>$TEST_LOG
+    else
+        echo "FAIL: $tst $subtst" >>$TEST_LOG
+    fi
+}
+
+
+run_direct_test_cases()
+{
+    pass=0
+    fail=0
+    for tst in $TESTS; do
+        ENVS=
+        if test -f $SRCDIR/${tst}.env ; then
+            ENVS="`cat $SRCDIR/${tst}.env`"
+        fi
+        if test x"$ENVS" = x ; then
+            $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
+            retval=$?
+            read pass fail << EOF_COUNT
+            `count_case_result $retval $pass $fail`
+EOF_COUNT
+            echo_case_result $retval $tst
+            CACHE_FILES=`ls *.cache`
+            if [ x"$CACHE_FILES" != x ] ; then
+                echo "# Clean $CACHE_FILES" >>$TEST_LOG
+                rm $CACHE_FILES
+            fi
+        else
+            i=1
+            # Deleted for var in "$ENVS" because IFS=$'\n' is not supported
+            # in POSIX sh
+            while read e ; do
+                first=`echo "$e" | grep '^#'`
+                if test x"$first" = x"#" ; then
+                    continue
+                fi
+                echo "# Starting $e $BUILDDIR/$tst $SRCDIR" >>$TEST_LOG
+                env $e $BUILDDIR/$tst $SRCDIR 2>>$TEST_LOG 1>>$TEST_LOG
+                retval=$?
+                echo "# Finished $e $BUILDDIR/$tst $SRCDIR with $retval" >>$TEST_LOG
+                read pass fail << EOF_COUNT
+                `count_case_result $retval $pass $fail`
+EOF_COUNT
+                echo_case_result $retval $tst $e
+                CACHE_FILES=`ls *.cache`
+                if [ x"$CACHE_FILES" != x ] ; then
+                    echo "# Clean $CACHE_FILES" >>$TEST_LOG
+                    rm $CACHE_FILES
+                fi
+                i=`expr $i + 1`
+            done << EOF_ENVS
+            `echo "$ENVS"`
+EOF_ENVS
+        fi
+    done
+    echo $pass $fail
+}
+
+
+run_gnome_desktop_testing_runner()
+{
+    pass=0
+    fail=0
+    if [ x"$TESTS" = x ] ; then
+        TESTS='ibus'
+    fi
+    for tst in $TESTS; do
+        tst_dir="@INSTALLEDDIR@/$tst"
+        if [ ! -d "$tst_dir" ] ; then
+            print_log -e "${RED}FAIL${NC}: Not found %tst_dir"
+            fail=1
+            continue
+        fi
+        gnome-desktop-testing-runner --timeout=$TIMEOUT $tst \
+                2>>$TEST_LOG 1>>$TEST_LOG
+        retval=$?
+        read pass fail << EOF
+        `count_case_result $retval $pass $fail`
+EOF
+    done
+    child_pass=`grep '^PASS:' $TEST_LOG | wc -l`
+    child_fail=`grep '^FAIL:' $TEST_LOG | wc -l`
+    if [ $child_pass -ne 0 ] || [ $child_fail -ne 0 ] ; then
+        pass=$child_pass
+        if [ $child_fail -ne 0 ] ; then
+            fail=`expr $child_fail / 2`
+        else
+            fail=0
+        fi
+    fi
+    echo $pass $fail
+}
+
+
+run_test_suite()
+{
+    pass=0
+    fail=0
+    export GTK_IM_MODULE=ibus
+    export IBUS_COMPOSE_CACHE_DIR=$PWD
+    if [ x"$TESTING_RUNNER" = x ] ; then
+        TESTING_RUNNER="default"
+    fi
+    case $TESTING_RUNNER in
+    default)
+        # Get only the last value with do-while.
+        read pass fail << EOF_RUNNER
+        `run_direct_test_cases`
+EOF_RUNNER
+        ;;
+    gnome)
+        read pass fail << EOF_RUNNER
+        `run_gnome_desktop_testing_runner`
+EOF_RUNNER
+        ;;
+    esac
+    echo ""
+    # Fedora CI assumes the test is failed even if $fail is 0.
+    if [ $pass -ne 0 ] ; then
+        print_log -e "${GREEN}PASS${NC}: $pass"
+    fi
+    if [ $fail -ne 0 ] ; then
+        print_log -e "${RED}FAIL${NC}: $fail"
+    fi
+    echo ""
+    if [ $TEST_LOG_STDOUT -eq 1 ] ; then
+        cat $TEST_LOG
+    else
+        echo "# See $TEST_LOG"
+    fi
+}
+
+
+finit()
+{
+    echo "# Killing left gnome-session and Xorg"
+    kill $PID_GNOME_SESSION $PID_XORG
+    ibus exit
+    SUSER=`echo "$USER" | cut -c 1-7`
+    LEFT_CALENDAR=`ps -ef | grep gnome-shell-calendar-server | grep $SUSER | grep -v grep`
+    if [ x"$LEFT_CALENDAR" != x ] ; then
+        echo "# Killing left gnome-shell-calendar-server"
+        echo "$LEFT_CALENDAR"
+        echo "$LEFT_CALENDAR" | awk '{print $2}' | xargs kill
+    fi
+
+    echo "# Finished $PROGNAME testing"
+}
+
+
+main()
+{
+    parse_args "$@"
+    init_desktop
+    run_dbus_daemon 2>>$TEST_LOG 1>>$TEST_LOG
+    run_desktop 2>>$TEST_LOG 1>>$TEST_LOG
+    if [ x"$SCREEN_LOG" != x ] ; then
+        SCREEN_PNG="`date '+%Y%m%d%H%M%S'`.png"
+        gnome-screenshot --file=$SCREEN_PNG
+        if [ x"$SCREEN_LOG" = xSTDOUT ] ; then
+            base64 $SCREEN_PNG
+        else
+            base64 $SCREEN_PNG > $SCREEN_LOG
+        fi
+    fi
+    run_test_suite
+    finit
+}
+
+
+# Need to enclose $@ with double quotes not to split the array.
+main "$@"

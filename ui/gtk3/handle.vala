@@ -2,27 +2,24 @@
  *
  * ibus - The Input Bus
  *
- * Copyright(c) 2011 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2011-2016 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright(c) 2016-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA  02111-1307  USA
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
-
-using Cairo;
-using Gdk;
-using Gtk;
 
 class Handle : Gtk.EventBox {
     private bool m_move_begined;
@@ -33,6 +30,11 @@ class Handle : Gtk.EventBox {
     public signal void move_end();
 
     public Handle() {
+        // Call base class constructor
+        GLib.Object(
+            name : "IBusHandle"
+        );
+
         set_size_request(6, -1);
         Gdk.EventMask mask = Gdk.EventMask.EXPOSURE_MASK |
                              Gdk.EventMask.BUTTON_PRESS_MASK |
@@ -40,17 +42,30 @@ class Handle : Gtk.EventBox {
                              Gdk.EventMask.BUTTON1_MOTION_MASK;
         set_events(mask);
         m_move_begined = false;
+
+        // Currently it is too hard to notice this Handle on PropertyPanel
+        // so now this widget is drawn by the gray color for the visibility.
+        Gtk.CssProvider css_provider = new Gtk.CssProvider();
+        try {
+            css_provider.load_from_data(
+                    "#IBusHandle { background-color: gray }", -1);
+        } catch (GLib.Error error) {
+            warning("Parse error in Handle: %s", error.message);
+        }
+        Gtk.StyleContext context = get_style_context();
+        context.add_provider(css_provider,
+                             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     public override void realize() {
         base.realize();
-        // get_window().set_cursor(new Gdk.Cursor(Gdk.CursorType.FLEUR));
     }
 
     public override bool button_press_event(Gdk.EventButton event) {
         if (event.button != 1)
             return false;
-        m_workarea = {0, 0, int.MAX, int.MAX};
+        m_workarea = Gdk.Rectangle(){
+            x = 0, y = 0, width = int.MAX, height = int.MAX};
         do {
             Gdk.Window root = Gdk.get_default_root_window();
             Gdk.Atom property = Gdk.Atom.intern("_NET_CURRENT_DESKTOP", false);
@@ -110,7 +125,8 @@ class Handle : Gtk.EventBox {
         int x, y;
         Gtk.Window toplevel = (Gtk.Window)get_toplevel();
         toplevel.get_position(out x, out y);
-        m_press_pos = { (int)event.x_root - x, (int)event.y_root - y };
+        m_press_pos.x = (int)event.x_root - x;
+        m_press_pos.y = (int)event.y_root - y;
         move_begin();
         return true;
     }
@@ -119,8 +135,11 @@ class Handle : Gtk.EventBox {
         if (event.button != 1)
             return false;
         m_move_begined = false;
-        m_press_pos = { 0, 0 };
-        get_window().set_cursor(new Gdk.Cursor(Gdk.CursorType.LEFT_PTR));
+        m_press_pos.x = 0;
+        m_press_pos.y = 0;
+        get_window().set_cursor(new Gdk.Cursor.for_display(
+                   Gdk.Display.get_default(),
+                   Gdk.CursorType.FLEUR));
         move_end();
         return true;
     }
@@ -153,7 +172,7 @@ class Handle : Gtk.EventBox {
             Gtk.StyleContext context = get_style_context();
             Gtk.Allocation allocation;
             get_allocation(out allocation);
-            Gtk.render_handle(context, cr,
+            context.render_handle(cr,
                 allocation.x, allocation.y + (allocation.height - 40) / 2, allocation.width, 40.0);
         }
         return false;

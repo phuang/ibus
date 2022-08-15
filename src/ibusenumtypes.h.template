@@ -1,11 +1,4 @@
 /*** BEGIN file-header ***/
-/**
- * SECTION: ibusenumtypes
- * @short_description: Enumeration definition in IBus.
- * @stability: Stable
- *
- * IBusEnumTypes lists IBus enumeration types.
- */
 #ifndef __IBUS_ENUM_TYPES_H__
 #define __IBUS_ENUM_TYPES_H__
 

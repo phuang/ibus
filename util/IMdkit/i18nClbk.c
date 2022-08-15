@@ -55,6 +55,7 @@ int _Xi18nGeometryCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -97,6 +98,7 @@ int _Xi18nPreeditStartCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage(ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -159,6 +161,7 @@ int _Xi18nPreeditDrawCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -212,6 +215,7 @@ int _Xi18nPreeditCaretCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -256,6 +260,7 @@ int _Xi18nPreeditDoneCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -297,6 +302,7 @@ int _Xi18nStatusStartCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -363,6 +369,7 @@ int _Xi18nStatusDrawCallback (XIMS ims, IMProtocol *call_data)
         if (!reply)
         {
             _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+            FrameMgrFree (fm);
             return False;
         }
         /*endif*/
@@ -390,6 +397,7 @@ int _Xi18nStatusDrawCallback (XIMS ims, IMProtocol *call_data)
         if (!reply)
         {
             _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+            FrameMgrFree (fm);
             return False;
         }
         /*endif*/
@@ -435,6 +443,7 @@ int _Xi18nStatusDoneCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/
@@ -479,6 +488,7 @@ int _Xi18nStringConversionCallback (XIMS ims, IMProtocol *call_data)
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return False;
     }
     /*endif*/

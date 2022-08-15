@@ -1,7 +1,9 @@
 /******************************************************************
  
-         Copyright 1994, 1995 by Sun Microsystems, Inc.
-         Copyright 1993, 1994 by Hewlett-Packard Company
+         Copyright (C) 1994-1995 Sun Microsystems, Inc.
+         Copyright (C) 1993-1994 Hewlett-Packard Company
+         Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
+         Copyright (C) 2014 Red Hat, Inc.
  
 Permission to use, copy, modify, distribute, and sell this software
 and its documentation for any purpose is hereby granted without fee,
@@ -29,6 +31,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  
 ******************************************************************/
 
+#include <assert.h>
+#include <stddef.h>
 #include <limits.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -38,12 +42,14 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "Xi18nX.h"
 #include "XimFunc.h"
 
-extern Xi18nClient *_Xi18nFindClient(Xi18n, CARD16);
-extern Xi18nClient *_Xi18nNewClient(Xi18n);
-extern void _Xi18nDeleteClient(Xi18n, CARD16);
-static Bool WaitXConnectMessage(Display*, Window,
-                                XEvent*, XPointer);
-static Bool WaitXIMProtocol(Display*, Window, XEvent*, XPointer);
+extern Xi18nClient *_Xi18nFindClient (Xi18n, CARD16);
+extern Xi18nClient *_Xi18nNewClient (Xi18n);
+extern void _Xi18nDeleteClient (Xi18n, CARD16);
+extern unsigned long _Xi18nLookupPropertyOffset (Xi18nOffsetCache *, Atom);
+extern void _Xi18nSetPropertyOffset (Xi18nOffsetCache *, Atom, unsigned long);
+static Bool WaitXConnectMessage (Display*, Window,
+                                 XEvent*, XPointer);
+static Bool WaitXIMProtocol (Display*, Window, XEvent*, XPointer);
 
 static XClient *NewXClient (Xi18n i18n_core, Window new_client)
 {
@@ -52,16 +58,21 @@ static XClient *NewXClient (Xi18n i18n_core, Window new_client)
     XClient *x_client;
 
     x_client = (XClient *) malloc (sizeof (XClient));
-    x_client->client_win = new_client;
-    x_client->accept_win = XCreateSimpleWindow (dpy,
-                                                DefaultRootWindow(dpy),
-                                                0,
-                                                0,
-                                                1,
-                                                1,
-                                                1,
-                                                0,
-                                                0);
+    if (!x_client) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+    } else {
+        x_client->client_win = new_client;
+        x_client->accept_win = XCreateSimpleWindow (dpy,
+                                                    DefaultRootWindow(dpy),
+                                                    0,
+                                                    0,
+                                                    1,
+                                                    1,
+                                                    1,
+                                                    0,
+                                                    0);
+    }
     client->trans_rec = x_client;
     return ((XClient *) x_client);
 }
@@ -87,6 +98,7 @@ static unsigned char *ReadXIMMessage (XIMS ims,
         client = client->next;
     }
 
+    assert (client);
     if (ev->format == 8) {
         /* ClientMessage only */
         XimProtoHdr *hdr = (XimProtoHdr *) ev->data.b;
@@ -129,7 +141,6 @@ static unsigned char *ReadXIMMessage (XIMS ims,
     else if (ev->format == 32) {
         /* ClientMessage and WindowProperty */
         unsigned long length = (unsigned long) ev->data.l[0];
-        unsigned long get_length;
         Atom atom = (Atom) ev->data.l[1];
         int return_code;
         Atom actual_type_ret;
@@ -137,21 +148,29 @@ static unsigned char *ReadXIMMessage (XIMS ims,
         unsigned long bytes_after_ret;
         unsigned char *prop;
         unsigned long nitems;
+        Xi18nOffsetCache *offset_cache = &client->offset_cache;
+        unsigned long offset;
+        unsigned long end;
+        unsigned long long_begin;
+        unsigned long long_end;
 
-        /* Round up length to next 4 byte value. */
-        get_length = length + 3;
-        if (get_length > LONG_MAX)
-            get_length = LONG_MAX;
-        get_length /= 4;
-        if (get_length == 0) {
-            fprintf(stderr, "%s: invalid length 0\n", __func__);
+        if (length == 0) {
+            fprintf (stderr, "%s: invalid length 0\n", __func__);
             return NULL;
         }
+
+        offset = _Xi18nLookupPropertyOffset (offset_cache, atom);
+        end = offset + length;
+
+        /* The property data is retrieved in 32-bit chunks */
+        long_begin = offset / 4;
+        long_end = (end + 3) / 4;
+        assert (x_client);
         return_code = XGetWindowProperty (i18n_core->address.dpy,
                                           x_client->accept_win,
                                           atom,
-                                          client->property_offset / 4,
-                                          get_length,
+                                          long_begin,
+                                          long_end - long_begin,
                                           True,
                                           AnyPropertyType,
                                           &actual_type_ret,
@@ -162,32 +181,22 @@ static unsigned char *ReadXIMMessage (XIMS ims,
         if (return_code != Success || actual_format_ret == 0 || nitems == 0) {
             if (return_code == Success)
                 XFree (prop);
-            client->property_offset = 0;
+            fprintf (stderr,
+                    "(XIM-IMdkit) ERROR: XGetWindowProperty failed.\n"
+                    "Protocol data is likely to be inconsistent.\n");
+            _Xi18nSetPropertyOffset (offset_cache, atom, 0);
             return (unsigned char *) NULL;
         }
         /* Update the offset to read next time as needed */
         if (bytes_after_ret > 0)
-            client->property_offset += length;
+            _Xi18nSetPropertyOffset (offset_cache, atom, offset + length);
         else
-            client->property_offset = 0;
-        switch (actual_format_ret) {
-        case 8:
-        case 16:
-        case 32:
-            length = nitems * actual_format_ret / 8;
-            break;
-        default:
-            fprintf(stderr, "%s: unknown property return format: %d\n",
-                        __func__, actual_format_ret);
-            XFree(prop);
-            client->property_offset = 0;
-            return NULL;
-        }
+            _Xi18nSetPropertyOffset (offset_cache, atom, 0);
         /* if hit, it might be an error */
         if ((p = (unsigned char *) malloc (length)) == NULL)
             return (unsigned char *) NULL;
 
-        memmove (p, prop, length);
+        memcpy (p, prop + (offset % 4), length);
         XFree (prop);
     }
     return (unsigned char *) p;
@@ -215,7 +224,7 @@ static void ReadXConnectMessage (XIMS ims, XClientMessageEvent *ev)
     }
     /*endif*/
     _XRegisterFilterByType (dpy,
-                            x_client->accept_win,
+                            x_client ? x_client->accept_win : 0,
                             ClientMessage,
                             ClientMessage,
                             WaitXIMProtocol,
@@ -225,7 +234,7 @@ static void ReadXConnectMessage (XIMS ims, XClientMessageEvent *ev)
     event.xclient.window = new_client;
     event.xclient.message_type = spec->connect_request;
     event.xclient.format = 32;
-    event.xclient.data.l[0] = x_client->accept_win;
+    event.xclient.data.l[0] = x_client ? x_client->accept_win : 0;
     event.xclient.data.l[1] = major_version;
     event.xclient.data.l[2] = minor_version;
     event.xclient.data.l[3] = XCM_DATA_LIMIT;
@@ -275,11 +284,11 @@ static Bool Xi18nXEnd(XIMS ims)
 static char *MakeNewAtom (CARD16 connect_id, char *atomName)
 {
     static int sequence = 0;
-    
     sprintf (atomName,
              "_server%d_%d",
              connect_id,
-             ((sequence > 20)  ?  (sequence = 0)  :  sequence++));
+             ((sequence > 20)  ?  (sequence = 0)  :  (0x1f & sequence)));
+    sequence++;
     return atomName;
 }
 
@@ -417,13 +426,16 @@ static Bool Xi18nXWait (XIMS ims,
                 &&
                 (hdr->minor_opcode == minor_opcode))
             {
+                XFree (packet);
                 return True;
             }
             else if (hdr->major_opcode == XIM_ERROR)
             {
+                XFree (packet);
                 return False;
             }
             /*endif*/
+            XFree (packet);
         }
         /*endif*/
     }

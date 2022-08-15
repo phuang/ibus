@@ -1,0 +1,28 @@
+# vim:set fileencoding=utf-8 et sts=4 sw=4:
+#
+# ibus - Intelligent Input Bus for Linux / Unix OS
+#
+# Copyright © 2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library. If not, see <http://www.gnu.org/licenses/>.
+
+# This file is a deny list (black list) and used by gensimple.py.
+# gensimple.py generates the engine list with evdev.xml and if an engine name
+# is matched with any entries in this file, the engine is excluded from the
+# engine list.
+# Asterisk(*) character can be used to match any engines.
+# E.g. xkb:cn:*:* excludes xkb:cn::zho and xkb:cn:mon_trad:mvf
+xkb:cn:*:*
+xkb:latam:*:*
+xkb:nec_vndr/jp:*:*

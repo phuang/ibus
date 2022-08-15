@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include "ibusobject.h"
@@ -25,7 +25,7 @@
 #include "ibusinternal.h"
 
 #define IBUS_OBJECT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_OBJECT, IBusObjectPrivate))
+   ((IBusObjectPrivate *)ibus_object_get_instance_private (o))
 
 enum {
     DESTROY,
@@ -53,7 +53,7 @@ static void      ibus_object_dispose        (IBusObject         *obj);
 static void      ibus_object_finalize       (IBusObject         *obj);
 static void      ibus_object_real_destroy   (IBusObject         *obj);
 
-G_DEFINE_TYPE (IBusObject, ibus_object, G_TYPE_INITIALLY_UNOWNED)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusObject, ibus_object, G_TYPE_INITIALLY_UNOWNED)
 
 static void
 ibus_object_class_init     (IBusObjectClass *class)
@@ -85,8 +85,6 @@ ibus_object_class_init     (IBusObjectClass *class)
             NULL, NULL,
             _ibus_marshal_VOID__VOID,
             G_TYPE_NONE, 0);
-
-    g_type_class_add_private (class, sizeof (IBusObjectPrivate));
 
 #ifdef DEBUG_MEMORY
     _count_table = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -162,13 +160,6 @@ ibus_object_real_destroy (IBusObject *obj)
     g_signal_handlers_destroy (obj);
 }
 
-/**
- * ibus_object_new:
- *
- * Creates a new instance of an #IBusObject.
- *
- * Returns: a new instance of #IBusObject.
- */
 IBusObject *
 ibus_object_new (void)
 {

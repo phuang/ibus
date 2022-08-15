@@ -1,0 +1,29 @@
+# Files with translatable strings.
+# Please keep this file in alphabetical order.
+# Files under ui/gtk2/ are not shipped in the distribution, but kept
+# in the git repository for reference.
+bindings/vala/candidatearea.c
+bindings/vala/emojier.c
+bindings/vala/iconwidget.c
+bindings/vala/pango.c
+bindings/vala/separator.c
+ibus/_config.py
+tools/main.c
+ui/gtk2/candidatepanel.py
+ui/gtk2/engineabout.py
+ui/gtk2/languagebar.py
+ui/gtk2/panel.py
+ui/gtk3/application.c
+ui/gtk3/candidatearea.c
+ui/gtk3/candidatepanel.c
+ui/gtk3/emojier.c
+ui/gtk3/emojierapp.c
+ui/gtk3/handle.c
+ui/gtk3/iconwidget.c
+ui/gtk3/keybindingmanager.c
+ui/gtk3/panel.c
+ui/gtk3/pango.c
+ui/gtk3/property.c
+ui/gtk3/propertypanel.c
+ui/gtk3/separator.c
+ui/gtk3/switcher.c

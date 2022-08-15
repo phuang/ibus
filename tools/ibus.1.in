@@ -1,0 +1,116 @@
+.\" This file is distributed under the same license as the ibus
+.\" package.
+.\" Copyright (C) Takao Fujiwara <takao.fujiwara1@gmail.com>, 2013-2017.
+.\" Copyright (c) Peng Huang <shawn.p.huang@gmail.com>, 2013.
+.\"
+.TH "IBUS" 1 "May 2017" "@VERSION@" "User Commands"
+.SH NAME
+.B ibus
+\- command line utility for ibus
+
+.SH "SYNOPSIS"
+.B ibus
+\fICOMMAND\fR [\fIOPTION\fR]...
+
+.SH "DESCRIPTION"
+
+.PP
+IBus is an Intelligent Input Bus. It is a new input framework for Linux
+OS. It provides full featured and user friendly input method user
+interface.  It also may help developers to develop input method easily.  
+
+.PP
+.B ibus
+is a command line utility which can restart or exit ibus-daemon,
+get or set the current ibus engine or list the ibus engines.
+
+.PP
+Homepage: https://github.com/ibus/ibus/wiki
+
+.SH "COMMAND"
+.TP
+\fBhelp\fR
+Show the commands list.
+.TP
+\fBengine\fR [\fBENGINE_NAME\fR]
+Show the curent ibus engine when
+.B ENGINE_NAME
+is not given. Set 
+.B ENGINE_NAME
+to the current ibus engine.
+.TP
+\fBexit\fR
+Exit ibus-daemon.
+.TP
+\fBlist-engine\fR
+Show ibus engines list.
+.TP
+\fBrestart\fR
+Restart ibus-daemon.
+.TP
+\fBversion\fR
+Show the ibus version.
+.TP
+\fBread\-cache\fR [\fB\-\-system|\-\-file=FILE\fR]
+Show the content of the user registry cache if
+.B \-\-system
+is not given.
+Show the content of the system registry cache if
+.B \-\-system
+is given.
+Show the content of the custom registry cache 
+.B FILE
+if
+.B \-\-file=FILE
+is given.
+.TP
+\fBwrite\-cache\fR [\fB\-\-system|\-\-file=FILE\fR]
+Save the user registry cache if
+.B \-\-system
+is not given.
+Save the system registry cache if
+.B \-\-system
+is given.
+Save the custom registry cache
+.B FILE
+if
+.B \-\-file=FILE
+is given.
+
+By default, it reads the component XML files from the standard
+component directory (\fI/usr/share/ibus/component\fP), you can set
+\fIIBUS_COMPONENT_PATH\fP environment variable for custom component
+directories, separated by ':'.
+.TP
+\fBaddress\fR
+Show the D-Bus address of ibus-daemon.
+.TP
+\fBread\-config\fR
+Print the setting values in a gsettings configuration file.
+.TP
+\fBreset\-config\fR
+Reset the user setting values to the default ones in a gsettings
+configuration file.
+.TP
+\fBwatch\fR
+Under construction.
+.TP
+\fBemoji\fR [\fB\-\-font=FONT|\-\-lang=LANG|\-\-help|\-\-partial\-match\fR]
+Launch IBus Emojier (
+.B ibus\-emoji (1)
+) and save the selected emoji to your clipboard. Can choose an emoji font with
+.B \-\-font
+option. Can choose a language of emoji annotations with
+.B \-\-lang
+option. If LANG="en", IBus Emojier loads /usr/share/ibus/dicts/emoji-en.dict .
+.B \-\-partial\-match
+option enables to match annotations with a partial string. These settings
+are available with
+.B ibus\-setup (1)
+utility.
+
+.SH BUGS
+If you find a bug, please report it at https://github.com/ibus/ibus/issues
+
+.SH "SEE ALSO"
+.BR ibus-emoji (7)

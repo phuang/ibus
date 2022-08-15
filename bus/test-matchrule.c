@@ -20,7 +20,9 @@ int
 main(gint argc, gchar **argv)
 {
     BusMatchRule *rule, *rule1;
+#if !GLIB_CHECK_VERSION(2,35,0)
     g_type_init ();
+#endif
 
     rule = bus_match_rule_new (" type='signal' , interface = 'org.freedesktop.IBus' ");
     g_assert (rule->message_type == G_DBUS_MESSAGE_TYPE_SIGNAL);
@@ -55,6 +57,10 @@ main(gint argc, gchar **argv)
 
     rule = bus_match_rule_new ("type='method_call',interface='org.freedesktop.IBus ");
     g_assert (rule == NULL);
+
+    rule = bus_match_rule_new ("eavesdrop=true");
+    g_assert (rule != NULL);
+    g_object_unref (rule);
     
     return 0;
 }

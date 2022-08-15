@@ -8,7 +8,7 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,14 +16,14 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include <string.h>
 #include <ibus.h>
-#include "config.h"
+#include "config-private.h"
 
 #define DCONF_PREFIX "/desktop/ibus"
 #define DCONF_PRESERVE_NAME_PREFIXES_KEY \
@@ -159,12 +159,19 @@ static void
 _watch_func (DConfClient         *client,
              const gchar         *gpath,
              const gchar * const *items,
+#ifndef DCONF_0_13_4
              gint                 n_items,
+#endif
              const gchar         *tag,
              IBusConfigDConf     *config)
 {
     gchar **gkeys = NULL;
     gint i;
+#ifdef DCONF_0_13_4
+    gint n_items;
+
+    n_items = g_strv_length ((gchar **)items);
+#endif
 
     g_return_if_fail (gpath != NULL);
     g_return_if_fail (n_items >= 0);
@@ -198,6 +205,7 @@ _watch_func (DConfClient         *client,
         if (variant == NULL) {
             /* Use a empty tuple for a unset value */
             variant = g_variant_new_tuple (NULL, 0);
+            g_variant_ref_sink (variant);
         }
 
         gname = strrchr (gkeys[i], '/');
@@ -231,6 +239,14 @@ static void
 ibus_config_dconf_init (IBusConfigDConf *config)
 {
     GVariant *variant;
+#ifdef DCONF_0_13_4
+    config->client = dconf_client_new ();
+
+    g_signal_connect (config->client, "changed",
+                      G_CALLBACK (_watch_func), config);
+
+    dconf_client_watch_fast (config->client, DCONF_PREFIX"/");
+#else
     GError *error;
 
     config->client = dconf_client_new ("ibus",
@@ -239,8 +255,12 @@ ibus_config_dconf_init (IBusConfigDConf *config)
                                        NULL);
 
     error = NULL;
-    if (!dconf_client_watch (config->client, DCONF_PREFIX"/", NULL, &error))
-        g_warning ("Can not watch dconf path %s", DCONF_PREFIX"/");
+    if (!dconf_client_watch (config->client, DCONF_PREFIX"/", NULL, &error)) {
+        g_warning ("Can not watch dconf path %s: %s",
+                   DCONF_PREFIX"/", error->message);
+        g_error_free (error);
+    }
+#endif
 
     config->preserve_name_prefixes = NULL;
     variant = dconf_client_read (config->client,
@@ -265,9 +285,16 @@ static void
 ibus_config_dconf_destroy (IBusConfigDConf *config)
 {
     if (config->client) {
+#ifdef DCONF_0_13_4
+        dconf_client_unwatch_fast (config->client, DCONF_PREFIX"/");
+#else
         GError *error = NULL;
-        if (!dconf_client_unwatch (config->client, DCONF_PREFIX"/", NULL, &error))
-            g_warning ("Can not unwatch dconf path %s", DCONF_PREFIX"/");
+        if (!dconf_client_unwatch (config->client, DCONF_PREFIX"/", NULL, &error)) {
+            g_warning ("Can not unwatch dconf path %s: %s",
+                       DCONF_PREFIX"/", error->message);
+            g_error_free (error);
+        }
+#endif
 
         g_object_unref (config->client);
         config->client = NULL;
@@ -307,23 +334,30 @@ ibus_config_dconf_set_value (IBusConfigService *config,
         g_free (gname);
     }
 
+#ifdef DCONF_0_13_4
+    /* Use dconf_client_write_sync() instead of dconf_client_write_fast()
+     * because dconf_client_write_fast() does not sync the data when
+     * ibus_config_get_values() is called immediately after
+     * ibus_config_set_value() is called.
+     * We won't add a new API for the sync only since IBusConfig is
+     * now deprecated and GSettings is recommended.
+     */
+    retval = dconf_client_write_sync (client,
+                                      gkey,
+                                      value,
+                                      NULL,
+                                      NULL,
+                                      error);
+#else
     retval = dconf_client_write (client,
                                  gkey,
                                  value,
                                  NULL,   /* tag */
                                  NULL,   /* cancellable */
                                  error);
+#endif
     g_free (gkey);
 
-    /* notify the caller that the value has changed, as dconf does not
-       call watch_func when the caller is the process itself */
-    if (retval) {
-        if (value == NULL) {
-            /* Use a empty tuple for a unset value */
-            value = g_variant_new_tuple (NULL, 0);
-        }
-        ibus_config_service_value_changed (config, section, name, value);
-    }
     return retval;
 }
 
@@ -357,8 +391,11 @@ ibus_config_dconf_get_value (IBusConfigService *config,
     g_free (gkey);
 
     if (variant == NULL) {
-        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Config value [%s:%s] does not exist.", section, name);
+        g_set_error (error,
+                     G_DBUS_ERROR,
+                     G_DBUS_ERROR_FAILED,
+                     "Config value [%s:%s] does not exist.",
+                     section, name);
         return NULL;
     }
 
@@ -375,7 +412,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
     gchar *dir, *gdir;
     gint len;
     gchar **entries, **p;
-    GVariantBuilder *builder;
+    GVariantBuilder builder;
     gboolean preserve_name;
 
     dir = g_strdup_printf (DCONF_PREFIX"/%s/", section);
@@ -385,7 +422,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
     preserve_name = _has_prefixes (gdir, dconf->preserve_name_prefixes);
 
     entries = dconf_client_list (client, gdir, &len);
-    builder = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
     for (p = entries; *p != NULL; p++) {
         gchar *gkey = g_strconcat (gdir, *p, NULL);
         GVariant *value = dconf_client_read (client, gkey);
@@ -395,7 +432,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
             if (!preserve_name) {
                 name = _from_gsettings_name (*p);
             }
-            g_variant_builder_add (builder, "{sv}", name, value);
+            g_variant_builder_add (&builder, "{sv}", name, value);
             if (name != *p) {
                 g_free (name);
             }
@@ -405,7 +442,7 @@ ibus_config_dconf_get_values (IBusConfigService *config,
     g_strfreev (entries);
     g_free (gdir);
 
-    return g_variant_builder_end (builder);
+    return g_variant_builder_end (&builder);
 }
 
 static gboolean

@@ -1,28 +1,31 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_ATTRIBUTE_H_
+#define __IBUS_ATTRIBUTE_H_
 
 /**
  * SECTION: ibusattribute
@@ -31,10 +34,9 @@
  * @stability: Stable
  *
  * An IBusAttribute represents an attribute that associate to IBusText.
- * It decorates preedit buffer and auxiliary text with underline, foreground and background colors.
+ * It decorates preedit buffer and auxiliary text with underline, foreground
+ * and background colors.
  */
-#ifndef __IBUS_ATTRIBUTE_H_
-#define __IBUS_ATTRIBUTE_H_
 
 #include "ibusserializable.h"
 
@@ -76,7 +78,7 @@ typedef enum {
  * @IBUS_ATTR_UNDERLINE_NONE: No underline.
  * @IBUS_ATTR_UNDERLINE_SINGLE: Single underline.
  * @IBUS_ATTR_UNDERLINE_DOUBLE: Double underline.
- * @IBUS_ATTR_UNDERLINE_LOW: Low underline ? %FIXME
+ * @IBUS_ATTR_UNDERLINE_LOW: Low underline ? FIXME
  * @IBUS_ATTR_UNDERLINE_ERROR: Error underline
  *
  * Type of IBusText attribute.
@@ -130,9 +132,10 @@ GType                ibus_attribute_get_type    ();
  * @value: Value of the attribute.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: (transfer none): A newly allocated IBusAttribute.
  *
- * New an IBusAttribute.
+ * Creates a new IBusAttribute.
+ *
+ * Returns: (transfer none): A newly allocated IBusAttribute.
  */
 IBusAttribute       *ibus_attribute_new         (guint           type,
                                                  guint           value,
@@ -141,38 +144,46 @@ IBusAttribute       *ibus_attribute_new         (guint           type,
 
 /**
  * ibus_attribute_get_attr_type:
- * @returns: An enum of #IBusAttrType.
+ * @attr: An #IBusAttribute
  *
- * Returns an enum of #IBusAttrType.
+ * Gets an enum of #IBusAttrType.
+ *
+ * Returns: An enum of #IBusAttrType.
  */
 guint                ibus_attribute_get_attr_type
                                                 (IBusAttribute *attr);
 
 /**
  * ibus_attribute_get_value:
- * @returns: An unsigned int value relative with #IBusAttrType.
+ * @attr: An #IBusAttribute
  *
- * Returns an unsigned int value relative with #IBusAttrType.
+ * Gets an unsigned int value relative with #IBusAttrType.
  * If the type is %IBUS_ATTR_TYPE_UNDERLINE, the return value is
  * #IBusAttrUnderline. If the type is %IBUS_ATTR_TYPE_FOREGROUND,
  * the return value is the color RGB.
+ *
+ * Returns: An unsigned int value relative with #IBusAttrType.
  */
 guint                ibus_attribute_get_value   (IBusAttribute *attr);
 
 /**
  * ibus_attribute_get_start_index:
- * @returns: A start unsigned index
+ * @attr: An #IBusAttribute
  *
- * Returns a start unsigned index
+ * Gets a start unsigned index
+ *
+ * Returns: A start unsigned index
  */
 guint                ibus_attribute_get_start_index
                                                 (IBusAttribute *attr);
 
 /**
  * ibus_attribute_get_end_index:
- * @returns: A end unsigned index
+ * @attr: An #IBusAttribute
  *
- * Returns a end unsigned index
+ * Gets an end unsigned index
+ *
+ * Returns: A end unsigned index
  */
 guint                ibus_attribute_get_end_index
                                                 (IBusAttribute *attr);
@@ -182,9 +193,10 @@ guint                ibus_attribute_get_end_index
  * @underline_type: Type of underline.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: (transfer none): A newly allocated #IBusAttribute.
  *
- * New an underline #IBusAttribute.
+ * Creates a new underline #IBusAttribute.
+ *
+ * Returns: (transfer none): A newly allocated #IBusAttribute.
  */
 IBusAttribute       *ibus_attr_underline_new    (guint           underline_type,
                                                  guint           start_index,
@@ -194,9 +206,10 @@ IBusAttribute       *ibus_attr_underline_new    (guint           underline_type,
  * @color: Color in RGB.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: (transfer none): A newly allocated #IBusAttribute.
  *
- * New an foreground #IBusAttribute.
+ * Creates a new foreground #IBusAttribute.
+ *
+ * Returns: (transfer none): A newly allocated #IBusAttribute.
  */
 IBusAttribute       *ibus_attr_foreground_new   (guint           color,
                                                  guint           start_index,
@@ -206,9 +219,10 @@ IBusAttribute       *ibus_attr_foreground_new   (guint           color,
  * @color: Color in RGB.
  * @start_index: Where attribute starts.
  * @end_index: Where attribute ends.
- * @returns: (transfer none): A newly allocated #IBusAttribute.
  *
- * New an background #IBusAttribute.
+ * Creates a new background #IBusAttribute.
+ *
+ * Returns: (transfer none): A newly allocated #IBusAttribute.
  */
 IBusAttribute       *ibus_attr_background_new   (guint           color,
                                                  guint           start_index,

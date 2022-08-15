@@ -27,6 +27,7 @@ SOFTWARE.
 ******************************************************************/
 
 #include <X11/Xlibint.h>
+#include <assert.h>
 #include <stdlib.h>
 #include "FrameMgr.h"
 
@@ -850,7 +851,7 @@ static Bool _FrameMgrProcessPadding (FrameMgr fm, FmStatus* status)
             return True;
         }
         /*endif*/
-        next_type = FrameInstGetNextType (fm->fi, &info);
+        FrameInstGetNextType (fm->fi, &info);
         fm->idx += info.num;
         if ((fitr = _FrameIterCounterIncr (fm->iters, info.num)))
             _FrameMgrRemoveIter (fm, fitr);
@@ -989,6 +990,7 @@ static XimFrameType FrameInstGetNextType(FrameInst fi, XimFrameTypeInfo info)
             while (number > 0)
             {
                 i = _FrameInstDecrement (fi->template, i);
+                assert (i >= 0);
                 size += _FrameInstGetItemSize (fi, i);
                 number--;
             }
@@ -1138,6 +1140,7 @@ static XimFrameType FrameInstPeekNextType (FrameInst fi, XimFrameTypeInfo info)
             while (number > 0)
             {
                 i = _FrameInstDecrement (fi->template, i);
+                assert (i >= 0);
                 size += _FrameInstGetItemSize (fi, i);
                 number--;
             }
@@ -1356,6 +1359,7 @@ static FmStatus FrameInstSetSize (FrameInst fi, int num)
 	    break;
         }
         /*endswitch*/
+        assert (i >= 0);
         i = _FrameInstIncrement(fi->template, i);
     }
     /*endwhile*/
@@ -1410,6 +1414,7 @@ static int FrameInstGetSize (FrameInst fi)
 	    break;
         }
         /*endswitch*/
+        assert (i >= 0);
         i = _FrameInstIncrement (fi->template, i);
     }
     /*endwhile*/
@@ -1457,6 +1462,7 @@ static FmStatus FrameInstSetIterCount (FrameInst fi, int num)
 	    break;
         }
         /*endswitch*/
+        assert (i >= 0);
         i = _FrameInstIncrement (fi->template, i);
     }
     /*endwhile*/
@@ -1474,6 +1480,7 @@ static int FrameInstGetTotalSize (FrameInst fi)
     while (fi->template[i].type != EOL)
     {
         size += _FrameInstGetItemSize (fi, i);
+        assert (i >= 0);
         i = _FrameInstIncrement (fi->template, i);
     }
     /*endwhile*/
@@ -1518,6 +1525,11 @@ static Iter IterInit (XimFrame frame, int count)
     register XimFrameType type;
 
     it = (Iter) Xmalloc (sizeof (IterRec));
+    if (!it) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        return NULL;
+    }
     it->template = frame;
     it->max_count = (count == NO_VALUE)  ?  0  :  count;
     it->allow_expansion = (count == NO_VALUE);
@@ -1662,8 +1674,15 @@ static Bool IterIsLoopEnd (Iter it, Bool *myself)
 
 static XimFrameType IterGetNextType (Iter it, XimFrameTypeInfo info)
 {
-    XimFrameType type = it->template->type;
+    XimFrameType type;
 
+    if (!it || !it->template) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+	return (XimFrameType) NULL;
+    }
+
+    type = it->template->type;
     if (it->start_counter)
     {
         (*it->start_watch_proc) (it, it->client_data);
@@ -1759,7 +1778,15 @@ static XimFrameType IterGetNextType (Iter it, XimFrameTypeInfo info)
 
 static XimFrameType IterPeekNextType (Iter it, XimFrameTypeInfo info)
 {
-    XimFrameType type = it->template->type;
+    XimFrameType type;
+
+    if (!it->template) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: dereference pointer %s:%d.\n",
+                 __FILE__, __LINE__);
+        return (XimFrameType) NULL;
+    }
+
+    type = it->template->type;
 
     if (!it->allow_expansion  &&  it->cur_no >= it->max_count)
         return (EOL);
@@ -1858,6 +1885,9 @@ static FmStatus IterSetSize (Iter it, int num)
                 {
                     dr.num = NO_VALUE;
                     d = ChainMgrSetData (&it->cm, i, dr);
+                }
+                if (!d) {
+                    return FmNoMoreData;
                 }
                 /*endif*/
                 if (d->num == NO_VALUE)
@@ -2247,6 +2277,11 @@ static ExtraData ChainMgrSetData (ChainMgr cm,
                                   ExtraDataRec data)
 {
     Chain cur = (Chain) Xmalloc (sizeof (ChainRec));
+    if (!cur) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        return NULL;
+    }
 
     cur->frame_no = frame_no;
     cur->d = data;
@@ -2419,6 +2454,7 @@ static int _FrameInstGetItemSize (FrameInst fi, int cur_no)
             size = 0;
             while (number > 0)
             {
+                assert (i >= 0);
                 i = _FrameInstDecrement (fi->template, i);
                 size += _FrameInstGetItemSize (fi, i);
                 number--;

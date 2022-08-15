@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include "ibusfactory.h"
 #include "ibusengine.h"
@@ -26,7 +26,7 @@
 #include "ibusinternal.h"
 
 #define IBUS_FACTORY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_FACTORY, IBusFactoryPrivate))
+   ((IBusFactoryPrivate *)ibus_factory_get_instance_private (o))
 
 enum {
     CREATE_ENGINE,
@@ -87,7 +87,7 @@ static void      ibus_factory_engine_destroy_cb
                                              (IBusEngine         *engine,
                                               IBusFactory        *factory);
 
-G_DEFINE_TYPE (IBusFactory, ibus_factory, IBUS_TYPE_SERVICE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusFactory, ibus_factory, IBUS_TYPE_SERVICE)
 
 static const gchar introspection_xml[] =
     "<node>"
@@ -158,19 +158,18 @@ ibus_factory_class_init (IBusFactoryClass *class)
 
     ibus_service_class_add_interfaces (IBUS_SERVICE_CLASS (class), introspection_xml);
 
-    g_type_class_add_private (class, sizeof (IBusFactoryPrivate));
-
     /**
      * IBusFactory::create-engine:
      * @factory: the factory which received the signal
      * @engine_name: the engine_name which received the signal
-     * @returns: (transfer full): An IBusEngine
+     * @returns: (nullable) (transfer full): An IBusEngine
      *
      * The ::create-engine signal is a signal to create IBusEngine
      * with @engine_name, which gets emitted when IBusFactory
      * received CreateEngine dbus method. The callback functions
      * will be called until a callback returns a non-null object
-     * of IBusEngine. */
+     * of IBusEngine.
+     */
     factory_signals[CREATE_ENGINE] =
         g_signal_new (I_("create-engine"),
             G_TYPE_FROM_CLASS (gobject_class),
@@ -286,12 +285,11 @@ ibus_factory_service_method_call (IBusService           *service,
             g_free (object_path);
         }
         else {
-            gchar *error_message = g_strdup_printf ("Can not fond engine %s", engine_name);
             g_dbus_method_invocation_return_error (invocation,
                                                    G_DBUS_ERROR,
                                                    G_DBUS_ERROR_FAILED,
-                                                   error_message);
-            g_free (error_message);
+                                                   "Cannot find engine %s",
+                                                   engine_name);
         }
         return;
     }
@@ -352,10 +350,10 @@ ibus_factory_new (GDBusConnection *connection)
 {
     g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
 
-    IBusEngine *object = g_object_new (IBUS_TYPE_FACTORY,
-                                       "object-path", IBUS_PATH_FACTORY,
-                                       "connection", connection,
-                                       NULL);
+    IBusFactory *object = g_object_new (IBUS_TYPE_FACTORY,
+                                        "object-path", IBUS_PATH_FACTORY,
+                                        "connection", connection,
+                                        NULL);
 
     return IBUS_FACTORY (object);
 }

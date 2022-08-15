@@ -1,28 +1,31 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_OBJECT_H_
+#define __IBUS_OBJECT_H_
 
 /**
  * SECTION: ibusobject
@@ -32,8 +35,6 @@
  *
  * IBusObject is the base object for all objects in IBus.
  */
-#ifndef __IBUS_OBJECT_H_
-#define __IBUS_OBJECT_H_
 
 #include <glib-object.h>
 #include "ibustypes.h"
@@ -57,6 +58,15 @@
 #define IBUS_OBJECT_GET_CLASS(obj)   \
     (G_TYPE_INSTANCE_GET_CLASS ((obj), IBUS_TYPE_OBJECT, IBusObjectClass))
 
+/**
+ * IBusObjectFlags:
+ * @IBUS_IN_DESTRUCTION: Used in GObjectClass::dispose
+ * @IBUS_DESTROYED: Used during emitting IBusObject::destroy signal.
+ * @IBUS_RESERVED_1: Reserved.
+ * @IBUS_RESERVED_2: Reserved.
+ *
+ * The flags are used internally.
+ */
 typedef enum {
     IBUS_IN_DESTRUCTION = (1 << 0),
     IBUS_DESTROYED      = (1 << 1),
@@ -90,7 +100,7 @@ struct _IBusObject {
     IBusObjectPrivate *priv;
 };
 
-typedef void ( *IBusObjectDestroyFunc) (IBusObject *);
+typedef void ( *IBusObjectDestroyFunc) (IBusObject *object);
 
 struct _IBusObjectClass {
     GInitiallyUnownedClass parent;
@@ -107,9 +117,10 @@ GType           ibus_object_get_type            (void);
 
 /**
  * ibus_object_new:
- * @returns: A newly allocated IBusObject
  *
- * New an IBusObject.
+ * Creates  a new #IBusObject.
+ *
+ * Returns: A newly allocated #IBusObject
  */
 IBusObject     *ibus_object_new                 (void);
 
@@ -117,7 +128,7 @@ IBusObject     *ibus_object_new                 (void);
  * ibus_object_destroy:
  * @object: an #IBusObject to destroy.
  *
- * Emit the "destory" signal notifying all reference holders that they should
+ * Emit the "destroy" signal notifying all reference holders that they should
  * release the #IBusObject.
  *
  * The memory for the object itself won't be deleted until its reference count

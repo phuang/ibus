@@ -1,0 +1,32 @@
+#!/bin/sh
+
+SRCDIR=@SRCDIR@
+BUILDDIR=`dirname $0`
+
+
+export IBUS_COMPOSE_CACHE_DIR=$PWD
+
+retval=0
+# Deleted for var in `cat *.env` because IFS=$'\n' is not supported in POSIX sh
+while read var
+do
+    IS_COMMENT=`echo "$var" | grep "^#"`
+    if [ "x$IS_COMMENT" != x ] ; then
+        continue
+    fi
+    # Use $* instead of $@ not to mix strings and integers
+    echo "# Starting $var $BUILDDIR/ibus-compose $SRCDIR $*"
+    # Need to enclose $@ with double quotes not to split the array.
+    env $var $BUILDDIR/ibus-compose $SRCDIR "$@"
+    retval=`expr $retval + $?`
+    echo "# Finished $var $BUILDDIR/ibus-compose $SRCDIR $* with $retval"
+
+    CACHE_FILES=`ls *.cache`
+    if [ x"$CACHE_FILES" != x ] ; then
+        echo "Clean $CACHE_FILES"
+        rm $CACHE_FILES
+    fi
+done << EOF_ENVS
+`cat $SRCDIR/ibus-compose.env`
+EOF_ENVS
+exit $retval

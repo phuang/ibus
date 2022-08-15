@@ -1,28 +1,31 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_FACTORY_H_
+#define __IBUS_FACTORY_H_
 
 /**
  * SECTION: ibusfactory
@@ -34,11 +37,9 @@
  * It provides CreateEngine remote method, which creates an IME instance by name,
  * and returns the D-Bus object path to IBus daemon.
  *
- * @see_also: #IBusEngine
+ * see_also: #IBusEngine
  *
  */
-#ifndef __IBUS_FACTORY_H_
-#define __IBUS_FACTORY_H_
 
 #include "ibusservice.h"
 #include "ibusserializable.h"
@@ -141,18 +142,20 @@ struct _IBusFactoryClass {
 
 /**
  * ibus_factory_info_get_type:
- * @returns: GType of IBus factory information.
  *
- * Return GType of IBus factory information.
+ * Gets GType of IBus factory information.
+ *
+ * Returns: GType of IBus factory information.
  */
 GType            ibus_factory_get_type          (void);
 
 /**
  * ibus_factory_new:
  * @connection: An GDBusConnection.
- * @returns: A newly allocated IBusFactory.
  *
- * New an IBusFactory.
+ * Creates a new #IBusFactory.
+ *
+ * Returns: A newly allocated #IBusFactory.
  */
 IBusFactory     *ibus_factory_new               (GDBusConnection *connection);
 
@@ -172,9 +175,10 @@ void             ibus_factory_add_engine        (IBusFactory    *factory,
  * ibus_factory_create_engine:
  * @factory: An #IBusFactory.
  * @engine_name: Name of an engine.
- * @returns: (transfer full): #IBusEngine with @engine_name.
  *
- * Create an #IBusEngine with @engine_name.
+ * Creates an #IBusEngine with @engine_name.
+ *
+ * Returns: (transfer full): #IBusEngine with @engine_name.
  */
 IBusEngine      *ibus_factory_create_engine     (IBusFactory    *factory,
                                                  const gchar    *engine_name);

@@ -2,27 +2,32 @@
 #
 # ibus - The Input Bus
 #
-# Copyright (c) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
-# Copyright (c) 2007-2010 Red Hat, Inc.
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# Copyright (c) 2007-2017 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 NULL =
 
-SUBDIRS = . tests
+if ENABLE_TESTS
+TESTS_DIR = tests
+endif
+
+SUBDIRS = . $(TESTS_DIR)
 
 # libibus = libibus-@IBUS_API_VERSION@.la
 libibus = libibus-1.0.la
@@ -36,16 +41,20 @@ INTROSPECTION_COMPILER_ARGS = \
     $(NULL)
 INTROSPECTION_GIRS =
 CLEANFILES =
+noinst_PROGRAMS =
 
 # C preprocessor flags
-AM_CPPFLAGS =                                   \
-    -DG_LOG_DOMAIN=\"IBUS\"                     \
-    @GLIB2_CFLAGS@                              \
-    @GOBJECT2_CFLAGS@                           \
-    @GIO2_CFLAGS@                               \
-    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"           \
-    -DIBUS_COMPILATION                          \
-    -DISOCODES_PREFIX=\"$(ISOCODES_PREFIX)\"    \
+AM_CPPFLAGS =                                           \
+    -DG_LOG_DOMAIN=\"IBUS\"                             \
+    @GLIB2_CFLAGS@                                      \
+    @GOBJECT2_CFLAGS@                                   \
+    @GIO2_CFLAGS@                                       \
+    -DIBUS_CACHE_DIR=\""$(localstatedir)/cache/ibus"\"  \
+    -DIBUS_DATA_DIR=\"$(pkgdatadir)\"                   \
+    -DIBUS_DISABLE_DEPRECATION_WARNINGS                 \
+    -DIBUS_COMPILATION                                  \
+    -DISOCODES_PREFIX=\"$(ISOCODES_PREFIX)\"            \
+    -DX11_DATA_PREFIX=\"$(X11_PREFIX)\"                 \
     $(NULL)
 
 # ibus library
@@ -63,122 +72,140 @@ libibus_1_0_la_LDFLAGS =            \
     $(NULL)
 
 ibus_sources =              \
-    ibusshare.c             \
-    ibusobject.c            \
-    ibusserializable.c      \
-    ibusproxy.c             \
-    ibusservice.c           \
-    ibusfactory.c           \
-    ibusengine.c            \
-    ibuserror.c				\
-    ibustext.c              \
-    ibuskeymap.c            \
+    ibusaccelgroup.c        \
     ibusattribute.c         \
     ibusattrlist.c          \
-    ibusproperty.c          \
-    ibusproplist.c          \
-    ibuslookuptable.c       \
-    ibusinputcontext.c      \
+    ibusbus.c               \
+    ibuscomponent.c         \
     ibusconfig.c            \
     ibusconfigservice.c     \
-    ibuspanelservice.c      \
-    ibusbus.c               \
+    ibusemoji.c             \
+    ibusengine.c            \
+    ibusenginedesc.c        \
+    ibusenginesimple.c      \
+    ibuserror.c             \
+    ibusfactory.c           \
+    ibushotkey.c            \
+    ibusinputcontext.c      \
+    ibuskeymap.c            \
     ibuskeynames.c          \
     ibuskeyuni.c            \
-    ibushotkey.c            \
-    ibusxml.c               \
-    ibusenginedesc.c        \
+    ibuslookuptable.c       \
+    ibusobject.c            \
     ibusobservedpath.c      \
-    ibuscomponent.c         \
+    ibuspanelservice.c      \
+    ibusproperty.c          \
+    ibusproplist.c          \
+    ibusproxy.c             \
+    ibusregistry.c          \
+    ibusserializable.c      \
+    ibusservice.c           \
+    ibusshare.c             \
+    ibustext.c              \
+    ibusunicode.c           \
     ibusutil.c              \
-	ibusenginesimple.c      \
-	$(NULL)
+    ibusxevent.c            \
+    ibusxml.c               \
+    $(NULL)
 libibus_1_0_la_SOURCES =    \
-    $(ibus_sources)         \
-    ibusmarshalers.c        \
+    ibuscomposetable.c      \
     ibusenumtypes.c         \
+    ibusmarshalers.c        \
+    $(ibus_sources)         \
     $(NULL)
 ibus_marshalers_sources =   \
-    ibusmarshalers.h        \
     ibusmarshalers.c        \
+    ibusmarshalers.h        \
     $(NULL)
 ibus_enumtypes_sources =    \
-    ibusenumtypes.h         \
     ibusenumtypes.c         \
+    ibusenumtypes.h         \
     $(NULL)
 ibus_headers =              \
     ibus.h                  \
-    ibusversion.h           \
-    ibusshare.h             \
-    ibusdebug.h             \
-    ibusobject.h            \
-    ibusserializable.h      \
-    ibusproxy.h             \
-    ibusservice.h           \
-    ibusfactory.h           \
-    ibusengine.h            \
-    ibuserror.h				\
-    ibustext.h              \
-    ibuskeymap.h            \
+    ibusaccelgroup.h        \
     ibusattribute.h         \
     ibusattrlist.h          \
-    ibusproperty.h          \
-    ibusproplist.h          \
-    ibuslookuptable.h       \
-    ibusinputcontext.h      \
+    ibusbus.h               \
+    ibuscomponent.h         \
     ibusconfig.h            \
     ibusconfigservice.h     \
-    ibuspanelservice.h      \
-    ibuskeysyms.h           \
-    ibuskeysyms-compat.h    \
-    ibuskeys.h              \
-    ibustypes.h             \
-    ibusbus.h               \
-    ibushotkey.h            \
-    ibusxml.h               \
+    ibusdebug.h             \
+    ibusemoji.h             \
+    ibusengine.h            \
     ibusenginedesc.h        \
+    ibusenginesimple.h      \
+    ibuserror.h             \
+    ibusfactory.h           \
+    ibushotkey.h            \
+    ibusinputcontext.h      \
+    ibuskeymap.h            \
+    ibuskeys.h              \
+    ibuskeysyms-compat.h    \
+    ibuskeysyms.h           \
+    ibuslookuptable.h       \
+    ibusobject.h            \
     ibusobservedpath.h      \
-    ibuscomponent.h         \
+    ibuspanelservice.h      \
+    ibusproperty.h          \
+    ibusproplist.h          \
+    ibusproxy.h             \
+    ibusregistry.h          \
+    ibusserializable.h      \
+    ibusservice.h           \
+    ibusshare.h             \
+    ibustext.h              \
+    ibustypes.h             \
+    ibusunicode.h           \
     ibusutil.h              \
-	ibusenginesimple.h      \
+    ibusxevent.h            \
+    ibusxml.h               \
     $(NULL)
 ibusincludedir = $(includedir)/ibus-@IBUS_API_VERSION@
 ibus_public_headers =       \
     $(ibus_headers)         \
     ibusenumtypes.h         \
+    ibusversion.h           \
     $(NULL)
 ibusinclude_HEADERS =       \
     $(ibus_public_headers)  \
     $(NULL)
-ibus_privite_headers =       \
-    ibusinternal.h           \
-    keyname-table.h          \
-	gtkimcontextsimpleseqs.h \
+ibus_private_headers =          \
+    gtkimcontextsimpleseqs.h    \
+    ibuscomposetable.h          \
+    ibusemojigen.h              \
+    ibusenginesimpleprivate.h   \
+    ibusinternal.h              \
+    ibusunicodegen.h            \
+    keyname-table.h             \
     $(NULL)
 noinst_HEADERS =            \
-    $(ibus_privite_headers) \
+    $(ibus_private_headers) \
     $(NULL)
 
-BUILT_SOURCES =             \
-    ibusmarshalers.h        \
-    ibusmarshalers.c        \
-    ibusenumtypes.h         \
-    ibusenumtypes.c         \
+BUILT_SOURCES =                 \
+    $(ibus_marshalers_sources)  \
+    $(ibus_enumtypes_sources)   \
     $(NULL)
 
 if HAVE_INTROSPECTION
-introspection_files =           \
-    $(ibus_public_headers)      \
+introspection_sources =         \
+    $(ibus_headers)             \
     $(ibus_sources)             \
-    ibusenumtypes.c             \
-    ibusenumtypes.h             \
+    $(NULL)
+built_introspection_sources =   \
+    $(ibus_enumtypes_sources)   \
+    ibusversion.h               \
     $(NULL)
 IBus-1.0.gir: $(libibus) Makefile
 IBus_1_0_gir_SCANNERFLAGS = --pkg-export=ibus-1.0 $(IBUS_GIR_SCANNERFLAGS)
 IBus_1_0_gir_INCLUDES = GLib-2.0 GObject-2.0 Gio-2.0
 IBus_1_0_gir_LIBS = $(libibus)
-IBus_1_0_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
-IBus_1_0_gir_CFLAGS = -DIBUS_COMPILATION
+IBus_1_0_gir_FILES =                                            \
+    $(addprefix $(srcdir)/,$(introspection_sources))            \
+    $(addprefix $(builddir)/,$(built_introspection_sources))    \
+    $(NULL)
+IBus_1_0_gir_CFLAGS = -DIBUS_COMPILATION -I$(srcdir) -I$(builddir)
 INTROSPECTION_GIRS += IBus-1.0.gir
 
 girdir = $(datadir)/gir-1.0
@@ -215,11 +242,154 @@ ibusmarshalers.c: ibusmarshalers.h ibusmarshalers.list
 	$(GLIB_GENMARSHAL) --prefix=_ibus_marshal $(srcdir)/ibusmarshalers.list --body --internal) > $@.tmp && \
 	mv $@.tmp $@
 
+if ENABLE_EMOJI_DICT
+AM_CPPFLAGS += -DENABLE_EMOJI_DICT
+
+dictdir = $(pkgdatadir)/dicts
+LANG_FILES = $(basename $(notdir $(wildcard $(EMOJI_ANNOTATION_DIR)/*.xml)))
+EMOJI_DICT_FILES = $(patsubst %,dicts/emoji-%.dict,$(LANG_FILES))
+# emoji-root.dict, emoji-sr_Cyrl.dict have no contents.
+dict_DATA = $(EMOJI_DICT_FILES)
+
+noinst_PROGRAMS += emoji-parser
+
+dicts/emoji-%.dict: emoji-parser
+	$(AM_V_at)if test x"$(LANG_FILES)" = x ; then \
+	    echo "WARNING: Not found $(EMOJI_ANNOTATION_DIR)/en.xml" 1>&2; \
+	fi; \
+	if test -f $@; then \
+	    echo "Already exists $@"; \
+	    exit 0; \
+	fi; \
+	if test -f \
+	    "$(EMOJI_ANNOTATION_DIR)/../annotationsDerived/$*.xml" ; then \
+	        xml_derived_option="--xml-derived $(EMOJI_ANNOTATION_DIR)/../annotationsDerived/$*.xml"; \
+	        plus_comment="derived"; \
+	fi; \
+	is_skip=0; \
+	if test x"$*" = xen ; then \
+	    $(builddir)/emoji-parser \
+	        --unicode-emoji-dir $(UNICODE_EMOJI_DIR) \
+	        --xml $(EMOJI_ANNOTATION_DIR)/$*.xml \
+	        $$xml_derived_option \
+	        --xml-ascii $(top_srcdir)/data/annotations/en_ascii.xml \
+	        --out-category ibusemojigen.h \
+	        --out $@; \
+	else \
+	    $(builddir)/emoji-parser \
+	        --unicode-emoji-dir $(UNICODE_EMOJI_DIR) \
+	        --xml $(EMOJI_ANNOTATION_DIR)/$*.xml \
+	        $$xml_derived_option \
+	        --out $@; \
+	    retval=$$?; \
+	    if test $$retval -eq 99 ; then \
+	        is_skip=1; \
+	        touch $@; \
+	    elif test $$retval -ne 0 ; then \
+	        echo "Fail to generate $@"; \
+	        abrt; \
+	    fi; \
+	fi; \
+	if test $$is_skip -eq 0 ; then \
+	    echo "Generated $$plus_comment $@"; \
+	else \
+	    echo "Skip $$plus_comment $@"; \
+	fi;
+
+ibusemojigen.h:
+	$(MAKE) $(AM_MAKEFLAGS) dicts/emoji-en.dict
+
+# We put dicts/emoji-%.dict as the make target for the parallel build
+# and the make target has to be genarated even if the file size is zero.
+# But we don't want to install the zero size files and delete them
+# in install-data-hook.
+install-data-hook:
+	$(AM_V_at)list='$(wildcard dicts/*.dict)'; \
+        test -n "$(dictdir)" || list=; \
+	for p in $$list; do \
+	    if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	    if test -s  "$$d$$p"; then continue; fi;  \
+	    basename "$$p"; \
+	done | \
+	while read file; do \
+	    if test -f "$(DESTDIR)$(dictdir)/$$file"; then \
+	        echo "Delete $(DESTDIR)$(dictdir)/$$file"; \
+	        rm "$(DESTDIR)$(dictdir)/$$file" || exit $$?; \
+	    fi; \
+	done
+
+emoji_parser_SOURCES =          \
+    emoji-parser.c              \
+    $(NULL)
+emoji_parser_CFLAGS =           \
+    $(GLIB2_CFLAGS)             \
+    $(GOBJECT2_CFLAGS)          \
+    $(NULL)
+emoji_parser_LDADD =            \
+    $(libibus)                  \
+    $(GLIB2_LIBS)               \
+    $(GOBJECT2_LIBS)            \
+    $(NULL)
+
+clean-local:
+	-rm -rf dicts
+	$(NULL)
+endif
+
+if ENABLE_UNICODE_DICT
+unicodedir = $(pkgdatadir)/dicts
+unicode_DATA = dicts/unicode-names.dict dicts/unicode-blocks.dict
+noinst_PROGRAMS += unicode-parser
+
+dicts/unicode-names.dict: unicode-parser
+	$(AM_V_at)input_file="$(UCD_DIR)/NamesList.txt"; \
+	if test ! -f "$$input_file" ; then \
+	    echo "WARNING: Not found $$input_file" 1>&2; \
+	else \
+	    $(builddir)/unicode-parser \
+	        --input-names-list $$input_file \
+	        --output-names-list $@; \
+	    echo "Generated $@"; \
+	fi;
+
+dicts/unicode-blocks.dict: unicode-parser
+	$(AM_V_at)input_file="$(UCD_DIR)/Blocks.txt"; \
+	if test ! -f "$$input_file" ; then \
+	    echo "WARNING: Not found $$input_file" 1>&2; \
+	else \
+	    $(builddir)/unicode-parser \
+	        --input-blocks $$input_file \
+	        --output-blocks-trans ibusunicodegen.h \
+	        --output-blocks $@; \
+	    echo "Generated $@"; \
+	fi;
+
+ibusunicodegen.h:
+	$(MAKE) $(AM_MAKEFLAGS) dicts/unicode-blocks.dict
+
+unicode_parser_SOURCES =        \
+    unicode-parser.c            \
+    $(NULL)
+unicode_parser_CFLAGS =         \
+    $(GLIB2_CFLAGS)             \
+    $(NULL)
+unicode_parser_LDADD =          \
+    $(GLIB2_LIBS)               \
+    $(libibus)                  \
+    $(NULL)
+
+clean-local:
+	-rm -rf dicts
+	$(NULL)
+endif
+
 EXTRA_DIST =                    \
+    emoji-parser.c              \
     ibusversion.h.in            \
     ibusmarshalers.list         \
     ibusenumtypes.h.template    \
     ibusenumtypes.c.template    \
+    unicode-parser.c            \
     $(NULL)
 
 CLEANFILES +=                   \
@@ -228,7 +398,15 @@ CLEANFILES +=                   \
     stamp-ibusenumtypes.h       \
     $(NULL)
 
+MAINTAINERCLEANFILES =          \
+    ibusemojigen.h              \
+    ibusunicodegen.h            \
+    dicts/emoji-en.dict         \
+    dicts/unicode-blocks.dict   \
+    $(NULL)
+
 DISTCLEANFILES =                \
+    $(MAINTAINERCLEANFILES)     \
     ibusversion.h               \
     $(NULL)
 

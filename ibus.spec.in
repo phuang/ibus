@@ -1,9 +1,11 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %{!?gtk2_binary_version: %define gtk2_binary_version %(pkg-config  --variable=gtk_binary_version gtk+-2.0)}
 %{!?gtk3_binary_version: %define gtk3_binary_version %(pkg-config  --variable=gtk_binary_version gtk+-3.0)}
 
 # Build flags
 %define build_python_library 0
+%define build_emoji_dictionary 1
 
 %define glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
 %define gconf2_version 2.12.0
@@ -16,8 +18,8 @@ Release:    1%{?dist}
 Summary:    Intelligent Input Bus for Linux OS
 License:    LGPLv2+
 Group:      System Environment/Libraries
-URL:        http://code.google.com/p/ibus/
-Source0:    http://ibus.googlecode.com/files/%{name}-%{version}.tar.gz
+URL:        https://github.com/ibus/ibus/wiki
+Source0:    https://github.com/ibus/ibus/releases/download/%{version}/%{name}-%{version}.tar.gz
 Source1:    xinput-ibus
 # Patch0:     ibus-HEAD.patch
 
@@ -35,29 +37,29 @@ BuildRequires:  dbus-python-devel >= %{dbus_python_version}
 BuildRequires:  desktop-file-utils
 BuildRequires:  gtk-doc
 BuildRequires:  GConf2-devel
+BuildRequires:  dconf-devel
 BuildRequires:  pygobject2-devel
 BuildRequires:  intltool
 BuildRequires:  iso-codes-devel
+%if %build_emoji_dictionary
+BuildRequires:  nodejs-emojione
+BuildRequires:  json-glib
+%endif
 
 Requires:   %{name}-libs = %{version}-%{release}
 Requires:   %{name}-gtk2 = %{version}-%{release}
 Requires:   %{name}-gtk3 = %{version}-%{release}
+Requires:   %{name}-conf = %{version}-%{release}
 
 Requires:   pygtk2
-Requires:   pyxdg
 Requires:   iso-codes
 Requires:   dbus-python >= %{dbus_python_version}
 Requires:   im-chooser >= %{im_chooser_version}
-Requires:   GConf2 >= %{gconf2_version}
 Requires:   notify-python
 Requires:   librsvg2
 
 Requires(post):  desktop-file-utils
 Requires(postun):  desktop-file-utils
-
-Requires(pre): GConf2 >= %{gconf2_version}
-Requires(post): GConf2 >= %{gconf2_version}
-Requires(preun): GConf2 >= %{gconf2_version}
 
 Requires(post):  %{_sbindir}/alternatives
 Requires(postun):  %{_sbindir}/alternatives
@@ -78,6 +80,29 @@ Requires:   dbus >= 1.2.4
 
 %description libs
 This package contains the libraries for IBus
+
+%package gconf
+Summary:    IBus configuration module using GConf
+Group:      System Environment/Libraries
+Provides:   %{name}-conf = %{version}-%{release}
+Requires:   %{name} = %{version}-%{release}
+Requires:   GConf2 >= %{gconf2_version}
+Requires(pre): GConf2 >= %{gconf2_version}
+Requires(post): GConf2 >= %{gconf2_version}
+Requires(preun): GConf2 >= %{gconf2_version}
+
+%description gconf
+This package contains ibus configuration module using GConf
+
+%package dconf
+Summary:    IBus configuration module using DConf
+Group:      System Environment/Libraries
+Provides:   %{name}-conf = %{version}-%{release}
+Requires:   %{name} = %{version}-%{release}
+Requires(posttrans): dconf
+
+%description dconf
+This package contains ibus configuration module using DConf
 
 %package gtk2
 Summary:    IBus im module for gtk2
@@ -124,13 +149,19 @@ The ibus-devel-docs package contains developer documentation for ibus
 
 %build
 
-OPTIONS="--disable-static --enable-gtk2 --enable-gtk3 --enable-xim --disable-gtk-doc --enable-introspection"
+OPTIONS="--disable-static --enable-gtk2 --enable-gtk3 --enable-xim --disable-gtk-doc --enable-introspection --enable-gconf"
 
 %if %{build_python_library}
 OPTIONS="$OPTIONS --enable-python-library"
 %else
 OPTIONS="$OPTIONS --disable-python-library"
 %endif
+%if %build_emoji_dictionary
+OPTIONS="$OPTIONS --enable-emoji-dict"
+%else
+OPTIONS="$OPTIONS --disable-emoji-dict"
+%endif
+
 
 %configure $OPTIONS
 
@@ -167,16 +198,17 @@ touch --no-create %{_datadir}/icons/hicolor || :
 
 %{_sbindir}/alternatives --install %{_sysconfdir}/X11/xinit/xinputrc xinputrc %{_xinputconf} 83 || :
 
+%post gconf
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
 gconftool-2 --makefile-install-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >& /dev/null || :
 
-%pre
+%pre gconf
 if [ "$1" -gt 1 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
     gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >& /dev/null || :
 fi
 
-%preun
+%preun gconf
 if [ "$1" -eq 0 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
     gconftool-2 --makefile-uninstall-rule %{_sysconfdir}/gconf/schemas/ibus.schemas >& /dev/null || :
@@ -193,6 +225,16 @@ if [ "$1" = "0" ]; then
   # if alternative was set to manual, reset to auto
   [ -L %{_sysconfdir}/alternatives/xinputrc -a "`readlink %{_sysconfdir}/alternatives/xinputrc`" = "%{_xinputconf}" ] && %{_sbindir}/alternatives --auto xinputrc || :
 fi
+
+%postun dconf
+if [ "$1" -eq 0 ] ; then
+    /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+    rm -f %{_sysconfdir}/dconf/db/ibus
+fi
+
+%posttrans dconf
+/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+dconf update &> /dev/null || :
 
 %post libs -p /sbin/ldconfig
 
@@ -219,14 +261,23 @@ fi
     %{python_sitelib}/ibus/*
 %endif
 
+%{python_sitearch}/gi/overrides/IBus.py*
+
 %dir %{_datadir}/ibus/
 %{_bindir}/ibus
 %{_bindir}/ibus-daemon
 %{_bindir}/ibus-setup
-%{_datadir}/ibus/*
+%{_datadir}/ibus/component/gtkpanel.xml
+%{_datadir}/ibus/component/simple.xml
+%if %build_emoji_dictionary
+%{_datadir}/ibus/dicts
+%endif
+%{_datadir}/ibus/keymaps/*
+%{_datadir}/ibus/setup/*
+
+
 %{_datadir}/applications/*
 %{_datadir}/icons/hicolor/*/apps/*
-%{_libexecdir}/ibus-gconf
 %if %{build_python_library}
     %{_libexecdir}/ibus-ui-gtk
 %endif
@@ -234,14 +285,28 @@ fi
 %{_libexecdir}/ibus-x11
 %{_libexecdir}/ibus-engine-simple
 # %{_sysconfdir}/xdg/autostart/ibus.desktop
-%{_sysconfdir}/gconf/schemas/ibus.schemas
-%{_sysconfdir}/bash_completion.d/ibus.bash
+%{_datadir}/bash-completion/completions/ibus.bash
 %config %{_xinputconf}
 
 %files libs
 %defattr(-,root,root,-)
 %{_libdir}/libibus-1.0.so.*
 %{_libdir}/girepository-1.0/IBus-1.0.typelib
+
+%files gconf
+%defattr(-,root,root,-)
+%{_datadir}/ibus/component/gconf.xml
+%{_libexecdir}/ibus-gconf
+%{_sysconfdir}/gconf/schemas/ibus.schemas
+
+%files dconf
+%defattr(-,root,root,-)
+%{_datadir}/ibus/component/dconf.xml
+%{_libexecdir}/ibus-dconf
+%{_sysconfdir}/dconf/db/ibus.d
+%{_sysconfdir}/dconf/profile/ibus
+%{_datadir}/GConf/gsettings/ibus.convert
+%{_datadir}/glib-2.0/schemas/org.freedesktop.ibus.gschema.xml
 
 %files gtk2
 %defattr(-,root,root,-)

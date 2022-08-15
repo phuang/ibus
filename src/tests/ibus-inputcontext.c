@@ -6,17 +6,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include <string.h>
@@ -37,18 +37,6 @@ fatal_handler(const gchar *log_domain,
     return TRUE;
 }
 
-static gchar *
-get_last_engine_id (const GList *engines)
-{
-    const char *result = NULL;
-    for (; engines; engines = g_list_next (engines)) {
-        IBusEngineDesc *engine_desc = IBUS_ENGINE_DESC (engines->data);
-        g_assert (engine_desc);
-        result = ibus_engine_desc_get_name (engine_desc);
-    }
-    return g_strdup (result);
-}
-
 static void
 call_basic_ipcs (IBusInputContext *context)
 {
@@ -58,30 +46,35 @@ call_basic_ipcs (IBusInputContext *context)
     ibus_input_context_reset (context);
 
     /* When enable() is called, ibus-daemon may start a global (or preloaded,
-     * or default) engine in an asynchrnous manner and return immediately.
+     * or default) engine in an asynchronous manner and return immediately.
      * Therefore, it is not guaranteed that ibus_input_context_is_enabled()
      * returns TRUE. */
 
     ibus_input_context_focus_in (context);
-} 
+}
 
 static void
 test_input_context (void)
 {
-    GList *engines;
-    gchar *active_engine_name = NULL;
     IBusInputContext *context;
+    GLogLevelFlags flags;
     IBusEngineDesc *engine_desc;
+    gchar *active_engine_name = NULL;
     gchar *current_ic;
 
     context = ibus_bus_create_input_context (bus, "test");
     call_basic_ipcs (context);
 
-    engines = ibus_bus_list_active_engines (bus);
-    if (engines != NULL) {
-        active_engine_name = get_last_engine_id (engines);
+    /* "No global engine." warning is not critical message. */
+    flags = g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
+    engine_desc = ibus_bus_get_global_engine (bus);
+    g_log_set_always_fatal (flags);
+    if (engine_desc != NULL) {
+        active_engine_name = g_strdup (ibus_engine_desc_get_name(engine_desc));
+        g_object_unref (engine_desc);
+        engine_desc = NULL;
     } else {
-        active_engine_name = g_strdup ("dummy-engine-name");
+        active_engine_name = g_strdup ("dummy");
     }
     g_assert (active_engine_name);
     g_debug ("Use '%s' for testing.", active_engine_name);
@@ -111,8 +104,6 @@ test_input_context (void)
     g_object_unref (context);
 
     g_free (active_engine_name);
-    g_list_foreach (engines, (GFunc) g_object_unref, NULL);
-    g_list_free (engines);
 }
 
 static void
@@ -208,9 +199,8 @@ main (gint    argc,
       gchar **argv)
 {
     gint result;
-    g_type_init ();
-    g_test_init (&argc, &argv, NULL);
     ibus_init ();
+    g_test_init (&argc, &argv, NULL);
     bus = ibus_bus_new ();
 
     g_test_add_func ("/ibus/input_context", test_input_context);

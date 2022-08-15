@@ -7,17 +7,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include "ibusshare.h"
 #include "ibusconfigservice.h"
@@ -30,19 +30,9 @@ enum {
     PROP_0,
 };
 
-// static guint            config_service_signals[LAST_SIGNAL] = { 0 };
-
 /* functions prototype */
 static void      ibus_config_service_class_init      (IBusConfigServiceClass *class);
 static void      ibus_config_service_init            (IBusConfigService      *config);
-static void      ibus_config_service_set_property    (IBusConfigService      *config,
-                                                      guint                   prop_id,
-                                                      const GValue           *value,
-                                                      GParamSpec             *pspec);
-static void      ibus_config_service_get_property    (IBusConfigService      *config,
-                                                      guint                   prop_id,
-                                                      GValue                 *value,
-                                                      GParamSpec             *pspec);
 static void      ibus_config_service_destroy         (IBusConfigService      *config);
 static void      ibus_config_service_service_method_call
                                                      (IBusService            *service,
@@ -123,9 +113,6 @@ ibus_config_service_class_init (IBusConfigServiceClass *class)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
 
-    gobject_class->set_property = (GObjectSetPropertyFunc) ibus_config_service_set_property;
-    gobject_class->get_property = (GObjectGetPropertyFunc) ibus_config_service_get_property;
-
     IBUS_OBJECT_CLASS (gobject_class)->destroy = (IBusObjectDestroyFunc) ibus_config_service_destroy;
 
     IBUS_SERVICE_CLASS (class)->service_method_call  = ibus_config_service_service_method_call;
@@ -143,34 +130,6 @@ ibus_config_service_class_init (IBusConfigServiceClass *class)
 static void
 ibus_config_service_init (IBusConfigService *config)
 {
-}
-
-static void
-ibus_config_service_set_property (IBusConfigService *config,
-                                  guint              prop_id,
-                                  const GValue      *value,
-                                  GParamSpec        *pspec)
-{
-    switch (prop_id) {
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (config, prop_id, pspec);
-    }
-}
-
-static void
-ibus_config_service_get_property (IBusConfigService *config,
-                                  guint              prop_id,
-                                  GValue            *value,
-                                  GParamSpec        *pspec)
-{
-    switch (prop_id) {
-    #if 0
-    case PROP_CONNECTION:
-        break;
-    #endif
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (config, prop_id, pspec);
-    }
 }
 
 static void
@@ -221,6 +180,7 @@ ibus_config_service_service_method_call (IBusService           *service,
             g_dbus_method_invocation_return_gerror (invocation, error);
             g_error_free (error);
         }
+        g_variant_unref (value);
         return;
     }
 
@@ -235,6 +195,7 @@ ibus_config_service_service_method_call (IBusService           *service,
         value = IBUS_CONFIG_SERVICE_GET_CLASS (config)->get_value (config, section, name, &error);
         if (value != NULL) {
             g_dbus_method_invocation_return_value (invocation, g_variant_new ("(v)", value));
+            g_variant_unref (value);
         }
         else {
             g_dbus_method_invocation_return_gerror (invocation, error);

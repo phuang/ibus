@@ -1,0 +1,79 @@
+language: c
+compiler: gcc
+os: linux
+
+# Require gettext-0.19.8
+dist: focal
+
+branches:
+  only:
+  - master
+
+# FIXME: Run script in every arch
+arch:
+  - amd64
+  #- ppc64le
+  #- s390x
+  #- arm64
+
+addons:
+  apt:
+    packages:
+    # For autogen.sh
+    - autopoint
+    # For make from
+    # https://packages.ubuntu.com/search?searchon=sourcenames&keywords=ibus
+    - desktop-file-utils
+    - gobject-introspection
+    - gtk-doc-tools
+    - iso-codes
+    - libdconf-dev
+    - libgirepository1.0-dev
+    - libglib2.0-dev
+    - libgtk-3-bin
+    - libgtk-3-dev
+    - libgtk2.0-dev
+    - libnotify-dev
+    - libtool
+    - libwayland-dev
+    - python-gi-dev
+    - python3-all
+    - unicode-cldr-core
+    - unicode-data
+    - valac
+
+jobs:
+  include:
+  - name: Build in Ubuntu
+    before_script:
+    - sudo apt-get -qq update
+    env:
+    - SAVE_DIST_FILES=0
+    script:
+    - set -e
+    - git config pull.rebase false
+    - git pull --depth=200
+    # configure options from
+    # https://salsa.debian.org/debian/ibus/-/blob/master/debian/rules
+    - >
+      ./autogen.sh
+      --enable-gtk-doc
+      --with-python=/usr/bin/python3
+      --with-ucd-dir='/usr/share/unicode'
+      --enable-install-tests
+    # Set the cutom DESTDIR because the default DESTDIR
+    # /home/travis/bulid/fujiwarat/$PKG/ibus/ibus-$VERSION/_inst seems to be
+    # too long and failed to set DESTDIR to install bindings/pygobject/IBus.py
+    - >
+      make distcheck
+      DISTCHECK_CONFIGURE_FLAGS="
+      --enable-gtk-doc
+      --disable-schemas-install
+      --enable-memconf
+      --with-python=/usr/bin/python3
+      --with-ucd-dir='/usr/share/unicode'
+      --enable-install-tests
+      "
+      DISABLE_GUI_TESTS="ibus-compose ibus-keypress test-stress xkb-latin-layouts"
+      VERBOSE=1
+      DESTDIR="$HOME/build/$USER/dest"

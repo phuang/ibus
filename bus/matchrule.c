@@ -7,17 +7,17 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #include "matchrule.h"
@@ -198,30 +198,31 @@ failed:
 static gchar *
 find_value (const gchar **p)
 {
-    GString *text;
-
-    text = g_string_new ("");
-
     SKIP_WHITE (*p);
 
-    if (**p != '\'')
-        goto failed;
-    (*p) ++;
-
-    while (**p != '\'') {
-        if (**p == '\0')
-            goto failed;
-        if (**p == '\\')
-            (*p) ++;
-        g_string_append_c (text, **p);
+    if (**p == '\'') {
+        GString *text = g_string_new ("");
         (*p) ++;
+        while (**p != '\'') {
+            if (**p == '\0') {
+                g_string_free (text, TRUE);
+                return NULL;
+            }
+            if (**p == '\\')
+                (*p) ++;
+            g_string_append_c (text, **p);
+            (*p) ++;
+        }
+        (*p) ++;
+        return g_string_free (text, FALSE);
+    } else if (strncmp (*p, "true", 4) == 0) {
+        *p += 4;
+        return g_strdup ("true");
+    } else if (strncmp (*p, "false", 5) == 0) {
+        *p += 5;
+        return g_strdup ("false");
     }
-    (*p) ++;
 
-    return g_string_free (text, FALSE);
-
-failed:
-    g_string_free (text, TRUE);
     return NULL;
 }
 
@@ -371,6 +372,11 @@ bus_match_rule_new (const gchar *text)
             if (! _atoi (p->key + 3, &i))
                 goto failed;
             bus_match_rule_set_arg (rule, i, p->value);
+        }
+        else if (g_strcmp0 (p->key, "eavesdrop") == 0) {
+            if (g_strcmp0 (p->value, "true") != 0 &&
+                g_strcmp0 (p->value, "false") != 0)
+                goto failed;
         }
         else
             goto failed;

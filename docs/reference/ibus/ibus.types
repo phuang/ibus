@@ -27,3 +27,5 @@ ibus_property_get_type
 ibus_prop_list_get_type
 ibus_input_context_get_type
 ibus_observed_path_get_type
+ibus_registry_get_type
+ibus_engine_simple_get_type

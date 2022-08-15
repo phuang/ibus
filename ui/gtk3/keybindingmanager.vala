@@ -4,24 +4,11 @@ valac --pkg gtk+-2.0 --pkg x11 --pkg gdk-x11-2.0 --pkg gee-1.0 keybinding-manage
 
 /**
  * This class is in charge to grab keybindings on the X11 display
- * and filter X11-events and passing on such events to the registed
+ * and filter X11-events and passing on such events to the registered
  * handler methods.
  *
  * @author Oliver Sauder <os@esite.ch>
  */
-
-using Gdk;
-using GLib;
-using Gtk;
-using X;
-
-extern bool grab_keycode (Gdk.Display display,
-                          uint keyval,
-                          uint modifiers);
-
-extern bool ungrab_keycode (Gdk.Display display,
-                            uint keyval,
-                            uint modifiers);
 
 public class KeybindingManager : GLib.Object {
     /**
@@ -31,28 +18,35 @@ public class KeybindingManager : GLib.Object {
 
     private static KeybindingManager m_instance = null;
 
-    public static const uint MODIFIER_FILTER =
+    public const uint MODIFIER_FILTER =
         Gdk.ModifierType.MODIFIER_MASK & ~(
-        Gdk.ModifierType.MOD2_MASK |
-        Gdk.ModifierType.LOCK_MASK |
-        Gdk.ModifierType.MOD4_MASK |
-        Gdk.ModifierType.MOD5_MASK);
+        Gdk.ModifierType.LOCK_MASK |  // Caps Lock
+        // Gdk.ModifierType.MOD1_MASK |  // Alt
+        Gdk.ModifierType.MOD2_MASK |  // Num Lock
+        // Gdk.ModifierType.MOD3_MASK |
+        // Gdk.ModifierType.MOD4_MASK |  // Super, Hyper
+        // Gdk.ModifierType.MOD5_MASK |  //
+        Gdk.ModifierType.BUTTON1_MASK |
+        Gdk.ModifierType.BUTTON2_MASK |
+        Gdk.ModifierType.BUTTON3_MASK |
+        Gdk.ModifierType.BUTTON4_MASK |
+        Gdk.ModifierType.BUTTON5_MASK |
+        Gdk.ModifierType.SUPER_MASK |
+        Gdk.ModifierType.HYPER_MASK |
+        Gdk.ModifierType.META_MASK);
 
     /**
      * Helper class to store keybinding
      */
     private class Keybinding {
-        public Keybinding(string accelerator,
-                          uint keysym,
+        public Keybinding(uint keysym,
                           Gdk.ModifierType modifiers,
                           KeybindingHandlerFunc handler) {
-            this.accelerator = accelerator;
             this.keysym = keysym;
             this.modifiers = modifiers;
             this.handler = handler;
         }
 
-        public string accelerator { get; set; }
         public uint keysym { get; set; }
         public Gdk.ModifierType modifiers { get; set; }
         public unowned KeybindingHandlerFunc handler { get; set; }
@@ -73,21 +67,18 @@ public class KeybindingManager : GLib.Object {
     /**
      * Bind accelerator to given handler
      *
-     * @param accelerator accelerator parsable by Gtk.accelerator_parse
+     * @param keysym
+     * @param modifiers
      * @param handler handler called when given accelerator is pressed
      */
-    public bool bind(string accelerator,
+    public bool bind(uint keysym,
+                     Gdk.ModifierType modifiers,
                      KeybindingHandlerFunc handler) {
-        debug("Binding key " + accelerator);
-
-        // convert accelerator
-        uint keysym;
-        Gdk.ModifierType modifiers;
-        Gtk.accelerator_parse(accelerator, out keysym, out modifiers);
-
-        get_primary_modifier(modifiers);
-
+#if VALA_0_24
+        unowned X.Display display = Gdk.X11.get_default_xdisplay();
+#else
         unowned X.Display display = Gdk.x11_get_default_xdisplay();
+#endif
 
         int keycode = display.keysym_to_keycode(keysym);
 
@@ -97,27 +88,24 @@ public class KeybindingManager : GLib.Object {
         grab_keycode (Gdk.Display.get_default(), keysym, modifiers);
 
         // store binding
-        Keybinding binding = new Keybinding(accelerator,
-                                            keysym, modifiers,
-                                            handler);
+        Keybinding binding = new Keybinding(keysym, modifiers, handler);
         m_bindings.append(binding);
 
-        debug("Successfully binded key " + accelerator);
         return true;
     }
 
     /**
      * Unbind given accelerator.
      *
-     * @param accelerator accelerator parsable by Gtk.accelerator_parse
+     * @param keysym
+     * @param modifiers
      */
-    public void unbind (string accelerator) {
-        debug("Unbinding key " + accelerator);
-
+    public void unbind(uint keysym,
+                       Gdk.ModifierType modifiers) {
         // unbind all keys with given accelerator
         GLib.List<Keybinding> remove_bindings = new GLib.List<Keybinding>();
         foreach(Keybinding binding in m_bindings) {
-            if(str_equal(accelerator, binding.accelerator)) {
+            if (binding.keysym == keysym && binding.modifiers == modifiers) {
                 ungrab_keycode (Gdk.Display.get_default(),
                                 binding.keysym,
                                 binding.modifiers);
@@ -136,8 +124,8 @@ public class KeybindingManager : GLib.Object {
         return m_instance;
     }
 
-    public static uint get_primary_modifier (uint binding_mask) {
-        const uint[] masks = {
+    public static Gdk.ModifierType get_primary_modifier (uint binding_mask) {
+        const Gdk.ModifierType[] masks = {
             Gdk.ModifierType.MOD5_MASK,
             Gdk.ModifierType.MOD4_MASK,
             Gdk.ModifierType.MOD3_MASK,
@@ -147,7 +135,8 @@ public class KeybindingManager : GLib.Object {
             Gdk.ModifierType.SHIFT_MASK,
             Gdk.ModifierType.LOCK_MASK
         };
-        foreach (var mask in masks) {
+        for (int i = 0; i < masks.length; i++) {
+            Gdk.ModifierType mask = masks[i];
             if ((binding_mask & mask) == mask)
                 return mask;
         }
@@ -167,8 +156,9 @@ public class KeybindingManager : GLib.Object {
         else
             pointer = device;
 
+        double[] axes = null;
         uint modifier = 0;
-        pointer.get_state(keyevent.window, null, out modifier);
+        pointer.get_state(keyevent.window, axes, out modifier);
         if ((primary_modifier & modifier) == primary_modifier)
             return true;
 
@@ -204,13 +194,19 @@ public class KeybindingManager : GLib.Object {
 
     private void event_handler(Gdk.Event event) {
         do {
-            if (event.any.window != Gdk.get_default_root_window())
+            if (event.any.window != Gdk.get_default_root_window()) {
                 break;
+            }
 
             if (event.type == Gdk.EventType.KEY_PRESS) {
                 uint modifiers = event.key.state & MODIFIER_FILTER;
+                uint keyval = event.key.keyval;
+                if (keyval >= IBus.KEY_A && keyval <= IBus.KEY_Z &&
+                    (modifiers & Gdk.ModifierType.SHIFT_MASK) != 0) {
+                    keyval = keyval - IBus.KEY_A + IBus.KEY_a;
+                }
                 foreach (var binding in m_bindings) {
-                    if (event.key.keyval != binding.keysym ||
+                    if (keyval != binding.keysym ||
                         modifiers != binding.modifiers)
                         continue;
                     binding.handler(event);
@@ -219,6 +215,92 @@ public class KeybindingManager : GLib.Object {
             }
         } while (false);
         Gtk.main_do_event(event);
+    }
+
+    // Get union of given modifiers and all the combination of the
+    // modifiers in ignored_modifiers.
+    XI.GrabModifiers[] get_grab_modifiers(uint modifiers) {
+        const int[] ignored_modifiers = {
+            X.KeyMask.LockMask,
+            X.KeyMask.Mod2Mask,
+            X.KeyMask.Mod5Mask
+        };
+        int[] masks = {};
+        for (int i = 0; i < ignored_modifiers.length; i++) {
+            int modifier = ignored_modifiers[i];
+            masks += modifier;
+
+            int length = masks.length;
+            for (int j = 0; j < length - 1; j++) {
+                masks += masks[j] | modifier;
+            }
+        }
+        masks += 0;
+
+        XI.GrabModifiers[] ximodifiers = {};
+        foreach (var mask in masks) {
+            ximodifiers += XI.GrabModifiers() {
+                modifiers = mask | modifiers,
+                status = 0
+            };
+        }
+
+        return ximodifiers;
+    }
+
+    bool grab_keycode(Gdk.Display display, uint keyval, uint modifiers) {
+#if VALA_0_24
+        unowned X.Display xdisplay =
+                (display as Gdk.X11.Display).get_xdisplay();
+#else
+        unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
+#endif
+        int keycode = xdisplay.keysym_to_keycode(keyval);
+        if (keycode == 0) {
+            warning("Can not convert keyval=%u to keycode!", keyval);
+            return false;
+        }
+
+        XI.EventMask evmask = XI.EventMask() {
+            deviceid = XI.AllMasterDevices,
+            mask = new uchar[(XI.LASTEVENT + 7) / 8]
+        };
+        XI.set_mask(evmask.mask, XI.EventType.KeyPress);
+        XI.set_mask(evmask.mask, XI.EventType.KeyRelease);
+
+        int retval = XI.grab_keycode (xdisplay,
+                                      XI.AllMasterDevices,
+                                      keycode,
+                                      xdisplay.default_root_window(),
+                                      X.GrabMode.Async,
+                                      X.GrabMode.Async,
+                                      true,
+                                      evmask,
+                                      get_grab_modifiers(modifiers));
+            
+        return retval == 0;
+    }
+
+    bool ungrab_keycode(Gdk.Display display, uint keyval, uint modifiers) {
+#if VALA_0_24
+        unowned X.Display xdisplay =
+                (display as Gdk.X11.Display).get_xdisplay();
+#else
+        unowned X.Display xdisplay = Gdk.X11Display.get_xdisplay(display);
+#endif
+        int keycode = xdisplay.keysym_to_keycode(keyval);
+        if (keycode == 0) {
+            warning("Can not convert keyval=%u to keycode!", keyval);
+            return false;
+        }
+
+        int retval = XI.ungrab_keycode (xdisplay,
+                                        XI.AllMasterDevices,
+                                        keycode,
+                                        xdisplay.default_root_window(),
+                                        get_grab_modifiers(modifiers));
+
+        return retval == 0;
     }
 }
 

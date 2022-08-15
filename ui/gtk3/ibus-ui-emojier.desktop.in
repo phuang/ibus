@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Emoji Choice
+Icon=ibus
+Exec=ibus emoji
+Type=Application
+NoDisplay=true

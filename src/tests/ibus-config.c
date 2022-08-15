@@ -7,16 +7,24 @@ static IBusBus *bus = NULL;
 static int create_config_count = 0;
 
 static void
-finish_create_config_async_sucess (GObject      *source_object,
-                                   GAsyncResult *res,
-                                   gpointer      user_data)
+finish_create_config_async_success (GObject      *source_object,
+                                    GAsyncResult *res,
+                                    gpointer      user_data)
 {
     GMainLoop *loop = (GMainLoop *)user_data;
     GError *error = NULL;
     IBusConfig *config =
           ibus_config_new_async_finish (res, &error);
 
+    if (error) {
+        g_message ("Failed to generate IBusConfig: %s", error->message);
+        g_error_free (error);
+    }
     g_assert (IBUS_IS_CONFIG (config));
+
+    /* Since we reuse single D-Bus connection, we need to remove the
+       default match rule for the next ibus_config_new() call.  */
+    ibus_config_unwatch (config, NULL, NULL);
     g_object_unref (config);
     if (--create_config_count == 0)
         g_main_loop_quit (loop);
@@ -50,7 +58,7 @@ test_create_config_async (void)
     loop = g_main_loop_new (NULL, TRUE);
     ibus_config_new_async (ibus_bus_get_connection (bus),
                            NULL,
-                           finish_create_config_async_sucess,
+                           finish_create_config_async_success,
                            loop);
     g_main_loop_run (loop);
     g_main_loop_unref (loop);
@@ -110,7 +118,7 @@ test_config_set_get (void)
             value_bits |= (1 << 1);
         }
         else {
-            g_warning ("unknow value name=%s", name);
+            g_warning ("Unknown value name=%s", name);
         }
         ibus_config_unset (config, "test", name);
         g_variant_unref (value);
@@ -123,6 +131,9 @@ test_config_set_get (void)
     g_assert_cmpint (g_variant_n_children (var), ==, 0);
     g_variant_unref (var);
 
+    /* Since we reuse single D-Bus connection, we need to remove the
+       default match rule for the next ibus_config_new() call.  */
+    ibus_config_unwatch (config, NULL, NULL);
     g_object_unref (config);
 }
 
@@ -131,9 +142,8 @@ main (gint    argc,
       gchar **argv)
 {
     gint result;
-    g_type_init ();
-    g_test_init (&argc, &argv, NULL);
     ibus_init ();
+    g_test_init (&argc, &argv, NULL);
     bus = ibus_bus_new ();
 
     g_test_add_func ("/ibus/create-config-async", test_create_config_async);

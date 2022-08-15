@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node name="/StatusNotifierItem">
+        <interface name="org.kde.StatusNotifierItem">
+
+<!-- Properties -->
+                <property name="Id" type="s" access="read" />
+                <property name="Category" type="s" access="read" />
+                <property name="Status" type="s" access="read" />
+                <property name="IconName" type="s" access="read" />
+                <!-- IconPixmap is missed in AppIndicator
+                     struct containing width, height and image data-->
+                <property name="IconPixmap" type="a(iiay)" access="read">
+                        <annotation name="org.qtproject.QtDBus.QtTypeName"
+                                    value="KDbusImageVector" />
+                </property>
+                <property name="IconAccessibleDesc" type="s" access="read" />
+                <property name="AttentionIconName" type="s" access="read" />
+                <property name="AttentionAccessibleDesc" type="s" access="read" />
+                <property name="Title" type="s" access="read" />
+                <!-- An additional path to add to the theme search path
+                     to find the icons specified above. -->
+                <property name="IconThemePath" type="s" access="read" />
+                <property name="Menu" type="o" access="read" />
+                <property name="XAyatanaLabel" type="s" access="read" />
+                <property name="XAyatanaLabelGuide" type="s" access="read" />
+                <property name="XAyatanaOrderingIndex" type="u" access="read" />
+
+<!-- Methods -->
+                <method name="Scroll">
+                        <arg type="i" name="delta" direction="in" />
+                        <arg type="s" name="orientation" direction="in" />
+                </method>
+                <method name="SecondaryActivate">
+                        <arg type="i" name="x" direction="in" />
+                        <arg type="i" name="y" direction="in" />
+                </method>
+                <method name="XAyatanaSecondaryActivate">
+                        <arg type="u" name="timestamp" direction="in" />
+                </method>
+                <!-- Activate is missed in AppIndicator -->
+                <method name="Activate">
+                        <arg type="i" name="x" direction="in" />
+                        <arg type="i" name="y" direction="in" />
+                </method>
+                <method name="ContextMenu">
+                        <arg type="i" name="x" direction="in"/>
+                        <arg type="i" name="y" direction="in"/>
+                </method>
+
+<!-- Signals -->
+                <signal name="NewIcon">
+                </signal>
+                <signal name="NewIconThemePath">
+                        <arg type="s" name="icon_theme_path" direction="out" />
+                </signal>
+                <signal name="NewAttentionIcon">
+                </signal>
+                <signal name="NewStatus">
+                        <arg type="s" name="status" direction="out" />
+                </signal>
+                <signal name="XAyatanaNewLabel">
+                        <arg type="s" name="label" direction="out" />
+                        <arg type="s" name="guide" direction="out" />
+                </signal>
+                <signal name="NewTitle">
+                </signal>
+
+        </interface>
+</node>

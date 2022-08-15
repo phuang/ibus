@@ -2,25 +2,27 @@
 /* vim:set et sts=4: */
 /* bus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2008-2020 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include <glib/gstdio.h>
 #include "ibuscomponent.h"
+#include "ibusinternal.h"
 
 enum {
     LAST_SIGNAL,
@@ -57,7 +59,7 @@ struct _IBusComponentPrivate {
 };
 
 #define IBUS_COMPONENT_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_COMPONENT, IBusComponentPrivate))
+   ((IBusComponentPrivate *)ibus_component_get_instance_private (o))
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
@@ -89,7 +91,9 @@ static void         ibus_component_parse_observed_paths
                                                  XMLNode                *node,
                                                  gboolean                access_fs);
 
-G_DEFINE_TYPE (IBusComponent, ibus_component, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusComponent,
+                            ibus_component,
+                            IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_component_class_init (IBusComponentClass *class)
@@ -97,8 +101,6 @@ ibus_component_class_init (IBusComponentClass *class)
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
-
-    g_type_class_add_private (class, sizeof (IBusComponentPrivate));
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_component_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_component_get_property;
@@ -219,21 +221,6 @@ static void
 ibus_component_init (IBusComponent *component)
 {
     component->priv = IBUS_COMPONENT_GET_PRIVATE (component);
-
-    /* FIXME: Is it necessary? */
-#if 0
-    component->priv->engines = NULL;
-    component->priv->observed_paths = NULL;
-
-    component->priv->name = NULL;
-    component->priv->description = NULL;
-    component->priv->version = NULL;
-    component->priv->license = NULL;
-    component->priv->author = NULL;
-    component->priv->homepage = NULL;
-    component->priv->exec = NULL;
-    component->priv->textdomain = NULL;
-#endif
 }
 
 static void
@@ -379,6 +366,7 @@ ibus_component_serialize (IBusComponent   *component,
         g_variant_builder_add (array, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
     }
     g_variant_builder_add (builder, "av", array);
+    g_variant_builder_unref (array);
 
     /* serialize engine desc list */
     array = g_variant_builder_new (G_VARIANT_TYPE ("av"));
@@ -386,6 +374,7 @@ ibus_component_serialize (IBusComponent   *component,
         g_variant_builder_add (array, "v", ibus_serializable_serialize ((IBusSerializable *)p->data));
     }
     g_variant_builder_add (builder, "av", array);
+    g_variant_builder_unref (array);
 
     return TRUE;
 }
@@ -399,14 +388,22 @@ ibus_component_deserialize (IBusComponent   *component,
     retval = IBUS_SERIALIZABLE_CLASS (ibus_component_parent_class)->deserialize ((IBusSerializable *)component, variant);
     g_return_val_if_fail (retval, 0);
 
-    g_variant_get_child (variant, retval++, "s", &component->priv->name);
-    g_variant_get_child (variant, retval++, "s", &component->priv->description);
-    g_variant_get_child (variant, retval++, "s", &component->priv->version);
-    g_variant_get_child (variant, retval++, "s", &component->priv->license);
-    g_variant_get_child (variant, retval++, "s", &component->priv->author);
-    g_variant_get_child (variant, retval++, "s", &component->priv->homepage);
-    g_variant_get_child (variant, retval++, "s", &component->priv->exec);
-    g_variant_get_child (variant, retval++, "s", &component->priv->textdomain);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->name);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->description);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->version);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->license);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->author);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->homepage);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->exec);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &component->priv->textdomain);
 
     GVariant *var;
     GVariantIter *iter = NULL;
@@ -503,11 +500,7 @@ ibus_component_output (IBusComponent *component,
 
         for (p = component->priv->observed_paths; p != NULL; p = p->next ) {
             IBusObservedPath *path = (IBusObservedPath *) p->data;
-
-            g_string_append_indent (output, indent + 2);
-            g_string_append_printf (output, "<path mtime=\"%ld\" >%s</path>\n",
-                                    path->mtime,
-                                    path->path);
+            ibus_observed_path_output (path, output, indent + 2);
         }
 
         g_string_append_indent (output, indent + 1);
@@ -646,9 +639,9 @@ ibus_component_parse_engines (IBusComponent *component,
 }
 
 static void
-ibus_component_parse_observed_paths (IBusComponent    *component,
-                                    XMLNode         *node,
-                                    gboolean         access_fs)
+ibus_component_parse_observed_paths (IBusComponent *component,
+                                     XMLNode       *node,
+                                     gboolean       access_fs)
 {
     g_assert (IBUS_IS_COMPONENT (component));
     g_assert (node);
@@ -667,8 +660,8 @@ ibus_component_parse_observed_paths (IBusComponent    *component,
 
         if (access_fs && path->is_dir && path->is_exist) {
             component->priv->observed_paths =
-                    g_list_concat(component->priv->observed_paths,
-                                  ibus_observed_path_traverse(path));
+                    g_list_concat (component->priv->observed_paths,
+                                   ibus_observed_path_traverse (path, TRUE));
         }
     }
 }
@@ -805,8 +798,8 @@ ibus_component_add_observed_path (IBusComponent *component,
 
     if (access_fs && p->is_dir && p->is_exist) {
         component->priv->observed_paths =
-                g_list_concat(component->priv->observed_paths,
-                              ibus_observed_path_traverse(p));
+                g_list_concat (component->priv->observed_paths,
+                               ibus_observed_path_traverse (p, TRUE));
     }
 }
 
@@ -840,4 +833,11 @@ ibus_component_check_modification (IBusComponent *component)
             return TRUE;
     }
     return FALSE;
+}
+
+GList *
+ibus_component_get_observed_paths (IBusComponent *component)
+{
+    g_assert (IBUS_IS_COMPONENT (component));
+    return g_list_copy (component->priv->observed_paths);
 }

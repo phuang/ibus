@@ -8,17 +8,17 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2 of the License, or(at your option) any later version.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
-# License along with this program; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-# Boston, MA  02111-1307  USA
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 import operator
 import gtk
@@ -487,15 +487,20 @@ class CandidatePanel(gtk.VBox):
         window_right = cursor_right + self.__toplevel.allocation.width
         window_bottom = cursor_bottom + self.__toplevel.allocation.height
 
-        root_window = gdk.get_default_root_window()
-        sx, sy = root_window.get_size()
+        screen = gdk.screen_get_default()
+        monitor_num = screen.get_monitor_at_point(cursor_location[0],
+                                                  cursor_location[1])
+        monitor_area = screen.get_monitor_geometry(monitor_num)
 
-        if window_right > sx:
-            x = sx - self.__toplevel.allocation.width
+        monitor_right = monitor_area.x + monitor_area.width
+        monitor_bottom = monitor_area.y + monitor_area.height
+
+        if window_right > monitor_right:
+            x = monitor_right - self.__toplevel.allocation.width
         else:
             x = cursor_right
 
-        if window_bottom > sy:
+        if window_bottom > monitor_bottom:
             # move the window just above the cursor so the window and a preedit string do not overlap.
             y = cursor_location[1] - self.__toplevel.allocation.height
         else:

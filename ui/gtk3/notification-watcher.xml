@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node name="/StatusNotifierWatcher">
+        <interface name="org.kde.StatusNotifierWatcher">
+
+<!-- Properties -->
+                <property name="ProtocolVersion" type="i" access="read" />
+                <property name="IsStatusNotifierHostRegistered" type="b" access="read" />
+                <property name="RegisteredStatusNotifierItems" type="as" access="read" />
+
+<!-- Methods -->
+                <method name="RegisterStatusNotifierItem">
+                    <annotation name="org.freedesktop.DBus.GLib.Async" value="true" />
+                        <arg type="s" name="service" direction="in" />
+                </method>
+                <method name="RegisterStatusNotifierHost">
+                        <arg type="s" name="service" direction="in" />
+                </method>
+
+<!-- Signals -->
+                <signal name="StatusNotifierItemRegistered">
+                        <arg type="s" name="service" direction="out" />
+                </signal>
+                <signal name="StatusNotifierItemUnregistered">
+                        <arg type="s" name="service" direction="out" />
+                </signal>
+                <signal name="StatusNotifierHostRegistered">
+                </signal>
+
+        </interface>
+</node>

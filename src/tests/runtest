@@ -1,0 +1,224 @@
+#!/bin/sh
+
+# -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*-
+# vim:set et sts=4:
+
+# Run a test case given by the first argument in a separate directory.
+# This script may also launch $top_builddir/bus/ibus-daemon for testing.
+
+# Executing a test that uses this file
+# ====================================
+#
+# Running a single test:
+#
+#   $ make check TESTS=ibus-foo
+#
+#   or
+#
+#   $ top_builddir=<...> top_srcdir=<...> builddir=<...> ./runtest ibus-foo
+
+: ${top_builddir:=../..}
+: ${top_srcdir:=../..}
+: ${builddir:=.}
+: ${srcdir:=.}
+: ${DISABLE_GUI_TESTS:=''}
+: ${DISABLE_DAEMONIZE_IN_TESTS:=''}
+
+BUS_REQUIRED_TESTS="
+ibus-bus
+ibus-config
+ibus-configservice
+ibus-factory
+ibus-inputcontext
+ibus-inputcontext-create
+ibus-engine-switch
+ibus-compose
+ibus-keypress
+test-stress
+xkb-latin-layouts
+"
+IBUS_SCHEMA_FILE='org.freedesktop.ibus.gschema.xml'
+GTK_QUERY_MODULE=gtk-query-immodules-3.0-32
+MACHINE=`uname -m`
+
+if test x"$MACHINE" = xx86_64 ; then
+    GTK_QUERY_MODULE=gtk-query-immodules-3.0-64
+fi
+
+retval=0
+
+# Portable replacement of basename.
+func_basename () {
+    case "$1" in
+    */*)
+        expr "$1" : '.*/\(.*\)'
+        ;;
+    *)
+        echo "$1"
+    esac
+}
+
+# Portable replacement of dirname.
+func_dirname () {
+    case "$1" in
+    */*)
+        expr "$1" : '\(.*\)/.*'
+        ;;
+    *)
+        echo .
+    esac
+}
+
+# Kill ibus-daemon process and remove temporary files.
+func_cleanup () {
+    tstdir=$1
+    if test -f $tstdir/ibus-daemon.pid; then
+        . $tstdir/ibus-daemon.pid
+        kill $IBUS_DAEMON_PID &> /dev/null
+    fi
+    rm -fr $tstdir
+}
+
+# Prepare component files necessary for testing, under components/.
+func_copy_component () {
+    file=$1
+    base=`func_basename $file`
+    libexecdir=`func_dirname $file`
+    # top_srcdir != top_builddir in make dist
+    libexecdir=`echo "$libexecdir" | sed -e "s|$top_srcdir|$top_builddir|"`
+    if test -f $file.in; then
+        mkdir -p components
+        sed "s|@libexecdir@|$libexecdir|g" < $file.in > components/$base
+    fi
+}
+
+trap 'func_cleanup $tstdir' 1 2 3 15
+
+tst=$1; shift
+tstdir=tmp-`func_basename $tst`
+
+for t in $DISABLE_GUI_TESTS; do
+    if test $t = `func_basename $tst`; then
+        exit 77
+    fi
+done
+
+# IBusEngine has GSettings
+if test ! -f "$top_srcdir/data/dconf/$IBUS_SCHEMA_FILE" ; then
+    echo "NOT FOUND $top_srcdir/data/dconf/$IBUS_SCHEMA_FILE"
+    exit -1
+fi
+
+run_test_case()
+{
+    test -d $tstdir || mkdir $tstdir
+    backup_dir=$PWD
+    cd $tstdir
+
+    need_bus=no
+    for t in $BUS_REQUIRED_TESTS; do
+        if test $t = `func_basename $tst`; then
+            need_bus=yes
+        fi
+    done
+
+    if test $need_bus = yes; then
+        if test ! -f "../$top_builddir/conf/memconf/ibus-memconf" ; then
+            echo "NOT FOUNND ibus-memconf. Need configure --enable-memconf"
+            exit -1
+        fi
+        # func_copy_component replaces s/$top_srcdir/%top_builddir/
+        func_copy_component "../$top_srcdir/engine/simple.xml"
+        func_copy_component "../$top_srcdir/conf/memconf/memconf.xml"
+
+        IBUS_COMPONENT_PATH=$PWD/components
+        export IBUS_COMPONENT_PATH
+
+        IBUS_ADDRESS_FILE=$PWD/ibus-daemon.pid
+        export IBUS_ADDRESS_FILE
+
+        if test -f "../$top_builddir/client/gtk3/.libs/im-ibus.so" ; then
+            IM_IBUS_SO="../$top_builddir/client/gtk3/.libs/im-ibus.so"
+        elif test -f "../$top_builddir/client/gtk3/im-ibus.so" ; then
+            IM_IBUS_SO="../$top_builddir/client/gtk3/im-ibus.so"
+        else
+            echo "NOT FOUND $top_builddir/client/gtk3/im-ibus.so"
+            exit -1
+        fi
+
+        GTK_IM_MODULE_FILE=$PWD/imcache
+        export GTK_IM_MODULE_FILE
+        $GTK_QUERY_MODULE "$IM_IBUS_SO" > $GTK_IM_MODULE_FILE
+
+        cp "../$top_srcdir/data/dconf/$IBUS_SCHEMA_FILE" $PWD
+        glib-compile-schemas $PWD
+        if test $? -ne 0 ; then
+            echo "FAILED glib-compile-schemas"
+            retval=1
+            return
+        fi
+        if test ! -f $PWD/gschemas.compiled ; then
+            echo "NOT FOUND $PWD/gschemas.compiled"
+            retval=1
+            return
+        fi
+        export GSETTINGS_SCHEMA_DIR=$PWD
+
+        # Start ibus-daemon.
+        DAEMON_ARGS='
+            --cache=none
+            --panel=disable
+            --emoji-extension=disable
+            --config=default
+            --verbose
+        '
+        if test x"$DISABLE_DAEMONIZE_IN_TESTS" = x ; then
+            ../$top_builddir/bus/ibus-daemon \
+                $DAEMON_ARGS --daemonize;
+        else
+            ../$top_builddir/bus/ibus-daemon \
+                $DAEMON_ARGS &
+        fi
+
+        # Wait until all necessary components are up.
+        sleep 3
+
+        export GTK_IM_MODULE=ibus
+    fi
+
+    export IBUS_COMPOSE_CACHE_DIR=$PWD
+
+    "../$tst" ../$top_srcdir/src/tests ${1+"$@"}
+
+    retval=`expr $retval \| $?`
+
+    cd $backup_dir
+
+    func_cleanup $tstdir
+}
+
+envfile=$srcdir/`func_basename $tst`.env
+if test -f $envfile ; then
+    ENVS="`cat $envfile`"
+fi;
+if test x"$ENVS" = x ; then
+    run_test_case $@
+else
+    LANG_backup=$LANG
+    i=1
+    for e in $ENVS; do
+        first=`echo "$e" | cut -c1-1`
+        if test x"$first" = x"#" ; then
+            continue
+        fi
+        export $e
+        echo "Run `func_basename $tst` on $e"
+        echo "======================="
+        run_test_case $@
+        echo ""
+        i=`expr $i + 1`
+    done
+    export LANG=$LANG_backup
+fi
+
+exit $retval

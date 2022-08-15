@@ -1,26 +1,27 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* bus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #include <stdlib.h>
 #include "ibusenginedesc.h"
+#include "ibusinternal.h"
 #include "ibusxml.h"
 
 enum {
@@ -37,10 +38,15 @@ enum {
     PROP_AUTHOR,
     PROP_ICON,
     PROP_LAYOUT,
+    PROP_LAYOUT_VARIANT,
+    PROP_LAYOUT_OPTION,
     PROP_RANK,
     PROP_HOTKEYS,
     PROP_SYMBOL,
     PROP_SETUP,
+    PROP_VERSION,
+    PROP_TEXTDOMAIN,
+    PROP_ICON_PROP_KEY
 };
 
 
@@ -54,14 +60,19 @@ struct _IBusEngineDescPrivate {
     gchar      *author;
     gchar      *icon;
     gchar      *layout;
+    gchar      *layout_variant;
+    gchar      *layout_option;
     guint       rank;
     gchar      *hotkeys;
     gchar      *symbol;
     gchar      *setup;
+    gchar      *version;
+    gchar      *textdomain;
+    gchar      *icon_prop_key;
 };
 
 #define IBUS_ENGINE_DESC_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_ENGINE_DESC, IBusEngineDescPrivate))
+   ((IBusEngineDescPrivate *)ibus_engine_desc_get_instance_private (o))
 
 // static guint            _signals[LAST_SIGNAL] = { 0 };
 
@@ -84,7 +95,9 @@ static gboolean     ibus_engine_desc_copy           (IBusEngineDesc         *des
 static gboolean     ibus_engine_desc_parse_xml_node (IBusEngineDesc         *desc,
                                                      XMLNode                *node);
 
-G_DEFINE_TYPE (IBusEngineDesc, ibus_engine_desc, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusEngineDesc,
+                            ibus_engine_desc,
+                            IBUS_TYPE_SERIALIZABLE)
 
 
 static void
@@ -101,8 +114,6 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
     serializable_class->serialize   = (IBusSerializableSerializeFunc) ibus_engine_desc_serialize;
     serializable_class->deserialize = (IBusSerializableDeserializeFunc) ibus_engine_desc_deserialize;
     serializable_class->copy        = (IBusSerializableCopyFunc) ibus_engine_desc_copy;
-
-    g_type_class_add_private (class, sizeof (IBusEngineDescPrivate));
 
     /* install properties */
     /**
@@ -210,6 +221,32 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
     /**
+     * IBusEngineDesc:layout-variant:
+     *
+     * The keyboard variant of engine description
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_LAYOUT_VARIANT,
+                    g_param_spec_string ("layout-variant",
+                        "description keyboard variant",
+                        "The keyboard variant of engine description",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEngineDesc:layout-option:
+     *
+     * The keyboard option of engine description
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_LAYOUT_OPTION,
+                    g_param_spec_string ("layout-option",
+                        "description keyboard option",
+                        "The keyboard option of engine description",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
      * IBusEngineDesc:rank:
      *
      * The rank of engine description
@@ -262,6 +299,45 @@ ibus_engine_desc_class_init (IBusEngineDescClass *class)
                         "The exec lists of the engine setup command",
                         "",
                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEngineDesc:version:
+     *
+     * The version number of engine description
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_VERSION,
+                    g_param_spec_string ("version",
+                        "version number",
+                        "The version number of engine description",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEngineDesc:textdomain:
+     *
+     * The textdomain of engine description
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_TEXTDOMAIN,
+                    g_param_spec_string ("textdomain",
+                        "textdomain",
+                        "The textdomain of engine description",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    /**
+     * IBusEngineDesc:icon-prop-key:
+     *
+     * The key of IBusProperty to change panel icon dynamically.
+     */
+    g_object_class_install_property (gobject_class,
+                    PROP_ICON_PROP_KEY,
+                    g_param_spec_string ("icon-prop-key",
+                        "icon property key",
+                        "The key of IBusProperty for the dynamic panel icon",
+                        "",
+                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void
@@ -277,10 +353,15 @@ ibus_engine_desc_init (IBusEngineDesc *desc)
     desc->priv->author = NULL;
     desc->priv->icon = NULL;
     desc->priv->layout = NULL;
+    desc->priv->layout_variant = NULL;
+    desc->priv->layout_option = NULL;
     desc->priv->rank = 0;
     desc->priv->hotkeys = NULL;
     desc->priv->symbol = NULL;
     desc->priv->setup = NULL;
+    desc->priv->version = NULL;
+    desc->priv->textdomain = NULL;
+    desc->priv->icon_prop_key = NULL;
 }
 
 static void
@@ -294,9 +375,14 @@ ibus_engine_desc_destroy (IBusEngineDesc *desc)
     g_free (desc->priv->author);
     g_free (desc->priv->icon);
     g_free (desc->priv->layout);
+    g_free (desc->priv->layout_variant);
+    g_free (desc->priv->layout_option);
     g_free (desc->priv->hotkeys);
     g_free (desc->priv->symbol);
     g_free (desc->priv->setup);
+    g_free (desc->priv->version);
+    g_free (desc->priv->textdomain);
+    g_free (desc->priv->icon_prop_key);
 
     IBUS_OBJECT_CLASS (ibus_engine_desc_parent_class)->destroy (IBUS_OBJECT (desc));
 }
@@ -340,6 +426,14 @@ ibus_engine_desc_set_property (IBusEngineDesc *desc,
         g_assert (desc->priv->layout == NULL);
         desc->priv->layout = g_value_dup_string (value);
         break;
+    case PROP_LAYOUT_VARIANT:
+        g_assert (desc->priv->layout_variant == NULL);
+        desc->priv->layout_variant = g_value_dup_string (value);
+        break;
+    case PROP_LAYOUT_OPTION:
+        g_assert (desc->priv->layout_option == NULL);
+        desc->priv->layout_option = g_value_dup_string (value);
+        break;
     case PROP_RANK:
         desc->priv->rank = g_value_get_uint (value);
         break;
@@ -354,6 +448,18 @@ ibus_engine_desc_set_property (IBusEngineDesc *desc,
     case PROP_SETUP:
         g_assert (desc->priv->setup == NULL);
         desc->priv->setup = g_value_dup_string (value);
+        break;
+    case PROP_VERSION:
+        g_assert (desc->priv->version == NULL);
+        desc->priv->version = g_value_dup_string (value);
+        break;
+    case PROP_TEXTDOMAIN:
+        g_assert (desc->priv->textdomain == NULL);
+        desc->priv->textdomain = g_value_dup_string (value);
+        break;
+    case PROP_ICON_PROP_KEY:
+        g_assert (desc->priv->icon_prop_key == NULL);
+        desc->priv->icon_prop_key = g_value_dup_string (value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (desc, prop_id, pspec);
@@ -391,6 +497,12 @@ ibus_engine_desc_get_property (IBusEngineDesc *desc,
     case PROP_LAYOUT:
         g_value_set_string (value, ibus_engine_desc_get_layout (desc));
         break;
+    case PROP_LAYOUT_VARIANT:
+        g_value_set_string (value, ibus_engine_desc_get_layout_variant (desc));
+        break;
+    case PROP_LAYOUT_OPTION:
+        g_value_set_string (value, ibus_engine_desc_get_layout_option (desc));
+        break;
     case PROP_RANK:
         g_value_set_uint (value, ibus_engine_desc_get_rank (desc));
         break;
@@ -402,6 +514,15 @@ ibus_engine_desc_get_property (IBusEngineDesc *desc,
         break;
     case PROP_SETUP:
         g_value_set_string (value, ibus_engine_desc_get_setup (desc));
+        break;
+    case PROP_VERSION:
+        g_value_set_string (value, ibus_engine_desc_get_version (desc));
+        break;
+    case PROP_TEXTDOMAIN:
+        g_value_set_string (value, ibus_engine_desc_get_textdomain (desc));
+        break;
+    case PROP_ICON_PROP_KEY:
+        g_value_set_string (value, ibus_engine_desc_get_icon_prop_key (desc));
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (desc, prop_id, pspec);
@@ -432,9 +553,15 @@ ibus_engine_desc_serialize (IBusEngineDesc  *desc,
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->icon));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout));
     g_variant_builder_add (builder, "u", desc->priv->rank);
+    /* The serialized order should be kept. */
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->hotkeys));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->symbol));
     g_variant_builder_add (builder, "s", NOTNULL (desc->priv->setup));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout_variant));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->layout_option));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->version));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->textdomain));
+    g_variant_builder_add (builder, "s", NOTNULL (desc->priv->icon_prop_key));
 #undef NOTNULL
 
     return TRUE;
@@ -453,18 +580,48 @@ ibus_engine_desc_deserialize (IBusEngineDesc *desc,
      * you should not change the serialized order of name, longname,
      * description, ... because the order is also used in other applications
      * likes ibus-qt. */
-    g_variant_get_child (variant, retval++, "s", &desc->priv->name);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->longname);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->description);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->language);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->license);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->author);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->icon);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->layout);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->name);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->longname);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->description);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->language);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->license);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->author);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->icon);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->layout);
     g_variant_get_child (variant, retval++, "u", &desc->priv->rank);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->hotkeys);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->symbol);
-    g_variant_get_child (variant, retval++, "s", &desc->priv->setup);
+    /* The serialized order should be kept. */
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->hotkeys);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->symbol);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->setup);
+    if (g_variant_n_children (variant) < retval + 2)
+        return retval;
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->layout_variant);
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->layout_option);
+    if (g_variant_n_children (variant) < retval + 1)
+        return retval;
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->version);
+    if (g_variant_n_children (variant) < retval + 1)
+        return retval;
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->textdomain);
+    if (g_variant_n_children (variant) < retval + 1)
+        return retval;
+    ibus_g_variant_get_child_string (variant, retval++,
+                                     &desc->priv->icon_prop_key);
 
     return retval;
 }
@@ -487,10 +644,15 @@ ibus_engine_desc_copy (IBusEngineDesc       *dest,
     dest->priv->author           = g_strdup (src->priv->author);
     dest->priv->icon             = g_strdup (src->priv->icon);
     dest->priv->layout           = g_strdup (src->priv->layout);
+    dest->priv->layout_variant   = g_strdup (src->priv->layout_variant);
+    dest->priv->layout_option    = g_strdup (src->priv->layout_option);
     dest->priv->rank             = src->priv->rank;
     dest->priv->hotkeys          = g_strdup (src->priv->hotkeys);
     dest->priv->symbol           = g_strdup (src->priv->symbol);
     dest->priv->setup            = g_strdup (src->priv->setup);
+    dest->priv->version          = g_strdup (src->priv->version);
+    dest->priv->textdomain       = g_strdup (src->priv->textdomain);
+    dest->priv->icon_prop_key    = g_strdup (src->priv->icon_prop_key);
     return TRUE;
 }
 
@@ -527,9 +689,14 @@ ibus_engine_desc_output (IBusEngineDesc *desc,
     OUTPUT_ENTRY_1(author);
     OUTPUT_ENTRY_1(icon);
     OUTPUT_ENTRY_1(layout);
+    OUTPUT_ENTRY_1(layout_variant);
+    OUTPUT_ENTRY_1(layout_option);
     OUTPUT_ENTRY_1(hotkeys);
     OUTPUT_ENTRY_1(symbol);
     OUTPUT_ENTRY_1(setup);
+    OUTPUT_ENTRY_1(version);
+    OUTPUT_ENTRY_1(textdomain);
+    OUTPUT_ENTRY_1(icon_prop_key);
     g_string_append_indent (output, indent + 1);
     g_string_append_printf (output, "<rank>%u</rank>\n", desc->priv->rank);
 #undef OUTPUT_ENTRY
@@ -562,9 +729,14 @@ ibus_engine_desc_parse_xml_node (IBusEngineDesc *desc,
         PARSE_ENTRY_1(author);
         PARSE_ENTRY_1(icon);
         PARSE_ENTRY_1(layout);
+        PARSE_ENTRY_1(layout_variant);
+        PARSE_ENTRY_1(layout_option);
         PARSE_ENTRY_1(hotkeys);
         PARSE_ENTRY_1(symbol);
         PARSE_ENTRY_1(setup);
+        PARSE_ENTRY_1(version);
+        PARSE_ENTRY_1(textdomain);
+        PARSE_ENTRY_1(icon_prop_key);
 #undef PARSE_ENTRY
 #undef PARSE_ENTRY_1
         if (g_strcmp0 (sub_node->name , "rank") == 0) {
@@ -591,10 +763,15 @@ IBUS_ENGINE_DESC_GET_PROPERTY (license, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (author, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (icon, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (layout, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (layout_variant, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (layout_option, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (rank, guint)
 IBUS_ENGINE_DESC_GET_PROPERTY (hotkeys, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (symbol, const gchar *)
 IBUS_ENGINE_DESC_GET_PROPERTY (setup, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (version, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (textdomain, const gchar *)
+IBUS_ENGINE_DESC_GET_PROPERTY (icon_prop_key, const gchar *)
 #undef IBUS_ENGINE_DESC_GET_PROPERTY
 
 IBusEngineDesc *
@@ -641,9 +818,14 @@ ibus_engine_desc_new_varargs (const gchar *first_property_name, ...)
     g_assert (desc->priv->author);
     g_assert (desc->priv->icon);
     g_assert (desc->priv->layout);
+    g_assert (desc->priv->layout_variant);
+    g_assert (desc->priv->layout_option);
     g_assert (desc->priv->hotkeys);
     g_assert (desc->priv->symbol);
     g_assert (desc->priv->setup);
+    g_assert (desc->priv->version);
+    g_assert (desc->priv->textdomain);
+    g_assert (desc->priv->icon_prop_key);
 
     return desc;
 }

@@ -18,10 +18,9 @@ ibus:
 It is ibus daemon.
 
 hotkeys:
-Ctrl + Space: Enable or Disable input method
-Ctrl + Shift: Change input method.
+Super + Space: Change input method.
 
-For more detail please refer to http://code.google.com/p/ibus/wiki/ReadMe .
+For more detail please refer to https://github.com/ibus/ibus/wiki/ReadMe .
 
 
 Peng Huang <shawn.p.huang@gmail.com>

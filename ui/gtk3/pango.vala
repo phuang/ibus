@@ -7,21 +7,18 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or(at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA  02111-1307  USA
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
-
-using IBus;
-using Pango;
 
 Pango.AttrList get_pango_attr_list_from_ibus_text(IBus.Text text) {
     Pango.AttrList pango_attrs = new Pango.AttrList();
@@ -53,17 +50,17 @@ Pango.AttrList get_pango_attr_list_from_ibus_text(IBus.Text text) {
         switch(attr.type) {
         case IBus.AttrType.FOREGROUND:
             {
-                uint16 r = (uint16)(attr.value & 0x00ff0000) >> 8;
+                uint16 r = (uint16)((attr.value & 0x00ff0000) >> 8);
                 uint16 g = (uint16)(attr.value & 0x0000ff00);
-                uint16 b = (uint16)(attr.value & 0x000000ff) << 8;
+                uint16 b = (uint16)((attr.value & 0x000000ff) << 8);
                 pango_attr = Pango.attr_foreground_new(r, g, b);
                 break;
             }
         case IBus.AttrType.BACKGROUND:
             {
-                uint16 r = (uint16)(attr.value & 0x00ff0000) >> 8;
+                uint16 r = (uint16)((attr.value & 0x00ff0000) >> 8);
                 uint16 g = (uint16)(attr.value & 0x0000ff00);
-                uint16 b = (uint16)(attr.value & 0x000000ff) << 8;
+                uint16 b = (uint16)((attr.value & 0x000000ff) << 8);
                 pango_attr = Pango.attr_background_new(r, g, b);
                 break;
             }

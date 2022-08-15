@@ -1,32 +1,38 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus
- * Copyright (C) 2007-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2007-2010 Red Hat, Inc.
+ * Copyright (C) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2015-2021 Takao Fujiwara <takao.fujiwara1@gmail.com>
+ * Copyright (C) 2007-2015 Red Hat, Inc.
  *
  * main.c:
  *
- * This tool is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 #define _GNU_SOURCE
+
+#include "config.h"
 
 #include <X11/Xproto.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <X11/Xutil.h>
+#ifdef HAVE_XFIXES
+#include <X11/extensions/Xfixes.h>
+#endif
 #include <XimProto.h>
 #include <IMdkit.h>
 #include <Xi18n.h>
@@ -116,7 +122,7 @@ static gint     g_debug_level = 0;
 
 static IBusBus *_bus = NULL;
 
-static gboolean _use_sync_mode = FALSE;
+static gboolean _use_sync_mode = TRUE;
 
 static void
 _xim_preedit_start (XIMS xims, const X11IC *x11ic)
@@ -195,7 +201,7 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
         }
     }
 
-    for (i = 0; i < len; i++) {
+    for (i = 0; feedback && i < len; i++) {
         feedback[i] = 0;
     }
 
@@ -228,12 +234,13 @@ _xim_preedit_callback_draw (XIMS xims, X11IC *x11ic, const gchar *preedit_string
         }
     }
 
-    for (i = 0; i < len; i++) {
+    for (i = 0; feedback && i < len; i++) {
         if (feedback[i] == 0) {
             feedback[i] = XIMUnderline;
         }
     }
-    feedback[len] = 0;
+    if (feedback)
+        feedback[len] = 0;
 
     pcb.major_code = XIM_PREEDIT_DRAW;
     pcb.connect_id = x11ic->connect_id;
@@ -273,7 +280,6 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
     XICAttribute *sts_attr = call_data->status_attr;
 
     gint i;
-    guint32 attrs = 1;
 
     g_return_val_if_fail (x11ic != NULL, 0);
     for (i = 0; i < (int)call_data->ic_attr_num; ++i, ++ic_attr) {
@@ -306,7 +312,7 @@ _xim_store_ic_values (X11IC *x11ic, IMChangeICStruct *call_data)
         LOG (1, "Unknown status attribute: %s", sts_attr->name);
     }
 
-    return attrs;
+    return 1;
 }
 
 
@@ -464,6 +470,13 @@ _process_key_event_done (GObject      *object,
         g_error_free (error);
     }
 
+    if (g_hash_table_lookup (_connections,
+                             GINT_TO_POINTER ((gint) pfe->connect_id))
+        == NULL) {
+        g_slice_free (IMForwardEventStruct, pfe);
+        return;
+    }
+
     if (retval == FALSE) {
         IMForwardEvent (_xims, (XPointer) pfe);
     }
@@ -600,27 +613,50 @@ _free_ic (gpointer data, gpointer user_data)
 }
 
 static int
-xim_close (XIMS ims, IMCloseStruct *call_data)
+_free_x11_iconn_from_id (CARD16 connect_id)
 {
     X11ICONN *conn;
 
-    LOG (1, "XIM_CLOSE connect_id=%d",
-                call_data->connect_id);
-
     conn = (X11ICONN *) g_hash_table_lookup (_connections,
-                                             GINT_TO_POINTER ((gint) call_data->connect_id));
-    g_return_val_if_fail (conn != NULL, 0);
+                                             GINT_TO_POINTER ((gint) connect_id));
 
-    g_list_foreach (conn->clients, _free_ic, NULL);
+    if (conn == NULL) {
+        return 0;
+    }
 
-    g_list_free (conn->clients);
+    g_list_free_full (conn->clients, (GDestroyNotify) _free_ic);
 
     g_hash_table_remove (_connections,
-                         GINT_TO_POINTER ((gint) call_data->connect_id));
+                         GINT_TO_POINTER ((gint) connect_id));
 
     g_slice_free (X11ICONN, conn);
 
     return 1;
+}
+
+static int
+xim_close (XIMS xims, IMCloseStruct *call_data)
+{
+    CARD16 connect_id = call_data->connect_id;
+
+    LOG (1, "XIM_CLOSE connect_id=%d", connect_id);
+
+    return _free_x11_iconn_from_id (connect_id);
+}
+
+static int
+xim_disconnect_ic (XIMS xims, IMDisConnectStruct *call_data)
+{
+    CARD16 connect_id = call_data->connect_id;
+
+    LOG (1, "XIM_DISCONNECT connect_id=%d", connect_id);
+
+    _free_x11_iconn_from_id (connect_id);
+
+    /* I am not sure if this can return 1 because I have not experienced
+     * that xim_disconnect_ic() is called. But I wish connect_id is
+     * released from _connections to avoid SEGV. */
+    return 0;
 }
 
 
@@ -706,9 +742,20 @@ xim_get_ic_values (XIMS xims, IMChangeICStruct *call_data)
 
     for (i = 0; i < (int) call_data->ic_attr_num; ++i, ++ic_attr) {
         if (g_strcmp0 (XNFilterEvents, ic_attr->name) == 0) {
+            /* ic_attr->value will be freed in server side and ignore
+             * leak of malloc with -Wanalyzer-malloc-leak flags in gcc 11.0.1
+             */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-malloc-leak"
             ic_attr->value = (void *) malloc (sizeof (CARD32));
-            *(CARD32 *) ic_attr->value = KeyPressMask | KeyReleaseMask;
-            ic_attr->value_length = sizeof (CARD32);
+            if (ic_attr->value) {
+                *(CARD32 *) ic_attr->value = KeyPressMask | KeyReleaseMask;
+                ic_attr->value_length = sizeof (CARD32);
+            } else {
+                g_warning ("Failed to malloc");
+                ic_attr->value_length = 0;
+            }
+#pragma GCC diagnostic pop
         }
     }
 
@@ -745,6 +792,8 @@ ims_protocol_handler (XIMS xims, IMProtocol *call_data)
         return xim_open (xims, (IMOpenStruct *)call_data);
     case XIM_CLOSE:
         return xim_close (xims, (IMCloseStruct *)call_data);
+    case XIM_DISCONNECT:
+        return xim_disconnect_ic (xims, (IMDisConnectStruct *)call_data);
     case XIM_CREATE_IC:
         return xim_create_ic (xims, (IMChangeICStruct *)call_data);
     case XIM_DESTROY_IC:
@@ -818,10 +867,9 @@ static void
 _bus_disconnected_cb (IBusBus  *bus,
                       gpointer  user_data)
 {
-    g_warning ("Connection closed by ibus-daemon");
-    g_object_unref (_bus);
-    _bus = NULL;
-    exit(EXIT_SUCCESS);
+    g_debug ("Connection closed by ibus-daemon\n");
+    g_clear_object (&_bus);
+    ibus_quit ();
 }
 
 static void
@@ -983,7 +1031,8 @@ _init_ibus (void)
     g_signal_connect (_bus, "disconnected",
                         G_CALLBACK (_bus_disconnected_cb), NULL);
 
-    _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", FALSE);
+    /* https://github.com/ibus/ibus/issues/1713 */
+    _use_sync_mode = _get_boolean_env ("IBUS_ENABLE_SYNC_MODE", TRUE);
 }
 
 static void
@@ -1037,9 +1086,13 @@ _xim_init_IMdkit ()
         sizeof (ims_encodings)/sizeof (XIMEncoding) - 1;
     encodings.supported_encodings = ims_encodings;
 
-    _xims = IMOpenIM(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+    _xims = IMOpenIM (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
         IMModifiers, "Xi18n",
-        IMServerWindow, GDK_WINDOW_XWINDOW(win),
+#if GTK_CHECK_VERSION (3, 0, 0)
+        IMServerWindow, GDK_WINDOW_XID (win),
+#else
+        IMServerWindow, GDK_WINDOW_XWINDOW (win),
+#endif
         IMServerName, _server_name != NULL ? _server_name : "ibus",
         IMLocale, _locale != NULL ? _locale : LOCALES_STRING,
         IMServerTransport, "X/",
@@ -1077,7 +1130,7 @@ _print_usage (FILE *fp, gchar *name)
     fprintf (fp,
         "Usage:\n"
         " %s --help               Show this message\n"
-        "    --server-name= -n    Setup xim sevrer name\n"
+        "    --server-name= -n    Setup xim server name\n"
         "    --locale= -l         Setup support locales\n"
         "    --locale-append= -a  Append locales into the default support locales\n"
         "    --kill-daemon -k     Kill ibus daemon when exit\n"
@@ -1095,14 +1148,41 @@ _xerror_handler (Display *dpy, XErrorEvent *e)
     return 1;
 }
 
+/* When log into GNOME3 desktop immediately after the system is booted,
+ * ibus-daemon is sometimes alive but ibus-x11 is dead after log out
+ * the session. Because gdk_x_io_error() is called as the callback of
+ * XSetIOErrorHandler() in gtk/gdk/x11/gdkmain-x11.c in ibus-x11.
+ * Now I assume the callback is called in logout.
+ */
+static int
+_xerror_io_handler (Display *dpy)
+{
+    if (_kill_daemon)
+        _atexit_cb ();
+    return 0;
+}
+
 int
 main (int argc, char **argv)
 {
     gint option_index = 0;
     gint c;
 
+    /* GDK_DISPLAY_XDISPLAY() and GDK_WINDOW_XID() does not work
+     * with GdkWaylandDisplay.
+     */
+#if GTK_CHECK_VERSION (3, 10, 0)
+    gdk_set_allowed_backends ("x11");
+#endif
+
     gtk_init (&argc, &argv);
     XSetErrorHandler (_xerror_handler);
+    XSetIOErrorHandler (_xerror_io_handler);
+
+#ifdef HAVE_XFIXES
+    XFixesSetClientDisconnectMode(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+                                  XFixesClientDisconnectFlagTerminate);
+#endif
 
     while (1) {
         static struct option long_options [] = {
@@ -1182,10 +1262,10 @@ main (int argc, char **argv)
     signal (SIGTERM, _sighandler);
 
     if (_kill_daemon)
-        g_atexit (_atexit_cb);
+        atexit (_atexit_cb);
 
     _xim_init_IMdkit ();
-    gtk_main();
+    ibus_main();
 
     exit (EXIT_SUCCESS);
 }

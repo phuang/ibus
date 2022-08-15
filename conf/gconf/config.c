@@ -202,7 +202,6 @@ _from_gconf_value (const GConfValue *gv)
                 g_variant_builder_init (&builder, G_VARIANT_TYPE("ad")); break;
             case GCONF_VALUE_BOOL:
                 g_variant_builder_init (&builder, G_VARIANT_TYPE("ab")); break;
-                break;
             default:
                 g_assert_not_reached ();
             }
@@ -249,9 +248,10 @@ ibus_config_gconf_set_value (IBusConfigService      *config,
     gv = _to_gconf_value (value);
     if (gv == NULL) {
         gchar *str = g_variant_print (value, TRUE);
-        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Can not set config value [%s:%s] to %s.",
-                        section, name, str);
+        g_set_error (error,
+                     G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                     "Can not set config value [%s:%s] to %s.",
+                     section, name, str);
         g_free (str);
         return FALSE;
     }
@@ -280,15 +280,16 @@ ibus_config_gconf_get_value (IBusConfigService      *config,
     g_free (key);
 
     if (gv == NULL) {
-        *error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
-                        "Config value [%s:%s] does not exist.", section, name);
+        g_set_error (error,
+                     G_DBUS_ERROR, G_DBUS_ERROR_FAILED,
+                     "Config value [%s:%s] does not exist.", section, name);
         return NULL;
     }
 
     GVariant *variant = _from_gconf_value (gv);
     gconf_value_free (gv);
 
-    return variant;
+    return g_variant_ref_sink (variant);
 }
 
 static GVariant *
@@ -302,19 +303,21 @@ ibus_config_gconf_get_values (IBusConfigService      *config,
     g_free (dir);
 
     GSList *p;
-    GVariantBuilder *builder = g_variant_builder_new (G_VARIANT_TYPE ("a{sv}"));
+    GVariantBuilder builder;
+
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("a{sv}"));
     for (p = entries; p != NULL; p = p->next) {
         GConfEntry *entry = (GConfEntry *)p->data;
         if (entry->key != NULL && entry->value != NULL) {
             const gchar *name = entry->key + len;
             GVariant *value = _from_gconf_value (entry->value);
-            g_variant_builder_add (builder, "{sv}", name, value);
+            g_variant_builder_add (&builder, "{sv}", name, value);
         }
         gconf_entry_free (entry);
     }
     g_slist_free (entries);
 
-    return g_variant_builder_end (builder);
+    return g_variant_builder_end (&builder);
 }
 
 static gboolean
@@ -325,13 +328,10 @@ ibus_config_gconf_unset_value (IBusConfigService      *config,
 {
     gchar *key = g_strdup_printf (GCONF_PREFIX"/%s/%s", section, name);
 
-    gconf_client_unset (((IBusConfigGConf *)config)->client, key, error);
+    gboolean retval = gconf_client_unset (((IBusConfigGConf *)config)->client, key, error);
     g_free (key);
 
-    if (*error != NULL) {
-        return FALSE;
-    }
-    return TRUE;
+    return retval;
 }
 
 IBusConfigGConf *

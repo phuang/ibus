@@ -2,23 +2,24 @@
 /* vim:set et sts=4: */
 /* IBus - The Input Bus
  * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2019 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
+#include "ibusinternal.h"
 #include "ibusproperty.h"
 #include "ibusproplist.h"
 #include "ibusenumtypes.h"
@@ -32,6 +33,7 @@ enum {
     PROP_KEY,
     PROP_ICON,
     PROP_LABEL,
+    PROP_SYMBOL,
     PROP_TOOLTIP,
     PROP_SENSITIVE,
     PROP_VISIBLE,
@@ -45,6 +47,7 @@ struct _IBusPropertyPrivate {
     gchar    *key;
     gchar    *icon;
     IBusText *label;
+    IBusText *symbol;
     IBusText *tooltip;
 
     gboolean sensitive;
@@ -56,7 +59,7 @@ struct _IBusPropertyPrivate {
 };
 
 #define IBUS_PROPERTY_GET_PRIVATE(o)  \
-   (G_TYPE_INSTANCE_GET_PRIVATE ((o), IBUS_TYPE_PROPERTY, IBusPropertyPrivate))
+   ((IBusPropertyPrivate *)ibus_property_get_instance_private (o))
 
 /* functions prototype */
 static void         ibus_property_set_property  (IBusProperty       *prop,
@@ -75,7 +78,7 @@ static gint         ibus_property_deserialize   (IBusProperty       *prop,
 static gboolean     ibus_property_copy          (IBusProperty       *dest,
                                                  const IBusProperty *src);
 
-G_DEFINE_TYPE (IBusProperty, ibus_property, IBUS_TYPE_SERIALIZABLE)
+G_DEFINE_TYPE_WITH_PRIVATE (IBusProperty, ibus_property, IBUS_TYPE_SERIALIZABLE)
 
 static void
 ibus_property_class_init (IBusPropertyClass *class)
@@ -83,8 +86,6 @@ ibus_property_class_init (IBusPropertyClass *class)
     GObjectClass *gobject_class = G_OBJECT_CLASS (class);
     IBusObjectClass *object_class = IBUS_OBJECT_CLASS (class);
     IBusSerializableClass *serializable_class = IBUS_SERIALIZABLE_CLASS (class);
-
-    g_type_class_add_private (class, sizeof (IBusPropertyPrivate));
 
     gobject_class->set_property = (GObjectSetPropertyFunc) ibus_property_set_property;
     gobject_class->get_property = (GObjectGetPropertyFunc) ibus_property_get_property;
@@ -132,6 +133,19 @@ ibus_property_class_init (IBusPropertyClass *class)
             g_param_spec_object("label",
                     "label",
                     "The label of property",
+                    IBUS_TYPE_TEXT,
+                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+    /**
+     * IBusPropert:symbol:
+     *
+     * The symbol of property
+     */
+    g_object_class_install_property (gobject_class,
+            PROP_SYMBOL,
+            g_param_spec_object("symbol",
+                    "symbol",
+                    "The symbol of property",
                     IBUS_TYPE_TEXT,
                     G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
@@ -221,6 +235,7 @@ ibus_property_init (IBusProperty *prop)
     prop->priv = IBUS_PROPERTY_GET_PRIVATE (prop);
 
     ibus_property_set_label (prop, NULL);
+    ibus_property_set_symbol (prop, NULL);
     ibus_property_set_tooltip (prop, NULL);
     ibus_property_set_sub_props (prop, NULL);
 
@@ -241,6 +256,9 @@ ibus_property_set_property (IBusProperty *prop,
         break;
     case PROP_LABEL:
         ibus_property_set_label (prop, g_value_get_object (value));
+        break;
+    case PROP_SYMBOL:
+        ibus_property_set_symbol (prop, g_value_get_object (value));
         break;
     case PROP_TOOLTIP:
         ibus_property_set_tooltip (prop, g_value_get_object (value));
@@ -282,6 +300,9 @@ ibus_property_get_property (IBusProperty *prop,
     case PROP_LABEL:
         g_value_set_object (value, ibus_property_get_label (prop));
         break;
+    case PROP_SYMBOL:
+        g_value_set_object (value, ibus_property_get_symbol (prop));
+        break;
     case PROP_TOOLTIP:
         g_value_set_object (value, ibus_property_get_tooltip (prop));
         break;
@@ -317,6 +338,11 @@ ibus_property_destroy (IBusProperty *prop)
     if (prop->priv->label) {
         g_object_unref (prop->priv->label);
         prop->priv->label = NULL;
+    }
+
+    if (prop->priv->symbol) {
+        g_object_unref (prop->priv->symbol);
+        prop->priv->symbol = NULL;
     }
 
     if (prop->priv->tooltip) {
@@ -355,6 +381,9 @@ ibus_property_serialize (IBusProperty    *prop,
     g_variant_builder_add (builder, "u", prop->priv->state);
     g_variant_builder_add (builder, "v",
             ibus_serializable_serialize ((IBusSerializable *)prop->priv->sub_props));
+    /* Keep the serialized order for the compatibility when add new members. */
+    g_variant_builder_add (builder, "v",
+            ibus_serializable_serialize ((IBusSerializable *)prop->priv->symbol));
 
     return TRUE;
 }
@@ -368,17 +397,23 @@ ibus_property_deserialize (IBusProperty *prop,
     retval = IBUS_SERIALIZABLE_CLASS (ibus_property_parent_class)->deserialize ((IBusSerializable *) prop, variant);
     g_return_val_if_fail (retval, 0);
 
-    g_variant_get_child (variant, retval++, "s", &prop->priv->key);
+    ibus_g_variant_get_child_string (variant, retval++, &prop->priv->key);
     g_variant_get_child (variant, retval++, "u", &prop->priv->type);
 
     GVariant *subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->label) {
+        g_object_unref (prop->priv->label);
+    }
     prop->priv->label = IBUS_TEXT (ibus_serializable_deserialize (subvar));
     g_object_ref_sink (prop->priv->label);
     g_variant_unref (subvar);
 
-    g_variant_get_child (variant, retval++, "s", &prop->priv->icon);
+    ibus_g_variant_get_child_string (variant, retval++, &prop->priv->icon);
 
     subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->tooltip) {
+        g_object_unref (prop->priv->tooltip);
+    }
     prop->priv->tooltip = IBUS_TEXT (ibus_serializable_deserialize (subvar));
     g_object_ref_sink (prop->priv->tooltip);
     g_variant_unref (subvar);
@@ -388,8 +423,20 @@ ibus_property_deserialize (IBusProperty *prop,
     g_variant_get_child (variant, retval++, "u", &prop->priv->state);
 
     subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->sub_props != NULL) {
+        g_object_unref (prop->priv->sub_props);
+    }
     prop->priv->sub_props = IBUS_PROP_LIST (ibus_serializable_deserialize (subvar));
     g_object_ref_sink (prop->priv->sub_props);
+    g_variant_unref (subvar);
+
+    /* Keep the serialized order for the compatibility when add new members. */
+    subvar = g_variant_get_child_value (variant, retval++);
+    if (prop->priv->symbol) {
+        g_object_unref (prop->priv->symbol);
+    }
+    prop->priv->symbol = IBUS_TEXT (ibus_serializable_deserialize (subvar));
+    g_object_ref_sink (prop->priv->symbol);
     g_variant_unref (subvar);
 
     return retval;
@@ -414,6 +461,11 @@ ibus_property_copy (IBusProperty       *dest,
     }
     else
         dest->priv->label = ibus_text_new_from_static_string ("");
+    if (src->priv->symbol) {
+        dest->priv->symbol = (IBusText *) ibus_serializable_copy ((IBusSerializable *) src->priv->symbol);
+    }
+    else
+        dest->priv->symbol = ibus_text_new_from_static_string ("");
     if (src->priv->tooltip) {
         dest->priv->tooltip = (IBusText *) ibus_serializable_copy ((IBusSerializable *) src->priv->tooltip);
     }
@@ -446,19 +498,36 @@ ibus_property_new (const gchar   *key,
                           type <= PROP_TYPE_SEPARATOR,
                           NULL);
 
+    return ibus_property_new_varargs ("key", key,
+                                      "prop-type", type,
+                                      "label", label,
+                                      "icon", icon,
+                                      "tooltip", tooltip,
+                                      "sensitive", sensitive,
+                                      "visible", visible,
+                                      "state", state,
+                                      "sub-props", props,
+                                      NULL);
+}
+
+IBusProperty *
+ibus_property_new_varargs (const gchar *first_property_name, ...)
+{
+    va_list var_args;
     IBusProperty *prop;
 
-    prop = (IBusProperty *)g_object_new (IBUS_TYPE_PROPERTY,
-                                         "key", key,
-                                         "prop-type", type,
-                                         "label", label,
-                                         "icon", icon,
-                                         "tooltip", tooltip,
-                                         "sensitive", sensitive,
-                                         "visible", visible,
-                                         "state", state,
-                                         "sub-props", props,
-                                         NULL);
+    g_assert (first_property_name);
+
+    va_start (var_args, first_property_name);
+    prop = (IBusProperty *) g_object_new_valist (IBUS_TYPE_PROPERTY,
+                                                 first_property_name,
+                                                 var_args);
+    va_end (var_args);
+
+    g_assert (prop->priv->key);
+    g_assert (prop->priv->type >= PROP_TYPE_NORMAL &&
+              prop->priv->type <= PROP_TYPE_SEPARATOR);
+
     return prop;
 }
 
@@ -472,6 +541,7 @@ ibus_property_get_ ## field (IBusProperty *prop)                        \
 IBUS_PROPERTY_GET_FIELD (key, const gchar *)
 IBUS_PROPERTY_GET_FIELD (icon, const gchar *)
 IBUS_PROPERTY_GET_FIELD (label, IBusText *)
+IBUS_PROPERTY_GET_FIELD (symbol, IBusText *)
 IBUS_PROPERTY_GET_FIELD (tooltip, IBusText *)
 IBUS_PROPERTY_GET_FIELD (sensitive, gboolean)
 IBUS_PROPERTY_GET_FIELD (visible, gboolean)
@@ -502,8 +572,31 @@ ibus_property_set_label (IBusProperty *prop,
         prop->priv->label = ibus_text_new_from_static_string ("");
     }
     else {
-        prop->priv->label = g_object_ref_sink (label);
+        prop->priv->label = label;
     }
+
+    g_object_ref_sink (prop->priv->label);
+}
+
+void
+ibus_property_set_symbol (IBusProperty *prop,
+                          IBusText     *symbol)
+{
+    g_assert (IBUS_IS_PROPERTY (prop));
+    g_return_if_fail (symbol == NULL || IBUS_IS_TEXT (symbol));
+
+    if (prop->priv->symbol) {
+        g_object_unref (prop->priv->symbol);
+    }
+
+    if (symbol == NULL) {
+        prop->priv->symbol = ibus_text_new_from_static_string ("");
+    }
+    else {
+        prop->priv->symbol = symbol;
+    }
+
+    g_object_ref_sink (prop->priv->symbol);
 }
 
 void
@@ -523,20 +616,18 @@ ibus_property_set_tooltip (IBusProperty *prop,
     g_assert (IBUS_IS_PROPERTY (prop));
     g_assert (tooltip == NULL || IBUS_IS_TEXT (tooltip));
 
-    IBusPropertyPrivate *priv = prop->priv;
-
-    if (priv->tooltip) {
-        g_object_unref (priv->tooltip);
+    if (prop->priv->tooltip) {
+        g_object_unref (prop->priv->tooltip);
     }
 
     if (tooltip == NULL) {
-        priv->tooltip = ibus_text_new_from_static_string ("");
-        g_object_ref_sink (priv->tooltip);
+        prop->priv->tooltip = ibus_text_new_from_static_string ("");
     }
     else {
-        priv->tooltip = tooltip;
-        g_object_ref_sink (priv->tooltip);
+        prop->priv->tooltip = tooltip;
     }
+
+    g_object_ref_sink (prop->priv->tooltip);
 }
 
 void
@@ -609,6 +700,7 @@ ibus_property_update (IBusProperty *prop,
 
     ibus_property_set_icon (prop, ibus_property_get_icon (prop_update));
     ibus_property_set_label (prop, ibus_property_get_label (prop_update));
+    ibus_property_set_symbol (prop, ibus_property_get_symbol (prop_update));
     ibus_property_set_tooltip (prop, ibus_property_get_tooltip (prop_update));
     ibus_property_set_visible (prop, ibus_property_get_visible (prop_update));
     ibus_property_set_state (prop, ibus_property_get_state (prop_update));

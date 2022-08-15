@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<its:rules xmlns:its="http://www.w3.org/2005/11/its"
+           version="2.0">
+  <its:translateRule selector="/component" translate="no"/>
+  <its:translateRule selector="/engines" translate="no"/>
+  <its:translateRule selector="//engine" translate="no"/>
+  <its:translateRule selector="//longname |
+                               //description"
+                     translate="yes"/>
+  <its:translateRule selector="//longname[@translatable = 'no']"
+                     translate="no"/>
+  <its:translateRule selector="//description[@translatable = 'no']"
+                     translate="no"/>
+</its:rules>

@@ -470,15 +470,20 @@ static XICAttribute *CreateNestedList (CARD16 attr_id,
     /*endfor*/
     
     nest_list = (XICAttribute *) malloc (sizeof (XICAttribute));
-    if (nest_list == NULL)
+    if (nest_list == NULL) {
+        XFree (values);
         return NULL;
+    }
     /*endif*/
     memset (nest_list, 0, sizeof (XICAttribute));
     nest_list->value = (void *) malloc (value_length);
-    if (nest_list->value == NULL)
+    if (nest_list->value == NULL) {
+        XFree (nest_list);
+        XFree (values);
         return NULL;
+    }
     /*endif*/
-    memset (nest_list->value, 0, sizeof (value_length));
+    memset (nest_list->value, 0, value_length);
 
     nest_list->attribute_id = attr_id;
     nest_list->value_length = value_length;
@@ -537,7 +542,13 @@ static int GetICValue (Xi18n i18n_core,
                     attr_ret[n].attribute_id = xic_attr[j].attribute_id;
                     attr_ret[n].name_length = xic_attr[j].length;
                     attr_ret[n].name = malloc (xic_attr[j].length + 1);
-		    strcpy(attr_ret[n].name, xic_attr[j].name);
+                    if (!attr_ret[n].name) {
+                        fprintf (stderr,
+                                 "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                                 __FILE__, __LINE__);
+                    } else {
+                        strcpy(attr_ret[n].name, xic_attr[j].name);
+                    }
                     attr_ret[n].type = xic_attr[j].type;
                     n++;
                     i++;
@@ -558,7 +569,13 @@ static int GetICValue (Xi18n i18n_core,
                 attr_ret[n].attribute_id = xic_attr[j].attribute_id;
                 attr_ret[n].name_length = xic_attr[j].length;
                 attr_ret[n].name = malloc (xic_attr[j].length + 1);
-		strcpy(attr_ret[n].name, xic_attr[j].name);
+                if (!attr_ret[n].name) {
+                    fprintf (stderr,
+                             "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                             __FILE__, __LINE__);
+                } else {
+		    strcpy(attr_ret[n].name, xic_attr[j].name);
+                }
                 attr_ret[n].type = xic_attr[j].type;
                 n++;
                 break;
@@ -698,10 +715,15 @@ void _Xi18nChangeIC (XIMS ims,
         attrib_list[attrib_num].value_length = value_length;
         FrameMgrGetToken (fm, value);
         attrib_list[attrib_num].value = (void *) malloc (value_length + 1);
-        memmove (attrib_list[attrib_num].value, value, value_length);
-	((char *)attrib_list[attrib_num].value)[value_length] = '\0';
+        if (!attrib_list[attrib_num].value) {
+            fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                     __FILE__, __LINE__);
+        } else {
+            memmove (attrib_list[attrib_num].value, value, value_length);
+            ((char *)attrib_list[attrib_num].value)[value_length] = '\0';
+            total_value_length += (value_length + 1);
+        }
         attrib_num++;
-        total_value_length += (value_length + 1);
     }
     /*endwhile*/
 
@@ -816,6 +838,7 @@ void _Xi18nChangeIC (XIMS ims,
     if (!reply)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -914,6 +937,12 @@ void _Xi18nGetIC (XIMS ims, IMProtocol *call_data, unsigned char *p)
     FrameMgrGetToken (fm, byte_length);
 
     attrID_list = (CARD16 *) malloc (sizeof (CARD16)*IC_SIZE);  /* bogus */
+    if (!attrID_list) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        FrameMgrFree (fm);
+        return;
+    }
     memset (attrID_list, 0, sizeof (CARD16)*IC_SIZE);
 
     number = 0;
@@ -973,8 +1002,10 @@ void _Xi18nGetIC (XIMS ims, IMProtocol *call_data, unsigned char *p)
     getic->ic_attr = ic_attr;
     if (i18n_core->address.improto)
     {
-        if (!(i18n_core->address.improto (ims, call_data)))
+        if (!(i18n_core->address.improto (ims, call_data))) {
+            XFree (attrID_list);
             return;
+        }
         /*endif*/
 	if (_Xi18nNeedSwap (i18n_core, connect_id))
 	  SwapAttributes(getic->ic_attr, getic->ic_attr_num);
@@ -1020,6 +1051,8 @@ void _Xi18nGetIC (XIMS ims, IMProtocol *call_data, unsigned char *p)
     if (reply == NULL)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        XFree (attrID_list);
+        goto _Xi18nGetIC_finit;
         return;
     }
     /*endif*/
@@ -1090,6 +1123,7 @@ void _Xi18nGetIC (XIMS ims, IMProtocol *call_data, unsigned char *p)
     }
     /*endfor*/
     
+_Xi18nGetIC_finit:
     if (preedit_ret)
     {
         XFree (preedit_ret->value);

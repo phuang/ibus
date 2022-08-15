@@ -1,4 +1,25 @@
-## Process this file with automake to produce Makefile.in
+# vim:set noet ts=4:
+#
+# ibus - The Input Bus
+#
+# Copyright (c) 2007-2015 Peng Huang <shawn.p.huang@gmail.com>
+# Copyright (c) 2007-2020 Red Hat, Inc.
+# Copyright (c) 2015-2020 Takao Fujiwara <takao.fujiwara1@gmail.com>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
 # We require automake 1.6 at least.
 AUTOMAKE_OPTIONS = 1.6
@@ -17,8 +38,8 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting the functions and macros.
-# e.g. DOC_SOURCE_DIR=../../../gtk
-DOC_SOURCE_DIR=../../../src
+# e.g. DOC_SOURCE_DIR=$(top_srcdir)/gtk
+DOC_SOURCE_DIR=$(top_srcdir)/src $(top_builddir)/src
 
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS=
@@ -48,6 +69,7 @@ CFILE_GLOB=$(top_srcdir)/src/*.c
 # Header files to ignore when scanning. Use base file/dir names
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
 IGNORE_HFILES= \
+	ibuscomposetable.h \
 	ibusconfigprivate.h \
 	ibusinternal.h \
 	keyname-table.h \
@@ -125,6 +147,6 @@ tmpl-build.stamp: trim-build.stamp  $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DO
 # clean-local:
 # 	rm -rf tmpl ${DOC_MODULE)
 
-CLEANFILES+= *.stamp
+CLEANFILES+= *actions *.stamp
 
 -include $(top_srcdir)/git.mk

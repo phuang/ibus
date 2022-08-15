@@ -1,7 +1,9 @@
 /******************************************************************
  
-         Copyright 1994, 1995 by Sun Microsystems, Inc.
-         Copyright 1993, 1994 by Hewlett-Packard Company
+         Copyright (C) 1994-1995 Sun Microsystems, Inc.
+         Copyright (C) 1993-1994 Hewlett-Packard Company
+         Copyright (C) 2014 Peng Huang <shawn.p.huang@gmail.com>
+         Copyright (C) 2014 Red Hat, Inc.
  
 Permission to use, copy, modify, distribute, and sell this software
 and its documentation for any purpose is hereby granted without fee,
@@ -36,6 +38,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "XimFunc.h"
 
 Xi18nClient *_Xi18nFindClient (Xi18n, CARD16);
+void _Xi18nInitOffsetCache (Xi18nOffsetCache *);
 
 int
 _Xi18nNeedSwap (Xi18n i18n_core, CARD16 connect_id)
@@ -43,6 +46,8 @@ _Xi18nNeedSwap (Xi18n i18n_core, CARD16 connect_id)
     CARD8 im_byteOrder = i18n_core->address.im_byteOrder;
     Xi18nClient *client = _Xi18nFindClient (i18n_core, connect_id);
 
+    if (!client)
+        return True;
     return (client->byte_order != im_byteOrder);
 }
 
@@ -64,13 +69,18 @@ Xi18nClient *_Xi18nNewClient(Xi18n i18n_core)
 	new_connect_id = ++connect_id;
     }
     /*endif*/
+    if (!client) {
+        fprintf (stderr, "(XIM-IMdkit) WARNING: malloc failed in %s:%d.\n",
+                 __FILE__, __LINE__);
+        return NULL;
+    }
     memset (client, 0, sizeof (Xi18nClient));
     client->connect_id = new_connect_id;
     client->pending = (XIMPending *) NULL;
     client->sync = False;
     client->byte_order = '?'; 	/* initial value */
     memset (&client->pending, 0, sizeof (XIMPending *));
-    client->property_offset = 0;
+    _Xi18nInitOffsetCache (&client->offset_cache);
     client->next = i18n_core->address.clients;
     i18n_core->address.clients = client;
 
@@ -110,7 +120,14 @@ void _Xi18nDeleteClient (Xi18n i18n_core, CARD16 connect_id)
                 ccp0->next = ccp->next;
             /*endif*/
             /* put it back to free list */
+            /* gcc 11.0.1 warns dereference of NULL with
+             * -Wanalyzer-null-dereference option
+             * but target should not be NULL.
+             */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wanalyzer-null-dereference"
             target->next = i18n_core->address.free_clients;
+#pragma GCC diagnostic pop
             i18n_core->address.free_clients = target;
             return;
         }
@@ -145,6 +162,7 @@ void _Xi18nSendMessage (XIMS ims,
     if (reply_hdr == NULL)
     {
         _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        FrameMgrFree (fm);
         return;
     }
     /*endif*/
@@ -157,10 +175,17 @@ void _Xi18nSendMessage (XIMS ims,
 
     reply_length = header_size + length;
     reply = (unsigned char *) malloc (reply_length);
+    if (!reply) {
+        _Xi18nSendMessage (ims, connect_id, XIM_ERROR, 0, 0, 0);
+        XFree (reply_hdr);
+        FrameMgrFree (fm);
+        return;
+    }
     replyp = reply;
     memmove (reply, reply_hdr, header_size);
     replyp += header_size;
-    memmove (replyp, data, length);
+    if (length > 0 && data != NULL)
+        memmove (replyp, data, length);
 
     i18n_core->methods.send (ims, connect_id, reply, reply_length);
 
@@ -199,8 +224,10 @@ void _Xi18nSendTriggerKey (XIMS ims, CARD16 connect_id)
     total_size = FrameMgrGetTotalSize (fm);
 
     reply = (unsigned char *) malloc (total_size);
-    if (!reply)
+    if (!reply) {
+        FrameMgrFree (fm);
         return;
+    }
     /*endif*/
     memset (reply, 0, total_size);
     FrameMgrSetBuffer (fm, reply);
@@ -254,8 +281,10 @@ void _Xi18nSetEventMask (XIMS ims,
 
     total_size = FrameMgrGetTotalSize (fm);
     reply = (unsigned char *) malloc (total_size);
-    if (!reply)
+    if (!reply) {
+        FrameMgrFree (fm);
         return;
+    }
     /*endif*/
     memset (reply, 0, total_size);
     FrameMgrSetBuffer (fm, reply);

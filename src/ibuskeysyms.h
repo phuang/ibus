@@ -1,23 +1,23 @@
 /* -*- mode: C; c-basic-offset: 4; indent-tabs-mode: nil; -*- */
 /* vim:set et sts=4: */
 /* ibus - The Input Bus
- * Copyright (C) 2008-2010 Peng Huang <shawn.p.huang@gmail.com>
- * Copyright (C) 2008-2010 Red Hat, Inc.
+ * Copyright (C) 2008-2013 Peng Huang <shawn.p.huang@gmail.com>
+ * Copyright (C) 2008-2013 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
@@ -274,6 +274,10 @@
 #define IBUS_KEY_dead_invertedbreve 0xfe6d
 #define IBUS_KEY_dead_belowcomma 0xfe6e
 #define IBUS_KEY_dead_currency 0xfe6f
+#define IBUS_KEY_dead_lowline 0xfe90
+#define IBUS_KEY_dead_aboveverticalline 0xfe91
+#define IBUS_KEY_dead_belowverticalline 0xfe92
+#define IBUS_KEY_dead_longsolidusoverlay 0xfe93
 #define IBUS_KEY_dead_a 0xfe80
 #define IBUS_KEY_dead_A 0xfe81
 #define IBUS_KEY_dead_e 0xfe82
@@ -286,6 +290,7 @@
 #define IBUS_KEY_dead_U 0xfe89
 #define IBUS_KEY_dead_small_schwa 0xfe8a
 #define IBUS_KEY_dead_capital_schwa 0xfe8b
+#define IBUS_KEY_dead_greek 0xfe8c
 #define IBUS_KEY_First_Virtual_Screen 0xfed0
 #define IBUS_KEY_Prev_Virtual_Screen 0xfed1
 #define IBUS_KEY_Next_Virtual_Screen 0xfed2
@@ -1200,6 +1205,7 @@
 #define IBUS_KEY_leftdoublequotemark 0xad2
 #define IBUS_KEY_rightdoublequotemark 0xad3
 #define IBUS_KEY_prescription 0xad4
+#define IBUS_KEY_permille 0xad5
 #define IBUS_KEY_minutes 0xad6
 #define IBUS_KEY_seconds 0xad7
 #define IBUS_KEY_latincross 0xad9
@@ -1633,6 +1639,8 @@
 #define IBUS_KEY_obarred 0x1000275
 #define IBUS_KEY_SCHWA 0x100018f
 #define IBUS_KEY_schwa 0x1000259
+#define IBUS_KEY_EZH 0x10001b7
+#define IBUS_KEY_ezh 0x1000292
 #define IBUS_KEY_Lbelowdot 0x1001e36
 #define IBUS_KEY_lbelowdot 0x1001e37
 #define IBUS_KEY_Abelowdot 0x1001ea0
@@ -2118,5 +2126,184 @@
 #define IBUS_KEY_Sinh_ruu2 0x1000df2
 #define IBUS_KEY_Sinh_luu2 0x1000df3
 #define IBUS_KEY_Sinh_kunddaliya 0x1000df4
+#define IBUS_KEY_ModeLock 0x1008ff01
+#define IBUS_KEY_MonBrightnessUp 0x1008ff02
+#define IBUS_KEY_MonBrightnessDown 0x1008ff03
+#define IBUS_KEY_KbdLightOnOff 0x1008ff04
+#define IBUS_KEY_KbdBrightnessUp 0x1008ff05
+#define IBUS_KEY_KbdBrightnessDown 0x1008ff06
+#define IBUS_KEY_Standby 0x1008ff10
+#define IBUS_KEY_AudioLowerVolume 0x1008ff11
+#define IBUS_KEY_AudioMute 0x1008ff12
+#define IBUS_KEY_AudioRaiseVolume 0x1008ff13
+#define IBUS_KEY_AudioPlay 0x1008ff14
+#define IBUS_KEY_AudioStop 0x1008ff15
+#define IBUS_KEY_AudioPrev 0x1008ff16
+#define IBUS_KEY_AudioNext 0x1008ff17
+#define IBUS_KEY_HomePage 0x1008ff18
+#define IBUS_KEY_Mail 0x1008ff19
+#define IBUS_KEY_Start 0x1008ff1a
+#define IBUS_KEY_Search 0x1008ff1b
+#define IBUS_KEY_AudioRecord 0x1008ff1c
+#define IBUS_KEY_Calculator 0x1008ff1d
+#define IBUS_KEY_Memo 0x1008ff1e
+#define IBUS_KEY_ToDoList 0x1008ff1f
+#define IBUS_KEY_Calendar 0x1008ff20
+#define IBUS_KEY_PowerDown 0x1008ff21
+#define IBUS_KEY_ContrastAdjust 0x1008ff22
+#define IBUS_KEY_RockerUp 0x1008ff23
+#define IBUS_KEY_RockerDown 0x1008ff24
+#define IBUS_KEY_RockerEnter 0x1008ff25
+#define IBUS_KEY_Back 0x1008ff26
+#define IBUS_KEY_Forward 0x1008ff27
+#define IBUS_KEY_Stop 0x1008ff28
+#define IBUS_KEY_Refresh 0x1008ff29
+#define IBUS_KEY_PowerOff 0x1008ff2a
+#define IBUS_KEY_WakeUp 0x1008ff2b
+#define IBUS_KEY_Eject 0x1008ff2c
+#define IBUS_KEY_ScreenSaver 0x1008ff2d
+#define IBUS_KEY_WWW 0x1008ff2e
+#define IBUS_KEY_Sleep 0x1008ff2f
+#define IBUS_KEY_Favorites 0x1008ff30
+#define IBUS_KEY_AudioPause 0x1008ff31
+#define IBUS_KEY_AudioMedia 0x1008ff32
+#define IBUS_KEY_MyComputer 0x1008ff33
+#define IBUS_KEY_VendorHome 0x1008ff34
+#define IBUS_KEY_LightBulb 0x1008ff35
+#define IBUS_KEY_Shop 0x1008ff36
+#define IBUS_KEY_History 0x1008ff37
+#define IBUS_KEY_OpenURL 0x1008ff38
+#define IBUS_KEY_AddFavorite 0x1008ff39
+#define IBUS_KEY_HotLinks 0x1008ff3a
+#define IBUS_KEY_BrightnessAdjust 0x1008ff3b
+#define IBUS_KEY_Finance 0x1008ff3c
+#define IBUS_KEY_Community 0x1008ff3d
+#define IBUS_KEY_AudioRewind 0x1008ff3e
+#define IBUS_KEY_BackForward 0x1008ff3f
+#define IBUS_KEY_Launch0 0x1008ff40
+#define IBUS_KEY_Launch1 0x1008ff41
+#define IBUS_KEY_Launch2 0x1008ff42
+#define IBUS_KEY_Launch3 0x1008ff43
+#define IBUS_KEY_Launch4 0x1008ff44
+#define IBUS_KEY_Launch5 0x1008ff45
+#define IBUS_KEY_Launch6 0x1008ff46
+#define IBUS_KEY_Launch7 0x1008ff47
+#define IBUS_KEY_Launch8 0x1008ff48
+#define IBUS_KEY_Launch9 0x1008ff49
+#define IBUS_KEY_LaunchA 0x1008ff4a
+#define IBUS_KEY_LaunchB 0x1008ff4b
+#define IBUS_KEY_LaunchC 0x1008ff4c
+#define IBUS_KEY_LaunchD 0x1008ff4d
+#define IBUS_KEY_LaunchE 0x1008ff4e
+#define IBUS_KEY_LaunchF 0x1008ff4f
+#define IBUS_KEY_ApplicationLeft 0x1008ff50
+#define IBUS_KEY_ApplicationRight 0x1008ff51
+#define IBUS_KEY_Book 0x1008ff52
+#define IBUS_KEY_CD 0x1008ff53
+#define IBUS_KEY_WindowClear 0x1008ff55
+#define IBUS_KEY_Close 0x1008ff56
+#define IBUS_KEY_Copy 0x1008ff57
+#define IBUS_KEY_Cut 0x1008ff58
+#define IBUS_KEY_Display 0x1008ff59
+#define IBUS_KEY_DOS 0x1008ff5a
+#define IBUS_KEY_Documents 0x1008ff5b
+#define IBUS_KEY_Excel 0x1008ff5c
+#define IBUS_KEY_Explorer 0x1008ff5d
+#define IBUS_KEY_Game 0x1008ff5e
+#define IBUS_KEY_Go 0x1008ff5f
+#define IBUS_KEY_iTouch 0x1008ff60
+#define IBUS_KEY_LogOff 0x1008ff61
+#define IBUS_KEY_Market 0x1008ff62
+#define IBUS_KEY_Meeting 0x1008ff63
+#define IBUS_KEY_MenuKB 0x1008ff65
+#define IBUS_KEY_MenuPB 0x1008ff66
+#define IBUS_KEY_MySites 0x1008ff67
+#define IBUS_KEY_New 0x1008ff68
+#define IBUS_KEY_News 0x1008ff69
+#define IBUS_KEY_OfficeHome 0x1008ff6a
+#define IBUS_KEY_Open 0x1008ff6b
+#define IBUS_KEY_Option 0x1008ff6c
+#define IBUS_KEY_Paste 0x1008ff6d
+#define IBUS_KEY_Phone 0x1008ff6e
+#define IBUS_KEY_Reply 0x1008ff72
+#define IBUS_KEY_Reload 0x1008ff73
+#define IBUS_KEY_RotateWindows 0x1008ff74
+#define IBUS_KEY_RotationPB 0x1008ff75
+#define IBUS_KEY_RotationKB 0x1008ff76
+#define IBUS_KEY_Save 0x1008ff77
+#define IBUS_KEY_ScrollUp 0x1008ff78
+#define IBUS_KEY_ScrollDown 0x1008ff79
+#define IBUS_KEY_ScrollClick 0x1008ff7a
+#define IBUS_KEY_Send 0x1008ff7b
+#define IBUS_KEY_Spell 0x1008ff7c
+#define IBUS_KEY_SplitScreen 0x1008ff7d
+#define IBUS_KEY_Support 0x1008ff7e
+#define IBUS_KEY_TaskPane 0x1008ff7f
+#define IBUS_KEY_Terminal 0x1008ff80
+#define IBUS_KEY_Tools 0x1008ff81
+#define IBUS_KEY_Travel 0x1008ff82
+#define IBUS_KEY_UserPB 0x1008ff84
+#define IBUS_KEY_User1KB 0x1008ff85
+#define IBUS_KEY_User2KB 0x1008ff86
+#define IBUS_KEY_Video 0x1008ff87
+#define IBUS_KEY_WheelButton 0x1008ff88
+#define IBUS_KEY_Word 0x1008ff89
+#define IBUS_KEY_Xfer 0x1008ff8a
+#define IBUS_KEY_ZoomIn 0x1008ff8b
+#define IBUS_KEY_ZoomOut 0x1008ff8c
+#define IBUS_KEY_Away 0x1008ff8d
+#define IBUS_KEY_Messenger 0x1008ff8e
+#define IBUS_KEY_WebCam 0x1008ff8f
+#define IBUS_KEY_MailForward 0x1008ff90
+#define IBUS_KEY_Pictures 0x1008ff91
+#define IBUS_KEY_Music 0x1008ff92
+#define IBUS_KEY_Battery 0x1008ff93
+#define IBUS_KEY_Bluetooth 0x1008ff94
+#define IBUS_KEY_WLAN 0x1008ff95
+#define IBUS_KEY_UWB 0x1008ff96
+#define IBUS_KEY_AudioForward 0x1008ff97
+#define IBUS_KEY_AudioRepeat 0x1008ff98
+#define IBUS_KEY_AudioRandomPlay 0x1008ff99
+#define IBUS_KEY_Subtitle 0x1008ff9a
+#define IBUS_KEY_AudioCycleTrack 0x1008ff9b
+#define IBUS_KEY_CycleAngle 0x1008ff9c
+#define IBUS_KEY_FrameBack 0x1008ff9d
+#define IBUS_KEY_FrameForward 0x1008ff9e
+#define IBUS_KEY_Time 0x1008ff9f
+#define IBUS_KEY_SelectButton 0x1008ffa0
+#define IBUS_KEY_View 0x1008ffa1
+#define IBUS_KEY_TopMenu 0x1008ffa2
+#define IBUS_KEY_Red 0x1008ffa3
+#define IBUS_KEY_Green 0x1008ffa4
+#define IBUS_KEY_Yellow 0x1008ffa5
+#define IBUS_KEY_Blue 0x1008ffa6
+#define IBUS_KEY_Suspend 0x1008ffa7
+#define IBUS_KEY_Hibernate 0x1008ffa8
+#define IBUS_KEY_TouchpadToggle 0x1008ffa9
+#define IBUS_KEY_TouchpadOn 0x1008ffb0
+#define IBUS_KEY_TouchpadOff 0x1008ffb1
+#define IBUS_KEY_AudioMicMute 0x1008ffb2
+#define IBUS_KEY_Keyboard 0x1008ffb3
+#define IBUS_KEY_WWAN 0x1008ffb4
+#define IBUS_KEY_RFKill 0x1008ffb5
+#define IBUS_KEY_AudioPreset 0x1008ffb6
+#define IBUS_KEY_Switch_VT_1 0x1008fe01
+#define IBUS_KEY_Switch_VT_2 0x1008fe02
+#define IBUS_KEY_Switch_VT_3 0x1008fe03
+#define IBUS_KEY_Switch_VT_4 0x1008fe04
+#define IBUS_KEY_Switch_VT_5 0x1008fe05
+#define IBUS_KEY_Switch_VT_6 0x1008fe06
+#define IBUS_KEY_Switch_VT_7 0x1008fe07
+#define IBUS_KEY_Switch_VT_8 0x1008fe08
+#define IBUS_KEY_Switch_VT_9 0x1008fe09
+#define IBUS_KEY_Switch_VT_10 0x1008fe0a
+#define IBUS_KEY_Switch_VT_11 0x1008fe0b
+#define IBUS_KEY_Switch_VT_12 0x1008fe0c
+#define IBUS_KEY_Ungrab 0x1008fe20
+#define IBUS_KEY_ClearGrab 0x1008fe21
+#define IBUS_KEY_Next_VMode 0x1008fe22
+#define IBUS_KEY_Prev_VMode 0x1008fe23
+#define IBUS_KEY_LogWindowTree 0x1008fe24
+#define IBUS_KEY_LogGrabInfo 0x1008fe25
 
 #endif /* __IBUS_KEYSYMS_H__ */

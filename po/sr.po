@@ -1,615 +1,693 @@
-# Serbian translations for ibus
-# Copyright (C) 2008 Huang Peng <shawn.p.huang@gmail.com>
+# translation of ibus.pot to Serbian
+# Serbian translation of ibus.
+# Copyright (C) 2008-2015 Peng Huang <shawn.p.huang@gmail.com>
 # This file is distributed under the same license as the ibus package.
-# Miloš Komarčević <kmilos@gmail.com>, 2009.
 #
+# Translators:
+# Miloš Komarčević <kmilos@gmail.com>, 2009
 msgid ""
 msgstr ""
-"Project-Id-Version: ibus\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-12 00:41+0900\n"
-"PO-Revision-Date: 2009-04-01 19:58+0100\n"
+"Project-Id-Version: IBus\n"
+"Report-Msgid-Bugs-To: https://github.com/ibus/ibus/issues\n"
+"POT-Creation-Date: 2014-02-18 13:46+0900\n"
+"PO-Revision-Date: 2014-02-18 05:49+0000\n"
 "Last-Translator: Miloš Komarčević <kmilos@gmail.com>\n"
 "Language-Team: Serbian <fedora-trans-sr@redhat.com>\n"
-"Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-
-#: ../bus/ibus.desktop.in.h:1
-msgid "IBus"
-msgstr "IBus"
-
-#: ../bus/ibus.desktop.in.h:2
-#, fuzzy
-msgid "Input Method Framework"
-msgstr "IBus радни оквир методе уноса"
-
-#: ../bus/ibus.desktop.in.h:3
-#, fuzzy
-msgid "Start IBus Input Method Framework"
-msgstr "IBus радни оквир методе уноса"
-
-#: ../ibus/_config.py.in:39
-msgid ""
-"Copyright (c) 2007-2010 Peng Huang\n"
-"Copyright (c) 2007-2010 Red Hat, Inc."
-msgstr ""
-
-#: ../ibus/lang.py:41
-msgid "Other"
-msgstr "Друго"
-
-#: ../ui/gtk/candidatepanel.py:264
-#, fuzzy
-msgid "Previous page"
-msgstr "Претходна метода уноса:"
-
-#: ../ui/gtk/candidatepanel.py:269
-#, fuzzy
-msgid "Next page"
-msgstr "следећи погон"
-
-#: ../ui/gtk/main.py:55
-msgid ""
-"Some input methods have been installed, removed or updated. Please restart "
-"ibus input platform."
-msgstr ""
-
-#: ../ui/gtk/main.py:59
-#, fuzzy
-msgid "Restart Now"
-msgstr "Покрени поново"
-
-#: ../ui/gtk/main.py:60
-#, fuzzy
-msgid "Later"
-msgstr "Друго"
-
-#: ../ui/gtk/panel.py:109
-msgid "IBus input method framework"
-msgstr "IBus радни оквир методе уноса"
-
-#: ../ui/gtk/panel.py:327
-msgid "Restart"
-msgstr "Покрени поново"
-
-#: ../ui/gtk/panel.py:414
-#, fuzzy
-msgid "Turn off input method"
-msgstr "Нема методе уноса"
-
-#: ../ui/gtk/panel.py:453
-msgid "No input window"
-msgstr ""
-
-#: ../ui/gtk/panel.py:484
-msgid "IBus is an intelligent input bus for Linux/Unix."
-msgstr "IBus је интелигентна магистрала уноса за Linux/Unix."
-
-#: ../ui/gtk/panel.py:488
-msgid "translator-credits"
-msgstr "Serbian <fedora-trans-sr@redhat.com>"
-
-#: ../ui/gtk/languagebar.py:106
-#, fuzzy
-msgid "About the input method"
-msgstr "Методе уноса"
-
-#: ../ui/gtk/languagebar.py:214
-#, fuzzy
-msgid "Switch input method"
-msgstr "Нема методе уноса"
-
-#: ../ui/gtk/languagebar.py:357 ../ui/gtk/engineabout.py:33
-#: ../setup/engineabout.py:33 ../setup/setup.ui.h:16
-msgid "About"
-msgstr "О програму"
-
-#: ../ui/gtk/languagebar.py:361
-#, fuzzy
-msgid "About the Input Method"
-msgstr "Методе уноса"
-
-#: ../ui/gtk/engineabout.py:61 ../setup/engineabout.py:61
-#, python-format
-msgid "Language: %s\n"
-msgstr ""
-
-#: ../ui/gtk/engineabout.py:63 ../setup/engineabout.py:63
-#, fuzzy, python-format
-msgid "Keyboard layout: %s\n"
-msgstr "Пречице тастатуре"
-
-#: ../ui/gtk/engineabout.py:65 ../setup/engineabout.py:65
-#, python-format
-msgid "Author: %s\n"
-msgstr ""
-
-#: ../ui/gtk/engineabout.py:67 ../setup/engineabout.py:67
-msgid "Description:\n"
-msgstr ""
-
-#: ../setup/main.py:102
-msgid "trigger"
-msgstr "окидач"
-
-#: ../setup/main.py:113
-msgid "enable"
-msgstr ""
-
-#: ../setup/main.py:124
-msgid "disable"
-msgstr ""
-
-#: ../setup/main.py:135
-#, fuzzy
-msgid "next input method"
-msgstr "Следећа метода уноса"
-
-#: ../setup/main.py:146
-#, fuzzy
-msgid "previous input method"
-msgstr "Претходна метода уноса"
-
-#: ../setup/main.py:286
-msgid "IBus daemon is not started. Do you want to start it now?"
-msgstr "IBus демон није покренут. Да ли желите да га сада покренете?"
-
-#: ../setup/main.py:301
-msgid ""
-"IBus has been started! If you can not use IBus, please add below lines in "
-"$HOME/.bashrc, and relogin your desktop.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
-msgstr ""
-"IBus је покренут! Ако не можете да користите IBus, додајте редове испод у "
-"$HOME/.bashrc, и поново се пријавите у ваше радно окружење.\n"
-"  export GTK_IM_MODULE=ibus\n"
-"  export XMODIFIERS=@im=ibus\n"
-"  export QT_IM_MODULE=ibus"
-
-#: ../setup/main.py:316
-#, python-format
-msgid "Select keyboard shortcut for %s"
-msgstr "Изаберите пречицу тастатуре за %s"
-
-#: ../setup/keyboardshortcut.py:52
-msgid "Keyboard shortcuts"
-msgstr "Пречице тастатуре"
-
-#: ../setup/keyboardshortcut.py:63
-msgid "Key code:"
-msgstr "Код тастера:"
-
-#: ../setup/keyboardshortcut.py:78
-msgid "Modifiers:"
-msgstr "Модификатори:"
-
-#: ../setup/keyboardshortcut.py:231
-msgid ""
-"Please press a key (or a key combination).\n"
-"The dialog will be closed when the key is released."
-msgstr ""
-"Притисните тастер (или комбинацију тастера).\n"
-"Прозорче ће бити затворено када се тастер отпусти."
-
-#: ../setup/keyboardshortcut.py:233
-msgid "Please press a key (or a key combination)"
-msgstr "Притисните тастер (или комбинацију тастера)"
-
-#: ../setup/enginecombobox.py:120
-msgid "Select an input method"
-msgstr "Изаберите методу уноса"
-
-#. create im name & icon column
-#: ../setup/enginetreeview.py:64 ../setup/setup.ui.h:33
-#, fuzzy
-msgid "Input Method"
-msgstr "Методе уноса"
-
-#: ../setup/enginetreeview.py:92
-msgid "Kbd"
-msgstr ""
-
-#: ../setup/ibus-setup.desktop.in.h:1 ../setup/setup.ui.h:32
-msgid "IBus Preferences"
-msgstr "IBus поставке"
-
-#: ../setup/ibus-setup.desktop.in.h:2
-#, fuzzy
-msgid "Set IBus Preferences"
-msgstr "IBus поставке"
-
-#: ../data/ibus.schemas.in.h:1
-#, fuzzy
-msgid "Auto hide"
-msgstr "Самостално сакривање"
-
-#: ../data/ibus.schemas.in.h:2
-#, fuzzy
-msgid "Custom font"
-msgstr "Прилагођени фонт:"
-
-#: ../data/ibus.schemas.in.h:3
-msgid "Custom font name for language panel"
-msgstr "Назив прилагођеног фонта за језички панел"
-
-#: ../data/ibus.schemas.in.h:4
-msgid "Embed Preedit Text"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:5
-msgid "Embed Preedit Text in Application Window"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:6
-#, fuzzy
-msgid "Enable input method by default"
-msgstr "Следећа метода уноса"
-
-#: ../data/ibus.schemas.in.h:7
-msgid "Enable input method by default when the application gets input focus"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:8
-#, fuzzy
-msgid "Language panel position"
-msgstr "Прикажи језички панел:"
-
-#: ../data/ibus.schemas.in.h:9
-#, fuzzy
-msgid "Next engine shortcut keys"
-msgstr "Пречица следећег погона"
-
-#: ../data/ibus.schemas.in.h:10
-#, fuzzy
-msgid "Orientation of lookup table"
-msgstr "Оријентација референтне табеле"
-
-#: ../data/ibus.schemas.in.h:11
-#, fuzzy
-msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
-msgstr "Оријентација референтне табеле. 0 = водоравно, 1 = усправно"
-
-#: ../data/ibus.schemas.in.h:12
-#, fuzzy
-msgid "Preload engines"
-msgstr "Унапред учитај погоне"
-
-#: ../data/ibus.schemas.in.h:13
-#, fuzzy
-msgid "Preload engines during ibus starts up"
-msgstr "Унапред учитај погоне током ibus покретања"
-
-#: ../data/ibus.schemas.in.h:14
-#, fuzzy
-msgid "Prev engine shortcut keys"
-msgstr "Пречица претходног погона"
-
-#: ../data/ibus.schemas.in.h:15 ../setup/setup.ui.h:42
-msgid "Share the same input method among all applications"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:16 ../setup/setup.ui.h:43
-msgid "Show icon on system tray"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:17
-#, fuzzy
-msgid "Show input method name"
-msgstr "Назив прилагођеног фонта за језички панел"
-
-#: ../data/ibus.schemas.in.h:18 ../setup/setup.ui.h:45
-#, fuzzy
-msgid "Show input method name on language bar"
-msgstr "Назив прилагођеног фонта за језички панел"
-
-#: ../data/ibus.schemas.in.h:19
-#, fuzzy
-msgid ""
-"The behavior of language panel. 0 = Embedded in menu, 1 = Auto hide, 2 = "
-"Always show"
-msgstr ""
-"Понашање језичког панела. 0 = увек сакривен, 1 = самостално сакривање, 2 = "
-"увек приказан"
-
-#: ../data/ibus.schemas.in.h:20
-msgid ""
-"The position of the language panel. 0 = Top left corner, 1 = Top right "
-"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:21
-#, fuzzy
-msgid "The shortcut keys for switching to the next input method in the list"
-msgstr "Пречица следећег погона за пребацивање на следећи погон методе уноса"
-
-#: ../data/ibus.schemas.in.h:22
-#, fuzzy
-msgid "The shortcut keys for switching to the previous input method"
-msgstr ""
-"Пречица претходног погона за пребацивање на претходни погон методе уноса"
-
-#: ../data/ibus.schemas.in.h:23 ../setup/setup.ui.h:51
-#, fuzzy
-msgid "The shortcut keys for turning input method on or off"
-msgstr ""
-"Пречица претходног погона за пребацивање на претходни погон методе уноса"
-
-#: ../data/ibus.schemas.in.h:24
-#, fuzzy
-msgid "Trigger shortcut keys"
-msgstr "Пречица окидача"
-
-#: ../data/ibus.schemas.in.h:25
-msgid "Use custom font"
-msgstr "Употреби прилагођени фонт"
-
-#: ../data/ibus.schemas.in.h:26
-msgid "Use custom font name for language panel"
-msgstr "Користи прилагођени фонт за језички панел"
-
-#: ../data/ibus.schemas.in.h:27
-#, fuzzy
-msgid "Use global input method"
-msgstr "Изаберите методу уноса"
-
-#: ../data/ibus.schemas.in.h:28 ../setup/setup.ui.h:55
-msgid "Use system keyboard (XKB) layout"
-msgstr ""
-
-#: ../data/ibus.schemas.in.h:29 ../setup/setup.ui.h:56
-msgid "Use system keyboard layout"
-msgstr ""
+"Language: sr\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../setup/setup.ui.h:1
-msgid "..."
-msgstr "..."
+msgid "Horizontal"
+msgstr ""
 
 #: ../setup/setup.ui.h:2
-msgid "<b>Font and Style</b>"
-msgstr "<b>Фонт и стил</b>"
+msgid "Vertical"
+msgstr ""
 
 #: ../setup/setup.ui.h:3
-msgid "<b>Global input method settings</b>"
-msgstr "Изаберите методу уноса"
+msgid "Top left corner"
+msgstr ""
 
 #: ../setup/setup.ui.h:4
-#, fuzzy
-msgid "<b>Keyboard Layout</b>"
-msgstr "<b>Пречице тастатуре</b>"
+msgid "Top right corner"
+msgstr ""
 
 #: ../setup/setup.ui.h:5
-msgid "<b>Keyboard Shortcuts</b>"
-msgstr "<b>Пречице тастатуре</b>"
-
-#: ../setup/setup.ui.h:6
-msgid "<b>Startup</b>"
-msgstr "<b>Покретање</b>"
-
-#: ../setup/setup.ui.h:7
-msgid ""
-"<big><b>IBus</b></big>\n"
-"<small>The intelligent input bus</small>\n"
-"Homepage: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-msgstr ""
-"<big><b>IBus</b></big>\n"
-"<small>Интелигентна магистрала уноса</small>\n"
-"Матична страница: http://code.google.com/p/ibus\n"
-"\n"
-"\n"
-"\n"
-
-#: ../setup/setup.ui.h:14
-msgid ""
-"<small><i>The default input method is the top one in the list.\n"
-"You may use up/down buttons to change it.</i></small>"
-msgstr ""
-
-#: ../setup/setup.ui.h:17
-msgid "Add the selected input method into the enabled input methods"
-msgstr ""
-
-#: ../setup/setup.ui.h:18
-msgid "Advanced"
-msgstr ""
-
-#: ../setup/setup.ui.h:19
-msgid "Always"
-msgstr ""
-
-#: ../setup/setup.ui.h:20
 msgid "Bottom left corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:21
+#: ../setup/setup.ui.h:6
 msgid "Bottom right corner"
 msgstr ""
 
-#: ../setup/setup.ui.h:22
-msgid "Candidates orientation:"
-msgstr "Оријентације кандидата:"
-
-#: ../setup/setup.ui.h:23
-#, fuzzy
+#: ../setup/setup.ui.h:7
 msgid "Custom"
-msgstr "Прилагођени фонт:"
-
-#: ../setup/setup.ui.h:24
-msgid "Disable:"
 msgstr ""
 
-#: ../setup/setup.ui.h:25
-msgid "Embed preedit text in application window"
+#: ../setup/setup.ui.h:8
+msgid "Do not show"
 msgstr ""
 
-#: ../setup/setup.ui.h:26
-msgid "Embed the preedit text of input method in the application window"
+#: ../setup/setup.ui.h:9
+msgid "Hide automatically"
 msgstr ""
 
-#: ../setup/setup.ui.h:27
-msgid "Embedded in menu"
+#: ../setup/setup.ui.h:10
+msgid "Always"
 msgstr ""
 
-#: ../setup/setup.ui.h:28
-msgid "Enable or disable:"
-msgstr "Укључи или искључи:"
+#: ../setup/setup.ui.h:11 ../setup/ibus-setup.desktop.in.h:1
+msgid "IBus Preferences"
+msgstr "IBus поставке"
 
-#: ../setup/setup.ui.h:29
-msgid "Enable:"
+#: ../setup/setup.ui.h:12
+msgid "The shortcut keys for switching to next input method in the list"
 msgstr ""
 
-#: ../setup/setup.ui.h:30
-msgid "General"
-msgstr "Опште"
-
-#: ../setup/setup.ui.h:31
-#, fuzzy
-msgid "Horizontal"
-msgstr ""
-"Водоравно\n"
-"Усправно"
-
-#: ../setup/setup.ui.h:34
-#, fuzzy
-msgid "Language panel position:"
-msgstr "Прикажи језички панел:"
-
-#: ../setup/setup.ui.h:35
-msgid "Move down the selected input method in the enabled input methods"
-msgstr ""
-
-#: ../setup/setup.ui.h:36
-msgid "Move up the selected input method in the enabled input methods list"
-msgstr ""
-
-#: ../setup/setup.ui.h:37
+#: ../setup/setup.ui.h:13
 msgid "Next input method:"
 msgstr "Следећа метода уноса:"
 
-#: ../setup/setup.ui.h:38
-#, fuzzy
-msgid "Previous input method:"
-msgstr "Претходна метода уноса:"
-
-#: ../setup/setup.ui.h:39
-msgid "Remove the selected input method from the enabled input methods"
+#: ../setup/setup.ui.h:14
+msgid "The shortcut keys for switching to previous input method in the list"
 msgstr ""
 
-#: ../setup/setup.ui.h:40
+#: ../setup/setup.ui.h:15
+msgid "Previous input method:"
+msgstr ""
+
+#: ../setup/setup.ui.h:16
+msgid "..."
+msgstr "..."
+
+#: ../setup/setup.ui.h:17 ../data/ibus.schemas.in.h:10
+msgid "The shortcut keys for turning input method on or off"
+msgstr ""
+
+#: ../setup/setup.ui.h:18
+msgid "Enable or disable:"
+msgstr "Укључи или искључи:"
+
+#: ../setup/setup.ui.h:19
+msgid "Enable:"
+msgstr ""
+
+#: ../setup/setup.ui.h:20
+msgid "Disable:"
+msgstr ""
+
+#: ../setup/setup.ui.h:21
+msgid "<b>Keyboard Shortcuts</b>"
+msgstr "<b>Пречице тастатуре</b>"
+
+#: ../setup/setup.ui.h:22
+msgid "Set the orientation of candidates in lookup table"
+msgstr ""
+
+#: ../setup/setup.ui.h:23
+msgid "Candidates orientation:"
+msgstr "Оријентације кандидата:"
+
+#: ../setup/setup.ui.h:24
 msgid "Set the behavior of ibus how to show or hide language bar"
 msgstr ""
 
+#: ../setup/setup.ui.h:25
+msgid "Show property panel:"
+msgstr ""
+
+#: ../setup/setup.ui.h:26
+msgid "Language panel position:"
+msgstr ""
+
+#: ../setup/setup.ui.h:27 ../data/ibus.schemas.in.h:30
+msgid "Show icon on system tray"
+msgstr ""
+
+#: ../setup/setup.ui.h:28 ../data/ibus.schemas.in.h:32
+msgid "Show input method name on language bar"
+msgstr ""
+
+#: ../setup/setup.ui.h:29
+msgid "Show input method's name on language bar when check the checkbox"
+msgstr ""
+
+#: ../setup/setup.ui.h:30
+msgid "Embed preedit text in application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:31
+msgid "Embed the preedit text of input method in the application window"
+msgstr ""
+
+#: ../setup/setup.ui.h:32
+msgid "Use custom font:"
+msgstr ""
+
+#: ../setup/setup.ui.h:33
+msgid "<b>Font and Style</b>"
+msgstr "<b>Фонт и стил</b>"
+
+#: ../setup/setup.ui.h:34
+msgid "General"
+msgstr "Опште"
+
+#. add button
+#: ../setup/setup.ui.h:35 ../setup/keyboardshortcut.py:127
+msgid "_Add"
+msgstr "_Додај"
+
+#: ../setup/setup.ui.h:36
+msgid "Add the selected input method into the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:37
+msgid "_Remove"
+msgstr "_Уклони"
+
+#: ../setup/setup.ui.h:38
+msgid "Remove the selected input method from the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:39
+msgid "_Up"
+msgstr "_Горе"
+
+#: ../setup/setup.ui.h:40
+msgid "Move up the selected input method in the enabled input methods list"
+msgstr ""
+
 #: ../setup/setup.ui.h:41
-#, fuzzy
-msgid "Set the orientation of candidates in lookup table"
-msgstr "Оријентација референтне табеле"
+msgid "_Down"
+msgstr "_Доле"
+
+#: ../setup/setup.ui.h:42
+msgid "Move down the selected input method in the enabled input methods"
+msgstr ""
+
+#: ../setup/setup.ui.h:43
+msgid "_About"
+msgstr "_О програму"
 
 #: ../setup/setup.ui.h:44
 msgid "Show information of the selected input method"
 msgstr ""
 
+#: ../setup/setup.ui.h:45
+msgid "_Preferences"
+msgstr "Пос_тавке"
+
 #: ../setup/setup.ui.h:46
-#, fuzzy
-msgid "Show input method's name on language bar when check the checkbox"
-msgstr "Назив прилагођеног фонта за језички панел"
+msgid "Show setup of the selected input method"
+msgstr ""
 
 #: ../setup/setup.ui.h:47
-msgid "Show language panel:"
-msgstr "Прикажи језички панел:"
-
-#: ../setup/setup.ui.h:48
-msgid "Start ibus on login"
-msgstr "Покрени ibus при пријави"
-
-#: ../setup/setup.ui.h:49
-#, fuzzy
-msgid "The shortcut keys for switching to next input method in the list"
-msgstr "Пречица следећег погона за пребацивање на следећи погон методе уноса"
-
-#: ../setup/setup.ui.h:50
-#, fuzzy
-msgid "The shortcut keys for switching to previous input method in the list"
+msgid ""
+"<small><i>The active input method can be switched around from the selected "
+"ones in the above list by pressing the keyboard shortcut keys or clicking "
+"the panel icon.</i></small>"
 msgstr ""
-"Пречица претходног погона за пребацивање на претходни погон методе уноса"
 
-#: ../setup/setup.ui.h:52
-msgid "Top left corner"
+#. create im name & icon column
+#: ../setup/setup.ui.h:48 ../setup/enginetreeview.py:66
+msgid "Input Method"
+msgstr ""
+
+#: ../setup/setup.ui.h:49 ../data/ibus.schemas.in.h:33
+msgid "Use system keyboard layout"
+msgstr ""
+
+#: ../setup/setup.ui.h:50 ../data/ibus.schemas.in.h:34
+msgid "Use system keyboard (XKB) layout"
+msgstr ""
+
+#: ../setup/setup.ui.h:51
+msgid "<b>Keyboard Layout</b>"
+msgstr ""
+
+#: ../setup/setup.ui.h:52 ../data/ibus.schemas.in.h:42
+msgid "Share the same input method among all applications"
 msgstr ""
 
 #: ../setup/setup.ui.h:53
-msgid "Top right corner"
-msgstr ""
+msgid "<b>Global input method settings</b>"
+msgstr "Изаберите методу уноса"
 
 #: ../setup/setup.ui.h:54
-#, fuzzy
-msgid "Use custom font:"
+msgid "Advanced"
+msgstr ""
+
+#: ../setup/setup.ui.h:55
+msgid ""
+"<big><b>IBus</b></big>\n"
+"<small>The intelligent input bus</small>\n"
+"Homepage: https://github.com/ibus/ibus/wiki\n"
+"\n"
+"\n"
+"\n"
+msgstr "<big><b>IBus</b></big>\n<small>Интелигентна магистрала уноса</small>\nМатична страница: https://github.com/ibus/ibus/wiki\n\n\n\n"
+
+#: ../setup/setup.ui.h:62
+msgid "Start ibus on login"
+msgstr "Покрени ibus при пријави"
+
+#: ../setup/setup.ui.h:63
+msgid "<b>Startup</b>"
+msgstr "<b>Покретање</b>"
+
+#: ../setup/setup.ui.h:64 ../setup/engineabout.py:34 ../ui/gtk3/panel.vala:736
+msgid "About"
+msgstr "О програму"
+
+#: ../setup/setup.ui.h:65 ../setup/engineabout.py:36
+msgid "_Close"
+msgstr "_Затвори"
+
+#: ../data/ibus.schemas.in.h:1
+msgid "Preload engines"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:2
+msgid "Preload engines during ibus starts up"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:3
+msgid "Engines order"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:4
+msgid "Saved engines order in input method list"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:5
+msgid "Popup delay milliseconds for IME switcher window"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:6
+msgid ""
+"Set popup delay milliseconds to show IME switcher window. The default is "
+"400. 0 = Show the window immediately. 0 &lt; Delay milliseconds. 0 &gt; Do "
+"not show the window and switch prev/next engines."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:7
+msgid "Saved version number"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:8
+msgid ""
+"The saved version number will be used to check the difference between the "
+"version of the previous installed ibus and one of the current ibus."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:9
+msgid "Trigger shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:11
+msgid "Trigger shortcut keys for gtk_accelerator_parse"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:12
+msgid "Enable shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:13
+msgid "The shortcut keys for turning input method on"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:14
+msgid "Disable shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:15
+msgid "The shortcut keys for turning input method off"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:16
+msgid "Next engine shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:17
+msgid "The shortcut keys for switching to the next input method in the list"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:18
+msgid "Prev engine shortcut keys"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:19
+msgid "The shortcut keys for switching to the previous input method"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:20
+msgid "Auto hide"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:21
+msgid ""
+"The behavior of property panel. 0 = Do not show, 1 = Auto hide, 2 = Always "
+"show"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:22
+msgid "Language panel position"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:23
+msgid ""
+"The position of the language panel. 0 = Top left corner, 1 = Top right "
+"corner, 2 = Bottom left corner, 3 = Bottom right corner, 4 = Custom"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:24
+msgid "Follow the input cursor in case the panel is always shown"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:25
+msgid ""
+"If true, the panel follows the input cursor in case the panel is always "
+"shown. If false, the panel is shown at a fixed location."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:26
+msgid "The milliseconds to show property panel"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:27
+msgid ""
+"The milliseconds to show property panel after focus-in or properties are "
+"changed."
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:28
+msgid "Orientation of lookup table"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:29
+msgid "Orientation of lookup table. 0 = Horizontal, 1 = Vertical"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:31
+msgid "Show input method name"
+msgstr ""
+
+#: ../data/ibus.schemas.in.h:35
+msgid "Use custom font"
 msgstr "Употреби прилагођени фонт"
 
-#: ../setup/setup.ui.h:57
-msgid "Vertical"
+#: ../data/ibus.schemas.in.h:36
+msgid "Use custom font name for language panel"
+msgstr "Користи прилагођени фонт за језички панел"
+
+#: ../data/ibus.schemas.in.h:37
+msgid "Custom font"
 msgstr ""
 
-#: ../setup/setup.ui.h:58
-#, fuzzy
-msgid "When active"
+#: ../data/ibus.schemas.in.h:38
+msgid "Custom font name for language panel"
+msgstr "Назив прилагођеног фонта за језички панел"
+
+#: ../data/ibus.schemas.in.h:39
+msgid "Embed Preedit Text"
 msgstr ""
-"Никад\n"
-"Када је активно\n"
-"Увек"
 
-#, fuzzy
-#~ msgid "Use global engine"
-#~ msgstr "Унапред учитај погоне"
+#: ../data/ibus.schemas.in.h:40
+msgid "Embed Preedit Text in Application Window"
+msgstr ""
 
-#, fuzzy
-#~ msgid "Langauge panel position"
-#~ msgstr "Прикажи језички панел:"
+#: ../data/ibus.schemas.in.h:41
+msgid "Use global input method"
+msgstr ""
 
-#~ msgid "Custom font:"
-#~ msgstr "Прилагођени фонт:"
+#: ../data/ibus.schemas.in.h:43
+msgid "Enable input method by default"
+msgstr ""
 
-#, fuzzy
-#~ msgid "Font for language bar and candidates"
-#~ msgstr "Назив прилагођеног фонта за језички панел"
+#: ../data/ibus.schemas.in.h:44
+msgid "Enable input method by default when the application gets input focus"
+msgstr ""
 
-#, fuzzy
-#~ msgid "Use custom font for language bar and candidates"
-#~ msgstr "Користи прилагођени фонт за језички панел"
+#: ../data/ibus.schemas.in.h:45
+msgid "DConf preserve name prefixes"
+msgstr ""
 
-#~ msgid "Custom Font"
-#~ msgstr "Прилагођени фонт"
+#: ../data/ibus.schemas.in.h:46
+msgid "Prefixes of DConf keys to stop name conversion"
+msgstr ""
 
-#, fuzzy
-#~ msgid "Show IM name on language bar"
-#~ msgstr "Назив прилагођеног фонта за језички панел"
+#: ../ibus/_config.py.in:41
+msgid ""
+"Copyright (c) 2007-2010 Peng Huang\n"
+"Copyright (c) 2007-2010 Red Hat, Inc."
+msgstr ""
 
-#~ msgid "Use Custom Font"
-#~ msgstr "Користи прилагођени фонт"
+#: ../ibus/lang.py:41 ../src/ibusutil.c:150 ../src/ibusutil.c:152
+msgid "Other"
+msgstr "Друго"
 
-#~ msgid "Next engine hotkey for switch to next input method engine"
-#~ msgstr ""
-#~ "Пречица следећег погона за пребацивање на следећи погон методе уноса"
+#: ../setup/engineabout.py:68
+#, python-format
+msgid "Language: %s\n"
+msgstr ""
 
-#~ msgid "Prev engine hotkey for switch to previous input method engine"
-#~ msgstr ""
-#~ "Пречица претходног погона за пребацивање на претходни погон методе уноса"
+#: ../setup/engineabout.py:71
+#, python-format
+msgid "Keyboard layout: %s\n"
+msgstr ""
 
-#~ msgid "Trigger hotkey for enable or disable input context"
-#~ msgstr "Пречица окидача за укључивање или искључивање контекста уноса"
+#: ../setup/engineabout.py:74
+#, python-format
+msgid "Author: %s\n"
+msgstr ""
 
-#~ msgid "[Control+space]"
-#~ msgstr "[Control+space]"
+#: ../setup/engineabout.py:77
+msgid "Description:\n"
+msgstr ""
 
-#~ msgid "Switch engine"
-#~ msgstr "Промени погон"
+#: ../setup/enginecombobox.py:139
+msgid "Select an input method"
+msgstr "Изаберите методу уноса"
 
-#~ msgid "prev engine"
-#~ msgstr "претходни погон"
+#: ../setup/enginetreeview.py:94
+msgid "Kbd"
+msgstr ""
+
+#: ../setup/ibus-setup.desktop.in.h:2
+msgid "Set IBus Preferences"
+msgstr ""
+
+#: ../setup/keyboardshortcut.py:55
+msgid "Keyboard shortcuts"
+msgstr "Пречице тастатуре"
+
+#: ../setup/keyboardshortcut.py:66
+msgid "Key code:"
+msgstr "Код тастера:"
+
+#: ../setup/keyboardshortcut.py:81
+msgid "Modifiers:"
+msgstr "Модификатори:"
+
+#. apply button
+#: ../setup/keyboardshortcut.py:133
+msgid "_Apply"
+msgstr "_Примени"
+
+#. delete button
+#: ../setup/keyboardshortcut.py:139
+msgid "_Delete"
+msgstr "_Обриши"
+
+#: ../setup/keyboardshortcut.py:254
+msgid ""
+"Please press a key (or a key combination).\n"
+"The dialog will be closed when the key is released."
+msgstr "Притисните тастер (или комбинацију тастера).\nПрозорче ће бити затворено када се тастер отпусти."
+
+#: ../setup/keyboardshortcut.py:256
+msgid "Please press a key (or a key combination)"
+msgstr "Притисните тастер (или комбинацију тастера)"
+
+#: ../setup/keyboardshortcut.py:338 ../setup/main.py:374
+msgid "_Cancel"
+msgstr "О_дустани"
+
+#: ../setup/keyboardshortcut.py:339 ../setup/main.py:375
+msgid "_OK"
+msgstr "У _реду"
+
+#: ../setup/main.py:102 ../setup/main.py:395
+msgid "Use shortcut with shift to switch to the previous input method"
+msgstr ""
+
+#: ../setup/main.py:329
+msgid "The IBus daemon is not running. Do you wish to start it?"
+msgstr ""
+
+#: ../setup/main.py:350
+msgid ""
+"IBus has been started! If you cannot use IBus, add the following lines to your $HOME/.bashrc; then relog into your desktop.\n"
+"  export GTK_IM_MODULE=ibus\n"
+"  export XMODIFIERS=@im=ibus\n"
+"  export QT_IM_MODULE=ibus"
+msgstr ""
+
+#. Translators: %d == 5 currently
+#: ../setup/main.py:364
+#, python-format
+msgid "IBus daemon could not be started in %d seconds"
+msgstr ""
+
+#: ../setup/main.py:376
+#, python-format
+msgid "Select keyboard shortcut for %s"
+msgstr "Изаберите пречицу тастатуре за %s"
+
+#: ../setup/main.py:377
+msgid "switching input methods"
+msgstr ""
+
+#: ../tools/main.vala:42
+msgid "List engine name only"
+msgstr ""
+
+#: ../tools/main.vala:58 ../tools/main.vala:179 ../tools/main.vala:189
+#, c-format
+msgid "Can't connect to IBus.\n"
+msgstr ""
+
+#: ../tools/main.vala:84
+#, c-format
+msgid "language: %s\n"
+msgstr ""
+
+#: ../tools/main.vala:152
+#, c-format
+msgid "No engine is set.\n"
+msgstr ""
+
+#: ../tools/main.vala:160
+#, c-format
+msgid "Set global engine failed.\n"
+msgstr ""
+
+#: ../tools/main.vala:165
+#, c-format
+msgid "Get global engine failed.\n"
+msgstr ""
+
+#: ../tools/main.vala:204
+msgid "Read the system registry cache."
+msgstr ""
+
+#: ../tools/main.vala:206
+msgid "Read the registry cache FILE."
+msgstr ""
+
+#: ../tools/main.vala:224 ../tools/main.vala:229
+#, c-format
+msgid "The registry cache is invalid.\n"
+msgstr ""
+
+#: ../tools/main.vala:244
+msgid "Write the system registry cache."
+msgstr ""
+
+#: ../tools/main.vala:246
+msgid "Write the registry cache FILE."
+msgstr ""
+
+#: ../tools/main.vala:293
+msgid "Set or get engine"
+msgstr ""
+
+#: ../tools/main.vala:294
+msgid "Exit ibus-daemon"
+msgstr ""
+
+#: ../tools/main.vala:295
+msgid "Show available engines"
+msgstr ""
+
+#: ../tools/main.vala:296
+msgid "(Not implemented)"
+msgstr ""
+
+#: ../tools/main.vala:297
+msgid "Restart ibus-daemon"
+msgstr ""
+
+#: ../tools/main.vala:298
+msgid "Show version"
+msgstr ""
+
+#: ../tools/main.vala:299
+msgid "Show the content of registry cache"
+msgstr ""
+
+#: ../tools/main.vala:300
+msgid "Create registry cache"
+msgstr ""
+
+#: ../tools/main.vala:301
+msgid "Print the D-Bus address of ibus-daemon"
+msgstr ""
+
+#: ../tools/main.vala:302
+msgid "Show this information"
+msgstr ""
+
+#: ../tools/main.vala:308
+#, c-format
+msgid ""
+"Usage: %s COMMAND [OPTION...]\n"
+"\n"
+msgstr ""
+
+#: ../tools/main.vala:309
+#, c-format
+msgid "Commands:\n"
+msgstr ""
+
+#: ../tools/main.vala:338
+#, c-format
+msgid "%s is unknown command!\n"
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:425
+msgid "IBus Update"
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:426 ../ui/gtk3/panel.vala:437
+msgid "Super+space is now the default hotkey."
+msgstr ""
+
+#: ../ui/gtk3/panel.vala:707
+msgid "IBus is an intelligent input bus for Linux/Unix."
+msgstr "IBus је интелигентна магистрала уноса за Linux/Unix."
+
+#: ../ui/gtk3/panel.vala:711
+msgid "translator-credits"
+msgstr "Serbian <fedora-trans-sr@redhat.com>"
+
+#: ../ui/gtk3/panel.vala:732
+msgid "Preferences"
+msgstr "Поставке"
+
+#: ../ui/gtk3/panel.vala:742
+msgid "Restart"
+msgstr "Покрени поново"
+
+#: ../ui/gtk3/panel.vala:746
+msgid "Quit"
+msgstr "Изађи"
+
+#. Translators: If your locale is RTL, the msgstr is "default:RTL".
+#. * Otherwise the msgstr is "default:LTR".
+#: ../ui/gtk3/propertypanel.vala:374
+msgid "default:LTR"
+msgstr "default:LTR"

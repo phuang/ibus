@@ -7,22 +7,25 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 
 #if !defined (__IBUS_H_INSIDE__) && !defined (IBUS_COMPILATION)
 #error "Only <ibus.h> can be included directly"
 #endif
+
+#ifndef __IBUS_KEYMAP_H_
+#define __IBUS_KEYMAP_H_
 
 /**
  * SECTION: ibuskeymap
@@ -41,12 +44,9 @@
  * Then ibus_keymap_lookup_keysym() can
  * convert scancodes back to the key symbols.
  *
- * @see_also: #IBusComponent, #IBusEngineDesc
+ * see_also: #IBusComponent, #IBusEngineDesc
  *
  */
-
-#ifndef __IBUS_KEYMAP_H_
-#define __IBUS_KEYMAP_H_
 
 #include "ibusobject.h"
 
@@ -113,12 +113,13 @@ GType            ibus_keymap_get_type               (void);
 /**
  * ibus_keymap_new:
  * @name: The keymap file to be loaded, such as 'us', 'jp'.
- * @returns: An IBusKeymap associated with the giving name; or NULL if failed.
  *
- * Get an IBusKeymap associated with the giving name.
+ * Get an #IBusKeymap associated with the giving name.
  *
  * This function loads the keymap file specified in @name
  * in the IBUS_DATA_DIR/keymaps directory.
+ *
+ * Returns: An #IBusKeymap associated with the giving name; or %NULL if failed.
  *
  * Deprecated: This function has been deprecated and should
  * not be used in newly written code. Please use ibus_keymap_get().
@@ -129,12 +130,14 @@ IBusKeymap        *ibus_keymap_new                  (const gchar        *name)
 /**
  * ibus_keymap_get:
  * @name: The keymap file to be loaded, such as 'us', 'jp'.
- * @returns: An IBusKeymap associated with the giving name; or NULL if failed.
  *
  * Get an IBusKeymap associated with the giving name.
  *
  * This function loads the keymap file specified in @name
  * in the IBUS_DATA_DIR/keymaps directory.
+ *
+ * Returns: (transfer full): An #IBusKeymap associated with the giving name;
+ * or %NULL if failed.
  */
 IBusKeymap        *ibus_keymap_get                  (const gchar        *name);
 
@@ -143,9 +146,10 @@ IBusKeymap        *ibus_keymap_get                  (const gchar        *name);
  * @keymap: An IBusKeymap.
  * @keycode: A scancode to be converted.
  * @state: Modifier flags(such as Ctrl, Shift).
- * @returns: Corresponding keysym.
  *
- * Convert the scancode to keysym, given the keymap.
+ * Converts the scancode to keysym, given the keymap.
+ *
+ * Returns: Corresponding keysym.
  */
 guint              ibus_keymap_lookup_keysym        (IBusKeymap         *keymap,
                                                      guint16             keycode,

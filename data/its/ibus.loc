@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<locatingRules>
+  <locatingRule name="IBusEngineDesc" pattern="*.inputMethod.xml">
+    <documentRule localName="engines" target="ibus.its"/>
+    <documentRule localName="component" target="ibus.its"/>
+  </locatingRule>
+</locatingRules>

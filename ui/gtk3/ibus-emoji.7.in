@@ -1,0 +1,99 @@
+.\" This file is distributed under the same license as the ibus
+.\" package.
+.\" Copyright (C) Takao Fujiwara <takao.fujiwara1@gmail.com>, 2017-2022.
+.\"
+.TH "IBUS EMOJI" 7 "February 2022" "@VERSION@" "User Commands"
+.SH NAME
+.B ibus-emoji
+\- Call the IBus emoji utility by
+.B IBus Emojier
+
+.SH "SYNOPSIS"
+.B /usr/libexec/ibus\-ui\-emojier
+[\fIOPTION\fR]...
+
+.SH "DESCRIPTION"
+
+.PP
+IBus Emojier provides a GUI to select an emoji by typing an emoji annotation
+or choosing a character with mouse click and it's designed to work as
+an extended IBus lookup window using Space, Enter, and Arrow keys.
+The text entry accepts an emoji annotation or Unicode points.
+If IBus panel is launched, IBus panel calls IBus Emojier with a
+shortcut key or the right click menu and output the selected emoji
+on the previous focused text on an application.
+If IBus panel is not available likes GNOME desktop, You can still use
+.B ibus emoji
+command to launch IBus Emojier and it saves the selected emoji in
+your clipboard and you can paste the emoji by a paste key likes
+Control\-v.
+
+.PP
+Refer
+.B emoji
+section in
+.B ibus (1)
+for the command line options.
+
+.PP
+Homepage: https://github.com/ibus/ibus/wiki
+
+.SH "SETTINGS"
+.TP
+\fBANNOTATION LANGUAGE\fR
+You can choose a language of emoji annotations with
+.B ibus\-setup (1).
+.TP
+\fBFONT\fR
+You can choose an emoji font with
+.B ibus\-setup (1).
+E.g. "Noto Color Emoji", "Android Emoji" font.
+
+.SH "KEYBOARD OPERATIONS"
+.TP
+\fBControl-Period or Control-Semicolon\fR
+Launch IBus Emojier. The shortcut key can be customized by
+.B ibus\-setup (1).
+.TP
+\fBLeft, Right arrow, Control-b or Control-f\fR
+Select the next left or right category or emoji on the list
+if an annotation is not typed.
+Otherwise move the cursor to the immdediate left or right in the typed
+annotation.
+.TP
+\fBDown, Up arrow, Control-n or Control-p\fR
+Select the next top or down category or emoji on the list
+.TP
+\fBEnter\fR
+Commit the selected emoji.
+.TP
+\fBEscape\fR
+Go back to the category list from emoji list, erase the typed annotation,
+and close IBus Emojier.
+.TP
+\fBSpace\fR
+Select the next left category or emoji on the list.
+If Shift\-Space is typed,
+a space chararacter can be inserted between words in an annotation or
+Unicode points. E.g. 1f466 Shift\-Space 1f3fb
+.TP
+\fBPageDown, PageUp, Control-Shift-n or Control-Shift-p\fR
+Move to the next or previous page in the category or emoji list.
+.TP
+\fBHead, End, Control-h or Control-e\fR
+Select the first or last emoji on the list if an annotation is not typed.
+Otherwise move the cursor to the head or end in the typed annotation.
+.TP
+\fBControl-u\fR
+Erase the typed annotation.
+.TP
+\fBControl-x or Control-v or Control-c\fR
+Cut the selected annotation to the clipboard with Control-x. Paste
+the contents of the clipboard into the annotation entry with Control-v.
+Copy the selected annotation to the clipboard with Control-c.
+.TP
+\fBControl-Shift-c\fR
+Copy the selected emoji to the clipboard.
+
+.SH BUGS
+If you find a bug, please report it at https://github.com/ibus/ibus/issues
